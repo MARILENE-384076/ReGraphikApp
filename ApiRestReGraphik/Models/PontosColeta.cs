@@ -7,18 +7,18 @@ namespace ApiRestReGraphik.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
         [JsonPropertyName("nome_ponto")]
-        public string NomePonto { get; set; }
+        public required string NomePonto { get; set; }
 
         [JsonPropertyName("cidade")]
-        public string Cidade { get; set; }
+        public required string Cidade { get; set; }
 
         [JsonPropertyName("estado")]
-        public string Estado { get; set; }
+        public required string Estado { get; set; }
 
         [JsonPropertyName("cep")]
-        public string CEP { get; set; } 
+        public required string CEP { get; set; } 
 
         [JsonPropertyName("residuos_aceitos")]
-        public string ResiduosAceitos { get; set; } 
+        public required string ResiduosAceitos { get; set; } 
     }
 }
