@@ -1,6 +1,24 @@
-﻿namespace ApiRestReGraphik.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ApiRestReGraphik.Models
 {
     public class PontosColeta
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [JsonPropertyName("nome_ponto")]
+        public string NomePonto { get; set; }
+
+        [JsonPropertyName("cidade")]
+        public string Cidade { get; set; }
+
+        [JsonPropertyName("estado")]
+        public string Estado { get; set; }
+
+        [JsonPropertyName("cep")]
+        public string CEP { get; set; } 
+
+        [JsonPropertyName("residuos_aceitos")]
+        public string ResiduosAceitos { get; set; } 
     }
 }
