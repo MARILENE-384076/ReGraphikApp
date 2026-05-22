@@ -2,6 +2,7 @@
     x:Class="ReGraphik.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="ReGraphik"
     Height="720"
     Width="1200"
@@ -10,18 +11,15 @@
 
     <Grid>
 
-        <!-- COLUNAS -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- SIDEBAR -->
         <Border Background="#2563EB">
 
             <StackPanel>
 
-                <!-- LOGO -->
                 <TextBlock
                     Text="ReGraphik"
                     Foreground="White"
@@ -29,7 +27,6 @@
                     FontWeight="Bold"
                     Margin="20"/>
 
-                <!-- BOTÕES -->
                 <Button
                     Content="Dashboard"
                     Height="45"
@@ -84,11 +81,9 @@
 
         </Border>
 
-        <!-- CONTEÚDO -->
         <Grid Grid.Column="1"
               Margin="20">
 
-            <!-- DASHBOARD -->
             <Grid x:Name="DashboardGrid">
 
                 <Border
@@ -106,7 +101,6 @@
 
             </Grid>
 
-            <!-- RESÍDUOS -->
             <Grid
                 x:Name="ResiduosGrid"
                 Visibility="Collapsed">
@@ -126,7 +120,6 @@
 
             </Grid>
 
-            <!-- PONTOS -->
             <Grid
                 x:Name="PontosGrid"
                 Visibility="Collapsed">
@@ -146,7 +139,6 @@
 
             </Grid>
 
-            <!-- MAPA -->
             <Grid
                 x:Name="MapaGrid"
                 Visibility="Collapsed">
@@ -155,18 +147,45 @@
                     Background="White"
                     CornerRadius="12">
 
-                    <TextBlock
-                        Text="Mapa"
-                        FontSize="32"
-                        FontWeight="Bold"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                    <Grid Margin="15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="280"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                            <TextBlock Text="Localizar Coleta" FontSize="20" FontWeight="Bold" Foreground="#1F2937" Margin="0,0,0,15"/>
+
+                            <TextBlock Text="Cidade / Região:" FontSize="14" FontWeight="SemiBold" Foreground="#4B5563" Margin="0,0,0,5"/>
+                            <TextBox x:Name="TxtCidadeBusca" Text="Belo Horizonte" Height="35" VerticalContentAlignment="Center" Padding="5" Margin="0,0,0,15" FontSize="14"/>
+
+                            <TextBlock Text="Material Gráfico:" FontSize="14" FontWeight="SemiBold" Foreground="#4B5563" Margin="0,0,0,5"/>
+                            <ComboBox x:Name="CboMaterialBusca" Height="35" Margin="0,0,0,20" SelectedIndex="0" FontSize="14">
+                                <ComboBoxItem Content="Ecoponto Geral (Reciclagem)"/>
+                                <ComboBoxItem Content="Aparas de Papel e Papelão"/>
+                                <ComboBoxItem Content="Sucata de Alumínio (Chapas CTP)"/>
+                                <ComboBoxItem Content="Lixo Eletrônico / Cartuchos"/>
+                            </ComboBox>
+
+                            <Button Content="Buscar Pontos Online" 
+                                    Height="40" 
+                                    Background="#2563EB" 
+                                    Foreground="White" 
+                                    FontWeight="Bold" 
+                                    FontSize="14"
+                                    BorderBrush="{x:Null}"
+                                    Click="BtnBuscarMapa_Click"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+                            <wv2:WebView2 x:Name="NavegadorMapa"/>
+                        </Border>
+                    </Grid>
 
                 </Border>
 
             </Grid>
 
-            <!-- RELATÓRIOS -->
             <Grid
                 x:Name="RelatoriosGrid"
                 Visibility="Collapsed">
