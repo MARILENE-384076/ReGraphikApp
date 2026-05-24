@@ -1,6 +1,6 @@
 ﻿using ApiRestReGraphik.Models;
-using ApiRestReGraphik.Repositories.Interface;
 using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace ApiRestReGraphik.Services
 {
@@ -8,17 +8,17 @@ namespace ApiRestReGraphik.Services
     {
         // Logger para registrar informações e erros relacionados ao serviço ReGraphik
         private readonly ILogger<ResiduoService> _logger;
-        private readonly IResiduo _repository;
+        private readonly FirebaseClient _firebaseClient;
+        private const string NodeName = "residuos";
 
         /// <summary>
         ///  Construtor da classe ResiduoService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        /// <param name="repository">Repositório para acessar os dados do ReGraphik</param>
-        public ResiduoService(ILogger<ResiduoService> logger, IResiduo repository)
+        public ResiduoService(ILogger<ResiduoService> logger)
         {
             _logger = logger;
-            _repository = repository;
+            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
         }
 
         /// <summary>
@@ -30,7 +30,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetAll();
+                // Obtém os dados do Firebase para a coleção de resíduos
+                var residuos = await _firebaseClient
+                    .Child(NodeName)
+                    .OnceAsync<Residuo>();
+
+                // Mapeia os dados do Firebase para a lista de Residuos
+                return residuos.Select(r => r.Object).ToList();
             }
             catch (Exception ex)
             {
@@ -49,7 +55,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetById(id);
+                // Obtém o resíduo do Firebase usando o ID fornecido
+                var residuos = await _firebaseClient
+                     .Child(NodeName)
+                     .Child(id)
+                     .OnceSingleAsync<Residuo>();
+
+                return residuos;
             }
             catch (Exception ex)
             {
@@ -69,7 +81,16 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Add(residuo);
+                if (string.IsNullOrEmpty(residuo.Id))
+                {
+                    residuo.Id = Guid.NewGuid().ToString(); // Garante que temos um ID único string
+                }
+
+                // Adiciona o resíduo ao Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(residuo.Id)
+                    .PutAsync(residuo);
             }
             catch (Exception ex)
             {
@@ -88,7 +109,14 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Update(id, residuo);
+                // Garante que o ID do resíduo seja definido corretamente para a atualização
+                residuo.Id = id;
+
+                // Atualiza o resíduo no Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .PutAsync(residuo);
             }
             catch (Exception ex)
             {
@@ -107,7 +135,11 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Delete(id);
+                // Exclui o resíduo do Firebase usando o ID fornecido
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .DeleteAsync();
             }
             catch (Exception ex)
             {

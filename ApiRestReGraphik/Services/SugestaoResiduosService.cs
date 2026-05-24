@@ -1,6 +1,6 @@
 ﻿using ApiRestReGraphik.Models;
-using ApiRestReGraphik.Repositories.Interface;
 using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace ApiRestReGraphik.Services
 {
@@ -8,16 +8,17 @@ namespace ApiRestReGraphik.Services
     {
         // Logger para registrar informações e erros relacionados ao serviço ReGraphik
         private readonly ILogger<SugestaoResiduosService> _logger;
-        private readonly ISugestaoResiduos _repository;
+        private readonly FirebaseClient _firebaseClient;
+        private const string NodeName = "sugestoes_residuos";
+
         /// <summary>
         ///  Construtor da classe SugestaoResiduosService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        /// <param name="repository">Repositório para acessar os dados do ReGraphik</param>
-        public SugestaoResiduosService(ILogger<SugestaoResiduosService> logger, ISugestaoResiduos repository)
+        public SugestaoResiduosService(ILogger<SugestaoResiduosService> logger)
         {
             _logger = logger;
-            _repository = repository;
+            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/")  ;
         }
 
         /// <summary>
@@ -29,7 +30,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetAll();
+                // Obtém os dados do Firebase para a coleção de sugestões de resíduos
+                var sugestaoResiduos = await _firebaseClient
+                    .Child(NodeName)
+                    .OnceAsync<SugestaoResiduo>();
+
+                // Mapeia os dados do Firebase para a lista de sugestões de resíduos
+                return sugestaoResiduos.Select(r => r.Object).ToList();
             }
             catch (Exception ex)
             {
@@ -48,7 +55,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetById(id);
+                // Obtém a sugestão de resíduo do Firebase usando o ID fornecido
+                var sugestaoResiduo = await _firebaseClient
+                     .Child(NodeName)
+                     .Child(id)
+                     .OnceSingleAsync<SugestaoResiduo>();
+
+                return sugestaoResiduo;
             }
             catch (Exception ex)
             {
@@ -68,7 +81,16 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Add(sugestao);
+                if (string.IsNullOrEmpty(sugestao.Id))
+                {
+                    sugestao.Id = Guid.NewGuid().ToString(); // Garante que temos um ID único string
+                }
+
+                // Adiciona a sugestão de resíduo ao Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(sugestao.Id)
+                    .PutAsync(sugestao);
             }
             catch (Exception ex)
             {
@@ -87,7 +109,14 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Update(id, sugestao);
+                // Garante que o ID da sugestão de resíduo seja definido corretamente para a atualização
+                sugestao.Id = id;
+
+                // Atualiza a sugestão de resíduo no Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .PutAsync(sugestao);
             }
             catch (Exception ex)
             {
@@ -106,7 +135,11 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Delete(id);
+                // Exclui a sugestão de resíduo do Firebase usando o ID fornecido
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .DeleteAsync();
             }
             catch (Exception ex)
             {

@@ -1,6 +1,6 @@
 ﻿using ApiRestReGraphik.Models;
-using ApiRestReGraphik.Repositories.Interface;
 using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace ApiRestReGraphik.Services
 {
@@ -8,16 +8,17 @@ namespace ApiRestReGraphik.Services
     {
         // Logger para registrar informações e erros relacionados ao serviço ReGraphik
         private readonly ILogger<UsuarioService> _logger;
-        private readonly IUsuario _repository;
+        private readonly FirebaseClient _firebaseClient;
+        private const string NodeName = "usuarios";
+
         /// <summary>
         ///  Construtor da classe UsuarioService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        /// <param name="repository">Repositório para acessar os dados do Usuario</param>
-        public UsuarioService(ILogger<UsuarioService> logger, IUsuario repository)
+        public UsuarioService(ILogger<UsuarioService> logger)
         {
             _logger = logger;
-            _repository = repository;
+            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
         }
 
         /// <summary>
@@ -29,7 +30,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetAll();
+                // Obtém os dados do Firebase para a coleção de usuários
+                var usuarios = await _firebaseClient
+                    .Child(NodeName)
+                    .OnceAsync<Usuario>();
+
+                // Mapeia os dados do Firebase para a lista de usuários
+                return usuarios.Select(r => r.Object).ToList();
             }
             catch (Exception ex)
             {
@@ -48,7 +55,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetById(id);
+                // Obtém um usuário do Firebase usando o ID fornecido
+                var usuario = await _firebaseClient
+                     .Child(NodeName)
+                     .Child(id)
+                     .OnceSingleAsync<Usuario>();   
+
+                return usuario;
             }
             catch (Exception ex)
             {
@@ -68,7 +81,16 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Add(usuario);
+                if (string.IsNullOrEmpty(usuario.Id))
+                {
+                    usuario.Id = Guid.NewGuid().ToString(); // Garante que temos um ID único string
+                }
+
+                // Adiciona o usuário ao Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(usuario.Id)
+                    .PutAsync(usuario);
             }
             catch (Exception ex)
             {
@@ -87,7 +109,14 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Update(id, usuario);
+                // Garante que o ID do usuário seja definido corretamente para a atualização
+                usuario.Id = id;
+
+                // Atualiza o usuário no Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .PutAsync(usuario);
             }
             catch (Exception ex)
             {
@@ -106,7 +135,11 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Delete(id);
+                // Exclui o usuário do Firebase usando o ID fornecido
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .DeleteAsync();
             }
             catch (Exception ex)
             {
