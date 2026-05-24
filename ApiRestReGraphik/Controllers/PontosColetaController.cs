@@ -11,20 +11,24 @@ namespace ApiRestReGraphik.Controllers
         private readonly PontosColetaService _pontosColetaService;
         private readonly ILogger<PontosColetaController> _logger;
 
+        private readonly HttpClient _httpClient;
+        private const string ApiKey = "AIzaSyCPeDl0hmzFeROHcUxPbnQUvAhOA_N-ros";
+
         /// <summary>
         /// Construtor da classe PontosColetaController, que recebe um logger e um serviço de PontosColeta para ser utilizado nas ações do controlador.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros.</param>
         /// <param name="pontosColetaService">Serviço de PontosColeta para operações relacionadas.</param>
-        public PontosColetaController(ILogger<PontosColetaController> logger, PontosColetaService pontosColetaService)
+        public PontosColetaController(ILogger<PontosColetaController> logger, PontosColetaService pontosColetaService, HttpClient httpClient)
         {
             _logger = logger;
             _pontosColetaService = pontosColetaService;
+            _httpClient = new HttpClient();
         }
 
 
         /// <summary>
-        ///  GET api/PontosColeta - Obtém dados dos Pontos de Coleta e retorna uma lista de pontos de coleta cadastrados no ReGraphik.
+        ///  GET api/PontosColeta - Obtém dados diretamente da API externa do Google Maps.
         /// </summary>
         /// 
         /// <remarks>Responsável por listar os dados dos Pontos de Coleta. Retornando uma coleção de objetos detalhando informações técnicas e operacionais de cada ponto de coleta, 
@@ -50,10 +54,69 @@ namespace ApiRestReGraphik.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Erro ao obter dados dos Pontos de Coleta. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                return StatusCode(500, "Erro interno ao processar dados da API externa.");
+            }
+        }
+
+        /// <summary>
+        /// GET api/PontosColeta/google?cidade=... - BUSCA COMPLEMENTAR NA API DO GOOGLE MAPS
+        /// </summary>
+        [HttpGet("google")] // Isso muda a rota desse cara para api/PontosColeta/google
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetFromGoogle([FromQuery] string cidade)
+        {
+            if (string.IsNullOrWhiteSpace(cidade))
+            {
+                return BadRequest("O parâmetro 'cidade' é obrigatório para a busca externa.");
             }
 
+            try
+            {
+                var lista = new List<PontosColeta>();
+                var query = $"ponto de coleta reciclagem {cidade}";
+                var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json" +
+                          $"?query={Uri.EscapeDataString(query)}&key={ApiKey}";
 
+                var json = await _httpClient.GetStringAsync(url);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                var root = doc.RootElement;
+
+                if (!root.TryGetProperty("results", out var results)) return Ok(lista);
+
+                int idLocal = 1;
+                foreach (var item in results.EnumerateArray())
+                {
+                    var nome = item.TryGetProperty("name", out var n) ? n.GetString() ?? "Sem nome" : "Sem nome";
+                    var endereco = item.TryGetProperty("formatted_address", out var a) ? a.GetString() ?? cidade : cidade;
+
+                    var tipos = "Reciclável";
+                    if (item.TryGetProperty("types", out var typesEl))
+                    {
+                        var typesList = typesEl.EnumerateArray().Select(t => t.GetString()).ToList();
+                        if (typesList.Any(t => t?.Contains("electronics") == true)) tipos = "Eletrônicos";
+                        else if (typesList.Any(t => t?.Contains("hardware") == true)) tipos = "Metal / Papel / Plástico";
+                    }
+
+                    lista.Add(new PontosColeta
+                    {
+                        Id = idLocal++.ToString(),
+                        NomePonto = nome,
+                        Cidade = endereco,
+                        Estado = "BR",
+                        CEP = "—",
+                        ResiduosAceitos = tipos
+                    });
+                }
+
+                return Ok(lista);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Erro ao consultar dados no Google Maps. Erro:{ex.Message}");
+                return StatusCode(500, "Erro interno ao processar dados da API externa.");
+            }
         }
 
         /// <summary>

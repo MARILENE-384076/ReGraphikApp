@@ -1,6 +1,6 @@
 ﻿using ApiRestReGraphik.Models;
-using ApiRestReGraphik.Repositories.Interface;
 using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace ApiRestReGraphik.Services
 {
@@ -8,16 +8,17 @@ namespace ApiRestReGraphik.Services
     {
         // Logger para registrar informações e erros relacionados ao serviço ReGraphik
         private readonly ILogger<PontosColetaService> _logger;
-        private readonly IPontosColeta _repository;
+        private readonly FirebaseClient _firebaseClient;
+        private const string NodeName = "pontos_coleta";
+
         /// <summary>
         ///  Construtor da classe PontosColetaService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        /// <param name="repository">Repositório para acessar os dados do PontosColeta</param>
-        public PontosColetaService(ILogger<PontosColetaService> logger, IPontosColeta repository)
+        public PontosColetaService(ILogger<PontosColetaService> logger)
         {
             _logger = logger;
-            _repository = repository;
+            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
         }
 
         /// <summary>
@@ -29,7 +30,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetAll();
+                // Obtém os pontos de coleta do Firebase
+                var pontos = await _firebaseClient
+                    .Child(NodeName)
+                    .OnceAsync<PontosColeta>();
+
+                // Mapeia os dados do Firebase para a lista de PontosColeta
+                return pontos.Select(p => p.Object).ToList();
             }
             catch (Exception ex)
             {
@@ -48,7 +55,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetById(id);
+                // Obtém o ponto de coleta do Firebase usando o ID fornecido
+                var ponto = await _firebaseClient
+                     .Child(NodeName)
+                     .Child(id)
+                     .OnceSingleAsync<PontosColeta>();
+
+                return ponto;
             }
             catch (Exception ex)
             {
@@ -68,7 +81,17 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Add(pontosColeta);
+                if (string.IsNullOrEmpty(pontosColeta.Id))
+                {
+                    pontosColeta.Id = Guid.NewGuid().ToString(); // Garante que temos um ID único string
+                }
+
+                // Adiciona o ponto de coleta ao Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(pontosColeta.Id)
+                    .PutAsync(pontosColeta);
+
             }
             catch (Exception ex)
             {
@@ -87,7 +110,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Update(id, pontosColeta);
+                pontosColeta.Id = id;
+
+                // Atualiza o ponto de coleta no Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .PutAsync(pontosColeta);
             }
             catch (Exception ex)
             {
@@ -106,7 +135,11 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Delete(id);
+                // Exclui o ponto de coleta do Firebase usando o ID fornecido
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .DeleteAsync();
             }
             catch (Exception ex)
             {

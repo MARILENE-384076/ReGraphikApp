@@ -1,6 +1,6 @@
 ﻿using ApiRestReGraphik.Models;
-using ApiRestReGraphik.Repositories.Interface;
 using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace ApiRestReGraphik.Services
 {
@@ -8,16 +8,17 @@ namespace ApiRestReGraphik.Services
     {
         // Logger para registrar informações e erros relacionados ao serviço ReGraphik
         private readonly ILogger<SugestaoService> _logger;
-        private readonly ISugestao _repository;
+        private readonly FirebaseClient _firebaseClient;
+        private const string NodeName = "sugestoes";
+
         /// <summary>
         ///  Construtor da classe SugestaoService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        /// <param name="repository">Repositório para acessar os dados do ReGraphik</param>
-        public SugestaoService(ILogger<SugestaoService> logger, ISugestao repository)
+        public SugestaoService(ILogger<SugestaoService> logger)
         {
             _logger = logger;
-            _repository = repository;
+            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
         }
 
         /// <summary>
@@ -29,7 +30,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetAll();
+                // Obtém os dados do Firebase para a coleção de sugestões
+                var sugestao = await _firebaseClient
+                    .Child(NodeName)
+                    .OnceAsync<Sugestao>();
+
+                // Mapeia os dados do Firebase para a lista de sugestões
+                return sugestao.Select(r => r.Object).ToList();
             }
             catch (Exception ex)
             {
@@ -48,7 +55,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                return await _repository.GetById(id);
+                // Obtém a sugestão do Firebase usando o ID fornecido
+                var sugestao = await _firebaseClient
+                     .Child(NodeName)
+                     .Child(id)
+                     .OnceSingleAsync<Sugestao>();
+
+                return sugestao;
             }
             catch (Exception ex)
             {
@@ -68,7 +81,16 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Add(sugestao);
+                if (string.IsNullOrEmpty(sugestao.Id))
+                {
+                    sugestao.Id = Guid.NewGuid().ToString(); // Garante que temos um ID único string
+                }
+
+                // Adiciona a sugestão ao Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(sugestao.Id)
+                    .PutAsync(sugestao);
             }
             catch (Exception ex)
             {
@@ -87,7 +109,14 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Update(id, sugestao);
+                // Garante que o ID da sugestão seja definido corretamente para a atualização
+                sugestao.Id = id;
+
+                // Atualiza a sugestão no Firebase usando o ID como chave
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .PutAsync(sugestao);
             }
             catch (Exception ex)
             {
@@ -106,7 +135,11 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                await _repository.Delete(id);
+                // Exclui a sugestão do Firebase usando o ID fornecido
+                await _firebaseClient
+                    .Child(NodeName)
+                    .Child(id)
+                    .DeleteAsync();
             }
             catch (Exception ex)
             {

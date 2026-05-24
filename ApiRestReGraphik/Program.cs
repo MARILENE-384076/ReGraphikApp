@@ -1,6 +1,8 @@
 using ApiRestReGraphik.Repositories;
 using ApiRestReGraphik.Repositories.Interface;
 using ApiRestReGraphik.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddHttpClient();
 
 // Registra o repositório e o serviço do ReGraphik para que possam ser injetados em outros componentes da aplicação, como os controladores.
 builder.Services.AddScoped<IPontosColeta, PontosColetaRepository>();
@@ -46,7 +50,6 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
-
 
 var app = builder.Build();
 
