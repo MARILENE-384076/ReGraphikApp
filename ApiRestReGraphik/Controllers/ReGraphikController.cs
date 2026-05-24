@@ -65,7 +65,7 @@ namespace ApiRestReGraphik.Controllers
         /// Exemplo de resposta: 
         /// 
         /// {
-        ///     "Id": 1,
+        ///     "Id": -NxYZ123456789,
         ///     "IdUsuario": 2,
         ///     "TipoResiduo": "Papel",
         ///     "Origem": "Escritório",

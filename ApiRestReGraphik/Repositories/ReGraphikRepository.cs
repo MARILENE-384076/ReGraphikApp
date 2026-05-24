@@ -42,7 +42,16 @@ namespace ApiRestReGraphik.Repositories
                 var result = await _firebaseClient
                     .Child(ChildName)
                     .OnceAsync<Residuo>();
-                return result.Select(item => item.Object).ToList();
+
+                return result.Select(item =>
+                {
+                    var residuo = item.Object;
+                    if (residuo != null)
+                    {
+                        residuo.Id = item.Key; // Preenche o ID vindo do Firebase
+                    }
+                    return residuo;
+                }).Where(r => r != null).ToList()!;
             }
             catch (Exception ex)
             {
