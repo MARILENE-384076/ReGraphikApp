@@ -10,8 +10,8 @@ namespace ApiRestReGraphik.Repositories
     {
         // Cliente do Firebase para acessar o Firebase Realtime Database
         private readonly FirebaseClient _firebaseClient;
-        // Nome do nó no Firebase Realtime Database onde os resíduos serão armazenados
-        private const string ChildName = "residuos";
+        // Nome do nó no Firebase Realtime Database onde as sugestões serão armazenadas
+        private const string ChildName = "sugestoes";
 
         private readonly ILogger<SugestaoRepository> _logger;
 
