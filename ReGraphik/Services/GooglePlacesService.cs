@@ -42,7 +42,7 @@ namespace ReGraphik.Services
                             /// Cria o objeto usando a estrutura exata da sua classe PontosColeta.cs
                             var novoPonto = new PontosColeta
                             {
-                                Id = idContador++,
+                                Id = idContador.ToString(),
                                 NomePonto = item.GetProperty("name").GetString() ?? "Sem nome",
                                 Cidade = cidade,
                                 Estado = "UF",
