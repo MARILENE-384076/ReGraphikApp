@@ -59,7 +59,7 @@ namespace ApiRestReGraphik.Services
         }
 
         /// <summary>
-        /// Adiciona um novo resíduo ao ReGraphik, utilizando o repositório para acessar os dados e registrando qualquer erro que possa ocorrer durante a operação.
+        /// Adiciona uma sugestão ao ReGraphik, utilizando o repositório para acessar os dados e registrando qualquer erro que possa ocorrer durante a operação.
         /// </summary>
         /// <param name="residuo">O resíduo a ser adicionado</param>
         /// <returns></returns>
