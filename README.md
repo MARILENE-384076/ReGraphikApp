@@ -241,6 +241,14 @@ ReGraphikApp/
 ```
  
 ---
+
+## Conceitos Técnicos
+
+Para garantir que a interface nunca trave durante as requisições, usamos dois conceitos importantes:
+
+O **RelayCommand** é o que conecta os botões da tela à lógica do sistema — sem ele, teríamos código misturado com a interface, o que quebra o padrão MVVM.
+
+O **Async/Await** no `GooglePlacesService` garante que quando o app faz uma chamada ao Google Maps, a tela continua responsiva — o usuário não vê a janela travar enquanto espera a resposta.
 ### RelayCommand — Padrão de Binding
  
 O padrão `ICommand` garante que a View nunca acessa a ViewModel diretamente:
