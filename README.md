@@ -318,3 +318,60 @@ Os nós do banco de dados são:
 | `pontos_coleta` | Pontos de coleta |
 | `sugestoes` | Sugestões de reaproveitamento |
 | `sugestoes_residuos` | Aplicação de sugestões a resíduos |
+
+### Google Maps Places API
+ 
+Utilizada em dois pontos do sistema:
+ 
+- **API REST** (`PontosColetaController`) — busca pontos de coleta por cidade, valida se a cidade está pré-autorizada no Firebase, salva os resultados e retorna com coordenadas de latitude/longitude
+- **WPF Client** (`GooglePlacesService`) — busca postos de coleta por cidade e material para exibição no mapa
+---
+ 
+## Como Executar
+ 
+### Pré-requisitos
+ 
+- .NET 8 SDK ou superior
+- Conta no Firebase com Realtime Database configurado
+- Chave de API do Google Maps habilitada para Places API
+- Visual Studio 2022 ou VS Code com extensões C#
+### Configuração da API
+ 
+1. Clone o repositório:
+```bash
+git clone https://github.com/BrunoMaiaSenai/ReGraphikApp.git
+cd ReGraphikApp
+```
+ 
+2. Adicione o arquivo de credenciais do Firebase na raiz da API:
+```
+ApiRestReGraphik/ReGraphikFirebaseKey.json
+```
+ 
+3. Configure o `appsettings.json`:
+```json
+{
+  "Firebase": {
+    "RealtimeDatabaseUrl": "https://seu-projeto-default-rtdb.firebaseio.com/",
+    "CredentialFilePath": "ReGraphikFirebaseKey.json"
+  },
+  "GoogleMaps": {
+    "ApiKey": "SUA_CHAVE_AQUI"
+  }
+}
+```
+ 
+4. Execute a API:
+```bash
+cd ApiRestReGraphik
+dotnet run
+```
+ 
+5. Acesse o Swagger em: `http://localhost:PORT/`
+### Executando o Cliente WPF
+ 
+1. Abra a solution `ReGraphik.slnx` no Visual Studio
+2. Defina o projeto `ReGraphik` como projeto de inicialização
+3. Certifique-se que a API está em execução
+4. Pressione `F5` para rodar
+---
