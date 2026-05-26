@@ -43,3 +43,19 @@ Empresas do setor gráfico geram diariamente resíduos como papel A4, cartões, 
 - Alto impacto ambiental
 - Perda de matéria-prima que poderia ser reaproveitada
 ---
+
+## Nossa Solução
+ 
+O ReGraphik atua em três pilares:
+ 
+**1. Gestão de Estoque Reverso**
+Organização inteligente dos resíduos gerados dentro das próprias gráficas, com controle de tipo, quantidade, condição, dimensões e status de cada material.
+ 
+**2. Economia Circular**
+Transformação de resíduos em matéria-prima para personalização de novos produtos como camisetas, canecas e brindes, integrando sustentabilidade ao processo produtivo.
+ 
+**3. Sugestões de Reaproveitamento**
+Algoritmos de sugestão que relacionam cada tipo de resíduo cadastrado à melhor forma de reaproveitamento, reduzindo desperdício de forma inteligente.
+ 
+---
+ 
