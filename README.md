@@ -285,4 +285,18 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
 }
 ```
  
----
+---## Frontend Desktop (WPF)
+ 
+O cliente desktop foi desenvolvido em **WPF** com o padrão **MVVM**, garantindo separação entre interface e lógica de negócio.
+ 
+### Navegação
+ 
+A janela principal (`MainWindow`) possui uma barra lateral de navegação com 5 seções:
+ 
+| Seção | Status | Descrição |
+|---|---|---|
+| Dashboard | Em desenvolvimento | Painel com visão geral do sistema |
+| Cadastrar Resíduos | Em desenvolvimento | Formulário de cadastro de resíduos |
+| Pontos de Coleta | Em desenvolvimento | Lista de pontos cadastrados |
+| Mapa | Funcional | Mapa interativo com busca por cidade |
+| Relatórios | Em desenvolvimento | Geração de relatórios |
