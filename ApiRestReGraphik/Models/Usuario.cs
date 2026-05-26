@@ -23,6 +23,8 @@ namespace ApiRestReGraphik.Models
         public string Senha { get; set; }
 
         [JsonPropertyName("data_cadastro")]
+
+        public string Perfil { get; set; }
         public DateTime DataCadastro { get; set; }
     }
 }

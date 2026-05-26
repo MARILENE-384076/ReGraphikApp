@@ -157,7 +157,7 @@ namespace ApiRestReGraphik.Controllers
 
                 return Ok(new
                 {
-                    Mensagem = $"Sincronização de '{cidade}' concluída com sucesso.",
+                    Mensagem = $"Sincronização de '{cidade}' concluída com sucesso!",
                     PontosSalvos = totalSalvo,
                     PontosIgnoradosPorDuplicidade = totalIgnorado
                 });
