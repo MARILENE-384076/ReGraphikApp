@@ -181,3 +181,16 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
 | POST | `/api/Usuario` | Cria novo usuário |
 | PUT | `/api/Usuario/{id}` | Atualiza usuário existente |
 | DELETE | `/api/Usuario/{id}` | Remove usuário |
+
+### Pontos de Coleta — `api/PontosColeta`
+ 
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/api/PontosColeta` | Lista todos os pontos cadastrados no Firebase |
+| GET | `/api/PontosColeta/{id}` | Obtém ponto por ID |
+| GET | `/api/PontosColeta/google?cidade=...` | Busca pontos via Google Maps Places API e salva no Firebase |
+| POST | `/api/PontosColeta` | Cadastra novo ponto de coleta |
+| PUT | `/api/PontosColeta/{id}` | Atualiza ponto existente |
+| DELETE | `/api/PontosColeta/{id}` | Remove ponto de coleta |
+ 
+> O endpoint `/google` valida se a cidade já está cadastrada no Firebase antes de consultar o Google Maps. Se autorizada, busca os pontos, salva automaticamente e retorna a lista com os IDs gerados.
