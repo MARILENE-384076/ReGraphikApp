@@ -300,3 +300,21 @@ A janela principal (`MainWindow`) possui uma barra lateral de navegação com 5 
 | Pontos de Coleta | Em desenvolvimento | Lista de pontos cadastrados |
 | Mapa | Funcional | Mapa interativo com busca por cidade |
 | Relatórios | Em desenvolvimento | Geração de relatórios |
+
+## Integrações Externas
+ 
+### Firebase Realtime Database
+ 
+Toda a persistência de dados é feita no **Firebase Realtime Database**. A autenticação é realizada via **Google Service Account** (arquivo `.json` de credenciais), com escopos:
+ 
+- `https://www.googleapis.com/auth/userinfo.email`
+- `https://www.googleapis.com/auth/firebase.database`
+Os nós do banco de dados são:
+ 
+| Nó | Entidade |
+|---|---|
+| `usuarios` | Usuários do sistema |
+| `residuos` | Resíduos cadastrados |
+| `pontos_coleta` | Pontos de coleta |
+| `sugestoes` | Sugestões de reaproveitamento |
+| `sugestoes_residuos` | Aplicação de sugestões a resíduos |
