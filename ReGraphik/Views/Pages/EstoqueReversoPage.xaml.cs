@@ -38,8 +38,8 @@ namespace ReGraphik.Views.Pages
         {
             try
             {
-                // URL do endpoint de resíduos da sua API
-                string urlApi = "https://webregraphik.runasp.net/api/Residuos";
+                // URL da API para buscar os resíduos do estoque reverso
+                string urlApi = "https://webregraphik.runasp.net/api/Residuo";
 
                 var resposta = await _http.GetAsync(urlApi);
 
