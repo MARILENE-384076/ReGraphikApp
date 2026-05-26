@@ -83,4 +83,12 @@ ReGraphikApp/
 ├── Modelagem/                 # Documentação técnica (PDFs)
 └── Banco de Dados/            # Scripts e documentação do banco
 ```
+**Fluxo da aplicação:**
  
+```
+Cliente WPF  →  API REST (ASP.NET Core)  →  Firebase Realtime Database
+                        ↓
+               Google Maps Places API  (busca de pontos de coleta)
+```
+ 
+--- 
