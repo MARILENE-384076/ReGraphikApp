@@ -19,16 +19,18 @@ namespace ApiRestReGraphik.Controllers
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros.</param>
         /// <param name="pontosColetaService">Serviço de PontosColeta para operações relacionadas.</param>
+        /// <param name="configuration">Configuração para acessar as chaves de API e outras configurações necessárias.</param>
+        /// <param name="httpClientFactory">Fábrica de HttpClient para criar instâncias de HttpClient para chamadas externas.</param>
         public PontosColetaController(
             ILogger<PontosColetaController> logger,
             PontosColetaService pontosColetaService,
             IHttpClientFactory httpClientFactory,
-            IConfiguration configuration) // 2. Injete o IConfiguration aqui
+            IConfiguration configuration) 
         {
             _logger = logger;
             _pontosColetaService = pontosColetaService;
             _httpClient = httpClientFactory.CreateClient();
-            _configuration = configuration; // 3. Atribua o valor
+            _configuration = configuration; 
         }
 
 
@@ -41,7 +43,6 @@ namespace ApiRestReGraphik.Controllers
         /// 
         /// Observação: Retorna um status 200 OK com os dados do ReGraphik ou um status 500 Internal Server Error em caso de falha.
         /// </remarks>
-        /// 
         /// <response code="200">Retorna os dados do ReGraphik.</response>
         /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
         /// <returns></returns>
