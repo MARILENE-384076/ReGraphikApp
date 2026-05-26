@@ -34,3 +34,12 @@ O **ReGraphik** é um software desenvolvido para resolver um problema real do se
 O projeto é composto por uma **API REST** em ASP.NET Core integrada ao **Firebase Realtime Database** e um **cliente desktop** desenvolvido em WPF seguindo o padrão MVVM.
  
 ---
+
+## O Desafio
+ 
+Empresas do setor gráfico geram diariamente resíduos como papel A4, cartões, vinil e outros materiais que são descartados sem critério, gerando:
+ 
+- Custos desnecessários de descarte
+- Alto impacto ambiental
+- Perda de matéria-prima que poderia ser reaproveitada
+---
