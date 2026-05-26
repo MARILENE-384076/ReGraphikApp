@@ -216,4 +216,73 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
 | DELETE | `/api/SugestaoResiduos/{id}` | Remove registro |
  
 ---
+
+ ## Modelos de Dados
  
+### Usuario
+```json
+{
+  "id": "string",
+  "name": "string",
+  "cpf": "string",
+  "email": "string",
+  "login": "string",
+  "senha": "string",
+  "data_cadastro": "datetime"
+}
+```
+ 
+### Residuo
+```json
+{
+  "id": "string",
+  "id_usuario": "string",
+  "tipo_residuo": "string",
+  "origem": "string",
+  "especificacao": "string",
+  "projeto": "string",
+  "quantidade": "double",
+  "data_cadastro": "datetime",
+  "condicao": "string",
+  "dimensoes_cm": "double?",
+  "dimensoes_lm": "double?",
+  "observacao": "string",
+  "anexo": "string",
+  "status": "string"
+}
+```
+ 
+### PontosColeta
+```json
+{
+  "id": "string",
+  "nome_ponto": "string",
+  "cidade": "string",
+  "estado": "string",
+  "cep": "string",
+  "residuos_aceitos": "string",
+  "latitude": "double",
+  "longitude": "double"
+}
+```
+ 
+### Sugestao
+```json
+{
+  "id": "string",
+  "tipo_residuo_aceito": "string",
+  "descricao_sugestao": "string"
+}
+```
+ 
+### SugestaoResiduo
+```json
+{
+  "id": "string",
+  "id_cadastro_residuo": "int",
+  "id_sugestao": "int",
+  "data_aplicacao": "datetime?"
+}
+```
+ 
+---
