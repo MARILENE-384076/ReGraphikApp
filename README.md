@@ -92,3 +92,19 @@ Cliente WPF  →  API REST (ASP.NET Core)  →  Firebase Realtime Database
 ```
  
 --- 
+
+## Tecnologias
+ 
+| Camada | Tecnologia |
+|---|---|
+| Linguagem | C# (.NET) |
+| Frontend | WPF — Windows Presentation Foundation |
+| Padrão de Projeto | MVVM |
+| Backend | ASP.NET Core Web API |
+| Banco de Dados | Firebase Realtime Database |
+| Autenticação Firebase | Google Credential (Service Account JSON) |
+| Mapa | Google Maps Places API + Leaflet.js (WebBrowser/WebView2) |
+| Documentação API | Swagger / OpenAPI |
+| CORS | Aberto para qualquer origem (configurável para produção) |
+ 
+---
