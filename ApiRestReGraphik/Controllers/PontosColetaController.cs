@@ -79,10 +79,10 @@ namespace ApiRestReGraphik.Controllers
 
             try
             {
-                // 1. Puxa os dados que já existem no Firebase para evitar duplicidade
+                // Carrega os pontos de coleta já existentes no banco para evitar duplicidades
                 var pontosNoBanco = (await _pontosColetaService.Listar())?.ToList() ?? new List<PontosColeta>();
 
-                // 2. Faz a busca diretamente na API do Google Maps
+                // Monta a URL da API do Google Maps usando o nome da cidade e a chave de API do appsettings.json
                 var apiKey = _configuration["GoogleMaps:ApiKey"];
                 var query = Uri.EscapeDataString($"ponto de coleta reciclagem {cidade}");
                 var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}";
@@ -93,6 +93,7 @@ namespace ApiRestReGraphik.Controllers
                 }
 
                 var json = await _httpClient.GetStringAsync(url);
+                // Faz o parsing do JSON usando System.Text.Json
                 using var doc = System.Text.Json.JsonDocument.Parse(json);
 
                 if (!doc.RootElement.TryGetProperty("results", out var results))
@@ -103,7 +104,7 @@ namespace ApiRestReGraphik.Controllers
                 int totalSalvo = 0;
                 int totalIgnorado = 0;
 
-                // 3. Varre os resultados e salva direto no banco de dados
+                
                 foreach (var item in results.EnumerateArray())
                 {
                     var nome = item.TryGetProperty("name", out var n) ? n.GetString() : "Sem nome";
@@ -115,7 +116,7 @@ namespace ApiRestReGraphik.Controllers
                         lng = loc.TryGetProperty("lng", out var ln) ? ln.GetDouble() : 0;
                     }
 
-                    // 🛑 ANTI-DUPLICAÇÃO: Se as coordenadas já existem no Firebase, pula para não duplicar
+                    // Verifica se já existe um ponto com as mesmas coordenadas (lat, lng)
                     bool jaExiste = pontosNoBanco.Any(p => p.Lat == lat && p.Lng == lng);
                     if (jaExiste)
                     {
