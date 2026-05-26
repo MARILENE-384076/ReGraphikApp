@@ -194,3 +194,26 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
 | DELETE | `/api/PontosColeta/{id}` | Remove ponto de coleta |
  
 > O endpoint `/google` valida se a cidade já está cadastrada no Firebase antes de consultar o Google Maps. Se autorizada, busca os pontos, salva automaticamente e retorna a lista com os IDs gerados.
+>
+> ### Sugestão — `api/Sugestao`
+ 
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/api/Sugestao` | Lista todas as sugestões |
+| GET | `/api/Sugestao/{id}` | Obtém sugestão por ID |
+| POST | `/api/Sugestao` | Cria nova sugestão |
+| PUT | `/api/Sugestao/{id}` | Atualiza sugestão existente |
+| DELETE | `/api/Sugestao/{id}` | Remove sugestão |
+ 
+### Sugestão de Resíduos — `api/SugestaoResiduos`
+ 
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/api/SugestaoResiduos` | Lista todas as sugestões aplicadas a resíduos |
+| GET | `/api/SugestaoResiduos/{id}` | Obtém por ID |
+| POST | `/api/SugestaoResiduos` | Registra aplicação de sugestão a um resíduo |
+| PUT | `/api/SugestaoResiduos/{id}` | Atualiza registro |
+| DELETE | `/api/SugestaoResiduos/{id}` | Remove registro |
+ 
+---
+ 
