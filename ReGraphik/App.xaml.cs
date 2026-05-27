@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+
 using ReGraphik.Views.Pages;
 
 namespace ReGraphik
