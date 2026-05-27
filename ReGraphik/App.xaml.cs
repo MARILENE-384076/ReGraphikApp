@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Regraphik.Views.Pages;
 
 namespace ReGraphik
 {
@@ -23,6 +24,10 @@ namespace ReGraphik
                 appName,
                 0,
                 Microsoft.Win32.RegistryValueKind.DWord);
+            
+            // Abre a janela de login assim que o app inicializa
+            LoginWindow loginTela = new LoginWindow();
+            loginTela.Show();
         }
     }
 }
