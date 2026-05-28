@@ -71,6 +71,7 @@
                 <Border.Effect>
                     <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                 </Border.Effect>
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -87,61 +88,79 @@
                         </StackPanel>
                     </Border>
 
-                    <ListView x:Name="ListaPontos" ItemsSource="{Binding PontosAtuais}"  Grid.Row="1" BorderThickness="0" Padding="0" 
-                              ScrollViewer.VerticalScrollBarVisibility="Auto" Background="Transparent"
-                              SelectionChanged="ListaPontos_SelectionChanged">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="Border">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F8FAFC"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Border Padding="14,12" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Background="Transparent" Cursor="Hand">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" Width="36" Height="36" Background="#DBEAFE" CornerRadius="8" VerticalAlignment="Top">
-                                            <TextBlock Text="📍" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                            <TextBlock Text="{Binding NomePonto}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" TextWrapping="Wrap"/>
-                                            <TextBlock Text="{Binding Cidade}" FontSize="11" Foreground="#64748B" Margin="0,3,0,0" TextWrapping="Wrap"/>
-                                            <Border Background="#D1FAE5" CornerRadius="4" Padding="6,2" Margin="0,4,0,0" HorizontalAlignment="Left">
-                                                <TextBlock Text="{Binding ResiduosAceitos}" FontSize="10" Foreground="#065F46" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <Grid Grid.Row="1">
+
+                        <ListView x:Name="ListaPontos" ItemsSource="{Binding PontosAtuais}" BorderThickness="0" Padding="0" 
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" Background="Transparent"
+                          SelectionChanged="ListaPontos_SelectionChanged">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <ContentPresenter />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="14,12" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1" Background="Transparent" Cursor="Hand">
+                                        <Grid HorizontalAlignment="Stretch" Width="240">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Grid.Column="0" Width="36" Height="36" Background="#DBEAFE" CornerRadius="8" VerticalAlignment="Top">
+                                                <TextBlock Text="📍" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
 
-                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding MostrarEstadoVazio, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="🔍" FontSize="36" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Busque uma cidade" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                        <TextBlock Text="para ver os pontos" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center"/>
-                    </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" HorizontalAlignment="Stretch">
 
-                    <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="{Binding IsCarregando, Converter={StaticResource BoolToVis}}">
-                        <TextBlock Text="⏳" FontSize="36" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Buscando pontos..." FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                    </StackPanel>
+                                                <TextBlock Text="{Binding NomePonto}" 
+                                                           FontSize="13" 
+                                                           FontWeight="SemiBold" 
+                                                           Foreground="#1E293B" 
+                                                           TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Cidade}" 
+                                                           FontSize="11" 
+                                                           Foreground="#64748B" 
+                                                           Margin="0,3,0,0" 
+                                                           TextWrapping="Wrap"/>
+
+                                                <Border Background="#D1FAE5" CornerRadius="4" Padding="6,2" Margin="0,4,0,0" HorizontalAlignment="Left">
+                                                    <TextBlock Text="{Binding ResiduosAceitos}" 
+                                                               FontSize="10" 
+                                                               Foreground="#065F46" 
+                                                               FontWeight="SemiBold" 
+                                                               TextWrapping="Wrap"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Grid Background="White" Visibility="{Binding MostrarEstadoVazio, Converter={StaticResource BoolToVis}}">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="🔍" FontSize="36" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Busque uma cidade" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="para ver os pontos" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Background="White" Visibility="{Binding IsCarregando, Converter={StaticResource BoolToVis}}">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="⏳" FontSize="36" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Buscando pontos..." FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                    </Grid>
                 </Grid>
             </Border>
 
