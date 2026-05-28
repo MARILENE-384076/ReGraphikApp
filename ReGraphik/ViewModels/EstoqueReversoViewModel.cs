@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using ReGraphik.Models;
 
 namespace ReGraphik.ViewModels
 {
