@@ -32,7 +32,7 @@ namespace ReGraphik.ViewModels
             // Inicializa o comando de sugestão com a função que será executada ao clicar no botão.
             SugestaoCommand = new RelayCommand(TelaSugestao);
 
-            // Carrega os dados do estoque reverso do banco assim que a ViewModel for criada
+            // Carrega os dados do estoque reverso do banco assim que a ViewModel for criada . 
             _ = CarregarEstoqueDoBancoAsync();
         }
 
