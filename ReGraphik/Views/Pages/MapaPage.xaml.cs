@@ -1,4 +1,13 @@
-﻿using System;
+﻿        // Evento para lidar com a seleção de um ponto na lista
+        private void ListaPontos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ListaPontos.SelectedItem is PontosColeta pontoSelecionado)
+            {
+                _viewModel.FocarNoPonto(pontoSelecionado);
+            }
+        }
+
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using ReGraphik.ViewModels;
