@@ -71,7 +71,7 @@ namespace ReGraphik.ViewModels
             var json = JsonSerializer.Serialize(usuario);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await http.PostAsync("http://localhost:5000/api/usuario", content);
+            var response = await http.PostAsync("http://localhost:5254/api/usuario", content);
 
             if (response.IsSuccessStatusCode)
                 MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
