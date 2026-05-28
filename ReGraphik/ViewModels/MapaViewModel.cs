@@ -64,7 +64,20 @@ namespace ReGraphik.ViewModels
         public MapaViewModel()
         {
             // Inicializa o comando de busca com a função assíncrona correspondente
-            BuscarCommand = new RelayCommand(() => { _ = BuscarAsync(); });
+            BuscarCommand = new RelayCommand(() =>
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        await BuscarAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Erro fatal interceptado: " + ex.Message);
+                    }
+                });
+            });
         }
 
         private async Task BuscarAsync()

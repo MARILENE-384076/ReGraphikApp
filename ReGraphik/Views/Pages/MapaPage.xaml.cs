@@ -26,21 +26,40 @@ namespace ReGraphik.Views.Pages
 
         private void ViewModel_SolicitouNavegacaoMapa(string caminhoArquivoHtml)
         {
-            // Executa a navegação de forma segura a partir da View
-            MapaBrowser.Navigate(new Uri(caminhoArquivoHtml));
+            // Garante que a navegação do WebBrowser ocorra estritamente na UI Thread
+            Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    if (MapaBrowser != null)
+                    {
+                        MapaBrowser.Navigate(new Uri(caminhoArquivoHtml));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Erro crítico na navegação: " + ex.Message);
+                }
+            });
         }
 
         private void ViewModel_SolicitouFocoNoMapa(int indice)
         {
-            try
+            // Também protege a chamada do JavaScript via Dispatcher
+            Dispatcher.Invoke(() =>
             {
-                // Invoca o JavaScript nativo da página HTML carregada
-                MapaBrowser.InvokeScript("centralizarPonto", indice);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Erro ao invocar script do mapa: " + ex.Message);
-            }
+                try
+                {
+                    if (MapaBrowser != null)
+                    {
+                        MapaBrowser.InvokeScript("centralizarPonto", indice);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("Erro ao invocar script do mapa: " + ex.Message);
+                }
+            });
         }
 
         private void ListaPontos_SelectionChanged(object sender, SelectionChangedEventArgs e)
