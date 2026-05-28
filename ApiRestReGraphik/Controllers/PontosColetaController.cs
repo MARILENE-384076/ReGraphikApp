@@ -89,84 +89,33 @@ namespace ApiRestReGraphik.Controllers
 
             try
             {
-                // Carrega os pontos de coleta já existentes no banco para evitar duplicidades
-                var pontosNoBanco = (await _pontosColetaService.Listar())?.ToList() ?? new List<PontosColeta>();
-
                 // Monta a URL da API do Google Maps usando o nome da cidade e a chave de API do appsettings.json
                 var apiKey = _configuration["GoogleMaps:ApiKey"];
-                var query = Uri.EscapeDataString($"ponto de coleta reciclagem {cidade}");
-                var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}";
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    return StatusCode(500, "Chave de API do Google Maps não configurada no servidor.");
+                }
 
                 if (_httpClient == null)
                 {
                     return StatusCode(500, "Erro de infraestrutura: HttpClient não injetado.");
                 }
 
-                var json = await _httpClient.GetStringAsync(url);
-                // Faz o parsing do JSON usando System.Text.Json
-                using var doc = System.Text.Json.JsonDocument.Parse(json);
-
-                if (!doc.RootElement.TryGetProperty("results", out var results))
-                {
-                    return Ok("Nenhum dado encontrado no Google Maps para esta cidade.");
-                }
-
-                int totalSalvo = 0;
-                int totalIgnorado = 0;
-
-                
-                foreach (var item in results.EnumerateArray())
-                {
-                    var nome = item.TryGetProperty("name", out var n) ? n.GetString() : "Sem nome";
-
-                    double lat = 0, lng = 0;
-                    if (item.TryGetProperty("geometry", out var geo) && geo.TryGetProperty("location", out var loc))
-                    {
-                        lat = loc.TryGetProperty("lat", out var la) ? la.GetDouble() : 0;
-                        lng = loc.TryGetProperty("lng", out var ln) ? ln.GetDouble() : 0;
-                    }
-
-                    // Verifica se já existe um ponto com as mesmas coordenadas (lat, lng)
-                    bool jaExiste = pontosNoBanco.Any(p => p.Lat == lat && p.Lng == lng);
-                    if (jaExiste)
-                    {
-                        totalIgnorado++;
-                        continue;
-                    }
-
-                    // Cria o objeto modelo
-                    var novoPonto = new PontosColeta
-                    {
-                        Id = Guid.NewGuid().ToString(), // ID gerado na API para não ficar null
-                        NomePonto = nome,
-                        Cidade = cidade,
-                        Estado = "BR",
-                        CEP = "—",
-                        ResiduosAceitos = "Reciclável",
-                        Lat = lat,
-                        Lng = lng
-                    };
-
-                    // Envia diretamente para o Firebase
-                    await _pontosColetaService.Criar(novoPonto);
-
-                    // Adiciona na lista local para o caso do Google mandar dois itens iguais na mesma resposta
-                    pontosNoBanco.Add(novoPonto);
-                    totalSalvo++;
-                }
+                // Chama o serviço para sincronizar os dados da cidade com o Google Maps e obter o total de pontos salvos e ignorados por duplicidade
+                var (salvo, ignorado) = await _pontosColetaService.SincronizarComGoogleMapsAsync(cidade, apiKey, _httpClient);
 
                 return Ok(new
                 {
                     Mensagem = $"Sincronização de '{cidade}' concluída com sucesso!",
-                    PontosSalvos = totalSalvo,
-                    PontosIgnoradosPorDuplicidade = totalIgnorado
+                    PontosSalvos = salvo,
+                    PontosIgnoradosPorDuplicidade = ignorado
                 });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Erro ao sincronizar dados: {ex.Message}");
-                return StatusCode(500, $"Erro interno ao salvar no banco: {ex.Message}");
-            }
+                return StatusCode(500, $"Erro interno ao salvar no banco");
+            }   
         }
 
         /// <summary>

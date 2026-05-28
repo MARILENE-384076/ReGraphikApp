@@ -132,6 +132,8 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
+                pontosColeta.Id = null;
+
                 // Adiciona o ponto de coleta ao Firebase e obtém o resultado, que inclui a chave gerada para o novo ponto de coleta
                 var resultado = await _firebaseClient
                                 .Child(NodeName)
@@ -139,6 +141,11 @@ namespace ApiRestReGraphik.Services
 
                 // Atribui o ID gerado pelo Firebase ao ponto de coleta
                 pontosColeta.Id = resultado.Key;
+
+                await _firebaseClient
+            .Child(NodeName)
+            .Child(resultado.Key)
+            .PutAsync(pontosColeta);
             }
             catch (Exception ex)
             {
@@ -148,11 +155,87 @@ namespace ApiRestReGraphik.Services
         }
 
         /// <summary>
-        /// Método para criar um ponto de coleta utilizando o método Criar, mantendo a consistência na nomenclatura e facilitando a compreensão do código.
-        /// </summary> 
-        /// <param name="pontosColeta">O ponto de coleta a ser adicionado</param>
+        ///  Sincroniza os pontos de coleta do ReGraphik com os dados do Google Maps, utilizando o repositório para acessar os dados e registrando.
+        /// </summary>
+        /// <param name="cidade">Nome da cidade para a qual os pontos de coleta serão sincronizados</param>
+        /// <param name="apiKey">Chave da API do Google Maps</param>
+        /// <param name="httpClient">Instância de HttpClient para realizar chamadas HTTP</param>
         /// <returns></returns>
-        public async Task BlacklistCriar(PontosColeta pontosColeta) => await Criar(pontosColeta);
+        public async Task<(int salvos, int ignorados)> SincronizarComGoogleMapsAsync(string cidade, string apiKey, HttpClient httpClient)
+        {
+            // Obtém os pontos de coleta existentes no banco de dados para a cidade especificada, garantindo que tenhamos uma lista atualizada para comparação
+            var pontosNoBanco = (await Listar())?.ToList() ?? new List<PontosColeta>();
+
+            // Cria um HashSet para armazenar as coordenadas existentes, permitindo uma busca ultra rápida
+            var coordenadasExistentes = new HashSet<(double, double)>(
+                pontosNoBanco.Select(p => (p.Lat, p.Lng))
+            );
+
+            // Monta a URL de consulta para a API do Google Maps, utilizando o nome da cidade e a chave da API
+            var query = Uri.EscapeDataString($"ponto de coleta reciclagem {cidade}");
+            var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}";
+
+            // Faz a chamada para a API do Google Maps e obtém a resposta JSON
+            var json = await httpClient.GetStringAsync(url);
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+            if (doc.RootElement.TryGetProperty("status", out var statusProp))
+            {
+                string statusApi = statusProp.GetString() ?? "";
+                if (statusApi != "OK" && statusApi != "ZERO_RESULTS")
+                {
+                    _logger.LogWarning($"API do Google Maps retornou um status de erro: {statusApi}");
+                    return (0, 0);
+                }
+            }
+
+            if (!doc.RootElement.TryGetProperty("results", out var results))
+            {
+                return (0, 0);
+            }
+
+            int totalSalvo = 0;
+            int totalIgnorado = 0;
+
+            foreach (var item in results.EnumerateArray())
+            {
+                var nome = item.TryGetProperty("name", out var n) ? n.GetString() : "Sem nome";
+
+                // O Google pode retornar resultados sem coordenadas, então precisamos verificar isso antes de tentar acessar os valores
+                double lat = 0, lng = 0;
+                if (item.TryGetProperty("geometry", out var geo) && geo.TryGetProperty("location", out var loc))
+                {
+                    lat = loc.TryGetProperty("lat", out var la) ? la.GetDouble() : 0;
+                    lng = loc.TryGetProperty("lng", out var ln) ? ln.GetDouble() : 0;
+                }
+
+                // Verifica se as coordenadas já existem no banco de dados usando o HashSet, o que é extremamente rápido
+                if (coordenadasExistentes.Contains((lat, lng)))
+                {
+                    totalIgnorado++;
+                    continue;
+                }
+
+                var novoPonto = new PontosColeta
+                {
+                    NomePonto = nome,
+                    Cidade = cidade,
+                    Estado = "BR",
+                    CEP = "—",
+                    ResiduosAceitos = "Reciclável",
+                    Lat = lat,
+                    Lng = lng
+                };
+
+                await Criar(novoPonto);
+
+                // Adiciona as novas coordenadas ao HashSet para garantir que não sejam adicionadas novamente
+                coordenadasExistentes.Add((lat, lng));
+                totalSalvo++;
+            }
+
+            return (totalSalvo, totalIgnorado);
+        }
 
         /// <summary>
         /// Atualiza um ponto de coleta existente no ReGraphik, utilizando o repositório para acessar os dados e registrando qualquer erro que possa ocorrer durante a operação.

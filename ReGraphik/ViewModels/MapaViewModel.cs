@@ -2,6 +2,7 @@
 using ReGraphik.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -22,8 +23,12 @@ namespace ReGraphik.ViewModels
         private readonly HttpClient _http = new();
         private bool _mapaCarregado = false;
         private string _cidade = string.Empty;
-        private List<PontosColeta> _pontosAtuais = new();
-        private readonly Dictionary<int, (double lat, double lng)> _latLngs = new();
+        private ObservableCollection<PontosColeta> _pontosAtuais = new();
+        private bool _isCarregando;
+
+        public event Action<int>? SolicitouFocoNoMapa;
+
+        public event Action<string>? SolicitouNavegacaoMapa;
 
         // Propriedades públicas para vinculação à interface
         public string Cidade
@@ -32,32 +37,34 @@ namespace ReGraphik.ViewModels
             set { _cidade = value; OnPropertyChanged(); }
         }
 
-        public List<PontosColeta> PontosAtuais
+        public ObservableCollection<PontosColeta> PontosAtuais
         {
             get => _pontosAtuais;
-            set { _pontosAtuais = value; OnPropertyChanged(); }
+            set { _pontosAtuais = value; OnPropertyChanged(); OnPropertyChanged(nameof(MostrarEstadoVazio)); }
         }
 
-        // Referências para elementos visuais (definidos na View)
-        public WebBrowser MapaBrowser { get; set; }
-        public ListView ListaPontos { get; set; }
-        public UIElement EstadoVazio { get; set; }
-        public UIElement MapaPlaceholder { get; set; }
-        public UIElement EstadoCarregando { get; set; }
+        // Referências públicas para os elementos visuais, a serem atribuídas pela View
+        public bool IsCarregando
+        {
+            get => _isCarregando;
+            set
+            {
+                _isCarregando = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(MostrarEstadoVazio));
+            }
+        }
 
+        // Referências públicas para os elementos visuais, a serem atribuídas pela View
+        public bool MostrarEstadoVazio => !IsCarregando && (PontosAtuais == null || PontosAtuais.Count == 0);
+
+        // Comando para iniciar a busca dos pontos de coleta
         public ICommand BuscarCommand { get; set; }
 
         public MapaViewModel()
         {
             // Inicializa o comando de busca com a função assíncrona correspondente
-            BuscarCommand = new RelayCommand(async () => await BuscarAsync());
-
-            // Inicializa as referências dos elementos visuais como nulos, para serem atribuídas posteriormente pela View
-            MapaBrowser = new WebBrowser();
-            ListaPontos = new ListView();
-            EstadoVazio = new UIElement();
-            MapaPlaceholder = new UIElement();
-            EstadoCarregando = new UIElement();
+            BuscarCommand = new RelayCommand(() => { _ = BuscarAsync(); });
         }
 
         private async Task BuscarAsync()
@@ -68,10 +75,11 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            DefinirEstadoVisual(carregando: true);
+            IsCarregando = true;
 
             try
             {
+                // Faz uma requisição POST para a API para sincronizar os pontos de coleta da cidade informada
                 string urlSincronizar = $"https://webregraphik.runasp.net/api/PontosColeta/sincronizar?cidade={Uri.EscapeDataString(Cidade)}";
                 var conteudoVazio = new StringContent("", Encoding.UTF8, "application/json");
 
@@ -81,66 +89,50 @@ namespace ReGraphik.ViewModels
                 {
                     var pontosSalvos = await BuscarPontosDoBancoAsync();
 
-                    // Filtra e atualiza a propriedade observável
-                    PontosAtuais = pontosSalvos
+                    var filtrados = pontosSalvos
                         .Where(p => p.Cidade != null && p.Cidade.Contains(Cidade, StringComparison.OrdinalIgnoreCase))
                         .ToList();
 
-                    _latLngs.Clear();
-                    for (int i = 0; i < PontosAtuais.Count; i++)
-                    {
-                        _latLngs[i] = (PontosAtuais[i].Lat, PontosAtuais[i].Lng);
-                    }
+                    PontosAtuais = new ObservableCollection<PontosColeta>(filtrados);
 
-                    if (ListaPontos != null)
-                    {
-                        ListaPontos.ItemsSource = PontosAtuais;
-                    }
-
-                    DefinirEstadoVisual(carregando: false);
-                    CarregarMapa(PontosAtuais);
+                    // Após atualizar a coleção, recarrega o mapa para refletir os novos pontos
+                    CarregarMapa(filtrados);
+                    IsCarregando = false;
                 }
                 else
                 {
-                    DefinirEstadoVisual(carregando: false);
+                    // Em caso de erro na API, exibe a mensagem de erro retornada
+                    IsCarregando = false;
                     string erroApi = await response.Content.ReadAsStringAsync();
                     MessageBox.Show($"Erro na API ao sincronizar: {erroApi}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                DefinirEstadoVisual(carregando: false);
+                IsCarregando = false;
                 MessageBox.Show($"Erro ao se conectar com o servidor: {ex.Message}", "Erro de Conexão", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        // Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista, solicitando o foco no mapa
         public void FocarNoPonto(PontosColeta ponto)
         {
-            if (_mapaCarregado && MapaBrowser != null)
+            if (_mapaCarregado && PontosAtuais != null)
             {
-                try
+                // Encontra o índice do ponto selecionado na coleção atual
+                var idx = PontosAtuais.IndexOf(ponto);
+                if (idx >= 0)
                 {
-                    var idx = PontosAtuais.IndexOf(ponto);
-                    if (idx >= 0)
-                    {
-                        MapaBrowser.InvokeScript("centralizarPonto", idx);
-                    }
+                    // Solicita à View que centralize o ponto correspondente no mapa
+                    SolicitouFocoNoMapa?.Invoke(idx);
                 }
-                catch { }
             }
         }
 
+        // Método público para ser chamado pela View quando o mapa estiver completamente carregado
         public void NotificarMapaCarregado()
         {
             _mapaCarregado = true;
-            if (MapaPlaceholder != null)
-                MapaPlaceholder.Visibility = Visibility.Collapsed;
-        }
-
-        private void DefinirEstadoVisual(bool carregando)
-        {
-            if (EstadoCarregando != null) EstadoCarregando.Visibility = carregando ? Visibility.Visible : Visibility.Collapsed;
-            if (EstadoVazio != null) EstadoVazio.Visibility = (!carregando && PontosAtuais.Count == 0) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private async Task<List<PontosColeta>> BuscarPontosDoBancoAsync()
@@ -148,11 +140,13 @@ namespace ReGraphik.ViewModels
             var lista = new List<PontosColeta>();
             try
             {
+                // Faz uma requisição GET para a API para obter os pontos de coleta
                 var urlApi = "https://webregraphik.runasp.net/api/PontosColeta";
                 var resposta = await _http.GetAsync(urlApi);
 
                 if (resposta.IsSuccessStatusCode)
                 {
+                    // Lê o conteúdo JSON da resposta e desserializa para a lista de pontos de coleta
                     var json = await resposta.Content.ReadAsStringAsync();
                     var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     return JsonSerializer.Deserialize<List<PontosColeta>>(json, opcoes) ?? lista;
@@ -167,34 +161,36 @@ namespace ReGraphik.ViewModels
 
         private void CarregarMapa(List<PontosColeta> pontos)
         {
-            if (MapaBrowser == null) return;
-
+            // Gera o HTML do mapa com os pontos de coleta e salva em um arquivo temporário
             var html = GerarHtml(pontos);
             var tmpFile = Path.Combine(Path.GetTempPath(), "regraphik_mapa.html");
             File.WriteAllText(tmpFile, html, Encoding.UTF8);
             _mapaCarregado = false;
-            MapaBrowser.Navigate(new Uri(tmpFile));
+
+            // Solicita à View que navegue para o arquivo HTML gerado
+            SolicitouNavegacaoMapa?.Invoke(tmpFile);
         }
 
+        // Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista
         private string GerarHtml(List<PontosColeta> pontos)
         {
             var marcadoresJs = new StringBuilder("[");
             for (int i = 0; i < pontos.Count; i++)
             {
                 var p = pontos[i];
-                _latLngs.TryGetValue(i, out var ll);
                 if (i > 0) marcadoresJs.Append(",");
 
-                double latitude = ll.lat != 0 ? ll.lat : -23.55052;
-                double longitude = ll.lng != 0 ? ll.lng : -46.633308;
+                // Se as coordenadas forem zero, utiliza uma localização padrão (São Paulo) para evitar erros no mapa
+                string latitude = p.Lat != 0 ? p.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-23.55052";
+                string longitude = p.Lng != 0 ? p.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-46.633308";
 
                 marcadoresJs.Append($@"{{
                     ""idx"": {i},
                     ""nome"": ""{EscJs(p.NomePonto)}"",
                     ""endereco"": ""{EscJs(p.Cidade)}"",
                     ""tipos"": ""{EscJs(p.ResiduosAceitos)}"",
-                    ""lat"": {latitude.ToString(System.Globalization.CultureInfo.InvariantCulture)},
-                    ""lng"": {longitude.ToString(System.Globalization.CultureInfo.InvariantCulture)}
+                    ""lat"": {latitude},
+                    ""lng"": {longitude}
                 }}");
             }
             marcadoresJs.Append("]");
@@ -251,6 +247,7 @@ namespace ReGraphik.ViewModels
 </html>";
         }
 
+        // Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista, solicitando o foco no mapa
         private string EscJs(string texto)
         {
             if (string.IsNullOrEmpty(texto)) return "";

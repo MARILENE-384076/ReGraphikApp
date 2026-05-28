@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ApiRestReGraphik.Models;
+using Microsoft.Win32;
+using ReGraphik.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using ReGraphik.ViewModels;
-using ApiRestReGraphik.Models;
 
 namespace ReGraphik.Views.Pages
 {
@@ -12,19 +13,36 @@ namespace ReGraphik.Views.Pages
 
         public MapaPage()
         {
+            DefinirEmulacaoNavegador();
+
             InitializeComponent();
             _viewModel = new MapaViewModel();
             DataContext = _viewModel;
 
-            // Vincula os controles da interface à ViewModel
-            _viewModel.MapaBrowser = this.MapaBrowser;
-            _viewModel.ListaPontos = this.ListaPontos;
-            _viewModel.EstadoVazio = this.EstadoVazio;
-            _viewModel.MapaPlaceholder = this.MapaPlaceholder;
-            _viewModel.EstadoCarregando = this.EstadoCarregando;
+            // Inscreve-se nos eventos da ViewModel para lidar com as ações solicitadas
+            _viewModel.SolicitouFocoNoMapa += ViewModel_SolicitouFocoNoMapa;
+            _viewModel.SolicitouNavegacaoMapa += ViewModel_SolicitouNavegacaoMapa;
         }
 
-        // Evento para lidar com a seleção de um ponto na lista
+        private void ViewModel_SolicitouNavegacaoMapa(string caminhoArquivoHtml)
+        {
+            // Executa a navegação de forma segura a partir da View
+            MapaBrowser.Navigate(new Uri(caminhoArquivoHtml));
+        }
+
+        private void ViewModel_SolicitouFocoNoMapa(int indice)
+        {
+            try
+            {
+                // Invoca o JavaScript nativo da página HTML carregada
+                MapaBrowser.InvokeScript("centralizarPonto", indice);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Erro ao invocar script do mapa: " + ex.Message);
+            }
+        }
+
         private void ListaPontos_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ListaPontos.SelectedItem is PontosColeta pontoSelecionado)
@@ -33,10 +51,35 @@ namespace ReGraphik.Views.Pages
             }
         }
 
-        // Evento para notificar a ViewModel quando o mapa for carregado
         private void MapaBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             _viewModel.NotificarMapaCarregado();
+
+            // Oculta o placeholder assim que a primeira navegação real terminar
+            if (MapaPlaceholder != null && e.Uri.Scheme == "file")
+            {
+                MapaPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
+
+        // Método para definir a emulação do navegador para IE 11
+        private static void DefinirEmulacaoNavegador()
+        {
+            try
+            {
+                string nomeProcesso = System.IO.Path.GetFileName(Environment.GetCommandLineArgs()[0]);
+                if (nomeProcesso.EndsWith(".vshost.exe")) nomeProcesso = nomeProcesso.Replace(".vshost.exe", ".exe");
+
+                using (var chave = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true))
+                {
+                    if (chave != null)
+                    {
+                        // 11001 (0x2AF9) = Internet Explorer 11 Edge Mode (Máxima compatibilidade no WPF)
+                        chave.SetValue(nomeProcesso, 11001, RegistryValueKind.DWord);
+                    }
+                }
+            }
+            catch { }
         }
     }
 }
