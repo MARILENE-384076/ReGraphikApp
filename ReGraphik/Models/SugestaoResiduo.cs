@@ -1,23 +1,24 @@
-﻿using ReGraphik.Models;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using ReGraphik.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace ApiRestReGraphik.Models
+namespace RestReGraphik.Models
 {
     public class SugestaoResiduo
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("id_cadastro_residuo")]
         [ForeignKey("CadastroResiduo")]
-        public string IdCadastroResiduo { get; set; }
-
+        public string? IdCadastroResiduo { get; set; }
         /// <summary>
         /// Chamando a propriedade de navegação para o cadastro de resíduo associado
         /// </summary>
 
         [JsonIgnore]
+        [ValidateNever]
         public virtual Residuo CadastroResiduo { get; set; }
 
         [JsonPropertyName("id_sugestao")]
@@ -29,6 +30,7 @@ namespace ApiRestReGraphik.Models
         /// </summary>
 
         [JsonIgnore]
+        [ValidateNever]
         public virtual Sugestao Sugestao { get; set; } 
 
         [JsonPropertyName("data_aplicacao")]

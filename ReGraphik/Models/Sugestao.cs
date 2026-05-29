@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ApiRestReGraphik.Models
+namespace RestReGraphik.Models
 {
     public class Sugestao
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("tipo_residuo_aceito")]
         public string TipoResiduoAceito { get; set; }
