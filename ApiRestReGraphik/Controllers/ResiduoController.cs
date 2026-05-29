@@ -1,6 +1,8 @@
 ﻿using ApiRestReGraphik.Models;
 using ApiRestReGraphik.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ApiRestReGraphik.Controllers
 {
@@ -148,6 +150,7 @@ namespace ApiRestReGraphik.Controllers
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -155,10 +158,19 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
+                var usuarioIdLogado = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(usuarioIdLogado))
+                {
+                    return Unauthorized("Usuário não autenticado ou token inválido.");
+                }
+
                 if (residuo == null)
                 {
                     return BadRequest("Resíduo inválido.");
                 }
+
+                residuo.IdUsuario = usuarioIdLogado;
 
                 await _residuoService.Criar(residuo);
 

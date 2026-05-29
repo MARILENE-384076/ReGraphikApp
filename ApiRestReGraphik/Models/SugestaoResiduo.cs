@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace ApiRestReGraphik.Models
@@ -17,7 +18,8 @@ namespace ApiRestReGraphik.Models
         /// </summary>
 
         [JsonIgnore]
-        public virtual Residuo CadastroResiduo { get; set; }
+        [ValidateNever]
+        public virtual Residuo? CadastroResiduo { get; set; }
 
         [JsonPropertyName("id_sugestao")]
         [ForeignKey("Sugestao")]
@@ -28,7 +30,8 @@ namespace ApiRestReGraphik.Models
         /// </summary>
 
         [JsonIgnore]
-        public virtual Sugestao Sugestao { get; set; }
+        [ValidateNever]
+        public virtual Sugestao? Sugestao { get; set; }
 
         [JsonPropertyName("data_aplicacao")]
         public DateTime? DataAplicacao { get; set; }

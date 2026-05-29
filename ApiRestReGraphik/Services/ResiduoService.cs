@@ -10,6 +10,7 @@ namespace ApiRestReGraphik.Services
         private readonly ILogger<ResiduoService> _logger;
         private readonly FirebaseClient _firebaseClient;
         private const string NodeName = "residuos";
+        private const string UsersNodeName = "usuarios";
 
         /// <summary>
         ///  Construtor da classe ResiduoService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
@@ -31,12 +32,31 @@ namespace ApiRestReGraphik.Services
             try
             {
                 // Obtém os dados do Firebase para a coleção de resíduos
-                var residuos = await _firebaseClient
+                var residuosFirebase = await _firebaseClient
                     .Child(NodeName)
                     .OnceAsync<Residuo>();
 
-                // Mapeia os dados do Firebase para a lista de Residuos
-                return residuos.Select(r => r.Object).ToList();
+                // Converte os dados obtidos do Firebase para uma lista de resíduos, extraindo apenas os objetos dos resultados
+                var listaResiduos = residuosFirebase.Select(r => r.Object).ToList();
+
+                // Obtém os dados do Firebase para a coleção de usuários (caso seja necessário para mapear os resíduos aos usuários)
+                var usuariosFirebase = await _firebaseClient
+                    .Child(UsersNodeName)
+                    .OnceAsync<Usuario>();
+
+                // Cria um dicionário para mapear os usuários pelo ID, facilitando a associação dos resíduos aos seus respectivos usuários
+                var dicionarioUsuarios = usuariosFirebase.ToDictionary(u => u.Key, u => u.Object);
+
+                foreach (var residuo in listaResiduos)
+                {
+                    // Se o resíduo tiver um ID de usuário válido, associa o objeto de usuário correspondente ao resíduo usando o dicionário criado
+                    if (!string.IsNullOrEmpty(residuo.IdUsuario) && dicionarioUsuarios.ContainsKey(residuo.IdUsuario))
+                    {
+                        residuo.Usuario = dicionarioUsuarios[residuo.IdUsuario];
+                    }
+                }
+
+                return listaResiduos;
             }
             catch (Exception ex)
             {
@@ -60,6 +80,18 @@ namespace ApiRestReGraphik.Services
                      .Child(NodeName)
                      .Child(id)
                      .OnceSingleAsync<Residuo>();
+
+                // Se o resíduo for encontrado, tenta obter o usuário associado a ele (caso haja um ID de usuário válido)
+                if (residuos != null && !string.IsNullOrEmpty(residuos.IdUsuario))
+                {
+                    // Busca o usuário dono deste resíduo específico no Firebase
+                    var usuario = await _firebaseClient
+                        .Child(UsersNodeName)
+                        .Child(residuos.IdUsuario)
+                        .OnceSingleAsync<Usuario>();
+
+                    residuos.Usuario = usuario; // Atribui a propriedade virtual/navegação
+                }
 
                 return residuos;
             }
