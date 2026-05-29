@@ -104,7 +104,7 @@ namespace ReGraphik.ViewModels
                 var json = await resposta.Content.ReadAsStringAsync();
                 var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var todas = JsonSerializer.Deserialize<List<Sugestao>>(json, opcoes) ?? new List<Sugestao>();
-
+                
                 // Filtra sugestões compatíveis com o tipo do resíduo selecionado.
                 // A comparação é case-insensitive e aceita sugestões sem restrição de tipo (TipoResiduoAceito vazio).
                 Application.Current.Dispatcher.Invoke(() =>
