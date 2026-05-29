@@ -65,7 +65,7 @@ namespace ApiRestReGraphik.Controllers
         /// Exemplo de resposta: 
         /// 
         /// {
-        ///     "Id": -NxYZ123456789,
+        ///     "Id": "0d95265b-2757-424e-8ea9-445e8fd2a422",
         ///     "TipoResiduoAceito": "Papel",
         ///     "DescricaoSugestao": "Aceitamos papel reciclável, como papel A4 usado, jornais e revistas. Por favor, certifique-se de que o papel esteja limpo e seco antes de descartá-lo conosco."
         /// }
@@ -111,6 +111,7 @@ namespace ApiRestReGraphik.Controllers
         /// <remarks>Responsável por criar uma nova sugestão no ReGraphik.
         /// 
         /// Requisitos de validação:
+        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
         /// - TipoResiduoAceito: Deve ser uma string não vazia que descreva o tipo de resíduo aceito pela sugestão.
         /// - DescricaoSugestao: Deve ser uma string não vazia que forneça detalhes sobre a sugestão, incluindo informações sobre o tipo de resíduo aceito,
         /// 

@@ -127,7 +127,7 @@ namespace ApiRestReGraphik.Controllers
         /// Exemplo de resposta: 
         /// 
         /// {
-        ///     "Id": -NxYZ123456789,
+        ///     "Id": "0d95265b-2757-424e-8ea9-445e8fd2a422",
         ///     "NomePonto": "Ponto de Coleta Central",
         ///     "Cidade": "São Paulo",
         ///     "Estado": "SP",
@@ -176,6 +176,7 @@ namespace ApiRestReGraphik.Controllers
         /// <remarks>Responsável por criar um novo ponto de coleta no ReGraphik.
         /// 
         /// Requisitos de validação:
+        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
         /// - NomePonto: Deve ser uma string não vazia. (ex: "Ponto de Coleta Central", "Ponto de Coleta Norte", etc.)
         /// - Cidade: Deve ser uma string não vazia. (ex: "São Paulo", "Rio de Janeiro", etc.)
         /// - Estado: Deve ser uma string não vazia. (ex: "SP", "RJ", etc.)
