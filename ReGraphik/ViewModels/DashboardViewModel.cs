@@ -90,7 +90,7 @@ namespace ReGraphik.ViewModels
             _httpClient = new HttpClient();
 
             // AJUSTE FEITO AQUI: URL aponta apenas para a raiz da API
-            _httpClient.BaseAddress = new Uri("https://webregraphik.runasp.net/api/");
+            _httpClient.BaseAddress = new Uri("https://webregraphik.runasp.net/api/usuario");
 
             Task.Run(async () => await CarregarDadosDaApiAsync());
         }
