@@ -17,10 +17,12 @@ namespace ApiRestReGraphik.Services
         ///  Construtor da classe SugestaoResiduosService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        public SugestaoResiduosService(ILogger<SugestaoResiduosService> logger)
+        /// <param name="configuration">Configuração para acessar as variáveis de ambiente</param>
+        public SugestaoResiduosService(ILogger<SugestaoResiduosService> logger, IConfiguration configuration)
         {
             _logger = logger;
-            _firebaseClient = new FirebaseClient("Firebase:RealtimeDatabaseUrl")  ;
+            var firebaseUrl = configuration["Firebase:RealtimeDatabaseUrl"];
+            _firebaseClient = new FirebaseClient(firebaseUrl);
         }
 
         /// <summary>

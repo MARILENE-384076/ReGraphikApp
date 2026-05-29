@@ -6,9 +6,11 @@ namespace ApiRestReGraphik.Models
 {
     public class Residuo
     {
+        [JsonIgnore]
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
+        [JsonIgnore]
         [JsonPropertyName("id_usuario")]
         [ForeignKey("Usuario")]
         public string? IdUsuario { get; set; }

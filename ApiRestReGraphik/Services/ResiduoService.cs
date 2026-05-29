@@ -16,10 +16,13 @@ namespace ApiRestReGraphik.Services
         ///  Construtor da classe ResiduoService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros</param>
-        public ResiduoService(ILogger<ResiduoService> logger)
+        /// <param name="configuration">Configuração para acessar as variáveis de ambiente</param>
+        public ResiduoService(ILogger<ResiduoService> logger, IConfiguration configuration) 
         {
             _logger = logger;
-            _firebaseClient = new FirebaseClient("Firebase:RealtimeDatabaseUrl");
+
+            var firebaseUrl = configuration["Firebase:RealtimeDatabaseUrl"];
+            _firebaseClient = new FirebaseClient(firebaseUrl);
         }
 
         /// <summary>
@@ -36,8 +39,16 @@ namespace ApiRestReGraphik.Services
                     .Child(NodeName)
                     .OnceAsync<Residuo>();
 
-                // Converte os dados obtidos do Firebase para uma lista de resíduos, extraindo apenas os objetos dos resultados
-                var listaResiduos = residuosFirebase.Select(r => r.Object).ToList();
+                // Converte os dados do Firebase para uma lista de objetos Residuo, garantindo que o ID seja atribuído corretamente a partir da chave do Firebase
+                var listaResiduos = residuosFirebase.Select(r =>
+                {
+                    var residuo = r.Object;
+                    if (residuo != null && string.IsNullOrEmpty(residuo.Id))
+                    {
+                        residuo.Id = r.Key; 
+                    }
+                    return residuo;
+                }).Where(r => r != null).ToList();
 
                 // Obtém os dados do Firebase para a coleção de usuários (caso seja necessário para mapear os resíduos aos usuários)
                 var usuariosFirebase = await _firebaseClient
@@ -84,13 +95,17 @@ namespace ApiRestReGraphik.Services
                 // Se o resíduo for encontrado, tenta obter o usuário associado a ele (caso haja um ID de usuário válido)
                 if (residuos != null && !string.IsNullOrEmpty(residuos.IdUsuario))
                 {
-                    // Busca o usuário dono deste resíduo específico no Firebase
-                    var usuario = await _firebaseClient
-                        .Child(UsersNodeName)
-                        .Child(residuos.IdUsuario)
-                        .OnceSingleAsync<Usuario>();
+                    residuos.Id = id; // Garante que o ID do resíduo seja definido corretamente a partir da chave do Firebase
 
-                    residuos.Usuario = usuario; // Atribui a propriedade virtual/navegação
+                    if (!string.IsNullOrEmpty(residuos.IdUsuario))
+                    {
+                        var usuario = await _firebaseClient
+                            .Child(UsersNodeName)
+                            .Child(residuos.IdUsuario)
+                            .OnceSingleAsync<Usuario>();
+
+                        residuos.Usuario = usuario;
+                    }
                 }
 
                 return residuos;
@@ -127,7 +142,7 @@ namespace ApiRestReGraphik.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Erro ao adicionar o resíduo: {ex.Message}");
-                throw new Exception("Erro ao adicionar o resíduo");
+                throw new Exception("Erro ao adicionar o resíduo", ex);
             }
         }
 

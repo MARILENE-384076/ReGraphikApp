@@ -124,7 +124,8 @@ namespace ApiRestReGraphik.Controllers
         /// <remarks>Responsável por criar um novo resíduo no ReGraphik.
         /// 
         /// Requisitos de validação:
-        /// - IdUsuario: Deve ser um número inteiro positivo. (ex: 1, 2, 3, etc.)
+        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
+        /// - IdUsuario: Deve ser um guid representando o ID do usuário que está criando o resíduo. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
         /// - TipoResiduo: Deve ser uma string não vazia. (ex: "Papel", "Plástico", "Metal", etc.)
         /// - Origem: Deve ser uma string não vazia. (ex: "Escritório", "Indústria", "Residencial", etc.)
         /// - Especificacao: Deve ser uma string não vazia. (ex: "Papel A4 usado", "Garrafas PET limpas", "Latas de alumínio amassadas", etc.)
@@ -150,7 +151,6 @@ namespace ApiRestReGraphik.Controllers
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [HttpPost]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -160,6 +160,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 var usuarioIdLogado = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+                // Para fins de teste, caso o usuário não esteja autenticado, atribuímos um ID de usuário padrão.
                 if (string.IsNullOrEmpty(usuarioIdLogado))
                 {
                     usuarioIdLogado = "0d95265b-2757-424e-8ea9-445e8fd2a422";
@@ -172,11 +173,6 @@ namespace ApiRestReGraphik.Controllers
 
                 residuo.IdUsuario = usuarioIdLogado;
 
-                if (string.IsNullOrEmpty(residuo.Id))
-                {
-                    residuo.Id = "R" + new Random().Next(100, 999); 
-                }
-
                 await _residuoService.Criar(residuo);
 
                 return CreatedAtAction(nameof(GetById), new { id = residuo.Id }, residuo);
@@ -184,7 +180,13 @@ namespace ApiRestReGraphik.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Erro ao criar dados do Residuo. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    mensagem = "Ocorreu um erro ao processar a solicitação.",
+                    erroReal = ex.Message,
+                    detalhes = ex.InnerException?.Message,
+                    stackTrace = ex.StackTrace
+                });
             }
         }
 
