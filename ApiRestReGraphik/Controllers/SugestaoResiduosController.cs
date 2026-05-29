@@ -65,9 +65,9 @@ namespace ApiRestReGraphik.Controllers
         /// Exemplo de resposta: 
         /// 
         /// {
-        ///     "Id": -NxYZ123456789,
-        ///     "IdCadastroResiduo": "123456789",
-        ///     "IdSugestao": "987654321",
+        ///     "Id": "0d95265b-2757-424e-8ea9-445e8fd2a422",
+        ///     "IdCadastroResiduo": "0d952346b-2757-424e-567B-445e5785",
+        ///     "IdSugestao": "0d95265b-4566-424e-8ea9-445e866735",
         ///     "DataAplicacao": "2024-06-01T12:00:00Z"
         /// }
         /// 
@@ -112,9 +112,10 @@ namespace ApiRestReGraphik.Controllers
         /// <remarks>Responsável por criar uma nova sugestão de resíduos no ReGraphik.
         /// 
         /// Requisitos de validação:
-        /// - IdCadastroResiduo: Deve ser um ID válido de um resíduo cadastrado no ReGraphik.
-        /// - IdSugestao: Deve ser um ID único para a sugestão, não pode ser duplicado.
-        /// - DataAplicacao: Deve ser uma data válida, não pode ser uma data futura.
+        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
+        /// - IdCadastroResiduo: Deve ser um guid válido que corresponda a um cadastro de resíduo existente no ReGraphik. (ex: "0d952346b-2757-424e-567B-445e5785")
+        /// - IdSugestao: Deve ser um guid válido que corresponda a uma sugestão existente no ReGraphik. (ex: "0d95265b-4566-424e-8ea9-445e866735")
+        /// - DataAplicacao: Deve ser uma data e hora válida no formato ISO 8601 (ex: "2024-06-01T12:00:00Z") e não pode ser uma data futura.
         /// 
         /// Observação: Retorna um status 201 Created com os dados da sugestão criada, um status 400 Bad Request se a requisição for inválida ou
         /// um status 500 Internal Server Error em caso de falha.

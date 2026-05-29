@@ -6,12 +6,14 @@ namespace ApiRestReGraphik.Models
 {
     public class SugestaoResiduo
     {
+        [JsonIgnore]
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
+        [JsonIgnore]
         [JsonPropertyName("id_cadastro_residuo")]
         [ForeignKey("CadastroResiduo")]
-        public string IdCadastroResiduo { get; set; }
+        public string? IdCadastroResiduo { get; set; }
 
         /// <summary>
         /// Chamando a propriedade de navegação para o cadastro de resíduo associado
@@ -21,9 +23,10 @@ namespace ApiRestReGraphik.Models
         [ValidateNever]
         public virtual Residuo? CadastroResiduo { get; set; }
 
+        [JsonIgnore]
         [JsonPropertyName("id_sugestao")]
         [ForeignKey("Sugestao")]
-        public string IdSugestao { get; set; }
+        public string? IdSugestao { get; set; }
 
         /// <summary>
         /// Chamando a propriedade de navegação para a sugestão associada

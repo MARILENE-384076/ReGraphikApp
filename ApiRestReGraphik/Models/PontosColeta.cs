@@ -4,8 +4,9 @@ namespace ApiRestReGraphik.Models
 {
     public class PontosColeta
     {
+        [JsonIgnore]
         [JsonPropertyName("id")]
-        public string Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
 
         [JsonPropertyName("nome_ponto")]
         public string NomePonto { get; set; } = "Sem Nome";
