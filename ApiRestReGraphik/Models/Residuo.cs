@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace ApiRestReGraphik.Models
@@ -6,17 +7,18 @@ namespace ApiRestReGraphik.Models
     public class Residuo
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("id_usuario")]
         [ForeignKey("Usuario")]
-        public string IdUsuario { get; set; }
+        public string? IdUsuario { get; set; }
 
         /// <summary>
         /// Propriedade de navegação para o usuário associado
         /// </summary>
         [JsonIgnore]
-        public virtual Usuario Usuario { get; set; }
+        [ValidateNever]
+        public virtual Usuario? Usuario { get; set; }
 
         [JsonPropertyName("tipo_residuo")]
         public string TipoResiduo { get; set; }

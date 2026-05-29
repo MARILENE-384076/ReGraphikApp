@@ -1,23 +1,25 @@
 ﻿using ReGraphik.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace ReGraphik.Models 
 {
-    public class Residuo 
+    public class Residuo
     {
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("id_usuario")]
         [ForeignKey("Usuario")]
-        public string IdUsuario { get; set; }
+        public string? IdUsuario { get; set; }
 
         /// <summary>
         /// Propriedade de navegação para o usuário associado
         /// </summary>
         [JsonIgnore]
-        public virtual Usuario Usuario { get; set; }
+        [ValidateNever]
+        public virtual Usuario? Usuario { get; set; }
 
         [JsonPropertyName("tipo_residuo")]
         public string TipoResiduo { get; set; }
