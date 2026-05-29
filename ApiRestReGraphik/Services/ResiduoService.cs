@@ -19,7 +19,7 @@ namespace ApiRestReGraphik.Services
         public ResiduoService(ILogger<ResiduoService> logger)
         {
             _logger = logger;
-            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
+            _firebaseClient = new FirebaseClient("Firebase:RealtimeDatabaseUrl");
         }
 
         /// <summary>

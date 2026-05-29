@@ -18,7 +18,7 @@ namespace ApiRestReGraphik.Services
         public SugestaoService(ILogger<SugestaoService> logger)
         {
             _logger = logger;
-            _firebaseClient = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
+            _firebaseClient = new FirebaseClient("Firebase:RealtimeDatabaseUrl");
         }
 
         /// <summary>
