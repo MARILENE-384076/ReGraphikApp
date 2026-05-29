@@ -182,6 +182,8 @@ namespace ApiRestReGraphik.Controllers
         /// - Estado: Deve ser uma string não vazia. (ex: "SP", "RJ", etc.)
         /// - Cep: Deve ser uma string no formato de CEP brasileiro. (ex: "01000-000", "20000-000", etc.)
         /// - ResiduosAceitos: Deve ser uma string não vazia listando os tipos de resíduos aceitos. (ex: "Papel, Plástico, Metal", "Vidro, Eletrônicos", etc.)
+        /// - Lat: Deve ser um número decimal representando a latitude do ponto de coleta. (ex: -23.55052, -22.90685, etc.)
+        /// - Lng: Deve ser um número decimal representando a longitude do ponto de coleta. (ex: -46.633308, -43.172896, etc.)
         /// 
         /// Observação: Retorna um status 201 Created com os dados do ponto de coleta criado, um status 400 Bad Request se a requisição for inválida ou
         /// um status 500 Internal Server Error em caso de falha.
