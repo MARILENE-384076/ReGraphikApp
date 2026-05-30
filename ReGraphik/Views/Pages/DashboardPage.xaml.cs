@@ -12,5 +12,6 @@ namespace ReGraphik.Views.Pages
             this.DataContext = new DashboardViewModel();
 
         }
+
     }
 }

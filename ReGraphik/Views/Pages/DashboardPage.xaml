@@ -209,6 +209,7 @@
 
                     <DataGrid x:Name="DgEstoque" 
                               Grid.Row="1"
+                              ItemsSource="{Binding UltimosResiduos}" 
                               AutoGenerateColumns="False" 
                               CanUserAddRows="False" 
                               Background="Transparent" 
