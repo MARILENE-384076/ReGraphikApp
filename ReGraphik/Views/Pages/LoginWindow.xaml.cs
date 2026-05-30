@@ -9,6 +9,7 @@ namespace ReGraphik.Views.Pages
         {
             InitializeComponent();
             DataContext = new LoginViewModel();
+            this.DataContext = new CadastroViewModel();
         }
     }
 }

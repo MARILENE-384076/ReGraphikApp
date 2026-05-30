@@ -11,9 +11,5 @@ namespace ReGraphik.Views.Pages
             DataContext = new EstoqueReversoViewModel();
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }
