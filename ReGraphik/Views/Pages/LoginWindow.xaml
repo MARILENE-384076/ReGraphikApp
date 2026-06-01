@@ -166,7 +166,7 @@
 
                         <StackPanel Orientation="Horizontal">
                             <Border Background="#1649a2" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                <iconPacks:PackIconMaterial Kind="FilePlusOutline" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                <iconPacks:PackIconMaterial Kind="Warehouse" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
                             </Border>
                             <TextBlock Text="Controle de estoque reverso"
                                        Foreground="#BFDBFE"
