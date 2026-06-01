@@ -150,6 +150,19 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
+
+                <!-- [NOVO] Botão Sair fixado no rodapé da barra lateral -->
+                <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="#1D4ED8" Margin="8,0,8,12">
+                    <Button x:Name="BtnSair"
+                            Style="{StaticResource NavBtnSair}"
+                            Margin="0,8,0,0"
+                            Click="Sair_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="ExitToApp" Width="20" Height="20" Margin="0,0,8,0"/>
+                            <TextBlock Text="Sair" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
             </Grid>
         </Border>
 
