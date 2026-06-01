@@ -1,5 +1,4 @@
 ﻿using ReGraphik.Models;
-using ReGraphik.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -77,9 +76,9 @@ namespace ReGraphik.ViewModels
 
             // Inicializa o comando com suporte a parâmetro (recebe a Sugestao selecionada)
             AplicarSugestaoCommand = new RelayCommand(
-                async _ => await AplicarSugestaoAsync(),
-                _ => SugestaoSelecionada != null && !Carregando
-            );
+            () => _ = AplicarSugestaoAsync(), 
+            _ => SugestaoSelecionada != null && !Carregando
+);
 
             // Carrega as sugestões assim que a ViewModel for criada
             _ = CarregarSugestoesAsync();

@@ -1,5 +1,4 @@
-﻿using ReGraphik.Commands;
-using ReGraphik.Models;
+﻿using ReGraphik.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

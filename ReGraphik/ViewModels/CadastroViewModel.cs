@@ -1,16 +1,15 @@
-﻿using System;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using ReGraphik.Services;
+using ReGraphik.Services.Interface;
 using System.Windows;
 using System.Windows.Input;
-using ReGraphik.Commands;
 
 namespace ReGraphik.ViewModels
 {
     public class CadastroViewModel : BaseViewModel
     {
+        // Instancia do serviço de autorização para lidar com a lógica de cadastro
+        private readonly IAutorizarService _autorizarService = new AutorizarService();
+
         private string _nome = "";
         private string _cpf = "";
         private string _email = "";
@@ -51,37 +50,47 @@ namespace ReGraphik.ViewModels
 
         public CadastroViewModel()
         {
-            CadastrarCommand = new RelayCommand(async _ => await Cadastrar());
+            CadastrarCommand = new RelayCommand(async () => await Cadastrar());
         }
 
+        // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         private async Task Cadastrar()
         {
-            using var http = new HttpClient();
-
-            var usuario = new
+            try
             {
-                id = Guid.NewGuid().ToString(),
-                name = Nome,
-                cpf = CPF,
-                email = Email,
-                login = Login,
-                senha = Senha,
-                perfil = "",
-                data_cadastro = DateTime.Now
-            };
+                var usuario = new
+                {
+                    id = Guid.NewGuid().ToString(),
+                    name = Nome,
+                    cpf = CPF,
+                    email = Email,
+                    login = Login,
+                    senha = Senha,
+                    perfil = "",
+                    data_cadastro = DateTime.Now
+                };
 
-            var json = JsonSerializer.Serialize(usuario);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+                // Chama o serviço de autorização para cadastrar o usuário
+                bool response = await _autorizarService.CadastrarAsync(usuario);
 
-            var response = await http.PostAsync("https://webregraphik.runasp.net/api/usuario", content);
-
-            if (response.IsSuccessStatusCode)
-                MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-            else
-            {
-                var erro = await response.Content.ReadAsStringAsync();
-                MessageBox.Show($"Erro: {response.StatusCode}\n{erro}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (response)
+                {
+                    MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LimparCampos();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao cadastrar usuário.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao cadastrar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void LimparCampos()
+        {
+            Nome = CPF = Email = Login = Senha = "";
         }
     }
 }

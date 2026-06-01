@@ -209,7 +209,7 @@
 
                         <!-- ABA LOGIN -->
                         <TabItem Header="Fazer Login" Style="{StaticResource TabStyle}">
-                            <StackPanel DataContext="{StaticResource LoginVM}" Margin="0,24,0,0">
+                            <StackPanel Margin="0,24,0,0">
 
                                 <TextBlock Text="Bem-vindo de volta!"
                                            FontSize="20"
@@ -227,19 +227,21 @@
                                          Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Text="{Binding Senha, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}"
-                                         Margin="0,0,0,28"/>
+                                <PasswordBox x:Name="TxtSenhaLogin"
+                                             Style="{StaticResource PasswordStyle}"
+                                             Margin="0,0,0,28"/>
 
                                 <Button Content="ENTRAR"
                                         Command="{Binding EntrarCommand}"
+                                        CommandParameter="{Binding ElementName=TxtSenhaLogin}"
                                         Style="{StaticResource BtnPrimario}"/>
                             </StackPanel>
                         </TabItem>
-
+                        
                         <!-- ABA CADASTRO -->
                         <TabItem Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
-                            <StackPanel DataContext="{StaticResource CadastroVM}" Margin="0,24,0,0">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel DataContext="{StaticResource CadastroVM}" Margin="0,24,0,0">
 
                                     <TextBlock Text="Crie sua conta"
                                                FontSize="20"
@@ -272,14 +274,16 @@
                                              Margin="0,0,0,14"/>
 
                                     <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
-                                    <TextBox Text="{Binding Senha, UpdateSourceTrigger=PropertyChanged}"
-                                             Style="{StaticResource InputStyle}"
-                                             Margin="0,0,0,24"/>
+                                    <PasswordBox x:Name="TxtSenhaCadastro"
+                                                 Style="{StaticResource PasswordStyle}"
+                                                 Margin="0,0,0,24"/>
 
                                     <Button Content="CADASTRAR"
                                             Command="{Binding CadastrarCommand}"
+                                            CommandParameter="{Binding ElementName=TxtSenhaCadastro}"
                                             Style="{StaticResource BtnPrimario}"/>
                                 </StackPanel>
+                            </ScrollViewer>
                         </TabItem>
 
                     </TabControl>
