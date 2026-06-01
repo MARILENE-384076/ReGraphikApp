@@ -1,19 +1,26 @@
-﻿using System;
+﻿using ReGraphik.Models;
+using ReGraphik.Services;
+using ReGraphik.Services.Interface;
+using ReGraphik.Views;
+using ReGraphik.Views.Pages;
+using System;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using ReGraphik.Commands;
-using ReGraphik.Views.Pages;
-using ReGraphik.Views;
-using ReGraphik.Models;
 
 namespace ReGraphik.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        // Instancia do serviço de autorização para lidar com a lógica de login
+        private readonly IAutorizarService _autorizarService = new AutorizarService();
+
+        // Propriedades para armazenar o login e senha, que são vinculadas aos campos de entrada na interface
         private string _login = "";
         private string _senha = "";
 
@@ -33,36 +40,43 @@ namespace ReGraphik.ViewModels
 
         public LoginViewModel()
         {
-            EntrarCommand = new RelayCommand(async _ => await Entrar());
+            // Inicializa o comando de login, associando-o ao método Entrar
+            EntrarCommand = new RelayCommand(Entrar);
         }
 
-        private async Task Entrar()
+        private async Task Entrar(object parameter)
         {
-            using var http = new HttpClient();
-
-            var json = JsonSerializer.Serialize(new { Login, Senha });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await http.PostAsync("https://webregraphik.runasp.net/api/usuario/login", content);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var jsonResposta = await response.Content.ReadAsStringAsync();
-                var usuario = JsonSerializer.Deserialize<Usuario>(jsonResposta, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                string senhaDigitada = "";
 
-                new MainWindow(usuario?.Nome ?? "Usuário").Show();
-                foreach (Window w in Application.Current.Windows)
+                // Obtém a senha digitada no campo de senha, que é passado como parâmetro do comando
+                if (parameter is PasswordBox passwordBox)
                 {
-                    if (w is LoginWindow)
+                    senhaDigitada = passwordBox.Password;
+                }
+                // Chama o serviço de autorização para tentar fazer o login com as credenciais fornecidas
+                Usuario? usuario = await _autorizarService.LoginAsync(Login, senhaDigitada);
+
+                if (usuario != null)
+                {
+                    // Se o login for bem-sucedido, abre a janela principal do aplicativo, passando o nome do usuário
+                    new MainWindow(usuario.Nome ?? "Usuário").Show();
+
+                    // Fecha a janela de login
+                    foreach (Window w in Application.Current.Windows)
                     {
-                        w.Close();
-                        break;
+                        if (w is LoginWindow)
+                        {
+                            w.Close();
+                            break;
+                        }
                     }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Login ou senha inválidos.", "Erro", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"Erro ao conectar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

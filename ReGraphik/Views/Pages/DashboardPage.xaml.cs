@@ -8,8 +8,7 @@ namespace ReGraphik.Views.Pages
         public DashboardPage(string nomeUsuario = "Usuário")
         {
             InitializeComponent();
-            TxtNomeUsuario.Text = nomeUsuario;
-            this.DataContext = new DashboardViewModel();
+            DataContext = new DashboardViewModel(nomeUsuario);
 
         }
 

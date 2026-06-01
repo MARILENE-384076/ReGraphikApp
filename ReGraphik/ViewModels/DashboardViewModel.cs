@@ -5,19 +5,28 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using ReGraphik.Models; 
+using System.Windows.Input; // Necessário para o ICommand
+using ReGraphik.Models;
 using LiveCharts;
 using LiveCharts.Wpf;
+using ReGraphik.Services.Interface;
 
 namespace ReGraphik.ViewModels
 {
     public class DashboardViewModel : BaseViewModel
     {
-        private readonly HttpClient _httpClient;
+        // Instância do serviço de resíduos para lidar com a lógica relacionada aos resíduos
+        private readonly IResiduoService _residuoService = new Services.ResiduoService();
 
-        /// <summary>
-        ///  Propriedades para os Cards
-        /// </summary>
+        // Propriedade para o nome do usuário, que pode ser exibida na interface
+        private string _nomeUsuario;
+        public string NomeUsuario
+        {
+            get => _nomeUsuario;
+            set { _nomeUsuario = value; OnPropertyChanged(); }
+        }
+
+        // Propriedades para os Cards
         private int _residuosDb;
         public int ResiduosDb
         {
@@ -39,16 +48,14 @@ namespace ReGraphik.ViewModels
             set { _estoque = value; OnPropertyChanged(); }
         }
 
-        private string _total; /// coloquei string para formatar como Moeda 
+        private string _total;
         public string Total
         {
             get => _total;
             set { _total = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Propriedade para a Tabela 
-        /// </summary>
+        // Propriedade para a Tabela 
         private ObservableCollection<Residuo> _ultimosResiduos;
         public ObservableCollection<Residuo> UltimosResiduos
         {
@@ -56,9 +63,7 @@ namespace ReGraphik.ViewModels
             set { _ultimosResiduos = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Propriedades para os Gráficos
-        /// </summary>
+        // Propriedades para os Gráficos
         private SeriesCollection _graficoStatus;
         public SeriesCollection GraficoStatus
         {
@@ -82,61 +87,85 @@ namespace ReGraphik.ViewModels
 
         public Func<double, string> FormatterTipos { get; set; } = value => value.ToString("N2") + " kg";
 
-        /// Construtor
-        public DashboardViewModel()
+        // Comando vinculado ao botão "Verificar" do XAML
+        public ICommand AtualizarDadosCommand { get; set; }
+
+        // Construtor
+        public DashboardViewModel(string nomeUsuario)
         {
-            _httpClient = new HttpClient();
+            // Define um nome de usuário padrão para exibição
+            NomeUsuario = nomeUsuario;
 
-            _httpClient.BaseAddress = new Uri("https://webregraphik.runasp.net/api/usuario");
+            // Instancia o comando vinculando-o ao método assíncrono
+            AtualizarDadosCommand = new RelayCommand(async () => await CarregarDadosDaApiAsync());
 
-            Task.Run(async () => await CarregarDadosDaApiAsync());
-
+            // Carrega os dados da API assim que a ViewModel for criada, para exibir as informações imediatamente
+            _ = CarregarDadosDaApiAsync();
         }
 
-        /// Método para buscar da API e fazer cálculos
+        // Método para buscar da API e fazer cálculos
         private async Task CarregarDadosDaApiAsync()
         {
             try
             {
-                /// Faz a requisição GET para o endpoint de Residuos
-                HttpResponseMessage response = await _httpClient.GetAsync("Residuo");
+                // Chama o serviço para obter todos os resíduos do banco de dados
+                List<Residuo> todosResiduos = await _residuoService.ObterTodosResiduosAsync();
 
-                if (response.IsSuccessStatusCode)
+                // Verifica se a lista retornada não é nula e contém elementos antes de tentar acessar suas propriedades
+                if (todosResiduos != null && todosResiduos.Any())
                 {
-                    string jsonResult = await response.Content.ReadAsStringAsync();
-
-                    var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                    List<Residuo> todosResiduos = JsonSerializer.Deserialize<List<Residuo>>(jsonResult, opcoes);
-
-                    if (todosResiduos != null && todosResiduos.Any())
+                    App.Current.Dispatcher.Invoke(() =>
                     {
-                        App.Current.Dispatcher.Invoke(() =>
+                        // Atualiza as propriedades dos Cards
+                        ResiduosDb = todosResiduos.Count;
+                        Reaproveitar = todosResiduos.Count(r => r.Status == "Reaproveitado");
+                        Estoque = todosResiduos.Count(r => r.Status == "Em Estoque");
+
+                        double valorCalculado = todosResiduos.Sum(r => r.Quantidade * 5.50);
+                        Total = valorCalculado.ToString("C2");
+
+                        // Atualiza a Tabela com os 5 resíduos mais recentes
+                        var ultimos = todosResiduos.OrderByDescending(r => r.DataCadastro).Take(5);
+                        UltimosResiduos = new ObservableCollection<Residuo>(ultimos);
+
+                        // Agrupa os resíduos por status para criar o gráfico de pizza
+                        var statusAgrupado = todosResiduos.GroupBy(r => r.Status);
+                        GraficoStatus = new SeriesCollection();
+                        foreach (var grupo in statusAgrupado)
                         {
-                            ResiduosDb = todosResiduos.Count;
-                            Reaproveitar = todosResiduos.Count(r => r.Status == "Reaproveitado");
-                            Estoque = todosResiduos.Count(r => r.Status == "Em Estoque");
+                            GraficoStatus.Add(new PieSeries
+                            {
+                                Title = string.IsNullOrEmpty(grupo.Key) ? "Não Informado" : grupo.Key,
+                                Values = new ChartValues<int> { grupo.Count() },
+                                DataLabels = true
+                            });
+                        }
 
-                            double valorCalculado = todosResiduos.Sum(r => r.Quantidade * 5.50);
-                            Total = valorCalculado.ToString("C2");
+                        // Agrupa os resíduos por tipo para criar o gráfico de colunas
+                        var tiposAgrupados = todosResiduos.GroupBy(r => r.TipoResiduo)
+                                                          .Select(g => new { Tipo = g.Key, PesoTotal = g.Sum(r => r.Quantidade) })
+                                                          .ToList();
 
-                            var ultimos = todosResiduos.OrderByDescending(r => r.DataCadastro).Take(5);
-                            UltimosResiduos = new ObservableCollection<Residuo>(ultimos);
-                        });
-                    }
-                    else
-                    {
-                        System.Windows.MessageBox.Show("A API conectou, mas a lista de resíduos veio vazia.", "Aviso");
-                    }
+                        LabelsTipos = tiposAgrupados.Select(t => string.IsNullOrEmpty(t.Tipo) ? "Outros" : t.Tipo).ToArray();
+
+                        GraficoTipos = new SeriesCollection
+                        {
+                                new ColumnSeries
+                                {
+                                    Title = "Quantidade Acumulada",
+                                    Values = new ChartValues<double>(tiposAgrupados.Select(t => t.PesoTotal))
+                                }
+                        };
+                    });
                 }
                 else
                 {
-                  
-                    System.Windows.MessageBox.Show($"A API retornou um erro: {response.StatusCode}", "Erro HTTP");
+                    System.Windows.MessageBox.Show("A API conectou, mas a lista de resíduos veio vazia.", "Aviso");
                 }
+
             }
             catch (Exception ex)
             {
-           
                 System.Windows.MessageBox.Show($"Falha de conexão: {ex.Message}", "Erro de Código");
             }
         }
