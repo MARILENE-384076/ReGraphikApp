@@ -1,6 +1,7 @@
 ﻿using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
@@ -14,7 +15,6 @@ namespace ReGraphik.ViewModels
         private string _cpf = "";
         private string _email = "";
         private string _login = "";
-        private string _senha = "";
 
         public string Nome
         {
@@ -40,24 +40,26 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
-        public string Senha
-        {
-            get => _senha;
-            set { _senha = value; OnPropertyChanged(); }
-        }
-
         public ICommand CadastrarCommand { get; }
 
         public CadastroViewModel()
         {
-            CadastrarCommand = new RelayCommand(async () => await Cadastrar());
+            // Inicializa o comando de cadastro, associando-o ao método Cadastrar
+            CadastrarCommand = new RelayCommand(Cadastrar);
         }
 
         // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
-        private async Task Cadastrar()
+        private async Task Cadastrar(object parameter)
         {
             try
             {
+                string senhaDigitada = "";
+
+                if (parameter is PasswordBox passwordBox)
+                {
+                    senhaDigitada = passwordBox.Password;
+                }
+
                 var usuario = new
                 {
                     id = Guid.NewGuid().ToString(),
@@ -65,8 +67,8 @@ namespace ReGraphik.ViewModels
                     cpf = CPF,
                     email = Email,
                     login = Login,
-                    senha = Senha,
-                    perfil = "",
+                    senha = senhaDigitada,
+                    perfil = "Administrador",
                     data_cadastro = DateTime.Now
                 };
 
@@ -90,7 +92,7 @@ namespace ReGraphik.ViewModels
         }
         private void LimparCampos()
         {
-            Nome = CPF = Email = Login = Senha = "";
+            Nome = CPF = Email = Login = "";
         }
     }
 }

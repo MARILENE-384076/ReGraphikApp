@@ -5,10 +5,12 @@ using ReGraphik.Views;
 using ReGraphik.Views.Pages;
 using System;
 using System.Net.Http;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
@@ -38,15 +40,23 @@ namespace ReGraphik.ViewModels
 
         public LoginViewModel()
         {
-            EntrarCommand = new RelayCommand(async () => await Entrar());
+            // Inicializa o comando de login, associando-o ao método Entrar
+            EntrarCommand = new RelayCommand(Entrar);
         }
 
-        private async Task Entrar()
+        private async Task Entrar(object parameter)
         {
             try
             {
+                string senhaDigitada = "";
+
+                // Obtém a senha digitada no campo de senha, que é passado como parâmetro do comando
+                if (parameter is PasswordBox passwordBox)
+                {
+                    senhaDigitada = passwordBox.Password;
+                }
                 // Chama o serviço de autorização para tentar fazer o login com as credenciais fornecidas
-                Usuario? usuario = await _autorizarService.LoginAsync(Login, Senha);
+                Usuario? usuario = await _autorizarService.LoginAsync(Login, senhaDigitada);
 
                 if (usuario != null)
                 {

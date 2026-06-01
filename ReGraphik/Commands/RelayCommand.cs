@@ -3,29 +3,57 @@ using System.Windows.Input;
 
 public class RelayCommand : ICommand
 {
-    private readonly Func<Task>? _executeAsync;
-    private readonly Action? _execute;
+    private readonly Func<object, Task> _executeAsyncWithParam;
+    private readonly Func<Task> _executeAsyncNoParam;
+    private readonly Action<object> _executeWithParam;
+    private readonly Action _executeNoParam;
 
-    // Construtor para comandos assíncronos (recomendo usar este para novos comandos)
-    public RelayCommand(Func<Task> executeAsync) => _executeAsync = executeAsync;
+    // Adicionado: Guardará a regra de validação do botão
+    private readonly Predicate<object> _canExecute;
 
-    // Construtor para comandos síncronos (mantido para compatibilidade, mas prefira o assíncrono)
-    public RelayCommand(Func<Task> executeAsync, Func<object, bool> value) => _executeAsync = executeAsync;
-    public RelayCommand(Action execute) => _execute = execute;
+    // Construtores atualizados aceitando o canExecute opcional
+    public RelayCommand(Func<Task> executeAsync, Predicate<object> canExecute = null)
+    {
+        _executeAsyncNoParam = executeAsync;
+        _canExecute = canExecute;
+    }
 
-    // O evento CanExecuteChanged é necessário para que a interface do WPF saiba quando reavaliar se o comando pode ser executado
-    public event EventHandler? CanExecuteChanged
+    public RelayCommand(Func<object, Task> executeAsync, Predicate<object> canExecute = null)
+    {
+        _executeAsyncWithParam = executeAsync;
+        _canExecute = canExecute;
+    }
+
+    public RelayCommand(Action execute, Predicate<object> canExecute = null)
+    {
+        _executeNoParam = execute;
+        _canExecute = canExecute;
+    }
+
+    public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
+    {
+        _executeWithParam = execute;
+        _canExecute = canExecute;
+    }
+
+    // Vincula o evento para o WPF atualizar o estado do botão na tela automaticamente
+    public event EventHandler CanExecuteChanged
     {
         add => CommandManager.RequerySuggested += value;
         remove => CommandManager.RequerySuggested -= value;
     }
 
-    // Para simplificar, este comando sempre pode ser executado. Se precisar de lógica para habilitar/desabilitar o comando, ajuste este método.
-    public bool CanExecute(object? parameter) => true;
-
-    public async void Execute(object? parameter)
+    // Avalia se o botão deve estar ativo ou não
+    public bool CanExecute(object parameter)
     {
-        if (_executeAsync != null) await _executeAsync();
-        else _execute?.Invoke();
+        return _canExecute == null || _canExecute(parameter);
+    }
+
+    public async void Execute(object parameter)
+    {
+        if (_executeAsyncWithParam != null) await _executeAsyncWithParam(parameter);
+        else if (_executeAsyncNoParam != null) await _executeAsyncNoParam();
+        else if (_executeWithParam != null) _executeWithParam(parameter);
+        else _executeNoParam?.Invoke();
     }
 }
