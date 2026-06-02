@@ -68,30 +68,32 @@ namespace ReGraphik.ViewModels
 
             try
             {
-                // Indicar que o processo de login está em andamento, o que pode ser usado para desabilitar o botão de login na interface
+                /// Indicar que o processo de login está em andamento, o que pode ser usado para desabilitar o botão de login na interface
                 Ocupado = true;
 
-                // Chama o serviço de autorização para tentar fazer o login com as credenciais fornecidas
+                /// Chama o serviço de autorização para tentar fazer o login com as credenciais fornecidas
                 Usuario? usuario = await _autorizarService.LoginAsync(Login, senhaDigitada);
 
                 if (usuario == null)
                 {
                     MessageBox.Show("Usuário ou senha incorretos.", "Erro de Autenticação", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return; // Para a execução aqui e não deixa abrir a MainWindow
+                    Ocupado = false; /// Importante liberar a tela caso dê erro
+                    return; /// Para a execução aqui e não deixa abrir a MainWindow
                 }
 
                 if (usuario != null)
                 {
-                    // Se o login for bem-sucedido, abre a janela principal do aplicativo, passando o nome do usuário
-                    var main = new MainWindow(usuario.Nome ?? "Usuário");
+                    /// Se o login for bem-sucedido, abre a janela principal do aplicativo, passando o objeto usuário completo
+                    var main = new MainWindow(usuario);
                     main.Show();
 
-                    // Fecha a janela de login
+                    /// Fecha a janela de login
                     Application.Current.MainWindow?.Close();
                 }
             }
             catch (Exception ex)
             {
+                Ocupado = false;
                 MessageBox.Show($"Erro ao conectar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
