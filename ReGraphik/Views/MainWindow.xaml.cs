@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
-using ReGraphik.Models; // [NOVO] Necessário para reconhecer a classe Usuario
+using ReGraphik.Models; 
 using ReGraphik.Views.Pages;
 
 namespace ReGraphik.Views
@@ -63,7 +63,7 @@ namespace ReGraphik.Views
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
             SetarNavAtivo(BtnDashboard);
-            MainFrame.Navigate(new DashboardPage(_usuarioLogado.Nome ?? "Usuário")); // [ALTERADO] Pega o nome do objeto
+            MainFrame.Navigate(new DashboardPage(_usuarioLogado.Nome ?? "Usuário")); // 
         }
 
         /// <summary>
@@ -123,9 +123,7 @@ namespace ReGraphik.Views
         private void Conta_Click(object sender, RoutedEventArgs e)
         {
             SetarNavAtivo(BtnConta);
-            // [ALTERADO] Passa o objeto usuário inteiro para a tela de conta!
-            // OBS: Se der erro nesta linha, não se preocupe! É porque ainda vamos criar a ContaPage na próxima etapa.
-            // Para compilar agora, você pode adicionar '//' no início da linha abaixo temporariamente.
+            
             MainFrame.Navigate(new ContaPage(_usuarioLogado));
         }
 
