@@ -49,7 +49,7 @@
 
         <!-- [NOVO] Estilo exclusivo do botão Sair -->
         <Style x:Key="NavBtnSair" TargetType="Button" BasedOn="{StaticResource NavBtn}">
-            <Setter Property="Foreground" Value="#FCA5A5"/>
+            <Setter Property="Foreground" Value="#87CEFA"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
