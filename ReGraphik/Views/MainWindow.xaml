@@ -47,7 +47,6 @@
             <Setter Property="Foreground" Value="White"/>
         </Style>
 
-        <!-- [NOVO] Estilo exclusivo do botão Sair -->
         <Style x:Key="NavBtnSair" TargetType="Button" BasedOn="{StaticResource NavBtn}">
             <Setter Property="Foreground" Value="#87CEFA"/>
             <Setter Property="Template">
@@ -80,11 +79,8 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <!-- Row 0: logo + nome usuário -->
                     <RowDefinition Height="*"/>
-                    <!-- Row 1: botões de navegação -->
                     <RowDefinition Height="Auto"/>
-                    <!-- [NOVO] Row 2: botão Sair -->
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
@@ -151,18 +147,29 @@
                     </Button>
                 </StackPanel>
 
-                <!-- [NOVO] Botão Sair fixado no rodapé da barra lateral -->
-                <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="#1D4ED8" Margin="8,0,8,12">
+                <StackPanel Grid.Row="2" Margin="8,0,8,12">
+
+                    <Button x:Name="BtnConta"
+                            Style="{StaticResource NavBtn}"
+                            Click="Conta_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="AccountCogOutline" Width="20" Height="20" Margin="0,0,8,0"/>
+                            <TextBlock Text="Minha Conta" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Border BorderThickness="0,1,0,0" BorderBrush="#1D4ED8" Margin="0,8,0,8"/>
+
                     <Button x:Name="BtnSair"
                             Style="{StaticResource NavBtnSair}"
-                            Margin="0,8,0,0"
                             Click="Sair_Click">
                         <StackPanel Orientation="Horizontal">
                             <iconPacks:PackIconMaterial Kind="ExitToApp" Width="20" Height="20" Margin="0,0,8,0"/>
                             <TextBlock Text="Sair" FontWeight="Bold"/>
                         </StackPanel>
                     </Button>
-                </Border>
+
+                </StackPanel>
             </Grid>
         </Border>
 
