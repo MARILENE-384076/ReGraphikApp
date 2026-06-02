@@ -1,0 +1,15 @@
+﻿<Page x:Class="ReGraphik.Views.Pages.ContaPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Minha Conta"
+      Background="#F3F4F6">
+
+    <Grid>
+        <TextBlock Text="Tela de Minha Conta (Em Construção)" 
+                   FontSize="24" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center" 
+                   Foreground="#093e75"/>
+    </Grid>
+</Page>
