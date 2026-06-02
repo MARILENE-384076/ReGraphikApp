@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
       mc:Ignorable="d"  
       d:DesignHeight="700" d:DesignWidth="950"
       Background="#F3F4F6" Title="Dashboard">
@@ -144,7 +144,10 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Residuos Reaproveitados" FontSize="16" FontWeight="Bold" Foreground="#1E293B" TextAlignment="Left" Margin="0,0,0,12"/>
 
-                        <lvc:PieChart Grid.Row="1" Series="{Binding GraficoStatus}" LegendLocation="Bottom" Hoverable="True" DataTooltip="{x:Null}"/>
+                        <lvc:PieChart Grid.Row="1" 
+                                      Series="{Binding GraficoStatus}" 
+                                      LegendPosition="Right"
+                                      LegendTextSize="11" />            
                     </Grid>
                 </Border>
 
@@ -159,19 +162,12 @@
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Tipo de Resíduos" FontSize="16" FontWeight="Bold" Foreground="#1E293B" TextAlignment="Left" Margin="0,0,0,12"/>
 
-                        <lvc:CartesianChart Grid.Row="1" Series="{Binding GraficoTipos}" Margin="10,15,10,5">
-                            <lvc:CartesianChart.AxisX>
-                                <lvc:Axis Labels="{Binding LabelsTipos}" LabelsRotation="-45">
-                                    <lvc:Axis.Separator>
-                                        <lvc:Separator Step="1" IsEnabled="False" />
-                                    </lvc:Axis.Separator>
-                                </lvc:Axis>
-                            </lvc:CartesianChart.AxisX>
-
-                            <lvc:CartesianChart.AxisY>
-                                <lvc:Axis Title="Peso Acumulado" LabelFormatter="{Binding Path=FormatterTipos}" />
-                            </lvc:CartesianChart.AxisY>
-                        </lvc:CartesianChart>
+                        <lvc:CartesianChart Grid.Row="1" 
+                                            Series="{Binding GraficoTipos}" 
+                                            XAxes="{Binding EixosXTipos}" 
+                                            YAxes="{Binding EixosYTipos}"
+                                            DrawMargin="{Binding MargemDoGrafico}"
+                                            LegendPosition="Hidden"></lvc:CartesianChart>       
                     </Grid>
                 </Border>
             </StackPanel>

@@ -10,8 +10,7 @@
         Icon="/Imgs/logoRegraphik.png">
 
     <Window.Resources>
-        <vm:LoginViewModel x:Key="LoginVM"/>
-        <vm:CadastroViewModel x:Key="CadastroVM"/>
+       
 
         <!-- Estilo dos TextBox -->
         <Style x:Key="InputStyle" TargetType="TextBox">
@@ -241,7 +240,7 @@
                         <!-- ABA CADASTRO -->
                         <TabItem Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel DataContext="{StaticResource CadastroVM}" Margin="0,24,0,0">
+                                <StackPanel Margin="0,24,0,0">
 
                                     <TextBlock Text="Crie sua conta"
                                                FontSize="20"

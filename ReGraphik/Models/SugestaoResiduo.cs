@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using ReGraphik.Models;
+﻿using ReGraphik.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -18,7 +17,7 @@ namespace RestReGraphik.Models
         /// </summary>
 
         [JsonIgnore]
-        [ValidateNever]
+ 
         public virtual Residuo CadastroResiduo { get; set; }
 
         [JsonPropertyName("id_sugestao")]
@@ -30,7 +29,7 @@ namespace RestReGraphik.Models
         /// </summary>
 
         [JsonIgnore]
-        [ValidateNever]
+      
         public virtual Sugestao Sugestao { get; set; } 
 
         [JsonPropertyName("data_aplicacao")]

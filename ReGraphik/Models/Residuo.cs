@@ -1,7 +1,7 @@
 ﻿using ReGraphik.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 
 namespace ReGraphik.Models 
 {
@@ -18,7 +18,6 @@ namespace ReGraphik.Models
         /// Propriedade de navegação para o usuário associado
         /// </summary>
         [JsonIgnore]
-        [ValidateNever]
         public virtual Usuario? Usuario { get; set; }
 
         [JsonPropertyName("tipo_residuo")]
