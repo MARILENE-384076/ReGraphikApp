@@ -1,4 +1,5 @@
-﻿using ReGraphik.Services;
+﻿using ReGraphik.Models;
+using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,12 +10,13 @@ namespace ReGraphik.ViewModels
     public class CadastroViewModel : BaseViewModel
     {
         // Instancia do serviço de autorização para lidar com a lógica de cadastro
-        private readonly IAutorizarService _autorizarService = new AutorizarService();
+        private readonly IAutorizarService _autorizarService;
 
         private string _nome = "";
         private string _cpf = "";
         private string _email = "";
         private string _login = "";
+        private bool _ocupado;
 
         public string Nome
         {
@@ -40,50 +42,75 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
+        public bool Ocupado
+        {
+            get => _ocupado;
+            set { _ocupado = value; OnPropertyChanged(); }
+        }
+
         public ICommand CadastrarCommand { get; }
 
         public CadastroViewModel()
         {
+            _autorizarService = new AutorizarService();
             // Inicializa o comando de cadastro, associando-o ao método Cadastrar
-            CadastrarCommand = new RelayCommand(Cadastrar);
+            CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
         }
+        private bool CanCadastrar(object parameter) => !Ocupado;
 
         // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         private async Task Cadastrar(object parameter)
         {
+            // O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
+            if (parameter is not PasswordBox passwordBox)
+            {
+                MessageBox.Show("Erro técnico ao processar o campo de senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            // Obtém a senha digitada no PasswordBox
+            string senhaDigitada = passwordBox.Password;
+
+            // Validação simples de campos vazios
+            if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(CPF) ||
+                string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Login) ||
+                string.IsNullOrWhiteSpace(senhaDigitada))
+            {
+                MessageBox.Show("Por favor, preencha todos os campos obrigatórios.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
-                string senhaDigitada = "";
+                Ocupado = true; // Indica que o processo de cadastro está em andamento
 
-                if (parameter is PasswordBox passwordBox)
+                // Cria um objeto anônimo representando o usuário a ser cadastrado, com as informações fornecidas e um ID gerado aleatoriamente
+                var novoUsuario = new Usuario
                 {
-                    senhaDigitada = passwordBox.Password;
-                }
-
-                var usuario = new
-                {
-                    id = Guid.NewGuid().ToString(),
-                    name = Nome,
-                    cpf = CPF,
-                    email = Email,
-                    login = Login,
-                    senha = senhaDigitada,
-                    perfil = "Administrador",
-                    data_cadastro = DateTime.Now
+                    Id = Guid.NewGuid().ToString(),
+                    Nome = Nome,
+                    CPF = CPF, 
+                    Email = Email,
+                    Login = Login,
+                    Senha = senhaDigitada,
+                    Perfil = "Administrador",
+                    DataCadastro = DateTime.Now
                 };
 
                 // Chama o serviço de autorização para cadastrar o usuário
-                bool response = await _autorizarService.CadastrarAsync(usuario);
+                bool response = await _autorizarService.CadastrarAsync(novoUsuario);
 
                 if (response)
                 {
                     MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
                     LimparCampos();
+                    
                 }
                 else
                 {
                     MessageBox.Show("Erro ao cadastrar usuário.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+
+                passwordBox.Clear();
             }
             catch (Exception ex)
             {
@@ -92,7 +119,10 @@ namespace ReGraphik.ViewModels
         }
         private void LimparCampos()
         {
-            Nome = CPF = Email = Login = "";
+            Nome = "";
+            CPF = "";
+            Email = "";
+            Login = "";
         }
     }
 }

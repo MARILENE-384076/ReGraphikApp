@@ -18,11 +18,11 @@ namespace ReGraphik.ViewModels
     public class LoginViewModel : BaseViewModel
     {
         // Instancia do serviço de autorização para lidar com a lógica de login
-        private readonly IAutorizarService _autorizarService = new AutorizarService();
+        private readonly IAutorizarService _autorizarService;
 
         // Propriedades para armazenar o login e senha, que são vinculadas aos campos de entrada na interface
         private string _login = "";
-        private string _senha = "";
+        private bool _ocupado;
 
         public string Login
         {
@@ -30,48 +30,64 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
-        public string Senha
+        // Propriedade para indicar se o processo de login está em andamento, usada para desabilitar o botão de login enquanto a operação está sendo processada
+        public bool Ocupado
         {
-            get => _senha;
-            set { _senha = value; OnPropertyChanged(); }
+            get => _ocupado;
+            set { _ocupado = value; OnPropertyChanged(); }
         }
 
         public ICommand EntrarCommand { get; }
 
         public LoginViewModel()
         {
+            _autorizarService = new AutorizarService();
             // Inicializa o comando de login, associando-o ao método Entrar
-            EntrarCommand = new RelayCommand(Entrar);
+            EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
         }
+
+        // Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
+        private bool CanEntrar(object parameter) => !Ocupado;
 
         private async Task Entrar(object parameter)
         {
+            // Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
+            if (parameter is not PasswordBox passwordBox)
+            {
+                MessageBox.Show("Erro ao digitar a senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            // Obtém a senha digitada pelo usuário a partir do PasswordBox
+            string senhaDigitada = passwordBox.Password;
+
+            if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(senhaDigitada))
+            {
+                MessageBox.Show("Por favor, preencha todos os campos.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
-                string senhaDigitada = "";
+                // Indicar que o processo de login está em andamento, o que pode ser usado para desabilitar o botão de login na interface
+                Ocupado = true;
 
-                // Obtém a senha digitada no campo de senha, que é passado como parâmetro do comando
-                if (parameter is PasswordBox passwordBox)
-                {
-                    senhaDigitada = passwordBox.Password;
-                }
                 // Chama o serviço de autorização para tentar fazer o login com as credenciais fornecidas
                 Usuario? usuario = await _autorizarService.LoginAsync(Login, senhaDigitada);
+
+                if (usuario == null)
+                {
+                    MessageBox.Show("Usuário ou senha incorretos.", "Erro de Autenticação", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return; // Para a execução aqui e não deixa abrir a MainWindow
+                }
 
                 if (usuario != null)
                 {
                     // Se o login for bem-sucedido, abre a janela principal do aplicativo, passando o nome do usuário
-                    new MainWindow(usuario.Nome ?? "Usuário").Show();
+                    var main = new MainWindow(usuario.Nome ?? "Usuário");
+                    main.Show();
 
                     // Fecha a janela de login
-                    foreach (Window w in Application.Current.Windows)
-                    {
-                        if (w is LoginWindow)
-                        {
-                            w.Close();
-                            break;
-                        }
-                    }
+                    Application.Current.MainWindow?.Close();
                 }
             }
             catch (Exception ex)
