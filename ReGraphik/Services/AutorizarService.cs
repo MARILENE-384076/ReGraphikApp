@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace ReGraphik.Services
 {
-    // Esta classe é responsável por lidar com a lógica de autorização do usuário, como login, logout e verificação de permissões.
+    /// <summary>
+    /// Esta classe é responsável por lidar com a lógica de autorização do usuário, como login, logout e verificação de permissões.
+    /// </summary>
     public class AutorizarService : IAutorizarService
     {
         private static readonly HttpClient _httpClient = new HttpClient { BaseAddress = new Uri("https://webregraphik.runasp.net/api/") };
@@ -32,6 +34,16 @@ namespace ReGraphik.Services
 
             var jsonResposta = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<Usuario>(jsonResposta, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        public async Task<bool> AtualizarAsync(string id, object usuario)
+        {
+            var json = JsonSerializer.Serialize(usuario);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"usuario/{id}", content);
+
+            return response.IsSuccessStatusCode;
         }
     }
 }
