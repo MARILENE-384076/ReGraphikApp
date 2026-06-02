@@ -9,7 +9,7 @@ namespace ReGraphik.ViewModels
     public class CadastroViewModel : BaseViewModel
     {
         // Instancia do serviço de autorização para lidar com a lógica de cadastro
-        private readonly IAutorizarService _autorizarService = new AutorizarService();
+        private readonly IAutorizarService _autorizarService;
 
         private string _nome = "";
         private string _cpf = "";
@@ -44,6 +44,7 @@ namespace ReGraphik.ViewModels
 
         public CadastroViewModel()
         {
+            _autorizarService = new AutorizarService();
             // Inicializa o comando de cadastro, associando-o ao método Cadastrar
             CadastrarCommand = new RelayCommand(Cadastrar);
         }
@@ -51,15 +52,27 @@ namespace ReGraphik.ViewModels
         // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         private async Task Cadastrar(object parameter)
         {
+            // O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
+            if (parameter is not PasswordBox passwordBox)
+            {
+                MessageBox.Show("Erro técnico ao processar o campo de senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            // Obtém a senha digitada no PasswordBox
+            string senhaDigitada = passwordBox.Password;
+
+            // Validação simples de campos vazios
+            if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(CPF) ||
+                string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Login) ||
+                string.IsNullOrWhiteSpace(senhaDigitada))
+            {
+                MessageBox.Show("Por favor, preencha todos os campos obrigatórios.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
-                string senhaDigitada = "";
-
-                if (parameter is PasswordBox passwordBox)
-                {
-                    senhaDigitada = passwordBox.Password;
-                }
-
+                // Cria um objeto anônimo representando o usuário a ser cadastrado, com as informações fornecidas e um ID gerado aleatoriamente
                 var usuario = new
                 {
                     id = Guid.NewGuid().ToString(),
@@ -79,6 +92,7 @@ namespace ReGraphik.ViewModels
                 {
                     MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
                     LimparCampos();
+                    passwordBox.Clear();
                 }
                 else
                 {
@@ -92,7 +106,10 @@ namespace ReGraphik.ViewModels
         }
         private void LimparCampos()
         {
-            Nome = CPF = Email = Login = "";
+            Nome = "";
+            CPF = "";
+            Email = "";
+            Login = "";
         }
     }
 }
