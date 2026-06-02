@@ -56,5 +56,22 @@ namespace ReGraphik.Views
             SetarNavAtivo(BtnRelatorios);
             MainFrame.Navigate(new RelatoriosPage());
         }
-    }
-}
+
+        // [NOVO] Handler do botão Sair
+        private void Sair_Click(object sender, RoutedEventArgs e)
+        {
+            var resultado = MessageBox.Show(
+                "Deseja realmente sair da aplicação?",
+                "Confirmar Saída",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (resultado == MessageBoxResult.Yes)
+            {
+                var loginTela = new LoginWindow();
+                loginTela.Show();
+                this.Close();
+            }
+        }
+    }  
+}      
