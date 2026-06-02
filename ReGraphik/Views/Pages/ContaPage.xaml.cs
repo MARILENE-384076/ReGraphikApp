@@ -12,17 +12,26 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ReGraphik.Models;
 
 namespace ReGraphik.Views.Pages
 {
     /// <summary>
-    /// Interação lógica para ContaPage.xam
+    /// Interação lógica para ContaPage.xaml
     /// </summary>
     public partial class ContaPage : Page
     {
-        public ContaPage()
+    
+        private Usuario _usuarioAtual;
+
+        
+        public ContaPage(Usuario usuario)
         {
             InitializeComponent();
+
+            
+            _usuarioAtual = usuario;
+
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using ReGraphik.Models; // [NOVO] Necessário para reconhecer a classe Usuario
 using ReGraphik.Views.Pages;
 
 namespace ReGraphik.Views
@@ -17,22 +18,25 @@ namespace ReGraphik.Views
         private Button? _btnAtivo;
 
         /// <summary>
-        /// Armazena o nome do usuário atualmente logado na aplicação.
+        /// [ALTERADO] Armazena o objeto completo do usuário logado na aplicação.
         /// </summary>
-        private string _nomeUsuario = "Usuário";
+        private Usuario _usuarioLogado;
 
         /// <summary>
         /// Inicializa uma nova instância da janela <see cref="MainWindow"/>.
         /// </summary>
-        /// <param name="nomeUsuario">O nome do usuário autenticado. O valor padrão é "Usuário".</param>
-        public MainWindow(string nomeUsuario = "Usuário")
+        /// <param name="usuario">O objeto do usuário autenticado.</param>
+        public MainWindow(Usuario usuario) 
         {
             InitializeComponent();
-            _nomeUsuario = nomeUsuario;
-            TxtNomeUsuario.Text = nomeUsuario;
 
-            // Navega para o Dashboard assim que a tela principal é carregada
-            MainFrame.Navigate(new DashboardPage(nomeUsuario));
+            _usuarioLogado = usuario; 
+
+            
+            TxtNomeUsuario.Text = _usuarioLogado.Nome ?? "Usuário";
+
+            
+            MainFrame.Navigate(new DashboardPage(_usuarioLogado.Nome ?? "Usuário"));
             _btnAtivo = BtnDashboard;
         }
 
@@ -59,7 +63,7 @@ namespace ReGraphik.Views
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
             SetarNavAtivo(BtnDashboard);
-            MainFrame.Navigate(new DashboardPage(_nomeUsuario));
+            MainFrame.Navigate(new DashboardPage(_usuarioLogado.Nome ?? "Usuário")); // [ALTERADO] Pega o nome do objeto
         }
 
         /// <summary>
@@ -119,7 +123,10 @@ namespace ReGraphik.Views
         private void Conta_Click(object sender, RoutedEventArgs e)
         {
             SetarNavAtivo(BtnConta);
-            MainFrame.Navigate(new ContaPage());
+            // [ALTERADO] Passa o objeto usuário inteiro para a tela de conta!
+            // OBS: Se der erro nesta linha, não se preocupe! É porque ainda vamos criar a ContaPage na próxima etapa.
+            // Para compilar agora, você pode adicionar '//' no início da linha abaixo temporariamente.
+            MainFrame.Navigate(new ContaPage(_usuarioLogado));
         }
 
         /// <summary>
@@ -141,7 +148,7 @@ namespace ReGraphik.Views
             {
                 var loginTela = new LoginWindow();
                 loginTela.Show();
-                this.Close(); // Fecha a janela principal
+                this.Close(); 
             }
         }
     }
