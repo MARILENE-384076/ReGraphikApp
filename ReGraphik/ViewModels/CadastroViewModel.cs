@@ -1,4 +1,5 @@
-﻿using ReGraphik.Services;
+﻿using ReGraphik.Models;
+using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,7 @@ namespace ReGraphik.ViewModels
         private string _cpf = "";
         private string _email = "";
         private string _login = "";
+        private bool _ocupado;
 
         public string Nome
         {
@@ -40,14 +42,21 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
+        public bool Ocupado
+        {
+            get => _ocupado;
+            set { _ocupado = value; OnPropertyChanged(); }
+        }
+
         public ICommand CadastrarCommand { get; }
 
         public CadastroViewModel()
         {
             _autorizarService = new AutorizarService();
             // Inicializa o comando de cadastro, associando-o ao método Cadastrar
-            CadastrarCommand = new RelayCommand(Cadastrar);
+            CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
         }
+        private bool CanCadastrar(object parameter) => !Ocupado;
 
         // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         private async Task Cadastrar(object parameter)
@@ -72,32 +81,36 @@ namespace ReGraphik.ViewModels
 
             try
             {
+                Ocupado = true; // Indica que o processo de cadastro está em andamento
+
                 // Cria um objeto anônimo representando o usuário a ser cadastrado, com as informações fornecidas e um ID gerado aleatoriamente
-                var usuario = new
+                var novoUsuario = new Usuario
                 {
-                    id = Guid.NewGuid().ToString(),
-                    name = Nome,
-                    cpf = CPF,
-                    email = Email,
-                    login = Login,
-                    senha = senhaDigitada,
-                    perfil = "Administrador",
-                    data_cadastro = DateTime.Now
+                    Id = Guid.NewGuid().ToString(),
+                    Nome = Nome,
+                    CPF = CPF, 
+                    Email = Email,
+                    Login = Login,
+                    Senha = senhaDigitada,
+                    Perfil = "Administrador",
+                    DataCadastro = DateTime.Now
                 };
 
                 // Chama o serviço de autorização para cadastrar o usuário
-                bool response = await _autorizarService.CadastrarAsync(usuario);
+                bool response = await _autorizarService.CadastrarAsync(novoUsuario);
 
                 if (response)
                 {
                     MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
                     LimparCampos();
-                    passwordBox.Clear();
+                    
                 }
                 else
                 {
                     MessageBox.Show("Erro ao cadastrar usuário.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+
+                passwordBox.Clear();
             }
             catch (Exception ex)
             {

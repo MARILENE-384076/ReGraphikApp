@@ -43,7 +43,7 @@ namespace ReGraphik.ViewModels
         {
             _autorizarService = new AutorizarService();
             // Inicializa o comando de login, associando-o ao método Entrar
-            EntrarCommand = new RelayCommand(Entrar);
+            EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
         }
 
         // Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
