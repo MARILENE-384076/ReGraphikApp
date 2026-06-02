@@ -22,7 +22,7 @@ namespace ReGraphik.Views
         {
             if (_btnAtivo != null)
                 _btnAtivo.Style = (Style)FindResource("NavBtn");
-            
+
             btn.Style = (Style)FindResource("NavBtnAtivo");
             _btnAtivo = btn;
         }
@@ -57,7 +57,14 @@ namespace ReGraphik.Views
             MainFrame.Navigate(new RelatoriosPage());
         }
 
-        // [NOVO] Handler do botão Sair
+        // Handler do botão Minha Conta
+        private void Conta_Click(object sender, RoutedEventArgs e)
+        {
+            SetarNavAtivo(BtnConta);
+            MainFrame.Navigate(new ContaPage());
+        }
+
+        // Handler do botão Sair
         private void Sair_Click(object sender, RoutedEventArgs e)
         {
             var resultado = MessageBox.Show(
@@ -73,5 +80,5 @@ namespace ReGraphik.Views
                 this.Close();
             }
         }
-    }  
-}      
+    }
+}
