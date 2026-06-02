@@ -10,7 +10,7 @@
         Icon="/Imgs/logoRegraphik.png">
 
     <Window.Resources>
-       
+
 
         <!-- Estilo dos TextBox -->
         <Style x:Key="InputStyle" TargetType="TextBox">
@@ -47,7 +47,7 @@
         <!-- Estilo botão primário -->
         <Style x:Key="BtnPrimario" TargetType="Button">
             <Setter Property="Height" Value="44"/>
-            <Setter Property="Background" Value="#093e75"/>
+            <Setter Property="Background" Value="#1649a2"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -99,193 +99,126 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="360"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+    <Grid Background="#E2E8F0">
 
-        <!-- Painel esquerdo azul -->
-        <Border Grid.Column="0" Background="#093e75">
+        <!-- Borda do container principal -->
+        <Border Margin="40,30,40,30" CornerRadius="16" Background="White" ClipToBounds="True">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="24" Opacity="0.15" Color="#000"/>
+            </Border.Effect>
+
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <!-- Aba de informações -->
+                <Border Grid.Column="0" Background="#1649a2"
+                        BorderBrush="#2563eb" 
+                        BorderThickness="1,1,0,1" 
+                        CornerRadius="16,0,0,16">
+                    <Grid Margin="36,40">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- Logo -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,24">
-                        <TextBlock Text="♻️" FontSize="42" VerticalAlignment="Center" Foreground="White"/>
-                        <TextBlock Text="ReGraphik"
-                                   FontSize="36"
-                                   FontWeight="Bold"
-                                   Foreground="White"
-                                   VerticalAlignment="Center"
-                                   Margin="10,0,0,0"/>
-                    </StackPanel>
-
-                    <!-- Divisor -->
-                    <Border Height="1" Background="#1649a2" Margin="0,0,0,24" Width="260"/>
-
-                    <!-- Subtítulo -->
-                    <TextBlock Text="Gestão inteligente de"
-                               FontSize="16"
-                               Foreground="#BFDBFE"
-                               HorizontalAlignment="Center"/>
-                    <TextBlock Text="resíduos industriais"
-                               FontSize="16"
-                               Foreground="#BFDBFE"
-                               HorizontalAlignment="Center"
-                               Margin="0,4,0,32"/>
-
-                    <!-- Ícones de destaque -->
-                    <StackPanel HorizontalAlignment="Center" Margin="0,0,0,8">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#1649a2" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                <iconPacks:PackIconMaterial Kind="ViewDashboardVariant" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                            </Border>
-                            <TextBlock Text="Dashboard em tempo real"
-                                       Foreground="#BFDBFE"
-                                       FontSize="13"
-                                       VerticalAlignment="Center"/>
+                        <!-- Topo / Logo -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                            <TextBlock Text="♻️" FontSize="36" VerticalAlignment="Center" Foreground="White"/>
+                            <TextBlock Text="ReGraphik" FontSize="32" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#1649a2" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                <iconPacks:PackIconMaterial Kind="MapMarkerOutline" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                            </Border>
-                            <TextBlock Text="Mapa de pontos de coleta"
-                                       Foreground="#BFDBFE"
-                                       FontSize="13"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
+                        <!-- Conteúdo Central -->
+                        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                            <TextBlock Text="Gestão inteligente de resíduos industriais" FontSize="15" FontWeight="Medium" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,32"/>
 
-                        <StackPanel Orientation="Horizontal">
-                            <Border Background="#1649a2" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                <iconPacks:PackIconMaterial Kind="Warehouse" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                            </Border>
-                            <TextBlock Text="Controle de estoque reverso"
-                                       Foreground="#BFDBFE"
-                                       FontSize="13"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
+                            <StackPanel HorizontalAlignment="Left" Margin="20,0,0,0">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <Border Background="#3274ba" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
+                                        <iconPacks:PackIconMaterial Kind="ViewDashboardVariant" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                    </Border>
+                                    <TextBlock Text="Dashboard em tempo real" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+                                </StackPanel>
 
-                <!-- Rodapé -->
-                <TextBlock Grid.Row="2"
-                           Text="© 2025 ReGraphik"
-                           Foreground="#3274ba"
-                           FontSize="12"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Bottom"
-                           Margin="0,0,0,20"/>
-            </Grid>
-        </Border>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                    <Border Background="#3274ba" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
+                                        <iconPacks:PackIconMaterial Kind="MapMarkerOutline" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                    </Border>
+                                    <TextBlock Text="Mapa de pontos de coleta" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+                                </StackPanel>
 
-        <!-- Painel direito claro -->
-        <Border Grid.Column="1" Background="#F3F4F6">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Border Grid.Row="1"
-                        Background="White"
-                        CornerRadius="16"
-                        Margin="40,0"
-                        Padding="36,28">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="16" Opacity="0.08" Color="#000"/>
-                    </Border.Effect>
-
-                    <TabControl Background="Transparent" BorderThickness="0">
-
-                        <!-- ABA LOGIN -->
-                        <TabItem Header="Fazer Login" Style="{StaticResource TabStyle}">
-                            <StackPanel Margin="0,24,0,0">
-
-                                <TextBlock Text="Bem-vindo de volta!"
-                                           FontSize="20"
-                                           FontWeight="Bold"
-                                           Foreground="#1E293B"
-                                           Margin="0,0,0,4"/>
-                                <TextBlock Text="Entre com suas credenciais para continuar."
-                                           FontSize="13"
-                                           Foreground="#64748B"
-                                           Margin="0,0,0,24"/>
-
-                                <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}"
-                                         Margin="0,0,0,16"/>
-
-                                <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
-                                <PasswordBox x:Name="TxtSenhaLogin"
-                                             Style="{StaticResource PasswordStyle}"
-                                             Margin="0,0,0,28"/>
-
-                                <Button Content="ENTRAR"
-                                        Command="{Binding EntrarCommand}"
-                                        CommandParameter="{Binding ElementName=TxtSenhaLogin}"
-                                        Style="{StaticResource BtnPrimario}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="#3274ba" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
+                                        <iconPacks:PackIconMaterial Kind="Warehouse" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                                    </Border>
+                                    <TextBlock Text="Controle de estoque reverso" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
+                                </StackPanel>
                             </StackPanel>
-                        </TabItem>
-                        
-                        <!-- ABA CADASTRO -->
-                        <TabItem Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel Margin="0,24,0,0">
+                        </StackPanel>
 
-                                    <TextBlock Text="Crie sua conta"
-                                               FontSize="20"
-                                               FontWeight="Bold"
-                                               Foreground="#1E293B"
-                                               Margin="0,0,0,4"/>
-                                    <TextBlock Text="Preencha os dados abaixo para se cadastrar."
-                                               FontSize="13"
-                                               Foreground="#64748B"
-                                               Margin="0,0,0,24"/>
+                        <!-- Footer -->
+                        <TextBlock Grid.Row="2" Text="© 2026 ReGraphik" Foreground="#bae6fd" FontSize="11" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    </Grid>
+                </Border>
 
-                                    <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
-                                    <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
-                                             Style="{StaticResource InputStyle}"
-                                             Margin="0,0,0,14"/>
+                <!-- Aba de formulários -->
+                <Border Grid.Column="1" 
+                        Background="White" 
+                        BorderBrush="#CBD5E1" 
+                        BorderThickness="1,1,1,1" 
+                        CornerRadius="0,16,16,0" 
+                        Padding="50,40">
+                    <Grid>
+                        <TabControl Background="Transparent" BorderThickness="0">
 
-                                    <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
-                                    <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}"
-                                             Style="{StaticResource InputStyle}"
-                                             Margin="0,0,0,14"/>
-
-                                    <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                                    <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                             Style="{StaticResource InputStyle}"
-                                             Margin="0,0,0,14"/>
+                            <!-- ABA LOGIN -->
+                            <TabItem Header="Fazer Login" Style="{StaticResource TabStyle}">
+                                <StackPanel Margin="0,32,0,0">
+                                    <TextBlock Text="Bem-vindo de volta!" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
+                                    <TextBlock Text="Entre com suas credenciais para continuar." FontSize="13" Foreground="#64748B" Margin="0,0,0,32"/>
 
                                     <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                                    <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
-                                             Style="{StaticResource InputStyle}"
-                                             Margin="0,0,0,14"/>
+                                    <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,24"/>
 
                                     <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
-                                    <PasswordBox x:Name="TxtSenhaCadastro"
-                                                 Style="{StaticResource PasswordStyle}"
-                                                 Margin="0,0,0,24"/>
+                                    <PasswordBox x:Name="TxtSenhaLogin" Style="{StaticResource PasswordStyle}" Margin="0,0,0,36"/>
 
-                                    <Button Content="CADASTRAR"
-                                            Command="{Binding CadastrarCommand}"
-                                            CommandParameter="{Binding ElementName=TxtSenhaCadastro}"
-                                            Style="{StaticResource BtnPrimario}"/>
+                                    <Button Content="ENTRAR" Command="{Binding EntrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}"/>
                                 </StackPanel>
-                            </ScrollViewer>
-                        </TabItem>
+                            </TabItem>
 
-                    </TabControl>
+                            <!-- ABA CADASTRO -->
+                            <TabItem Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                                    <StackPanel Margin="0,20,10,0">
+                                        <TextBlock Text="Crie sua conta" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
+                                        <TextBlock Text="Preencha os dados abaixo para se cadastrar." FontSize="13" Foreground="#64748B" Margin="0,0,0,24"/>
+
+                                        <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+
+                                        <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+
+                                        <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+
+                                        <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+
+                                        <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
+                                        <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" Margin="0,0,0,28"/>
+
+                                        <Button Content="CADASTRAR" Command="{Binding CadastrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaCadastro}" Style="{StaticResource BtnPrimario}" Margin="0,0,0,10"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </TabItem>
+
+                        </TabControl>
+                    </Grid>
                 </Border>
             </Grid>
         </Border>
