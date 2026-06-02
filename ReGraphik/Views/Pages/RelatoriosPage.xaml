@@ -1,17 +1,414 @@
 ﻿<Page x:Class="ReGraphik.Views.Pages.RelatoriosPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="#F3F4F6" Title="Relatórios">
-    <Border Background="White" CornerRadius="12">
-        <Border.Effect>
-            <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
-        </Border.Effect>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="📊" FontSize="48" HorizontalAlignment="Center"/>
-            <TextBlock Text="Relatórios" FontSize="32" FontWeight="Bold"
-                       Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,12,0,0"/>
-            <TextBlock Text="Em desenvolvimento" FontSize="14" Foreground="#94A3B8"
-                       HorizontalAlignment="Center" Margin="0,8,0,0"/>
-        </StackPanel>
-    </Border>
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="750" d:DesignWidth="1000"
+      Background="#F8FAFC" Title="Relatórios">
+
+    <Page.Resources>
+        <Style x:Key="FilterLabelStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <Style x:Key="FilterComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Background" Value="#F1F5F9"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título -->
+            <TextBlock Grid.Row="0"
+                       Text="Relatórios"
+                       FontSize="20" FontWeight="Bold"
+                       Foreground="#1E293B"
+                       Margin="0,0,0,16"/>
+
+            <!-- Painel de Filtros -->
+            <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
+                               Foreground="#1E293B" Margin="0,0,0,14"/>
+
+                    <!-- Linha 1: Tipo, Origem, Status -->
+                    <Grid Grid.Row="1" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
+                            <ComboBox Style="{StaticResource FilterComboBoxStyle}"
+                                      SelectedValue="{Binding FiltroTipo, Mode=TwoWay}"
+                                      SelectedValuePath="Content" SelectedIndex="0">
+                                <ComboBoxItem Content="Todos"/>
+                                <ComboBoxItem Content="Papel Offset"/>
+                                <ComboBoxItem Content="Papel Couché"/>
+                                <ComboBoxItem Content="Papel Kraft"/>
+                                <ComboBoxItem Content="Papelão"/>
+                                <ComboBoxItem Content="Adesivo Vinil"/>
+                                <ComboBoxItem Content="Lona"/>
+                                <ComboBoxItem Content="PVC"/>
+                                <ComboBoxItem Content="Acrílico"/>
+                                <ComboBoxItem Content="Outro"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
+                            <ComboBox Style="{StaticResource FilterComboBoxStyle}"
+                                      SelectedValue="{Binding FiltroOrigem, Mode=TwoWay}"
+                                      SelectedValuePath="Content" SelectedIndex="0">
+                                <ComboBoxItem Content="Todas"/>
+                                <ComboBoxItem Content="Restos de Corte"/>
+                                <ComboBoxItem Content="Sobra de Impressão"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
+                            <ComboBox Style="{StaticResource FilterComboBoxStyle}"
+                                      SelectedValue="{Binding FiltroStatus, Mode=TwoWay}"
+                                      SelectedValuePath="Content" SelectedIndex="0">
+                                <ComboBoxItem Content="Todos"/>
+                                <ComboBoxItem Content="Em Estoque"/>
+                                <ComboBoxItem Content="Reaproveitado"/>
+                                <ComboBoxItem Content="Processado"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Linha 2: Período + botões -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Data Início" Style="{StaticResource FilterLabelStyle}"/>
+                            <DatePicker SelectedDate="{Binding DataInicio, Mode=TwoWay}"
+                                        Height="38" Padding="5" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Data Fim" Style="{StaticResource FilterLabelStyle}"/>
+                            <DatePicker SelectedDate="{Binding DataFim, Mode=TwoWay}"
+                                        Height="38" Padding="5" VerticalContentAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4"/>
+
+                        <Button Grid.Column="6" Content="Limpar"
+                                Command="{Binding LimparFiltrosCommand}"
+                                Width="90" Height="38"
+                                Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
+                                Foreground="#64748B" FontWeight="SemiBold" VerticalAlignment="Bottom">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Column="8" Content="Gerar Relatório"
+                                Command="{Binding GerarRelatorioCommand}"
+                                Width="140" Height="38"
+                                Background="#1649a2" BorderThickness="0"
+                                Foreground="White" FontWeight="SemiBold" VerticalAlignment="Bottom">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Cards de Resumo -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,20">
+                <Border Background="#0d2a56" CornerRadius="12" Padding="20" Margin="0,0,16,0" Height="90" Width="210">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding TotalResiduos}" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Total de Resíduos" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#1649a2" CornerRadius="12" Padding="20" Margin="0,0,16,0" Height="90" Width="210">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding PesoTotal, StringFormat={}{0:N2} kg}" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Peso Total" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#3274ba" CornerRadius="12" Padding="20" Margin="0,0,16,0" Height="90" Width="210">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Reaproveitados}" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Reaproveitados" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#2f80ec" CornerRadius="12" Padding="20" Height="90" Width="210">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding ValorEconomico}" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Valor Econômico" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Tabela de Resultados -->
+            <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,10">
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabeçalho da tabela -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Resultado do Relatório"
+                                       FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                            <Border Background="#EFF6FF" CornerRadius="10" Padding="8,3" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding TotalRegistros, StringFormat={}{0} registro(s)}"
+                                           FontSize="12" FontWeight="SemiBold" Foreground="#1E40AF"/>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding MensagemStatus}"
+                                       VerticalAlignment="Center" FontSize="12"
+                                       Foreground="#94A3B8" Margin="0,0,12,0"/>
+
+                            <Button Content="⬇ Exportar PDF"
+                                    Command="{Binding ExportarPdfCommand}"
+                                    IsEnabled="{Binding PodeExportar}"
+                                    Width="130" Height="36"
+                                    Background="White"
+                                    BorderBrush="#1649a2" BorderThickness="1"
+                                    Foreground="#1649a2" FontWeight="SemiBold">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="6"/>
+                                    </Style>
+                                </Button.Resources>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Opacity" Value="0.4"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- DataGrid -->
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding ResiduosFiltrados}"
+                              AutoGenerateColumns="False" CanUserAddRows="False"
+                              Background="Transparent" BorderThickness="0"
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9"
+                              RowHeight="48" IsReadOnly="True" HeadersVisibility="Column">
+
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Style.Resources>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#1E293B"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
+                                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#1E293B"/>
+                                </Style.Resources>
+                            </Style>
+                        </DataGrid.CellStyle>
+
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#EFF6FF"/>
+                                <Setter Property="Foreground" Value="#1E40AF"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Padding" Value="12,10"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F8FAFC"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Padding" Value="12,0,0,0"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="#64748B"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Material" Binding="{Binding TipoResiduo}" Width="2*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontWeight" Value="Medium"/>
+                                        <Setter Property="Foreground" Value="#1E293B"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Origem" Binding="{Binding Origem}" Width="1.5*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="#334155"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Projeto" Binding="{Binding Projeto}" Width="1.5*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="#334155"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Quantidade (kg)" Binding="{Binding Quantidade}" Width="1.2*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="#1E293B"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Condição" Binding="{Binding Condicao}" Width="1*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="#334155"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Data" Binding="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Width="1.1*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="Foreground" Value="#64748B"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+
+                            <DataGridTemplateColumn Header="Status" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="10" Padding="8,4"
+                                                HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#FEF08A"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Reaproveitado">
+                                                            <Setter Property="Background" Value="#DCFCE7"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Processado">
+                                                            <Setter Property="Background" Value="#DBEAFE"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding Status}" FontSize="12" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="#854D0E"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Reaproveitado">
+                                                                <Setter Property="Foreground" Value="#166534"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Processado">
+                                                                <Setter Property="Foreground" Value="#1E40AF"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
 </Page>

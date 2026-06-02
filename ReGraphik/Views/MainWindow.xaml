@@ -46,6 +46,28 @@
             <Setter Property="Background" Value="#022654"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>
+
+        <!-- [NOVO] Estilo exclusivo do botão Sair -->
+        <Style x:Key="NavBtnSair" TargetType="Button" BasedOn="{StaticResource NavBtn}">
+            <Setter Property="Foreground" Value="#87CEFA"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#7F1D1D"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -58,7 +80,11 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <!-- Row 0: logo + nome usuário -->
                     <RowDefinition Height="*"/>
+                    <!-- Row 1: botões de navegação -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- [NOVO] Row 2: botão Sair -->
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
@@ -124,6 +150,19 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
+
+                <!-- [NOVO] Botão Sair fixado no rodapé da barra lateral -->
+                <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="#1D4ED8" Margin="8,0,8,12">
+                    <Button x:Name="BtnSair"
+                            Style="{StaticResource NavBtnSair}"
+                            Margin="0,8,0,0"
+                            Click="Sair_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="ExitToApp" Width="20" Height="20" Margin="0,0,8,0"/>
+                            <TextBlock Text="Sair" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
             </Grid>
         </Border>
 
