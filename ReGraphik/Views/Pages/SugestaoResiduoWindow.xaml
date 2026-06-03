@@ -22,5 +22,17 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- Cabeçalho -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="💡 Sugestões de Reaproveitamento"
+                       FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
+            <TextBlock Margin="0,6,0,0" FontSize="13" Foreground="#64748B">
+                <Run Text="Resíduo: "/>
+                <Run Text="{Binding Residuo.TipoResiduo}" FontWeight="SemiBold" Foreground="#1649a2"/>
+                <Run Text=" — "/>
+                <Run Text="{Binding Residuo.Especificacao}" Foreground="#334155"/>
+            </TextBlock>
+        </StackPanel>
+
     </Grid>
 </Page>
