@@ -26,7 +26,7 @@ namespace ReGraphik.Views.Pages
         }
 
         /// <summary>
-        /// Evento de clique para fechar a janela, conforme definido no seu XAML (Click="BtnFechar_Click")
+        /// Evento de clique para fechar a janela conforme definido no seu XAML (Click="BtnFechar_Click")
         /// </summary>
         private void BtnFechar_Click(object sender, RoutedEventArgs e)
         {
