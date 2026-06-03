@@ -57,6 +57,116 @@
             </StackPanel>
         </Border>
 
+        <!-- Lista de sugestões -->
+        <Border Grid.Row="3" Background="White" CornerRadius="8" Margin="0,0,0,16">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.05" Color="#000"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Cabeçalho da tabela -->
+                <Border Grid.Row="0" Background="#EFF6FF" CornerRadius="8,8,0,0" Padding="16,10">
+                    <TextBlock Text="Destino / Uso Sugerido"
+                               FontWeight="Bold" Foreground="#1E40AF" FontSize="13"/>
+                </Border>
+
+                <!-- Itens -->
+                <ListBox Grid.Row="1"
+                         ItemsSource="{Binding Sugestoes}"
+                         SelectedItem="{Binding SugestaoSelecionada}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="ItemBorder"
+                                                BorderBrush="#F1F5F9" BorderThickness="0,0,0,1"
+                                                Background="{TemplateBinding Background}"
+                                                Padding="16,12">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#EFF6FF"/>
+                                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#BFDBFE"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#F8FAFC"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Indicador de seleção -->
+                                <Ellipse Grid.Column="0" Width="18" Height="18" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#CBD5E1"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                                    <Setter Property="Fill" Value="#1649a2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+
+                                <!-- Descrição -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,8,0">
+                                    <TextBlock Text="{Binding DescricaoSugestao}"
+                                               FontSize="14" Foreground="#1E293B"
+                                               FontWeight="Medium"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock FontSize="12" Foreground="#64748B" Margin="0,3,0,0">
+                                        <Run Text="Aceita: "/>
+                                        <Run Text="{Binding TipoResiduoAceito}" FontWeight="SemiBold" Foreground="#1649a2"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- Badge selecionado -->
+                                <Border Grid.Column="2" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Setter Property="Background" Value="#1649a2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="✓ Selecionado" FontSize="11" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
 
     </Grid>
 </Page>
