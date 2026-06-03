@@ -37,5 +37,26 @@
         <!-- Separador -->
         <Separator Grid.Row="1" Margin="0,0,0,16" Background="#E2E8F0"/>
 
+        <!-- Barra de status -->
+        <Border Grid.Row="2" Margin="0,0,0,12"
+                Background="#EFF6FF" CornerRadius="6" Padding="12,8">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="13" Foreground="#1649a2" Margin="0,0,8,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="ℹ️"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Carregando}" Value="True">
+                                    <Setter Property="Text" Value="⏳"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding Mensagem}" FontSize="13" Foreground="#1E40AF" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+
     </Grid>
 </Page>
