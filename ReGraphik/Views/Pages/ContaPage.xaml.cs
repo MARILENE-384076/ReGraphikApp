@@ -41,14 +41,21 @@ namespace ReGraphik.Views.Pages
                 return;
             }
 
+            /// Atualiza os dados comuns
             _usuarioAtual.Nome = TxtNome.Text;
-            _usuarioAtual.CPF = TxtCpf.Text; 
+            _usuarioAtual.CPF = TxtCpf.Text;
             _usuarioAtual.Email = TxtEmail.Text;
             _usuarioAtual.Login = TxtLogin.Text;
 
+            /// Se o usuário digitou algo na senha, enviamos a nova senha
             if (!string.IsNullOrWhiteSpace(TxtSenha.Password))
             {
                 _usuarioAtual.Senha = TxtSenha.Password;
+            }
+            else
+            {
+                /// Deixamos como null para a API não duplicar no Firebase
+                _usuarioAtual.Senha = null;
             }
 
             try
@@ -65,7 +72,7 @@ namespace ReGraphik.Views.Pages
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao atualizar os dados. Verifique sua conexão.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Erro ao atualizar os dados.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
