@@ -24,6 +24,13 @@ namespace ReGraphik.ViewModels
         private const string UrlApiSugestoes = "https://webregraphik.runasp.net/api/Sugestao";
         private const string UrlApiSugestaoResiduo = "https://webregraphik.runasp.net/api/SugestaoResiduos";
 
+        // ─── Evento disparado após aplicar sugestão com sucesso ───────────
+        /// <summary>
+        /// Disparado quando a sugestão é registrada com sucesso.
+        /// A View pode assinar este evento para fechar a janela automaticamente.
+        /// </summary>
+        public event Action SugestaoAplicadaComSucesso;
+
         // ─── Resíduo alvo ─────────────────────────────────────────────────
         public Residuo Residuo { get; }
 
@@ -42,28 +49,20 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ─── Controle de carregamento (exibe spinner / mensagem) ──────────
+        // ─── Controle de carregamento ─────────────────────────────────────
         private bool _carregando;
         public bool Carregando
         {
             get => _carregando;
-            set
-            {
-                _carregando = value;
-                OnPropertyChanged();
-            }
+            set { _carregando = value; OnPropertyChanged(); }
         }
 
         // ─── Mensagem de feedback ao usuário ─────────────────────────────
-        private string _mensagem;
+        private string _mensagem = "Carregando sugestões...";
         public string Mensagem
         {
             get => _mensagem;
-            set
-            {
-                _mensagem = value;
-                OnPropertyChanged();
-            }
+            set { _mensagem = value; OnPropertyChanged(); }
         }
 
         // ─── Comandos ─────────────────────────────────────────────────────
@@ -74,13 +73,12 @@ namespace ReGraphik.ViewModels
         {
             Residuo = residuo ?? throw new ArgumentNullException(nameof(residuo));
 
-            // Inicializa o comando com suporte a parâmetro (recebe a Sugestao selecionada)
             AplicarSugestaoCommand = new RelayCommand(
-            () => _ = AplicarSugestaoAsync(), 
-            _ => SugestaoSelecionada != null && !Carregando
-);
+                () => _ = AplicarSugestaoAsync(),
+                _ => SugestaoSelecionada != null && !Carregando
+            );
 
-            // Carrega as sugestões assim que a ViewModel for criada
+            // Carrega as sugestões assim que o ViewModel for criado
             _ = CarregarSugestoesAsync();
         }
 
@@ -103,9 +101,7 @@ namespace ReGraphik.ViewModels
                 var json = await resposta.Content.ReadAsStringAsync();
                 var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var todas = JsonSerializer.Deserialize<List<Sugestao>>(json, opcoes) ?? new List<Sugestao>();
-                
-                // Filtra sugestões compatíveis com o tipo do resíduo selecionado.
-                // A comparação é case-insensitive e aceita sugestões sem restrição de tipo (TipoResiduoAceito vazio).
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Sugestoes.Clear();
@@ -113,10 +109,10 @@ namespace ReGraphik.ViewModels
                     {
                         bool semFiltro = string.IsNullOrWhiteSpace(s.TipoResiduoAceito);
                         bool tipoCompat = !string.IsNullOrWhiteSpace(Residuo.TipoResiduo) &&
-                                            s.TipoResiduoAceito != null &&
-                                            s.TipoResiduoAceito.Contains(
-                                                Residuo.TipoResiduo,
-                                                StringComparison.OrdinalIgnoreCase);
+                                          s.TipoResiduoAceito != null &&
+                                          s.TipoResiduoAceito.Contains(
+                                              Residuo.TipoResiduo,
+                                              StringComparison.OrdinalIgnoreCase);
                         if (semFiltro || tipoCompat)
                             Sugestoes.Add(s);
                     }
@@ -147,8 +143,7 @@ namespace ReGraphik.ViewModels
 
             try
             {
-                // Monta o payload seguindo o modelo SugestaoResiduo da API
-                var sugestaoResiduo = new
+                var payload = new
                 {
                     id = Guid.NewGuid().ToString(),
                     id_cadastro_residuo = Residuo.Id,
@@ -156,25 +151,34 @@ namespace ReGraphik.ViewModels
                     data_aplicacao = DateTime.UtcNow
                 };
 
-                var body = JsonSerializer.Serialize(sugestaoResiduo);
+                var body = JsonSerializer.Serialize(payload);
                 var content = new StringContent(body, Encoding.UTF8, "application/json");
                 var resposta = await _http.PostAsync(UrlApiSugestaoResiduo, content);
 
                 if (resposta.IsSuccessStatusCode)
                 {
                     Mensagem = $"✅ Sugestão aplicada com sucesso ao resíduo \"{Residuo.TipoResiduo}\"!";
+
                     MessageBox.Show(
-                        $"Sugestão aplicada com sucesso!\n\nResíduo: {Residuo.TipoResiduo}\nSugestão: {SugestaoSelecionada.DescricaoSugestao}",
+                        $"Sugestão aplicada com sucesso!\n\n" +
+                        $"Resíduo : {Residuo.TipoResiduo}\n" +
+                        $"Sugestão: {SugestaoSelecionada.DescricaoSugestao}",
                         "Sugestão Aplicada",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
+
+                    // Notifica a View para fechar a janela
+                    SugestaoAplicadaComSucesso?.Invoke();
                 }
                 else
                 {
                     var erro = await resposta.Content.ReadAsStringAsync();
                     Mensagem = $"Erro ao aplicar sugestão: {resposta.StatusCode}";
+
                     MessageBox.Show(
-                        $"Não foi possível aplicar a sugestão.\nCódigo: {resposta.StatusCode}\nDetalhe: {erro}",
+                        $"Não foi possível aplicar a sugestão.\n" +
+                        $"Código  : {resposta.StatusCode}\n" +
+                        $"Detalhe : {erro}",
                         "Erro",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
@@ -184,6 +188,7 @@ namespace ReGraphik.ViewModels
             {
                 Mensagem = $"Erro ao aplicar sugestão: {ex.Message}";
                 System.Diagnostics.Debug.WriteLine("Erro ao aplicar sugestão: " + ex.Message);
+
                 MessageBox.Show(
                     $"Erro inesperado ao aplicar a sugestão:\n{ex.Message}",
                     "Erro",
