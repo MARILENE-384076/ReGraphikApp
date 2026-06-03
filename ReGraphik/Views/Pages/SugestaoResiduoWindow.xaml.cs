@@ -20,7 +20,7 @@ namespace ReGraphik.Views.Pages
     /// </summary>
     public partial class SugestaoResiduoWindow : Window 
     {
-        public SugestaoResiduoWindow()
+        public SugestaoResiduoWindow(Models.Residuo residuo)
         {
             InitializeComponent();
         }

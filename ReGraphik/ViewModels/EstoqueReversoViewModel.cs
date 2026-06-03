@@ -1,10 +1,9 @@
 ﻿using ReGraphik.Models;
+using ReGraphik.Views.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,54 +13,70 @@ namespace ReGraphik.ViewModels
 {
     public class EstoqueReversoViewModel : BaseViewModel
     {
-        // Instancia única do HttpClient para toda a classe, seguindo as melhores práticas
+        // Instância única do HttpClient para toda a classe
         private readonly HttpClient _http = new();
 
-        // Propriedade para armazenar a lista de resíduos, que pode ser vinculada à interface para exibição
-        public ObservableCollection<Residuo> ListaResiduos { get; set; } = new ObservableCollection<Residuo>();
+        // Lista de resíduos exibida no DataGrid
+        public ObservableCollection<Residuo> ListaResiduos { get; set; } = new();
 
-        // Comando para acionar a função de sugestão, que pode ser vinculada a um botão na interface
-        public ICommand SugestaoCommand { get; set; }
-
-
+        /// <summary>
+        /// Comando vinculado ao botão "💡 Sugestões" de cada linha do DataGrid.
+        /// Recebe o Residuo da linha como CommandParameter (object) e abre a janela modal.
+        /// </summary>
+        public ICommand SugestaoCommand { get; }
 
         public EstoqueReversoViewModel()
         {
-            // Inicializa o comando de sugestão com a função que será executada ao clicar no botão.
-            SugestaoCommand = new RelayCommand(TelaSugestao);
+            // RelayCommand com parâmetro (Action<object>) para receber o Residuo da linha
+            SugestaoCommand = new RelayCommand(
+                (param) => AbrirSugestoes(param),
+                (param) => param is Residuo
+            );
 
-            // Carrega os dados do estoque reverso do banco assim que a ViewModel for criada . 
             _ = CarregarEstoqueDoBancoAsync();
         }
 
+        // ─── Abre a janela de sugestões para o resíduo selecionado ────────
+        private void AbrirSugestoes(object param)
+        {
+            if (param is not Residuo residuo)
+            {
+                MessageBox.Show("Selecione um resíduo válido.", "Aviso",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Cria e exibe a janela modal de sugestões
+            var janela = new SugestaoResiduoWindow(residuo)
+            {
+                // Define a janela principal como Owner para centralizar corretamente
+                Owner = Application.Current.MainWindow
+            };
+
+            janela.ShowDialog();
+        }
+
+        // ─── Carrega resíduos da API ──────────────────────────────────────
         private async Task CarregarEstoqueDoBancoAsync()
         {
             try
             {
-                // URL da API para buscar os resíduos do estoque reverso
                 string urlApi = "https://webregraphik.runasp.net/api/Residuo";
-
                 var resposta = await _http.GetAsync(urlApi);
 
-                // Verifica se a resposta foi bem-sucedida antes de tentar ler o conteúdo
                 if (resposta.IsSuccessStatusCode)
                 {
                     var json = await resposta.Content.ReadAsStringAsync();
                     var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-                    // Deserializa usando a sua classe de model real 'Residuo'
                     var listaResiduos = JsonSerializer.Deserialize<List<Residuo>>(json, opcoes);
 
-                    // Atualiza a coleção de resíduos na interface, garantindo que seja feito no thread correto
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         ListaResiduos.Clear();
                         if (listaResiduos != null)
                         {
                             foreach (var residuo in listaResiduos)
-                            {
                                 ListaResiduos.Add(residuo);
-                            }
                         }
                     });
                 }
@@ -75,12 +90,6 @@ namespace ReGraphik.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine("Erro ao conectar na API de Estoque: " + ex.Message);
             }
-        }
-
-        private void TelaSugestao()
-        {
-            // Lógica para buscar sugestões com base no resíduo selecionado.
-            MessageBox.Show($"Buscando sugestões para o item ID: ", "Sugestões");
         }
     }
 }
