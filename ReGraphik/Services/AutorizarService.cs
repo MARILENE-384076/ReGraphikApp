@@ -41,9 +41,18 @@ namespace ReGraphik.Services
             var json = JsonSerializer.Serialize(usuario);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PutAsync($"usuario/{id}", content);
+         
+            var response = await _httpClient.PostAsync($"usuario/{id}", content);
 
-            return response.IsSuccessStatusCode;
+           
+            if (!response.IsSuccessStatusCode)
+            {
+                var erroDaApi = await response.Content.ReadAsStringAsync();
+
+                throw new Exception($"Status {response.StatusCode}. Detalhes: {erroDaApi}");
+            }
+
+            return true;
         }
     }
 }
