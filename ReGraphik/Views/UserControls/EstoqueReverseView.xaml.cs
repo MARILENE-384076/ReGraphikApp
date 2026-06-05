@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReGraphik.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +17,14 @@ using System.Windows.Shapes;
 namespace ReGraphik.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for EstoqueReverseView.xaml
+    /// Define a interação lógica para EstoqueReverseView.xaml
     /// </summary>
     public partial class EstoqueReverseView : UserControl
     {
         public EstoqueReverseView()
         {
             InitializeComponent();
+            DataContext = new EstoqueReversoViewModel();
         }
     }
 }

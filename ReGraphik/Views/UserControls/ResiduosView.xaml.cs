@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReGraphik.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace ReGraphik.Views.UserControls
         public ResiduosView()
         {
             InitializeComponent();
+            DataContext = new ResiduoViewModel();
         }
     }
 }

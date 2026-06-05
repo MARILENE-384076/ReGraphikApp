@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ReGraphik.Models;
+using ReGraphik.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,10 @@ namespace ReGraphik.Views.UserControls
     /// </summary>
     public partial class SugestaoResiduoView : UserControl
     {
-        public SugestaoResiduoView()
+        public SugestaoResiduoView(Residuo residuo)
         {
             InitializeComponent();
+            DataContext = new SugestaoResiduoViewModel(residuo);
         }
     }
 }

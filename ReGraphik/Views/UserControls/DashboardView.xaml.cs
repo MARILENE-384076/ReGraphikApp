@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReGraphik.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +17,14 @@ using System.Windows.Shapes;
 namespace ReGraphik.Views.UserControls
 {
     /// <summary>
-    /// Interaction logic for DashboardView.xaml
+    /// Define a interação lógica para DashboardView.xaml
     /// </summary>
     public partial class DashboardView : UserControl
     {
-        public DashboardView()
+        public DashboardView(string nomeUsuario = "Usuário")
         {
             InitializeComponent();
+            DataContext = new DashboardViewModel(nomeUsuario);
         }
     }
 }
