@@ -5,8 +5,246 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ReGraphik.Views.UserControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Background="#F8FAFC">
+    
+    <UserControl.Resources>
+        <Style x:Key="BtnPrimaryStyle" TargetType="Button">
+            <Setter Property="Background" Value="#1649a2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1340a0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CBD5E1"/>
+                                <Setter Property="Foreground" Value="#94A3B8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BtnSecondaryStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#1649a2"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#1649a2"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}"
+                              CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#EFF6FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+
     <Grid>
-            
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Cabeçalho -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock Text="💡 Sugestões de Reaproveitamento"
+                     FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
+            <TextBlock Margin="0,6,0,0" FontSize="13" Foreground="#64748B">
+              <Run Text="Resíduo: "/>
+              <Run Text="{Binding Residuo.TipoResiduo}" FontWeight="SemiBold" Foreground="#1649a2"/>
+              <Run Text=" — "/>
+              <Run Text="{Binding Residuo.Especificacao}" Foreground="#334155"/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Separador -->
+        <Separator Grid.Row="1" Margin="0,0,0,16" Background="#E2E8F0"/>
+
+        <!-- Barra de status -->
+        <Border Grid.Row="2" Margin="0,0,0,12"
+              Background="#EFF6FF" CornerRadius="6" Padding="12,8">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="13" Foreground="#1649a2" Margin="0,0,8,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="ℹ️"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Carregando}" Value="True">
+                                    <Setter Property="Text" Value="⏳"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding Mensagem}" FontSize="13" Foreground="#1E40AF" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Lista de sugestões -->
+        <Border Grid.Row="3" Background="White" CornerRadius="8" Margin="0,0,0,16">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.05" Color="#000"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Cabeçalho da tabela -->
+                <Border Grid.Row="0" Background="#EFF6FF" CornerRadius="8,8,0,0" Padding="16,10">
+                    <TextBlock Text="Destino / Uso Sugerido"
+                             FontWeight="Bold" Foreground="#1E40AF" FontSize="13"/>
+                </Border>
+
+                <!-- Itens -->
+                <ListBox Grid.Row="1"
+                       ItemsSource="{Binding Sugestoes}"
+                       SelectedItem="{Binding SugestaoSelecionada}"
+                       BorderThickness="0"
+                       Background="Transparent"
+                       ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="ItemBorder"
+                                              BorderBrush="#F1F5F9" BorderThickness="0,0,0,1"
+                                              Background="{TemplateBinding Background}"
+                                              Padding="16,12">
+                                            <ContentPresenter/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#EFF6FF"/>
+                                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#BFDBFE"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#F8FAFC"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Indicador de seleção -->
+                                <Ellipse Grid.Column="0" Width="18" Height="18" VerticalAlignment="Center">
+                                    <Ellipse.Style>
+                                        <Style TargetType="Ellipse">
+                                            <Setter Property="Fill" Value="#CBD5E1"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                                    <Setter Property="Fill" Value="#1649a2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Ellipse.Style>
+                                </Ellipse>
+
+                                <!-- Descrição -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,8,0">
+                                    <TextBlock Text="{Binding DescricaoSugestao}"
+                                             FontSize="14" Foreground="#1E293B"
+                                             FontWeight="Medium"
+                                             TextWrapping="Wrap"/>
+                                    <TextBlock FontSize="12" Foreground="#64748B" Margin="0,3,0,0">
+                                      <Run Text="Aceita: "/>
+                                      <Run Text="{Binding TipoResiduoAceito}" FontWeight="SemiBold" Foreground="#1649a2"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- Badge selecionado -->
+                                <Border Grid.Column="2" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Setter Property="Background" Value="#1649a2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="✓ Selecionado" FontSize="11" FontWeight="SemiBold" Foreground="White"/>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <!-- Dica -->
+        <TextBlock Grid.Row="4" Margin="0,0,0,16"
+                 Text="Selecione uma sugestão acima e clique em &quot;Aplicar Sugestão&quot; para registrá-la."
+                 FontSize="12" Foreground="#94A3B8" HorizontalAlignment="Center"
+                 TextAlignment="Center"/>
+
+        <!-- Botões -->
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="168"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                  Content="Fechar"
+                  Style="{StaticResource BtnSecondaryStyle}"
+                  Click="BtnFechar_Click"
+                  Padding="0"/>
+
+            <Button Grid.Column="2"
+                  Content="✅  Aplicar Sugestão"
+                  Style="{StaticResource BtnPrimaryStyle}"
+                  Command="{Binding AplicarSugestaoCommand}"
+                  Padding="0"/>
+        </Grid>
     </Grid>
 </UserControl>
