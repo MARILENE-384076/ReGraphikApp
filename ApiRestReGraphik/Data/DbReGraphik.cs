@@ -15,7 +15,7 @@ namespace ApiRestReGraphik.Data
         /// <summary>
         /// Construtor da classe DbReGraphik, responsável por configurar a conexão com o Firebase Realtime Database utilizando as credenciais fornecidas
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="configuration">Objeto de configuração para acessar as configurações do Firebase</param>
         [Obsolete]
         public DbReGraphik(IConfiguration configuration)
         {
