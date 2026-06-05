@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <!-- Estilos de Inputs -->
-
     <Style x:Key="InputControlStyle" TargetType="Control">
         <Setter Property="Height" Value="38"/>
         <Setter Property="Background" Value="#F1F5F9"/>
@@ -13,6 +12,48 @@
         <Setter Property="FontSize" Value="14"/>
     </Style>
 
+    <!-- Estilo FilterComboBox -->
     <Style x:Key="FilterComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource InputControlStyle}"></Style>
+
+    <!-- Estilo Password -->
+    <Style x:Key="PasswordStyle" TargetType="PasswordBox">
+        <Setter Property="Height" Value="42"/>
+        <Setter Property="Background" Value="#F1F5F9"/>
+        <Setter Property="BorderBrush" Value="#CBD5E1"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="12,4"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#1E293B"/>
+    </Style>
+
+    <!-- Estilo Tab -->
+    <Style x:Key="TabStyle" TargetType="TabItem">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#64748B"/>
+        <Setter Property="Padding" Value="20,10"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="bd" Padding="{TemplateBinding Padding}" Background="Transparent">
+                        <ContentPresenter ContentSource="Header" HorizontalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="bd" Property="BorderThickness" Value="0,0,0,2"/>
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#093e75"/>
+                            <Setter Property="Foreground" Value="#093e75"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="#093e75"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

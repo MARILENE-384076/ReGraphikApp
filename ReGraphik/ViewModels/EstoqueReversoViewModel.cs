@@ -1,5 +1,6 @@
 ﻿using ReGraphik.Models;
-using ReGraphik.Views.Pages;
+using ReGraphik.Views;
+using ReGraphik.Views.UserControls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -46,14 +47,12 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            // Cria e exibe a janela modal de sugestões
-            var janela = new SugestaoResiduoWindow(residuo)
+            // Verifica se a janela principal é do tipo MainWindow para evitar erros de cast
+            if (Application.Current.MainWindow is MainWindow mainWin)
             {
-                // Define a janela principal como Owner para centralizar corretamente
-                Owner = Application.Current.MainWindow
-            };
-
-            janela.ShowDialog();
+                // Substitui o conteúdo da janela principal pela view de sugestões, passando o resíduo selecionado
+                mainWin.Content = new SugestaoResiduoView(residuo);
+            }
         }
 
         // ─── Carrega resíduos da API ──────────────────────────────────────

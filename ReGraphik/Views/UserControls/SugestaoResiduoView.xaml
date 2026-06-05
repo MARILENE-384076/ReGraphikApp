@@ -192,7 +192,7 @@
             <Button Grid.Column="0"
                   Content="Fechar"
                   Style="{StaticResource BtnSecondaryStyle}"
-                  Click="BtnFechar_Click"
+                  Command="{Binding FecharCommand}"
                   Padding="0"/>
 
             <Button Grid.Column="2"

@@ -1,6 +1,5 @@
-﻿using System.Windows;
-
-using ReGraphik.Views.Pages;
+﻿using ReGraphik.Views;
+using System.Windows;
 
 namespace ReGraphik
 {
@@ -30,9 +29,7 @@ namespace ReGraphik
             
             LoginWindow loginTela = new LoginWindow();
             loginTela.Show();
-            
-            
-           
+                   
         }
     }
 }
