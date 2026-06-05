@@ -15,8 +15,8 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private readonly Window _currentWindow;
         private object _currentView;
-        private string _nomeUsuario;
-        private string _btnAtivo;
+        private string _nomeUsuario = string.Empty;
+        private string _btnAtivo = string.Empty;
 
         public Usuario UsuarioLogado { get; }
 
@@ -55,6 +55,7 @@ namespace ReGraphik.ViewModels
         /// </summary>
         /// <param name="usuario">O usuário logado na aplicação.</param>
         /// <param name="window">A janela atual (MainWindow) da aplicação.</param>
+        /// 
         public MainViewModel(Usuario usuario, Window window)
         {
             UsuarioLogado = usuario;
