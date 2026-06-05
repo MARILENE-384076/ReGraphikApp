@@ -101,7 +101,13 @@
                                     <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
                                     <PasswordBox x:Name="TxtSenhaLogin" Style="{StaticResource PasswordStyle}" Margin="0,0,0,36"/>
 
-                                    <Button Content="ENTRAR" Command="{Binding EntrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}"/>
+                                    <Button Content="ENTRAR" Command="{Binding EntrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}">
+                                        <Button.ToolTip>
+                                            <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
+                                                <TextBlock Text="Botão para logar no sistema" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                                            </ToolTip>
+                                        </Button.ToolTip>
+                                    </Button>
                                 </StackPanel>
                             </TabItem>
 
@@ -134,7 +140,13 @@
                                         Command="{Binding CadastrarCommand}" 
                                         CommandParameter="{Binding ElementName=TxtSenhaCadastro}" 
                                         Style="{StaticResource BtnPrimario}" 
-                                        Margin="0,0,0,10"/>
+                                        Margin="0,0,0,10">
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
+                                                    <TextBlock Text="Botão para cadastrar uma nova conta" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
                                     </StackPanel>
                                 </ScrollViewer>
                             </TabItem>
