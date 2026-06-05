@@ -46,10 +46,17 @@ namespace ApiRestReGraphik.Controllers
                 var result = await _usuarioService.Listar();
                 return Ok(result);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida ao listar os usuários");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados do Usuario. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, "Falha ao listar os usuários");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
         }
 
@@ -97,10 +104,17 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Usuário com ID {id} não encontrado.");
                 return Ok(result);
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha ao obter usuário com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados do usuário com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados do Usuário com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao obter dados do usuário com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Não foi possível obter os dados do usuário com ID {id}.");
             }
         }
 
@@ -146,10 +160,17 @@ namespace ApiRestReGraphik.Controllers
                 await _usuarioService.Criar(usuario);
                 return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada para criar usuário.");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao criar dados do Usuário. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao criar dados do usuário.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
         }
 
@@ -189,10 +210,17 @@ namespace ApiRestReGraphik.Controllers
 
                 return Ok(usuario);
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de requisição HTTP e retorna um status 401 Unauthorized com a mensagem de erro
+                _logger.LogError(ex, $"Falha ao autenticar usuário com login {request.Login}.");
+                return StatusCode(StatusCodes.Status401Unauthorized, $"Não foi possível autenticar o usuário com login {request.Login}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao autenticar usuário. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, "Erro ao autenticar usuário.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
 
@@ -232,10 +260,23 @@ namespace ApiRestReGraphik.Controllers
                 await _usuarioService.Atualizar(id, usuario);
                 return Ok($"Usuário com ID {id} atualizado com sucesso.");
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, $"Requisição inválida processada para atualizar usuário com ID {id}.");
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
+                _logger.LogError(ex, $"Falha ao atualizar usuário com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados do usuário com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar dados do Usuário com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao atualizar dados do usuário com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
 
@@ -269,10 +310,17 @@ namespace ApiRestReGraphik.Controllers
                 await _usuarioService.Excluir(id);
                 return Ok($"Usuário com ID {id} excluído com sucesso.");
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha ao excluir usuário com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados do usuário com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir dados do Usuário com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                _logger.LogError(ex, $"Erro ao excluir dados do usuário com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
     }

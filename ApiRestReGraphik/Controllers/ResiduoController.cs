@@ -49,12 +49,18 @@ namespace ApiRestReGraphik.Controllers
                 var result = await _residuoService.Listar();
                 return Ok(result);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida ao listar os resíduos");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados do Residuo. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, "Falha ao listar os resíduos");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
-
 
         }
 
@@ -110,10 +116,17 @@ namespace ApiRestReGraphik.Controllers
                 }
                 return Ok(result);
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha ao obter resíduo com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados do resíduo com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados do Residuo com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                _logger.LogError(ex, $"Erro ao obter dados do Residuo com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Não foi possível obter os dados do resíduo com ID {id}.");
             }
         }
 
@@ -160,7 +173,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 var usuarioIdLogado = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                // Para fins de teste, caso o usuário não esteja autenticado, atribuímos um ID de usuário padrão.
+                //  Caso o usuário logado não seja encontrado, atribuímos um ID de usuário padrão.
                 if (string.IsNullOrEmpty(usuarioIdLogado))
                 {
                     usuarioIdLogado = "0d95265b-2757-424e-8ea9-445e8fd2a422";
@@ -177,16 +190,17 @@ namespace ApiRestReGraphik.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = residuo.Id }, residuo);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada para criar resíduo.");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao criar dados do Residuo. Erro:{ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    mensagem = "Ocorreu um erro ao processar a solicitação.",
-                    erroReal = ex.Message,
-                    detalhes = ex.InnerException?.Message,
-                    stackTrace = ex.StackTrace
-                });
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao criar dados do resíduo.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
         }
 
@@ -230,10 +244,23 @@ namespace ApiRestReGraphik.Controllers
                 await _residuoService.Atualizar(id, residuo);
                 return Ok($"Resíduo com ID {id} atualizado com sucesso.");
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, $"Requisição inválida processada para atualizar resíduo com ID {id}.");
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
+                _logger.LogError(ex, $"Falha ao atualizar residuo com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados do residuo com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar dados do Residuo com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao atualizar dados do Residuo com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
 
@@ -269,13 +296,18 @@ namespace ApiRestReGraphik.Controllers
                 await _residuoService.Excluir(id);
                 return Ok($"Resíduo com ID {id} excluído com sucesso.");
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha ao excluir resíduo com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados do resíduo com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir dados do Residuo com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                _logger.LogError(ex, $"Erro ao excluir dados do Residuo com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
-
-
     }
 }

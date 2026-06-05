@@ -57,10 +57,23 @@ namespace ApiRestReGraphik.Controllers
                 var result = await _pontosColetaService.Listar();
                 return Ok(result);
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 502 Bad Gateway com uma mensagem de erro
+                _logger.LogError(ex, "Falha na comunicação com a API externa do Google Maps.");
+                return StatusCode(StatusCodes.Status502BadGateway, "Não foi possível obter os dados da API externa.");
+            }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada pelo serviço.");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados dos Pontos de Coleta. Erro:{ex.Message}");
-                return StatusCode(500, $"Erro ao processar a listagem dos pontos de coleta");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, "Erro ao obter dados dos Pontos de Coleta.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
         }
 
@@ -111,10 +124,17 @@ namespace ApiRestReGraphik.Controllers
                     PontosIgnoradosPorDuplicidade = ignorado
                 });
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada pelo serviço.");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao sincronizar dados: {ex.Message}");
-                return StatusCode(500, $"Erro interno ao salvar no banco");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, "Erro ao sincronizar dados.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }   
         }
 
@@ -162,10 +182,17 @@ namespace ApiRestReGraphik.Controllers
                 }
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (HttpRequestException ex)
             {
-                _logger.LogError($"Erro ao obter dados do Ponto de Coleta com ID {id}. Erro:{ex.Message}");
-                return StatusCode(500, $"Erro ao processar a solicitação do ponto de coleta");
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha na comunicação com a API externa ao obter ponto de coleta com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados do ponto de coleta com ID {id} devido a um erro de comunicação com a API externa.");
+            }
+            catch (Exception ex)    
+            {
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao obter dados do Ponto de Coleta com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao processar a solicitação do ponto de coleta");
             }
         }
 
@@ -213,10 +240,17 @@ namespace ApiRestReGraphik.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = pontoColeta.Id }, pontoColeta);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada para criar ponto de coleta.");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao criar dados do Ponto de Coleta. Erro:{ex.Message}");
-                return StatusCode(500, $"Erro ao processar a criação do ponto de coleta");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao criar dados do Ponto de Coleta.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
         }
 
@@ -260,10 +294,23 @@ namespace ApiRestReGraphik.Controllers
                 await _pontosColetaService.Atualizar(id, pontoColeta);
                 return Ok($"Ponto de coleta com ID {id} atualizado com sucesso.");
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, $"Requisição inválida processada para atualizar ponto de coleta com ID {id}.");
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha na comunicação com a API externa ao atualizar ponto de coleta com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados do ponto de coleta com ID {id} devido a um erro de comunicação com a API externa.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar dados do Ponto de Coleta com ID {id}. Erro:{ex.Message}");
-                return StatusCode(500, $"Erro ao processar a atualização do ponto de coleta");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao atualizar dados do Ponto de Coleta com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao processar a atualização do ponto de coleta");
             }
         }
 
@@ -299,13 +346,18 @@ namespace ApiRestReGraphik.Controllers
                 await _pontosColetaService.Excluir(id);
                 return Ok($"Ponto de coleta com ID {id} excluído com sucesso.");
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha na comunicação com a API externa ao excluir ponto de coleta com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados do ponto de coleta com ID {id} devido a um erro de comunicação com a API externa.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir dados do Ponto de Coleta com ID {id}. Erro:{ex.Message}");
-                return StatusCode(500, $"Erro ao processar a exclusão do ponto de coleta");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao excluir dados do Ponto de Coleta com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao processar a exclusão do ponto de coleta");
             }
         }
-
-
     }
 }
