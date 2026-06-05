@@ -2,6 +2,7 @@
 using Firebase.Database;
 using Firebase.Database.Query;
 using Google.Apis.Auth.OAuth2;
+using System.Text.Json;
 
 namespace ApiRestReGraphik.Services
 {
@@ -89,10 +90,23 @@ namespace ApiRestReGraphik.Services
                 // Mapeia os dados do Firebase para a lista de PontosColeta
                 return pontos.Select(p => p.Object).ToList();
             }
+            catch (FirebaseException ex)
+            {
+                // Erro específico relacionado ao Firebase, como problemas de autenticação ou comunicação
+                _logger.LogError(ex, "Erro de comunicação ou permissão no Firebase ao listar pontos de coleta.");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                // Erro de desserialização, indicando que os dados no Firebase estão em um formato inesperado ou corrompido
+                _logger.LogError(ex, "Erro de desserialização. Os dados no Firebase estão em formato inválido.");
+                throw new InvalidOperationException("Os dados recuperados do banco estão corrompidos.", ex);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao listar os dados do ponto de coleta: {ex.Message}");
-                throw new Exception("Erro ao listar os dados do ponto de coleta");
+                // Qualquer outro erro inesperado que possa ocorrer durante a operação de listagem
+                _logger.LogError(ex, "Erro inesperado na camada de serviço ao listar pontos de coleta.");
+                throw;
             }
         }
 
@@ -114,10 +128,23 @@ namespace ApiRestReGraphik.Services
 
                 return ponto;
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro de infraestrutura no Firebase ao obter o ponto de coleta por ID: {id}");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
+                _logger.LogError(ex, $"Erro de desserialização. Os nós relacionados ao ID {id} possuem dados inválidos.");
+                throw new InvalidOperationException("Os dados obtidos do Firebase estão corrompidos ou em formato inválido.", ex);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter o ponto de coleta por ID: {ex.Message}");
-                throw new Exception("Erro ao obter o ponto de coleta por ID");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao obter o ponto de coleta por ID: {id}");
+                throw;
             }
 
         }
@@ -147,10 +174,17 @@ namespace ApiRestReGraphik.Services
             .Child(resultado.Key)
             .PutAsync(pontosColeta);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, "Erro no Firebase ao tentar criar novo ponto de coleta.");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao adicionar o ponto de coleta no Firebase: {ex.Message}");
-                throw new Exception($"Erro ao adicionar o ponto de coleta: {ex.Message}");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, "Erro inesperado ao adicionar o ponto de coleta.");
+                throw;
             }
         }
 
@@ -163,78 +197,99 @@ namespace ApiRestReGraphik.Services
         /// <returns></returns>
         public async Task<(int salvos, int ignorados)> SincronizarComGoogleMapsAsync(string cidade, string apiKey, HttpClient httpClient)
         {
-            // Obtém os pontos de coleta existentes no banco de dados para a cidade especificada, garantindo que tenhamos uma lista atualizada para comparação
-            var pontosNoBanco = (await Listar())?.ToList() ?? new List<PontosColeta>();
-
-            // Cria um HashSet para armazenar as coordenadas existentes, permitindo uma busca ultra rápida
-            var coordenadasExistentes = new HashSet<(double, double)>(
-                pontosNoBanco.Select(p => (p.Lat, p.Lng))
-            );
-
-            // Monta a URL de consulta para a API do Google Maps, utilizando o nome da cidade e a chave da API
-            var query = Uri.EscapeDataString($"ponto de coleta reciclagem {cidade}");
-            var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}";
-
-            // Faz a chamada para a API do Google Maps e obtém a resposta JSON
-            var json = await httpClient.GetStringAsync(url);
-            using var doc = System.Text.Json.JsonDocument.Parse(json);
-
-            if (doc.RootElement.TryGetProperty("status", out var statusProp))
+            try
             {
-                string statusApi = statusProp.GetString() ?? "";
-                if (statusApi != "OK" && statusApi != "ZERO_RESULTS")
+                // Obtém os pontos de coleta existentes no banco de dados para a cidade especificada, garantindo que tenhamos uma lista atualizada para comparação
+                var pontosNoBanco = (await Listar())?.ToList() ?? new List<PontosColeta>();
+
+                // Cria um HashSet para armazenar as coordenadas existentes, permitindo uma busca ultra rápida
+                var coordenadasExistentes = new HashSet<(double, double)>(
+                    pontosNoBanco.Select(p => (p.Lat, p.Lng))
+                );
+
+                // Monta a URL de consulta para a API do Google Maps, utilizando o nome da cidade e a chave da API
+                var query = Uri.EscapeDataString($"ponto de coleta reciclagem {cidade}");
+                var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}";
+
+                // Faz a chamada para a API do Google Maps e obtém a resposta JSON
+                var json = await httpClient.GetStringAsync(url);
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+                if (doc.RootElement.TryGetProperty("status", out var statusProp))
                 {
-                    _logger.LogWarning($"API do Google Maps retornou um status de erro: {statusApi}");
+                    string statusApi = statusProp.GetString() ?? "";
+                    if (statusApi != "OK" && statusApi != "ZERO_RESULTS")
+                    {
+                        _logger.LogWarning($"API do Google Maps retornou um status de erro: {statusApi}");
+                        return (0, 0);
+                    }
+                }
+
+                if (!doc.RootElement.TryGetProperty("results", out var results))
+                {
                     return (0, 0);
                 }
-            }
 
-            if (!doc.RootElement.TryGetProperty("results", out var results))
-            {
-                return (0, 0);
-            }
+                int totalSalvo = 0;
+                int totalIgnorado = 0;
 
-            int totalSalvo = 0;
-            int totalIgnorado = 0;
-
-            foreach (var item in results.EnumerateArray())
-            {
-                var nome = item.TryGetProperty("name", out var n) ? n.GetString() : "Sem nome";
-
-                // O Google pode retornar resultados sem coordenadas, então precisamos verificar isso antes de tentar acessar os valores
-                double lat = 0, lng = 0;
-                if (item.TryGetProperty("geometry", out var geo) && geo.TryGetProperty("location", out var loc))
+                foreach (var item in results.EnumerateArray())
                 {
-                    lat = loc.TryGetProperty("lat", out var la) ? la.GetDouble() : 0;
-                    lng = loc.TryGetProperty("lng", out var ln) ? ln.GetDouble() : 0;
+                    var nome = item.TryGetProperty("name", out var n) ? n.GetString() : "Sem nome";
+
+                    // O Google pode retornar resultados sem coordenadas, então precisamos verificar isso antes de tentar acessar os valores
+                    double lat = 0, lng = 0;
+                    if (item.TryGetProperty("geometry", out var geo) && geo.TryGetProperty("location", out var loc))
+                    {
+                        lat = loc.TryGetProperty("lat", out var la) ? la.GetDouble() : 0;
+                        lng = loc.TryGetProperty("lng", out var ln) ? ln.GetDouble() : 0;
+                    }
+
+                    // Verifica se as coordenadas já existem no banco de dados usando o HashSet, o que é extremamente rápido
+                    if (coordenadasExistentes.Contains((lat, lng)))
+                    {
+                        totalIgnorado++;
+                        continue;
+                    }
+
+                    var novoPonto = new PontosColeta
+                    {
+                        NomePonto = nome,
+                        Cidade = cidade,
+                        Estado = "BR",
+                        CEP = "—",
+                        ResiduosAceitos = "Reciclável",
+                        Lat = lat,
+                        Lng = lng
+                    };
+
+                    await Criar(novoPonto);
+
+                    // Adiciona as novas coordenadas ao HashSet para garantir que não sejam adicionadas novamente
+                    coordenadasExistentes.Add((lat, lng));
+                    totalSalvo++;
                 }
 
-                // Verifica se as coordenadas já existem no banco de dados usando o HashSet, o que é extremamente rápido
-                if (coordenadasExistentes.Contains((lat, lng)))
-                {
-                    totalIgnorado++;
-                    continue;
-                }
-
-                var novoPonto = new PontosColeta
-                {
-                    NomePonto = nome,
-                    Cidade = cidade,
-                    Estado = "BR",
-                    CEP = "—",
-                    ResiduosAceitos = "Reciclável",
-                    Lat = lat,
-                    Lng = lng
-                };
-
-                await Criar(novoPonto);
-
-                // Adiciona as novas coordenadas ao HashSet para garantir que não sejam adicionadas novamente
-                coordenadasExistentes.Add((lat, lng));
-                totalSalvo++;
+                return (totalSalvo, totalIgnorado);
             }
-
-            return (totalSalvo, totalIgnorado);
+            catch (FirebaseException ex)
+            {
+                // Erro específico relacionado ao Firebase, como problemas de autenticação ou comunicação
+                _logger.LogError(ex, "Erro de comunicação ou permissão no Firebase ao buscar pontos de coleta.");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                // Erro de desserialização, indicando que os dados no Firebase estão em um formato inesperado ou corrompido
+                _logger.LogError(ex, "Erro de desserialização. Os dados no Firebase estão em formato inválido.");
+                throw new InvalidOperationException("Os dados recuperados do banco estão corrompidos.", ex);
+            }
+            catch (Exception ex)
+            {
+                // Qualquer outro erro inesperado que possa ocorrer durante a operação de busca
+                _logger.LogError(ex, "Erro inesperado na camada de serviço ao buscar pontos de coleta.");
+                throw;
+            }
         }
 
         /// <summary>
@@ -255,10 +310,17 @@ namespace ApiRestReGraphik.Services
                     .Child(id)
                     .PutAsync(pontosColeta);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar atualizar o ponto de coleta ID: {id}");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar o ponto de coleta: {ex.Message}");
-                throw new Exception("Erro ao atualizar o ponto de coleta");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao atualizar o ponto de coleta ID: {id}");
+                throw;
             }
         }
         
@@ -278,10 +340,17 @@ namespace ApiRestReGraphik.Services
                     .Child(id)
                     .DeleteAsync();
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar excluir o ponto de coleta ID: {id}");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir o ponto de coleta: {ex.Message}");
-                throw new Exception("Erro ao excluir o ponto de coleta");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao excluir o ponto de coleta ID: {id}");
+                throw;
             }
         }
     }

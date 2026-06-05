@@ -47,10 +47,17 @@ namespace ApiRestReGraphik.Controllers
                 var result = await _sugestaoService.Listar();
                 return Ok(result);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida ao listar as sugestões");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados do Sugestao. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, "Falha ao listar as sugestões");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
 
 
@@ -97,10 +104,17 @@ namespace ApiRestReGraphik.Controllers
                 }
                 return Ok(result);
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha ao obter sugestão com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados da sugestão com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter dados da Sugestão com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao obter dados da sugestão com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Não foi possível obter os dados da sugestão com ID {id}.");
             }
         }
 
@@ -143,10 +157,17 @@ namespace ApiRestReGraphik.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = sugestao.Id }, sugestao);
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada para criar sugestão.");
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao criar dados da Sugestão. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao criar dados da sugestão.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
         }
 
@@ -190,10 +211,23 @@ namespace ApiRestReGraphik.Controllers
                 await _sugestaoService.Atualizar(id, sugestao);
                 return Ok($"Sugestão com ID {id} atualizada com sucesso.");
             }
+            catch (ArgumentException ex)
+            {
+                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, $"Requisição inválida processada para atualizar sugestão com ID {id}.");
+                return BadRequest(ex.Message);
+            }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
+                _logger.LogError(ex, $"Falha ao atualizar sugestão com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados da sugestão com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar dados da Sugestão com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                _logger.LogError(ex, $"Erro ao atualizar dados da sugestão com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
 
@@ -229,13 +263,18 @@ namespace ApiRestReGraphik.Controllers
                 await _sugestaoService.Excluir(id);
                 return Ok($"Sugestão com ID {id} excluída com sucesso.");
             }
+            catch (HttpRequestException ex)
+            {
+                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                _logger.LogError(ex, $"Falha ao excluir sugestão com ID {id}.");
+                return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados da sugestão com ID {id}.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir dados da Sugestão com ID {id}. Erro:{ex.Message}");
-                throw new Exception("Ocorreu um erro ao processar a solicitação.");
+                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                _logger.LogError(ex, $"Erro ao excluir dados da sugestão com ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
-
-
     }
 }

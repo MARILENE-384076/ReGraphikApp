@@ -3,15 +3,25 @@ using System.Windows.Input;
 
 public class RelayCommand : ICommand
 {
+    /// <summary>
+    /// A classe RelayCommand foi ajustada para suportar tanto comandos assíncronos quanto síncronos, com ou sem parâmetros.
+    /// </summary>
     private readonly Func<object, Task> _executeAsyncWithParam;
     private readonly Func<Task> _executeAsyncNoParam;
     private readonly Action<object> _executeWithParam;
     private readonly Action _executeNoParam;
 
-    // Adicionado: Guardará a regra de validação do botão
+    /// <summary>
+    /// O canExecute é opcional e pode ser fornecido para controlar quando o comando deve estar 
+    /// habilitado ou desabilitado. Se não for fornecido, o comando estará sempre habilitado.
+    /// </summary>
     private readonly Predicate<object> _canExecute;
 
-    // Construtores atualizados aceitando o canExecute opcional
+    /// <summary>
+    /// O construtor foi ajustado para aceitar tanto ações assíncronas quanto síncronas, com ou sem parâmetros.
+    /// </summary>
+    /// <param name="executeAsync"></param>
+    /// <param name="canExecute"></param>
     public RelayCommand(Func<Task> executeAsync, Predicate<object> canExecute = null)
     {
         _executeAsyncNoParam = executeAsync;

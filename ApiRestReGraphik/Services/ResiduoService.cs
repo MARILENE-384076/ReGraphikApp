@@ -1,6 +1,7 @@
 ﻿using ApiRestReGraphik.Models;
 using Firebase.Database;
 using Firebase.Database.Query;
+using System.Text.Json;
 
 namespace ApiRestReGraphik.Services
 {
@@ -34,45 +35,71 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém os dados do Firebase para a coleção de resíduos
-                var residuosFirebase = await _firebaseClient
-                    .Child(NodeName)
-                    .OnceAsync<Residuo>();
+                // Realiza as consultas assíncronas para obter os resíduos e os usuários do Firebase em paralelo, melhorando a eficiência da operação
+                var tarefaResiduos = _firebaseClient.Child(NodeName).OnceAsync<Residuo>();
+                var tarefaUsuarios = _firebaseClient.Child(UsersNodeName).OnceAsync<Usuario>();
 
-                // Converte os dados do Firebase para uma lista de objetos Residuo, garantindo que o ID seja atribuído corretamente a partir da chave do Firebase
-                var listaResiduos = residuosFirebase.Select(r =>
-                {
-                    var residuo = r.Object;
-                    if (residuo != null && string.IsNullOrEmpty(residuo.Id))
+                // Aguarda a conclusão de ambas as tarefas para garantir que os dados estejam disponíveis antes de processá-los
+                await Task.WhenAll(tarefaResiduos, tarefaUsuarios);
+
+                // Processa os resíduos obtidos do Firebase, garantindo que cada resíduo tenha seu ID definido
+                // corretamente a partir da chave do Firebase e filtrando quaisquer resíduos nulos
+                var listaResiduos = tarefaResiduos.Result
+                    .Select(r =>
                     {
-                        residuo.Id = r.Key; 
-                    }
-                    return residuo;
-                }).Where(r => r != null).ToList();
+                        var residuo = r.Object;
+                        if (residuo != null && string.IsNullOrEmpty(residuo.Id))
+                        {
+                            residuo.Id = r.Key;
+                        }
+                        return residuo;
+                    })
+                    .Where(r => r != null)
+                    .ToList();
 
-                // Obtém os dados do Firebase para a coleção de usuários (caso seja necessário para mapear os resíduos aos usuários)
-                var usuariosFirebase = await _firebaseClient
-                    .Child(UsersNodeName)
-                    .OnceAsync<Usuario>();
+                // Cria um dicionário de usuários a partir dos dados obtidos do Firebase, agrupando por ID para garantir que cada usuário seja único e acessível rapidamente
+                var dicionarioUsuarios = tarefaUsuarios.Result
+                    .GroupBy(u => u.Key)
+                    .ToDictionary(g => g.Key, g => g.First().Object);
 
-                // Cria um dicionário para mapear os usuários pelo ID, facilitando a associação dos resíduos aos seus respectivos usuários
-                var dicionarioUsuarios = usuariosFirebase.ToDictionary(u => u.Key, u => u.Object);
-
+                // Associa cada resíduo ao seu respectivo usuário, utilizando o dicionário de usuários
+                // para obter as informações do usuário com base no ID de usuário presente em cada resíduo
                 foreach (var residuo in listaResiduos)
                 {
-                    // Se o resíduo tiver um ID de usuário válido, associa o objeto de usuário correspondente ao resíduo usando o dicionário criado
-                    if (!string.IsNullOrEmpty(residuo.IdUsuario) && dicionarioUsuarios.ContainsKey(residuo.IdUsuario))
+                    // Verifica se o ID de usuário do resíduo é válido e se o usuário correspondente existe no dicionário, associando o usuário ao resíduo
+                    if (!string.IsNullOrEmpty(residuo.IdUsuario) &&
+                        dicionarioUsuarios.TryGetValue(residuo.IdUsuario, out var usuario))
                     {
-                        residuo.Usuario = dicionarioUsuarios[residuo.IdUsuario];
+                        residuo.Usuario = usuario;
                     }
                 }
 
                 return listaResiduos;
+
+            }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, "Falha de comunicação com o Firebase ao carregar dados do ReGraphik (Resíduos/Usuários).");
+                throw; 
+            }
+            catch (ArgumentException ex)
+            {
+                // Captura erros de argumento que podem ocorrer se os dados do Firebase 
+                _logger.LogError(ex, "Erro de consistência de dados ao tentar agrupar usuários por ID.");
+                throw new InvalidOperationException("Não foi possível processar a relação entre resíduos e usuários devido a dados inconsistentes.", ex);
+            }
+            catch (JsonException ex)
+            {
+                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase
+                _logger.LogError(ex, "Erro de desserialização: Estrutura do nó de Resíduos ou Usuários é incompatível.");
+                throw new InvalidOperationException("Os dados armazenados no Firebase possuem um formato inválido.", ex);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao listar os dados do ReGraphik: {ex.Message}");
-                throw new Exception("Erro ao listar os dados do ReGraphik");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, "Erro crítico e não mapeado no serviço ReGraphik.");
+                throw;
             }
         }
 
@@ -110,10 +137,23 @@ namespace ApiRestReGraphik.Services
 
                 return residuos;
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro de infraestrutura no Firebase ao obter o resíduo por ID: {id}");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
+                _logger.LogError(ex, $"Erro de desserialização. Os nós relacionados ao ID {id} possuem dados inválidos.");
+                throw new InvalidOperationException("Os dados obtidos do Firebase estão corrompidos ou em formato inválido.", ex);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter o resíduo por ID: {ex.Message}");
-                throw new Exception("Erro ao obter o resíduo por ID");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao obter o resíduo por ID: {id}");
+                throw;
             }
 
         }
@@ -139,10 +179,17 @@ namespace ApiRestReGraphik.Services
                     .Child(residuo.Id)
                     .PutAsync(residuo);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, "Erro no Firebase ao tentar criar novo resíduo.");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao adicionar o resíduo: {ex.Message}");
-                throw new Exception("Erro ao adicionar o resíduo", ex);
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, "Erro inesperado ao adicionar o resíduo.");
+                throw;
             }
         }
 
@@ -165,10 +212,17 @@ namespace ApiRestReGraphik.Services
                     .Child(id)
                     .PutAsync(residuo);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar atualizar o resíduo ID: {id}");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar o resíduo: {ex.Message}");
-                throw new Exception("Erro ao atualizar o resíduo");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao atualizar o resíduo ID: {id}");
+                throw;
             }
         }
         
@@ -188,10 +242,17 @@ namespace ApiRestReGraphik.Services
                     .Child(id)
                     .DeleteAsync();
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar excluir o resíduo ID: {id}");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir o resíduo: {ex.Message}");
-                throw new Exception("Erro ao excluir o resíduo");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao excluir o resíduo ID: {id}");
+                throw;
             }
         }
     }
