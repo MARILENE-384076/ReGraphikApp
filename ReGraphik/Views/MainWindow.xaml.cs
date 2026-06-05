@@ -18,5 +18,6 @@ namespace ReGraphik.Views
             InitializeComponent();
             this.DataContext = new MainViewModel(usuario, this);
         }
+
     }
 }
