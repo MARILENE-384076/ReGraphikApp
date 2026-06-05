@@ -56,6 +56,7 @@ namespace ReGraphik.ViewModels
             // Inicializa o comando de cadastro, associando-o ao método Cadastrar
             CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
         }
+
         private bool CanCadastrar(object parameter) => !Ocupado;
 
         // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
