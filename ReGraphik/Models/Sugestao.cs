@@ -2,6 +2,9 @@
 
 namespace RestReGraphik.Models
 {
+    /// <summary>
+    /// Classe que representa a estrutura de dados para uma sugestão, contendo propriedades como tipo de resíduo aceito e descrição da sugestão.
+    /// </summary>
     public class Sugestao
     {
         [JsonPropertyName("id")]

@@ -6,10 +6,16 @@ namespace ApiRestReGraphik.Data
 {
     public class DbReGraphik
     {
-        // Inicializa a conexão com o Firebase Realtime Database
+        /// <summary>
+        /// Propriedade que representa a instância do cliente do Firebase, permitindo a interação com o Firebase Realtime 
+        /// Database para realizar operações de leitura e escrita de dados.
+        /// </summary>
         public FirebaseClient DbFirebase { get; }
 
-        // Construtor da classe que configura a conexão com o Firebase usando as credenciais e a URL do banco de dados fornecidas no arquivo de configuração
+        /// <summary>
+        /// Construtor da classe DbReGraphik, responsável por configurar a conexão com o Firebase Realtime Database utilizando as credenciais fornecidas
+        /// </summary>
+        /// <param name="configuration"></param>
         [Obsolete]
         public DbReGraphik(IConfiguration configuration)
         {

@@ -4,6 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace ApiRestReGraphik.Models
 {
+    /// <summary>
+    /// Classe que representa a estrutura de dados para um resíduo, contendo propriedades como tipo de resíduo, origem, 
+    /// especificação, projeto associado, quantidade, data de cadastro, condição, dimensões, observações, anexo e status.
+    /// </summary>
     public class Residuo
     {
         [JsonIgnore]
