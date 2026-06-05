@@ -35,40 +35,47 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém os dados do Firebase para a coleção de resíduos
-                var residuosFirebase = await _firebaseClient
-                    .Child(NodeName)
-                    .OnceAsync<Residuo>();
+                // Realiza as consultas assíncronas para obter os resíduos e os usuários do Firebase em paralelo, melhorando a eficiência da operação
+                var tarefaResiduos = _firebaseClient.Child(NodeName).OnceAsync<Residuo>();
+                var tarefaUsuarios = _firebaseClient.Child(UsersNodeName).OnceAsync<Usuario>();
 
-                // Converte os dados do Firebase para uma lista de objetos Residuo, garantindo que o ID seja atribuído corretamente a partir da chave do Firebase
-                var listaResiduos = residuosFirebase.Select(r =>
-                {
-                    var residuo = r.Object;
-                    if (residuo != null && string.IsNullOrEmpty(residuo.Id))
+                // Aguarda a conclusão de ambas as tarefas para garantir que os dados estejam disponíveis antes de processá-los
+                await Task.WhenAll(tarefaResiduos, tarefaUsuarios);
+
+                // Processa os resíduos obtidos do Firebase, garantindo que cada resíduo tenha seu ID definido
+                // corretamente a partir da chave do Firebase e filtrando quaisquer resíduos nulos
+                var listaResiduos = tarefaResiduos.Result
+                    .Select(r =>
                     {
-                        residuo.Id = r.Key; 
-                    }
-                    return residuo;
-                }).Where(r => r != null).ToList();
+                        var residuo = r.Object;
+                        if (residuo != null && string.IsNullOrEmpty(residuo.Id))
+                        {
+                            residuo.Id = r.Key;
+                        }
+                        return residuo;
+                    })
+                    .Where(r => r != null)
+                    .ToList();
 
-                // Obtém os dados do Firebase para a coleção de usuários (caso seja necessário para mapear os resíduos aos usuários)
-                var usuariosFirebase = await _firebaseClient
-                    .Child(UsersNodeName)
-                    .OnceAsync<Usuario>();
+                // Cria um dicionário de usuários a partir dos dados obtidos do Firebase, agrupando por ID para garantir que cada usuário seja único e acessível rapidamente
+                var dicionarioUsuarios = tarefaUsuarios.Result
+                    .GroupBy(u => u.Key)
+                    .ToDictionary(g => g.Key, g => g.First().Object);
 
-                // Cria um dicionário para mapear os usuários pelo ID, facilitando a associação dos resíduos aos seus respectivos usuários
-                var dicionarioUsuarios = usuariosFirebase.ToDictionary(u => u.Key, u => u.Object);
-
+                // Associa cada resíduo ao seu respectivo usuário, utilizando o dicionário de usuários
+                // para obter as informações do usuário com base no ID de usuário presente em cada resíduo
                 foreach (var residuo in listaResiduos)
                 {
-                    // Se o resíduo tiver um ID de usuário válido, associa o objeto de usuário correspondente ao resíduo usando o dicionário criado
-                    if (!string.IsNullOrEmpty(residuo.IdUsuario) && dicionarioUsuarios.ContainsKey(residuo.IdUsuario))
+                    // Verifica se o ID de usuário do resíduo é válido e se o usuário correspondente existe no dicionário, associando o usuário ao resíduo
+                    if (!string.IsNullOrEmpty(residuo.IdUsuario) &&
+                        dicionarioUsuarios.TryGetValue(residuo.IdUsuario, out var usuario))
                     {
-                        residuo.Usuario = dicionarioUsuarios[residuo.IdUsuario];
+                        residuo.Usuario = usuario;
                     }
                 }
 
                 return listaResiduos;
+
             }
             catch (FirebaseException ex)
             {
