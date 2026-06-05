@@ -1,6 +1,7 @@
 ﻿using ApiRestReGraphik.Models;
 using Firebase.Database;
 using Firebase.Database.Query;
+using System.Text.Json;
 
 namespace ApiRestReGraphik.Services
 {
@@ -40,10 +41,29 @@ namespace ApiRestReGraphik.Services
                 // Mapeia os dados do Firebase para a lista de usuários
                 return usuarios.Select(r => r.Object).ToList();
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, "Falha de comunicação com o Firebase ao carregar dados do ReGraphik usuários.");
+                throw;
+            }
+            catch (ArgumentException ex)
+            {
+                // Captura erros de argumento que podem ocorrer se os dados do Firebase 
+                _logger.LogError(ex, "Erro de consistência de dados ao tentar agrupar usuários por ID.");
+                throw new InvalidOperationException("Não foi possível processar a relação entre usuários devido a dados inconsistentes.", ex);
+            }
+            catch (JsonException ex)
+            {
+                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase
+                _logger.LogError(ex, "Erro de desserialização: Estrutura do nó de Usuários é incompatível.");
+                throw new InvalidOperationException("Os dados armazenados no Firebase possuem um formato inválido.", ex);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao listar os dados do Usuario: {ex.Message}");
-                throw new Exception("Erro ao listar os dados do Usuario");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, "Erro crítico e não mapeado no serviço ReGraphik.");
+                throw;
             }
         }
 
@@ -65,10 +85,23 @@ namespace ApiRestReGraphik.Services
 
                 return usuario;
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro de infraestrutura no Firebase ao obter o usuário por ID: {id}");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
+                _logger.LogError(ex, $"Erro de desserialização. Os nós relacionados ao ID {id} possuem dados inválidos.");
+                throw new InvalidOperationException("Os dados obtidos do Firebase estão corrompidos ou em formato inválido.", ex);
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao obter o usuário por ID: {ex.Message}");
-                throw new Exception("Erro ao obter o usuário por ID");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao obter o usuário por ID: {id}");
+                throw;
             }
 
         }
@@ -94,10 +127,17 @@ namespace ApiRestReGraphik.Services
                     .Child(usuario.Id)
                     .PutAsync(usuario);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, "Erro no Firebase ao tentar criar novo usuário.");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao adicionar o usuário: {ex.Message}");
-                throw new Exception("Erro ao adicionar o usuário");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, "Erro inesperado ao adicionar o usuário.");
+                throw;
             }
         }
 
@@ -120,10 +160,17 @@ namespace ApiRestReGraphik.Services
                     .Child(id)
                     .PutAsync(usuario);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar atualizar o usuário ID: {id}");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao atualizar o usuário: {ex.Message}");
-                throw new Exception("Erro ao atualizar o usuário");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao atualizar o usuário ID: {id}");
+                throw;
             }
         }
         
@@ -143,10 +190,17 @@ namespace ApiRestReGraphik.Services
                     .Child(id)
                     .DeleteAsync();
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar excluir o usuário ID: {id}");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao excluir o usuário: {ex.Message}");
-                throw new Exception("Erro ao excluir o usuário");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao excluir o usuário ID: {id}");
+                throw;
             }
         }
 
@@ -170,10 +224,17 @@ namespace ApiRestReGraphik.Services
                     .Select(r => r.Object)
                     .FirstOrDefault(u => u.Login == login && u.Senha == senha);
             }
+            catch (FirebaseException ex)
+            {
+                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                _logger.LogError(ex, $"Erro no Firebase ao tentar autenticar o usuário.");
+                throw;
+            }
             catch (Exception ex)
             {
-                _logger.LogError($"Erro ao autenticar o usuário: {ex.Message}");
-                throw new Exception("Erro ao autenticar o usuário");
+                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                _logger.LogError(ex, $"Erro inesperado ao autenticar o usuário.");
+                throw;
             }
         }
     }
