@@ -2,7 +2,6 @@
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using ReGraphik.Views;
-using ReGraphik.Views.Pages;
 using System;
 using System.Net.Http;
 using System.Reflection.Metadata;
@@ -83,12 +82,19 @@ namespace ReGraphik.ViewModels
 
                 if (usuario != null)
                 {
-                    /// Se o login for bem-sucedido, abre a janela principal do aplicativo, passando o objeto usuário completo
+                    // 1. Cria e mostra a tela principal com o usuário logado
                     var main = new MainWindow(usuario);
                     main.Show();
 
-                    /// Fecha a janela de login
-                    Application.Current.MainWindow?.Close();
+                    // 2. Procura especificamente a LoginWindow que está aberta no sistema e fecha ela
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is LoginWindow)
+                        {
+                            window.Close();
+                            break; // Para o laço assim que fechar
+                        }
+                    }
                 }
             }
             catch (Exception ex)

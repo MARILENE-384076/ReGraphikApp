@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 namespace ReGraphik.Views.UserControls
 {
     /// <summary>
-    /// Define a interação lógica para EstoqueReverseView.xaml
+    /// Define a interação lógica para EstoqueReversoView.xaml
     /// </summary>
-    public partial class EstoqueReverseView : UserControl
+    public partial class EstoqueReversoView : UserControl
     {
-        public EstoqueReverseView()
+        public EstoqueReversoView()
         {
             InitializeComponent();
             DataContext = new EstoqueReversoViewModel();

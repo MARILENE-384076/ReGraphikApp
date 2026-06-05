@@ -22,10 +22,12 @@ namespace ReGraphik.Views.UserControls
     /// </summary>
     public partial class SugestaoResiduoView : UserControl
     {
+        private Residuo _residuoSelecionado;
         public SugestaoResiduoView(Residuo residuo)
         {
             InitializeComponent();
             DataContext = new SugestaoResiduoViewModel(residuo);
+            _residuoSelecionado = residuo;
         }
     }
 }
