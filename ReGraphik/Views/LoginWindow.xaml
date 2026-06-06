@@ -4,13 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReGraphik.Views" 
-        xmlns:vm="clr-namespace:ReGraphik.ViewModels" 
+        xmlns:viewmodels="clr-namespace:ReGraphik.ViewModels"
         xmlns:iconPacks="clr-namespace:MahApps.Metro.IconPacks;assembly=MahApps.Metro.IconPacks.Material"
         mc:Ignorable="d"
         Title="ReGraphik - Acesso" Height="680" Width="900"
         MinHeight="680" MinWidth="900"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanResize">
+        ResizeMode="CanResize"
+        Icon="/Imgs/logoRegraphik.png">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -143,7 +144,7 @@
 
                             <TabItem Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
                                 <TabItem.DataContext>
-                                    <vm:CadastroViewModel/>
+                                    <viewmodels:CadastroViewModel />
                                 </TabItem.DataContext>
 
                                 <Grid Margin="32,16,32,0">
@@ -248,7 +249,6 @@
                                             </Style>
                                         </ScrollViewer.Style>
                                     </ScrollViewer>
-
                                 </Grid>
                             </TabItem>
                         </TabControl>
