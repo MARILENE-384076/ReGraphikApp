@@ -30,63 +30,52 @@
 
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" Background="#1649a2"
-                BorderBrush="#2563eb" 
-                BorderThickness="1,1,0,1" 
-                CornerRadius="16,0,0,16">
+                        BorderBrush="#2563eb" 
+                        BorderThickness="1,1,0,1" 
+                        CornerRadius="16,0,0,16">
                     <Grid Margin="36,40">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,120,100">
                             <TextBlock Text="♻️" FontSize="36" VerticalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="ReGraphik" FontSize="32" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                            <TextBlock Text="ReGraphik" FontSize="32" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="0,0,20,0"/>
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" VerticalAlignment="Center">
-                            <TextBlock Text="Gestão inteligente de resíduos industriais" FontSize="15" FontWeight="Medium" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,32"/>
+                            <TextBlock Text="Gestão inteligente de resíduos industriais" FontSize="18" FontWeight="Medium" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,32"/>
 
-                            <StackPanel HorizontalAlignment="Left" Margin="20,0,0,0">
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                                    <Border Background="#3274ba" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                        <iconPacks:PackIconMaterial Kind="ViewDashboardVariant" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <TextBlock Text="Dashboard em tempo real" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                                    <Border Background="#3274ba" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                        <iconPacks:PackIconMaterial Kind="MapMarkerOutline" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <TextBlock Text="Mapa de pontos de coleta" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="#3274ba" CornerRadius="6" Width="32" Height="32" Margin="0,0,12,0">
-                                        <iconPacks:PackIconMaterial Kind="Warehouse" Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <TextBlock Text="Controle de estoque reverso" Foreground="White" FontSize="13" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </StackPanel>
+                            <Button Content="CADASTRAR" 
+                                    IsDefault="True"
+                                    Command="{Binding CadastrarCommand}" 
+                                    CommandParameter="{Binding ElementName=TxtSenhaLogin}" 
+                                    Style="{StaticResource BtnSecondaryStyle}">           
+                                <Button.ToolTip>
+                                    <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
+                                        <TextBlock Text="Botão para cadastrar nova conta" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                                    </ToolTip>
+                                </Button.ToolTip>
+                            </Button>
                         </StackPanel>
 
-                        <TextBlock Grid.Row="2" Text="© 2026 ReGraphik" Foreground="#bae6fd" FontSize="11" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Grid.Row="2" Text="© 2026 ReGraphik" Foreground="#bae6fd" FontSize="11" HorizontalAlignment="Center" Margin="30"/>
                     </Grid>
                 </Border>
 
                 <Border Grid.Column="1" 
-                Background="White" 
-                BorderBrush="#CBD5E1" 
-                BorderThickness="1,1,1,1" 
-                CornerRadius="0,16,16,0" 
-                Padding="50,40">
+                        Background="White" 
+                        BorderBrush="#CBD5E1" 
+                        BorderThickness="1,1,1,1" 
+                        CornerRadius="0,16,16,0" 
+                        Padding="50,40">
                     <Grid>
                         <TabControl Background="Transparent" BorderThickness="0">
 
@@ -97,11 +86,26 @@
 
                                     <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
                                     <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,24"/>
+                                    <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLogin}" Margin="0,-20,0,20" Foreground="DarkRed"/>
 
                                     <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
                                     <PasswordBox x:Name="TxtSenhaLogin" Style="{StaticResource PasswordStyle}" Margin="0,0,0,36"/>
+                                    <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaSenha}" Margin="0,-30,0,20" Foreground="DarkRed"/>
 
-                                    <Button Content="ENTRAR" Command="{Binding EntrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}">
+                                    <TextBlock Text="{Binding MensagemErroGeral}" 
+                                               Foreground="DarkRed" 
+                                               FontSize="13" 
+                                               FontWeight="SemiBold"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               Margin="0,-16,0,16"/>
+
+                                    <Button Content="ENTRAR" 
+                                            IsDefault="True"
+                                            Command="{Binding EntrarCommand}" 
+                                            CommandParameter="{Binding ElementName=TxtSenhaLogin}" 
+                                            Style="{StaticResource BtnPrimario}">
                                         <Button.ToolTip>
                                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                                 <TextBlock Text="Botão para logar no sistema" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -116,31 +120,67 @@
                                     <vm:CadastroViewModel/>
                                 </TabItem.DataContext>
 
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
-                                    <StackPanel Margin="0,20,10,0">
+                                <Grid Margin="0,24,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
                                         <TextBlock Text="Crie sua conta" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                        <TextBlock Text="Preencha os dados abaixo para se cadastrar." FontSize="13" Foreground="#64748B" Margin="0,0,0,24"/>
+                                        <TextBlock Text="Preencha os dados abaixo para se cadastrar." FontSize="13" Foreground="#64748B"/>
+                                    </StackPanel>
 
-                                        <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
 
-                                        <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
+                                            <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaNome}" Margin="0,-12,0,12" Foreground="DarkRed"/>
 
-                                        <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
+                                            <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaCpf}" Margin="0,-12,0,12" Foreground="DarkRed"/>
 
-                                        <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                                            <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaEmail}" Margin="0,-12,0,12" Foreground="DarkRed"/>
+                                        </StackPanel>
 
-                                        <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
-                                        <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" Margin="0,0,0,28"/>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                                            <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLogin}" Margin="0,-12,0,12" Foreground="DarkRed"/>
+
+                                            <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
+                                            <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" Margin="0,0,0,16"/>
+                                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaSenha}" Margin="0,-12,0,12" Foreground="DarkRed"/>
+
+                                            <FrameworkElement Height="50"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="2" Margin="0,10,0,0">
+                                        <TextBlock Text="{Binding MensagemErroGeral}" 
+                                                   Foreground="DarkRed" 
+                                                   FontSize="13" 
+                                                   FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,0,12"/>
 
                                         <Button Content="CADASTRAR" 
-                                        Command="{Binding CadastrarCommand}" 
-                                        CommandParameter="{Binding ElementName=TxtSenhaCadastro}" 
-                                        Style="{StaticResource BtnPrimario}" 
-                                        Margin="0,0,0,10">
+                                                IsDefault="True"
+                                                Command="{Binding CadastrarCommand}" 
+                                                CommandParameter="{Binding ElementName=TxtSenhaCadastro}" 
+                                                Style="{StaticResource BtnPrimario}">
                                             <Button.ToolTip>
                                                 <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                                     <TextBlock Text="Botão para cadastrar uma nova conta" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -148,7 +188,7 @@
                                             </Button.ToolTip>
                                         </Button>
                                     </StackPanel>
-                                </ScrollViewer>
+                                </Grid>
                             </TabItem>
                         </TabControl>
                     </Grid>

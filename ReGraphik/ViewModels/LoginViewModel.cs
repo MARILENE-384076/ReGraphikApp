@@ -14,14 +14,26 @@ using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
 {
+    /// <summary>
+    /// ViewModel responsável por gerenciar a lógica de login da aplicação. Ele interage com a interface de usuário (LoginWindow) 
+    /// para obter as credenciais do usuário, valida-las e chamar o serviço de autorização para autenticar o usuário.
+    /// </summary>
     public class LoginViewModel : BaseViewModel
     {
-        // Instancia do serviço de autorização para lidar com a lógica de login
+        /// <summary>
+        /// Referência para o serviço de autorização, que é responsável por realizar a autenticação do usuário.
+        /// </summary>
         private readonly IAutorizarService _autorizarService;
 
-        // Propriedades para armazenar o login e senha, que são vinculadas aos campos de entrada na interface
-        private string _login = "";
+        /// <summary>
+        /// Propriedades para armazenar o login, senha e mensagens de erro que serão exibidas na interface de usuário.
+        /// </summary>
+        private string _login;
         private bool _ocupado;
+        private string _mensaLogin;
+        private string _mensaSenha;
+        private string _mensagemErroGeral;
+
 
         public string Login
         {
@@ -34,6 +46,24 @@ namespace ReGraphik.ViewModels
         {
             get => _ocupado;
             set { _ocupado = value; OnPropertyChanged(); }
+        }
+
+        public string MensaLogin
+        {
+            get => _mensaLogin; 
+            set { _mensaLogin = value; OnPropertyChanged(); }
+        }
+
+        public string MensaSenha
+        {
+            get => _mensaSenha;
+            set { _mensaSenha = value; OnPropertyChanged(); }
+        }
+
+        public string MensagemErroGeral
+        {
+            get => _mensagemErroGeral;
+            set { _mensagemErroGeral = value; OnPropertyChanged(); }
         }
 
         public ICommand EntrarCommand { get; }
@@ -49,21 +79,37 @@ namespace ReGraphik.ViewModels
         private bool CanEntrar(object parameter) => !Ocupado;
 
         private async Task Entrar(object parameter)
-        {
+        { 
+            MensaLogin = string.Empty;
+            MensaSenha = string.Empty;
+            MensagemErroGeral = string.Empty;
+
             // Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
-                MessageBox.Show("Erro ao digitar a senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
             // Obtém a senha digitada pelo usuário a partir do PasswordBox
             string senhaDigitada = passwordBox.Password;
+            bool possuiErro = false;
 
-            if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(senhaDigitada))
+            // Validação de login
+            if (string.IsNullOrWhiteSpace(Login))
             {
-                MessageBox.Show("Por favor, preencha todos os campos.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                MensaLogin = "O login é obrigatório!";
+                possuiErro = true;
             }
+
+            // Validação de senha
+            if (string.IsNullOrWhiteSpace(senhaDigitada))
+            {
+                MensaSenha = "A senha é obrigatória!";
+                possuiErro = true;
+            }
+
+            
+            if (possuiErro) return;
 
             try
             {
@@ -75,33 +121,28 @@ namespace ReGraphik.ViewModels
 
                 if (usuario == null)
                 {
-                    MessageBox.Show("Usuário ou senha incorretos.", "Erro de Autenticação", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Ocupado = false; /// Importante liberar a tela caso dê erro
-                    return; /// Para a execução aqui e não deixa abrir a MainWindow
+                    MensagemErroGeral = "Usuário ou senha incorretos. Tente novamente.";
+                    return;
                 }
 
-                if (usuario != null)
-                {
-                    // 1. Cria e mostra a tela principal com o usuário logado
-                    var main = new MainWindow(usuario);
-                    main.Show();
 
-                    // 2. Procura especificamente a LoginWindow que está aberta no sistema e fecha ela
-                    foreach (Window window in Application.Current.Windows)
+                var main = new MainWindow(usuario);
+                main.Show();
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is LoginWindow)
                     {
-                        if (window is LoginWindow)
-                        {
-                            window.Close();
-                            break; // Para o laço assim que fechar
-                        }
+                        window.Close();
+                        break;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Ocupado = false;
-                MessageBox.Show($"Erro ao conectar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MensagemErroGeral = "Não foi possível conectar ao servidor. Verifique sua internet.";
             }
+            finally { Ocupado = false; }
         }
     }
 }

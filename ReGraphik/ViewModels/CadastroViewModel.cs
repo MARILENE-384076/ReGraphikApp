@@ -12,11 +12,17 @@ namespace ReGraphik.ViewModels
         // Instancia do serviço de autorização para lidar com a lógica de cadastro
         private readonly IAutorizarService _autorizarService;
 
-        private string _nome = "";
-        private string _cpf = "";
-        private string _email = "";
-        private string _login = "";
+        private string _nome;
+        private string _cpf;
+        private string _email;
+        private string _login;
         private bool _ocupado;
+        private string _mensaNome;
+        private string _mensaCpf;
+        private string _mensaEmail;
+        private string _mensaLogin;
+        private string _mensaSenha;
+        private string _mensagemErroGeral;
 
         public string Nome
         {
@@ -48,6 +54,44 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
+        // Mensagens de Alertas
+        public string MensaNome
+        {
+            get => _mensaNome;
+            set { _mensaNome = value; OnPropertyChanged(); }
+        }
+
+        public string MensaCpf
+        {
+            get => _mensaCpf;
+            set { _mensaCpf = value; OnPropertyChanged(); }
+        }
+
+        public string MensaEmail
+        {
+            get => _mensaEmail;
+            set { _mensaEmail = value; OnPropertyChanged(); }
+        }
+
+
+        public string MensaLogin
+        {
+            get => _mensaLogin;
+            set { _mensaLogin = value; OnPropertyChanged(); }
+        }
+
+        public string MensaSenha
+        {
+            get => _mensaSenha;
+            set { _mensaSenha = value; OnPropertyChanged(); }
+        }
+
+        public string MensagemErroGeral
+        {
+            get => _mensagemErroGeral;
+            set { _mensagemErroGeral = value; OnPropertyChanged(); }
+        }
+
         public ICommand CadastrarCommand { get; }
 
         public CadastroViewModel()
@@ -65,18 +109,31 @@ namespace ReGraphik.ViewModels
             // O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
-                MessageBox.Show("Erro técnico ao processar o campo de senha.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
             // Obtém a senha digitada no PasswordBox
             string senhaDigitada = passwordBox.Password;
+            bool possuiErro = false;
 
             // Validação simples de campos vazios
+            if (string.IsNullOrWhiteSpace(CPF))
+            {
+                MensaCpf = "O CPF é obrigatório!";
+                possuiErro = true;
+            }
+
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                MensaEmail = "O Email é obrigatório!";
+                possuiErro = true;
+            }
+
             if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(CPF) ||
                 string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Login) ||
                 string.IsNullOrWhiteSpace(senhaDigitada))
             {
-                MessageBox.Show("Por favor, preencha todos os campos obrigatórios.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MensagemErroGeral = "Preencha todos os campos. Tente novamente.";
                 return;
             }
 
