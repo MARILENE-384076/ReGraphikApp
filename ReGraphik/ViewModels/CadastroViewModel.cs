@@ -123,6 +123,8 @@ namespace ReGraphik.ViewModels
         public ICommand CadastrarCommand { get; }
         public ICommand ValidarTokenCommand { get; }
 
+        public ICommand RevelarSenhaCadastroCommand { get; }
+
         public CadastroViewModel()
         {
             _autorizarService = new AutorizarService();
@@ -132,6 +134,8 @@ namespace ReGraphik.ViewModels
             IsTokenValido = false;
 
             ValidarTokenCommand = new RelayCommand(ValidarToken);
+
+            RevelarSenhaCadastroCommand = new RelayCommand(RevelarSenha);
         }
 
         private bool CanCadastrar(object parameter) => !Ocupado;
@@ -234,6 +238,44 @@ namespace ReGraphik.ViewModels
             {
                 IsTokenValido = false;
                 MensagemErroToken = "Token inválido ou expirado!";
+            }
+        }
+
+        private async Task RevelarSenha(object parameter)
+        {
+
+            if (parameter is not Grid gridContainer)
+            {
+                MensaSenha = "Erro interno ao processar o campo de senha.";
+                return;
+            }
+
+            // Buscando os componentes de dentro do Grid através do nome ou tipo
+            var txtSenhaCadastro = gridContainer.Children.OfType<PasswordBox>().FirstOrDefault(x => x.Name == "TxtSenhaCadastro");
+            var txtSenhaVisivelCadastro = gridContainer.Children.OfType<TextBox>().FirstOrDefault(x => x.Name == "TxtSenhaVisivelCadastro");
+            var btnRevelar = gridContainer.Children.OfType<Button>().FirstOrDefault(x => x.Name == "BtnRevelarSenhaCadastro");
+
+            if (txtSenhaCadastro== null || txtSenhaVisivelCadastro == null || btnRevelar == null) return;
+
+            var iconeOlho = btnRevelar.Content as MahApps.Metro.IconPacks.PackIconMaterial;
+            if (iconeOlho == null) return;
+
+            if (txtSenhaCadastro.Visibility == Visibility.Visible)
+            {
+                txtSenhaVisivelCadastro.Text = txtSenhaCadastro.Password;
+                txtSenhaCadastro.Visibility = Visibility.Collapsed;
+                txtSenhaVisivelCadastro.Visibility = Visibility.Visible;
+
+                iconeOlho.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.EyeOff;
+            }
+            else
+            {
+
+                txtSenhaCadastro.Password = txtSenhaVisivelCadastro.Text;
+                txtSenhaVisivelCadastro.Visibility = Visibility.Collapsed;
+                txtSenhaCadastro.Visibility = Visibility.Visible;
+
+                iconeOlho.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Eye;
             }
         }
     }
