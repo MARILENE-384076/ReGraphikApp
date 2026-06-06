@@ -24,6 +24,11 @@ namespace ReGraphik.ViewModels
         private string _mensaSenha;
         private string _mensagemErroGeral;
 
+        // Segurança no cadastro
+        private string _tokenDigitado;
+        private bool _isTokenValido;
+        private string _mensagemErroToken;
+
         public string Nome
         {
             get => _nome;
@@ -92,13 +97,41 @@ namespace ReGraphik.ViewModels
             set { _mensagemErroGeral = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TokenDigitado
+        {
+            get => _tokenDigitado;
+            set { _tokenDigitado = value; OnPropertyChanged(nameof(TokenDigitado)); }
+        }
+
+        // Controla se o formulário deve ser liberado ou não
+        public bool IsTokenValido
+        {
+            get => _isTokenValido;
+            set { _isTokenValido = value; OnPropertyChanged(nameof(IsTokenValido)); }
+        }
+
+        // Exibe erro caso o token seja inválido
+        public string MensagemErroToken
+        {
+            get => _mensagemErroToken;
+            set { _mensagemErroToken = value; OnPropertyChanged(nameof(MensagemErroToken)); }
+        }
+
         public ICommand CadastrarCommand { get; }
+        public ICommand ValidarTokenCommand { get; }
 
         public CadastroViewModel()
         {
             _autorizarService = new AutorizarService();
             // Inicializa o comando de cadastro, associando-o ao método Cadastrar
             CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
+
+            IsTokenValido = false;
+
+            ValidarTokenCommand = new RelayCommand(ValidarToken);
         }
 
         private bool CanCadastrar(object parameter) => !Ocupado;
@@ -106,6 +139,10 @@ namespace ReGraphik.ViewModels
         // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         private async Task Cadastrar(object parameter)
         {
+            MensaCpf = string.Empty;
+            MensaEmail = string.Empty;
+            MensagemErroGeral = string.Empty;
+
             // O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
@@ -159,20 +196,20 @@ namespace ReGraphik.ViewModels
 
                 if (response)
                 {
-                    MessageBox.Show("Cadastro realizado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MensagemErroGeral = "Cadastro realizado com sucesso!";
                     LimparCampos();
                     
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao cadastrar usuário.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MensagemErroGeral = "Erro ao cadastrar usuário.";
                 }
 
                 passwordBox.Clear();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao cadastrar: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MensagemErroGeral = $"Erro ao cadastrar: {ex.Message}";
             }
         }
         private void LimparCampos()
@@ -181,6 +218,23 @@ namespace ReGraphik.ViewModels
             CPF = "";
             Email = "";
             Login = "";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ValidarToken()
+        {
+            if (TokenDigitado == "REGRAFHIK2026")
+            {
+                IsTokenValido = true;
+                MensagemErroToken = string.Empty;
+            }
+            else
+            {
+                IsTokenValido = false;
+                MensagemErroToken = "Token inválido ou expirado!";
+            }
         }
     }
 }
