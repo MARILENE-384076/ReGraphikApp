@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:local="clr-namespace:ReGraphik.Views.UserControls"
-             xmlns:converters="clr-namespace:ReGraphik.Converters"
+             xmlns:converters="clr-namespace:ReGraphik.Converters;assembly=ReGraphik"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024" Background="#F3F4F6">
 
@@ -16,8 +16,6 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -135,7 +133,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Resíduos Reaproveitados" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,12"/>
-                        <lvc:PieChart Grid.Row="1" Series="{Binding GraficoStatus}" LegendPosition="Right" LegendTextSize="11" />
+                        <oxy:PlotView Grid.Row="1" Model="{Binding GraficoPizzaModel}" />
                     </Grid>
                 </Border>
 
@@ -149,12 +147,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Text="Tipo de Resíduos" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,12"/>
-                        <lvc:CartesianChart Grid.Row="1" 
-                                            Series="{Binding GraficoTipos}" 
-                                            XAxes="{Binding EixosXTipos}" 
-                                            YAxes="{Binding EixosYTipos}"
-                                            DrawMargin="{Binding MargemDoGrafico}"
-                                            LegendPosition="Hidden"/>
+                        <oxy:PlotView Grid.Row="1" Model="{Binding GraficoBarrasModel}" />
                     </Grid>
                 </Border>
             </Grid>
@@ -289,14 +282,14 @@
                             <DataGridTemplateColumn Header="Status" Width="1.5*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}" 
+                                        <Border Background="{Binding Status}" 
                                                 CornerRadius="10" 
                                                 Padding="10,5" 
                                                 HorizontalAlignment="Left" 
                                                 VerticalAlignment="Center">
 
                                             <TextBlock Text="{Binding Status}" 
-                                                       Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}" 
+                                                       Foreground="{Binding Status}" 
                                                        FontSize="12" 
                                                        FontWeight="SemiBold"/>
                                         </Border>

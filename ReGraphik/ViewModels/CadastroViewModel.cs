@@ -1,6 +1,8 @@
-﻿using ReGraphik.Models;
+﻿using MahApps.Metro.IconPacks;
+using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,22 +14,22 @@ namespace ReGraphik.ViewModels
         // Instancia do serviço de autorização para lidar com a lógica de cadastro
         private readonly IAutorizarService _autorizarService;
 
-        private string _nome;
-        private string _cpf;
-        private string _email;
-        private string _login;
+        private string? _nome;
+        private string? _cpf;
+        private string? _email;
+        private string? _login;
         private bool _ocupado;
-        private string _mensaNome;
-        private string _mensaCpf;
-        private string _mensaEmail;
-        private string _mensaLogin;
-        private string _mensaSenha;
-        private string _mensagemErroGeral;
+        private string? _mensaNome;
+        private string? _mensaCpf;
+        private string? _mensaEmail;
+        private string? _mensaLogin;
+        private string? _mensaSenha;
+        private string? _mensagemErroGeral;
 
         // Segurança no cadastro
-        private string _tokenDigitado;
+        private string? _tokenDigitado;
         private bool _isTokenValido;
-        private string _mensagemErroToken;
+        private string? _mensagemErroToken;
 
         public string Nome
         {
@@ -127,14 +129,16 @@ namespace ReGraphik.ViewModels
 
         public CadastroViewModel()
         {
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                return;
+
             _autorizarService = new AutorizarService();
-            // Inicializa o comando de cadastro, associando-o ao método Cadastrar
+
+            //_autorizarService = new AutorizarService();
+
             CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
-
             IsTokenValido = false;
-
             ValidarTokenCommand = new RelayCommand(ValidarToken);
-
             RevelarSenhaCadastroCommand = new RelayCommand(RevelarSenha);
         }
 
@@ -241,7 +245,7 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        private async Task RevelarSenha(object parameter)
+        private void RevelarSenha(object parameter)
         {
 
             if (parameter is not Grid gridContainer)
@@ -257,7 +261,7 @@ namespace ReGraphik.ViewModels
 
             if (txtSenhaCadastro== null || txtSenhaVisivelCadastro == null || btnRevelar == null) return;
 
-            var iconeOlho = btnRevelar.Content as MahApps.Metro.IconPacks.PackIconMaterial;
+            var iconeOlho = btnRevelar.Content as PackIconMaterial;
             if (iconeOlho == null) return;
 
             if (txtSenhaCadastro.Visibility == Visibility.Visible)

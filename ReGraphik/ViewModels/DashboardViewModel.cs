@@ -1,13 +1,10 @@
-﻿using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
-using ReGraphik.Models;
+﻿using ReGraphik.Models;
 using ReGraphik.Services.Interface;
-using SkiaSharp;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
-using DrawMargin = LiveChartsCore.Measure.Margin;
+using OxyPlot;
+using OxyPlot.Series;
+using OxyPlot.Axes;
 
 namespace ReGraphik.ViewModels
 {
@@ -19,8 +16,6 @@ namespace ReGraphik.ViewModels
     {
         // Instância do serviço de resíduos para lidar com a lógica relacionada aos resíduos
         private readonly IResiduoService _residuoService = new Services.ResiduoService();
-
-        public DrawMargin MargemDoGrafico { get; set; }
 
         /// <summary>
         /// Propriedade para armazenar o nome do usuário logado, que será exibido na interface da Dashboard.
@@ -62,6 +57,32 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
+        /// Propriedade para armazenar os dados do gráfico de pizza, que será atualizado com 
+        /// as informações obtidas da API e exibido na interface da Dashboard.
+        /// </summary>
+        private PlotModel _graficoPizzaModel;
+        public PlotModel GraficoPizzaModel
+        {
+            get => _graficoPizzaModel;
+            set
+            {
+                _graficoPizzaModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private PlotModel _graficoBarrasModel;
+        public PlotModel GraficoBarrasModel
+        {
+            get => _graficoBarrasModel;
+            set
+            {
+                _graficoBarrasModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
         /// Propriedade para armazenar os resíduos mais recentes, que serão exibidos na tabela da Dashboard.
         /// </summary>
         private ObservableCollection<Residuo> _ultimosResiduos;
@@ -71,39 +92,6 @@ namespace ReGraphik.ViewModels
             set { _ultimosResiduos = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Propriedade para armazenar as séries de dados do gráfico de status, que serão exibidos na Dashboard. 
-        /// </summary>
-        private IEnumerable<ISeries> _graficoStatus;
-        public IEnumerable<ISeries> GraficoStatus
-        {
-            get => _graficoStatus;
-            set { _graficoStatus = value; OnPropertyChanged(); }
-        }
-
-        private IEnumerable<ISeries> _graficoTipos;
-        public IEnumerable<ISeries> GraficoTipos
-        {
-            get => _graficoTipos;
-            set { _graficoTipos = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Propriedades para armazenar as configurações dos eixos X e Y do gráfico de tipos, que serão exibidos na Dashboard.
-        /// </summary>
-        private Axis[] _eixosXTipos;
-        public Axis[] EixosXTipos
-        {
-            get => _eixosXTipos;
-            set { _eixosXTipos = value; OnPropertyChanged(); }
-        }
-
-        private Axis[] _eixosYTipos;
-        public Axis[] EixosYTipos
-        {
-            get => _eixosYTipos;
-            set { _eixosYTipos = value; OnPropertyChanged(); }
-        }
 
         /// <summary>
         /// Propriedade para formatar os valores exibidos no gráfico de tipos, convertendo os valores numéricos em uma string formatada com "kg" para indicar o peso total dos resíduos por tipo.
@@ -122,16 +110,19 @@ namespace ReGraphik.ViewModels
         /// <param name="nomeUsuario">Nome do usuário logado, que será exibido na Dashboard.</param>
         public DashboardViewModel(string nomeUsuario)
         {
-            MargemDoGrafico = new DrawMargin(45, 15, 15, 60);
+            GraficoPizzaModel = new PlotModel();
+            GraficoBarrasModel = new PlotModel();
 
-            // Define um nome de usuário padrão para exibição
             NomeUsuario = nomeUsuario;
 
-            // Instancia o comando vinculando-o ao método assíncrono
-            AtualizarDadosCommand = new RelayCommand(async () => await CarregarDadosDaApiAsync());
+            AtualizarDadosCommand =
+                new RelayCommand(async () => await CarregarDadosDaApiAsync());
 
-            // Carrega os dados da API assim que a ViewModel for criada, para exibir as informações imediatamente
-            _ = CarregarDadosDaApiAsync();
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(
+                new System.Windows.DependencyObject()))
+            {
+                _ = CarregarDadosDaApiAsync();
+            }
         }
 
         /// <summary>
@@ -181,52 +172,35 @@ namespace ReGraphik.ViewModels
 
                     var ultimosResiduos = new ObservableCollection<Residuo>(ultimosComIdNumerico);
 
-                    // Agrupa os resíduos por status para criar o gráfico de pizza
-                    var statusAgrupado = todosResiduos.GroupBy(r => r.Status);
-
                     // Cria uma série para cada grupo de status, definindo a cor de cada fatia com base no status, igual aos seus Cards/Badges
-                    var tempGraficoStatus = new List<ISeries>();
-                    foreach (var grupo in statusAgrupado)
+                    var pizzaModel = new PlotModel();
+
+                    // Configura o estilo do gráfico de pizza para uma aparência mais moderna e elegante
+                    var pieSeries = new PieSeries
                     {
-                        // Define a cor da fatia com base no status, igual aos seus Cards/Badges
-                        SKColor corDaFatia;
-                        switch (grupo.Key)
-                        {
-                            case "Aguardando CADRI":
-                                corDaFatia = SKColor.Parse("#0d2a56"); 
-                                break;
-                            case "Aguardando Triagem":
-                                corDaFatia = SKColor.Parse("#1649a2"); 
-                                break;
-                            case "Disponível para Coleta":
-                                corDaFatia = SKColor.Parse("#3274ba"); 
-                                break;
-                            case "Liberado para Venda":
-                                corDaFatia = SKColor.Parse("#2f80ec"); 
-                                break;
-                            default:
-                                corDaFatia = SKColor.Parse("#64748B"); 
-                                break;
-                        }
+                        StrokeThickness = 2,
+                        InsideLabelPosition = 0.8,
+                        AngleSpan = 360,
+                        StartAngle = 0,
+                        InsideLabelFormat = "{1}: {0}"
+                    };
 
-                        tempGraficoStatus.Add(new PieSeries<int>
-                        {
-                            Name = string.IsNullOrEmpty(grupo.Key) ? "Não Informado" : grupo.Key,
-                            Values = new int[] { grupo.Count() },
-
-                            // Define a cor da fatia com base no status, igual aos seus Cards/Badges
-                            Fill = new SolidColorPaint(corDaFatia),
-                            
-                            // Customização visual elegante
-                            InnerRadius = 30,
-                            MaxRadialColumnWidth = 20,
-                            OuterRadiusOffset = 0,
-
-                            // Formatação dos rótulos de dados para exibir o status e a quantidade, com formatação elegante
-                            DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
-                            DataLabelsPaint = null
-                        });
+                    // Define as cores para cada status, usando uma paleta de cores consistente com os Cards/Badges da aplicação
+                    foreach (var grupo in todosResiduos.GroupBy(r => r.Status))
+                    {
+                        pieSeries.Slices.Add(
+                            new PieSlice(
+                                string.IsNullOrWhiteSpace(grupo.Key)
+                                    ? "Não Informado"
+                                    : grupo.Key,
+                                grupo.Count()
+                            )
+                        );
                     }
+
+                    // Configura as cores das fatias do gráfico de pizza para corresponder aos status
+                    // dos resíduos, usando uma paleta de cores consistente com os Cards/Badges da aplicação
+                    pizzaModel.Series.Add(pieSeries);
 
                     // Agrupa os resíduos por tipo para criar o gráfico de barras horizontais
                     var tiposAgrupados = todosResiduos.GroupBy(r => r.TipoResiduo)
@@ -234,54 +208,47 @@ namespace ReGraphik.ViewModels
                                   .ToList();
 
                     // Cria uma série para o gráfico de linhas, usando os dados de quantidade por mês (exemplo fictício, ajuste conforme necessário)
-                    var tempGraficoColunas = new ISeries[]
+                    var barrasModel = new PlotModel();
+
+                    var barSeries = new BarSeries();
+
+                    foreach (var item in tiposAgrupados)
                     {
-                        new ColumnSeries<double>
-                        {
-                            Name = "Peso Total",
-                            Values = tiposAgrupados.Select(t => t.PesoTotal).ToArray(),
+                        barSeries.Items.Add(
+                            new BarItem((double)item.PesoTotal)
+                        );
+                    }
 
-                            MaxBarWidth = 32, 
+                    barrasModel.Series.Add(barSeries);
 
-                            // Customização visual elegante
-                            Fill = new SolidColorPaint(new SKColor(30, 58, 138)), 
-       
-                            // Formatação dos rótulos de dados para exibir o peso total em kg, com formatação elegante
-                            DataLabelsFormatter = point => point.Coordinate.PrimaryValue >= 1000000
-                                ? $"{(point.Coordinate.PrimaryValue / 1000000):N2}M"
-                                : $"{point.Coordinate.PrimaryValue:N0}",
-
-                            DataLabelsSize = 11,
-                            DataLabelsPaint = new SolidColorPaint(new SKColor(30, 41, 59)),
-                            DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top
-                        }
+                    var categoryAxis = new CategoryAxis
+                    {
+                        Position = AxisPosition.Bottom
                     };
 
-                    // Configura as Labels do Eixo X na v2
-                    var tempEixosXColunas = new Axis[]
+                    foreach (var item in tiposAgrupados)
                     {
-                        new Axis
-                        {
-                            Labels = tiposAgrupados.Select(t => string.IsNullOrEmpty(t.Tipo) ? "Outros" : t.Tipo).ToArray(),
-                            TextSize = 11,
-                            LabelsPaint = new SolidColorPaint(new SKColor(100, 116, 139)),
-                            
-                        }
-                    };
+                        categoryAxis.Labels.Add(
+                            string.IsNullOrWhiteSpace(item.Tipo)
+                                ? "Outros"
+                                : item.Tipo
+                        );
+                    }
 
-                    // Configura as Labels do Eixo Y na v2
-                    var tempEixosYColunas = new Axis[]
-                    {
-                        new Axis
-                        {
-                            TextSize = 11,
-                            LabelsPaint = new SolidColorPaint(new SKColor(148, 163, 184)),
-                            // Linhas de grade horizontais discretas ao fundo
-                            SeparatorsPaint = new SolidColorPaint(new SKColor(241, 245, 249)) { StrokeThickness = 1 }
-                        }
-                    };
+                    barrasModel.Axes.Add(categoryAxis);
 
-                    // Envia os dados criados para a UI thread
+                    barrasModel.Axes.Add(
+                        new LinearAxis
+                        {
+                            Position = AxisPosition.Left,
+                            MinimumPadding = 0,
+                            AbsoluteMinimum = 0
+                        });
+
+                    pizzaModel.InvalidatePlot(true);
+                    barrasModel.InvalidatePlot(true);
+
+                    // Atualiza as propriedades da ViewModel na thread da UI para garantir que os gráficos e os cards sejam atualizados corretamente
                     App.Current.Dispatcher.Invoke(() =>
                     {
                         ResiduosDb = totalResiduos;
@@ -289,10 +256,10 @@ namespace ReGraphik.ViewModels
                         Estoque = totalEstoque;
                         Total = total;
                         UltimosResiduos = ultimosResiduos;
-                        GraficoStatus = tempGraficoStatus;
-                        GraficoTipos = tempGraficoColunas;
-                        EixosXTipos = tempEixosXColunas;
-                        EixosYTipos = tempEixosYColunas;
+                        GraficoPizzaModel = pizzaModel;
+                        GraficoBarrasModel = barrasModel;
+
+                        // Notifica a UI sobre as mudanças nas propriedades para atualizar os gráficos e os cards
                     });
 
                 }
