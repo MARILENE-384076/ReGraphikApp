@@ -1,5 +1,4 @@
-﻿using ReGraphik.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,14 +15,13 @@ using System.Windows.Shapes;
 namespace ReGraphik.Views
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Interaction logic for RecuperarSenhaWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class RecuperarSenhaWindow : Window
     {
-        public LoginWindow()
+        public RecuperarSenhaWindow()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
         }
     }
 }
