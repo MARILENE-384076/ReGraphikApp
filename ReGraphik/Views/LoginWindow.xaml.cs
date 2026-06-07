@@ -1,4 +1,5 @@
-﻿using ReGraphik.ViewModels;
+﻿
+using ReGraphik.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace ReGraphik.Views
         {
             InitializeComponent();
             DataContext = new LoginViewModel();
+            CadastroTab.DataContext = new CadastroViewModel();
         }
     }
 }

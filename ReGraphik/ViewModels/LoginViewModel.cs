@@ -4,6 +4,7 @@ using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using ReGraphik.Views;
 using System;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Net.Http;
 using System.Reflection.Metadata;
@@ -20,7 +21,7 @@ namespace ReGraphik.ViewModels
     /// ViewModel responsável por gerenciar a lógica de login da aplicação. Ele interage com a interface de usuário (LoginWindow) 
     /// para obter as credenciais do usuário, valida-las e chamar o serviço de autorização para autenticar o usuário.
     /// </summary>
-    public class LoginViewModel : BaseViewModel
+    internal class LoginViewModel : BaseViewModel
     {
         /// <summary>
         /// Referência para o serviço de autorização, que é responsável por realizar a autenticação do usuário.
@@ -75,7 +76,11 @@ namespace ReGraphik.ViewModels
 
         public LoginViewModel()
         {
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                return;
+
             _autorizarService = new AutorizarService();
+
             // Inicializa o comando de login, associando-o ao método Entrar
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
 
@@ -154,7 +159,7 @@ namespace ReGraphik.ViewModels
             finally { Ocupado = false; }
 
         }
-        private async Task RevelarSenha(object parameter)
+        private void RevelarSenha(object parameter)
         {
 
             if (parameter is not Grid gridContainer)
@@ -179,7 +184,7 @@ namespace ReGraphik.ViewModels
                 txtSenhaLogin.Visibility = Visibility.Collapsed;
                 txtSenhaVisivelLogin.Visibility = Visibility.Visible;
 
-                iconeOlho.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.EyeOff;
+                iconeOlho.Kind = PackIconMaterialKind.EyeOff;
             }
             else
             {
@@ -188,7 +193,7 @@ namespace ReGraphik.ViewModels
                 txtSenhaVisivelLogin.Visibility = Visibility.Collapsed;
                 txtSenhaLogin.Visibility = Visibility.Visible;
 
-                iconeOlho.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Eye;
+                iconeOlho.Kind = PackIconMaterialKind.Eye;
             }
         }
 
