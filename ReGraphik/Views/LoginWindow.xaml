@@ -206,6 +206,7 @@
                                 </Grid>
                             </TabItem>
 
+                            <!-- Tela de cadastro -->
                             <TabItem x:Name="CadastroTab" Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
                                 <Grid Margin="32,16,32,0">
 
@@ -237,6 +238,7 @@
                                         </StackPanel.Style>
                                     </StackPanel>
 
+                                    <!-- Formulário de cadastro, visível apenas se o token for válido -->
                                     <ScrollViewer x:Name="PainelFormularioCadastro" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                         <StackPanel HorizontalAlignment="Stretch" Margin="0,10,0,10">
 
@@ -262,17 +264,36 @@
                                             <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLogin}" Margin="0,0,0,12" Foreground="DarkRed"/>
 
                                             <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
-                                            <Grid x:Name="GridCamposSenhaCadastro" Margin="0,0,0,4">
-                                                <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" Margin="0,0,0,4" HorizontalAlignment="Stretch"/>
-                                                <TextBox x:Name="TxtSenhaVisivelCadastro" Style="{StaticResource InputStyle}" Padding="10,0,35,0" Visibility="Collapsed"/>
+                                            <Grid x:Name="GridCamposSenhaCadastro" MinHeight="35" Margin="0,0,0,4" VerticalAlignment="Center">
+                                                <PasswordBox x:Name="TxtSenhaCadastro" 
+                                                             Style="{StaticResource PasswordStyle}" 
+                                                             VerticalAlignment="Stretch" 
+                                                             VerticalContentAlignment="Center"
+                                                             Padding="10,0,40,0"
+                                                             Margin="0"/>
+
+                                                <TextBox x:Name="TxtSenhaVisivelCadastro" 
+                                                         Style="{StaticResource InputStyle}" 
+                                                         VerticalAlignment="Stretch"
+                                                         VerticalContentAlignment="Center"
+                                                         Padding="10,0,40,0" 
+                                                         Visibility="Collapsed"
+                                                         Margin="0"/>
 
                                                 <Button x:Name="BtnRevelarSenhaCadastro" 
                                                         Command="{Binding RevelarSenhaCadastroCommand}" 
                                                         CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
-                                                        HorizontalAlignment="Right" Width="30" Height="30" Margin="0,0,6,0" Background="Transparent" BorderThickness="0">
+                                                        HorizontalAlignment="Right" 
+                                                        VerticalAlignment="Center"
+                                                        Width="30" 
+                                                        Height="30" 
+                                                        Margin="0,0,6,0" 
+                                                        Background="Transparent" 
+                                                        BorderThickness="0">
                                                     <iconPacks:PackIconMaterial x:Name="IconeOlho1" Kind="Eye" Foreground="#64748B" Width="16" Height="16"/>
                                                 </Button>
                                             </Grid>
+
                                             <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaSenha}" Margin="0,0,0,20" Foreground="DarkRed"/>
 
                                             <TextBlock Text="{Binding MensagemErroGeral}" 
