@@ -29,11 +29,11 @@ namespace ReGraphik.Converters
                 _ => "#64748B"                         // Cor padrão (Cinza)
             };
 
-            // Se o parâmetro for "Foreground", ajustamos a cor do texto para garantir legibilidade
+            // Se o parâmetro for "Foreground", retornamos a cor apropriada para o texto, garantindo contraste com o fundo.
             if (parameter as string == "Foreground")
             {
-                // Para os status "Aguardando CADRI" e "Aguardando Triagem", usamos branco para garantir contraste com
-                // o fundo azul escuro. Para os outros status, usamos uma cor escura para garantir legibilidade sobre fundos mais claros.
+                // Para os status que indicam que o resíduo está em um estado ativo ou disponível, usamos branco para garantir
+                // contraste. Para os outros, usamos uma cor escura.
                 return (status == "Aguardando CADRI" || status == "Aguardando Triagem" || status == "Disponível para Coleta" || status == "Liberado para Venda" || status == "Disponível")
                     ? Brushes.White
                     : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B"));
