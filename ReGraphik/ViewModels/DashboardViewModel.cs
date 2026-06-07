@@ -173,44 +173,85 @@ namespace ReGraphik.ViewModels
                     var ultimosResiduos = new ObservableCollection<Residuo>(ultimosComIdNumerico);
 
                     // Cria uma série para cada grupo de status, definindo a cor de cada fatia com base no status, igual aos seus Cards/Badges
-                    var pizzaModel = new PlotModel();
+                    var pizzaModel = new PlotModel
+                    {
+                        Background = OxyColors.Transparent,
+                        PlotAreaBorderThickness = new OxyThickness(0),
+                        Padding = new OxyThickness(30)
+                    };
 
                     // Configura o estilo do gráfico de pizza para uma aparência mais moderna e elegante
                     var pieSeries = new PieSeries
                     {
                         StrokeThickness = 2,
-                        InsideLabelPosition = 0.8,
-                        AngleSpan = 360,
-                        StartAngle = 0,
-                        InsideLabelFormat = "{1}: {0}"
+                        Stroke = OxyColors.White,
+
+                        // Configura os rótulos de DENTRO (Porcentagem)
+                        InsideLabelPosition = 0.6,
+                        InsideLabelFormat = "{2:0.0}%", // Calcula a % automaticamente
+                        InsideLabelColor = OxyColors.White,
+
+                        // Configura os rótulos de FORA (Tópicos/Status)
+                        OutsideLabelFormat = "{1}", // {1} é o nome do Status
+                        TickDistance = 12,          // Linha que liga a fatia ao texto
+                        TickRadialLength = 6,
+
+                        Font = "Segoe UI",
+                        FontSize = 11
                     };
+
+                    var coresPaleta = new List<OxyColor>();
 
                     // Define as cores para cada status, usando uma paleta de cores consistente com os Cards/Badges da aplicação
                     foreach (var grupo in todosResiduos.GroupBy(r => r.Status))
                     {
-                        pieSeries.Slices.Add(
-                            new PieSlice(
-                                string.IsNullOrWhiteSpace(grupo.Key)
-                                    ? "Não Informado"
-                                    : grupo.Key,
-                                grupo.Count()
-                            )
-                        );
+                        string statusLabel = string.IsNullOrWhiteSpace(grupo.Key) ? "Não Informado" : grupo.Key;
+
+                        // Mapeamento exato das cores fornecidas
+                        OxyColor corFatia = statusLabel switch
+                        {
+                            "Aguardando CADRI" => OxyColor.Parse("#0d2a56"), // Azul Escuro
+                            "Aguardando Triagem" => OxyColor.Parse("#1649a2"), // Azul Médio
+                            "Disponível" => OxyColor.Parse("#64748B"), // Cinza
+                            "Disponível para Coleta" => OxyColor.Parse("#3274ba"), // Azul Claro
+                            "Liberado para Venda" => OxyColor.Parse("#2f80ec"), // Azul Muito Claro
+                            _ => OxyColor.Parse("#cbd5e1")  // Fallback
+                        };
+
+                        // Adiciona a fatia associando seu rótulo externo
+                        pieSeries.Slices.Add(new PieSlice(statusLabel, grupo.Count()));
+                        coresPaleta.Add(corFatia);
                     }
 
-                    // Configura as cores das fatias do gráfico de pizza para corresponder aos status
-                    // dos resíduos, usando uma paleta de cores consistente com os Cards/Badges da aplicação
+                    pizzaModel.DefaultColors = coresPaleta;
                     pizzaModel.Series.Add(pieSeries);
+
+                    // Cria o gráfico de barras horizontais para mostrar a quantidade total de resíduos por tipo,
+                    // usando uma paleta de cores consistente com os Cards/Badges da aplicação
+                    var barrasModel = new PlotModel
+                    {
+                        Background = OxyColors.Transparent,
+                        PlotAreaBorderThickness = new OxyThickness(0) 
+                    };
 
                     // Agrupa os resíduos por tipo para criar o gráfico de barras horizontais
                     var tiposAgrupados = todosResiduos.GroupBy(r => r.TipoResiduo)
-                                  .Select(g => new { Tipo = g.Key, PesoTotal = g.Sum(r => r.Quantidade) })
-                                  .ToList();
+                                                      .Select(g => new { Tipo = g.Key, PesoTotal = g.Sum(r => r.Quantidade) })
+                                                      .OrderBy(x => x.PesoTotal) 
+                                                      .ToList();
 
-                    // Cria uma série para o gráfico de linhas, usando os dados de quantidade por mês (exemplo fictício, ajuste conforme necessário)
-                    var barrasModel = new PlotModel();
-
-                    var barSeries = new BarSeries();
+                    // Configura a série de barras, definindo a cor de preenchimento, a formatação dos rótulos e a posição
+                    // dos rótulos para uma aparência mais moderna e elegante
+                    var barSeries = new BarSeries
+                    {
+                        FillColor = OxyColor.FromRgb(22, 73, 162), // Azul ReGraphik
+                        TextColor = OxyColor.FromRgb(30, 41, 59),
+                        Font = "Segoe UI",
+                        FontSize = 11,
+                        LabelFormatString = "{0:N0} kg",
+                        LabelPlacement = LabelPlacement.Outside,
+                        BarWidth = 0.6
+                    };
 
                     foreach (var item in tiposAgrupados)
                     {
@@ -219,32 +260,48 @@ namespace ReGraphik.ViewModels
                         );
                     }
 
-                    barrasModel.Series.Add(barSeries);
-
                     var categoryAxis = new CategoryAxis
                     {
-                        Position = AxisPosition.Bottom
+                        Position = AxisPosition.Left,
+                        AxislineStyle = LineStyle.None,
+                        TickStyle = TickStyle.None,
+                        Font = "Segoe UI",
+                        FontSize = 12,
+                        TextColor = OxyColor.FromRgb(71, 85, 105),
+
+                        IsZoomEnabled = false,
+                        IsPanEnabled = false
                     };
 
                     foreach (var item in tiposAgrupados)
                     {
-                        categoryAxis.Labels.Add(
-                            string.IsNullOrWhiteSpace(item.Tipo)
-                                ? "Outros"
-                                : item.Tipo
-                        );
+                        categoryAxis.Labels.Add(string.IsNullOrWhiteSpace(item.Tipo) ? "Outros" : item.Tipo);
                     }
 
+                    // Configura o eixo de valores para o gráfico de barras, definindo a formatação dos rótulos,
+                    // a cor das linhas de grade e a aparência geral para uma estética mais moderna e elegante
+                    var valueAxis = new LinearAxis
+                    {
+                        Position = AxisPosition.Bottom,
+                        MinimumPadding = 0,
+                        MaximumPadding = 0.15,
+                        AbsoluteMinimum = 0,
+                        MajorGridlineStyle = LineStyle.Solid,
+                        MajorGridlineColor = OxyColor.FromRgb(226, 232, 240), 
+                        TickStyle = TickStyle.None,
+                        Font = "Segoe UI",
+                        TextColor = OxyColor.FromRgb(148, 163, 184),
+
+                        IsZoomEnabled = false,
+                        IsPanEnabled = false
+                    };
+
+                    // Adiciona os eixos e a série ao modelo do gráfico de barras
                     barrasModel.Axes.Add(categoryAxis);
+                    barrasModel.Axes.Add(valueAxis);
+                    barrasModel.Series.Add(barSeries);
 
-                    barrasModel.Axes.Add(
-                        new LinearAxis
-                        {
-                            Position = AxisPosition.Left,
-                            MinimumPadding = 0,
-                            AbsoluteMinimum = 0
-                        });
-
+                    // Invalida os gráficos para garantir que eles sejam redesenhados com os novos dados
                     pizzaModel.InvalidatePlot(true);
                     barrasModel.InvalidatePlot(true);
 
@@ -258,8 +315,6 @@ namespace ReGraphik.ViewModels
                         UltimosResiduos = ultimosResiduos;
                         GraficoPizzaModel = pizzaModel;
                         GraficoBarrasModel = barrasModel;
-
-                        // Notifica a UI sobre as mudanças nas propriedades para atualizar os gráficos e os cards
                     });
 
                 }
