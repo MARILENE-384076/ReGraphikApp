@@ -46,33 +46,6 @@
                                 <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                             </Border.Effect>
                         </Border>
-                        <Button Width="40"
-        Height="40"
-        Command="{Binding OpenChatCommand}"
-        ToolTip="Mensagens">
-
-                            <Grid>
-                                <TextBlock Text="💬"
-                   FontSize="20"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
-
-                                <Border Width="18"
-                Height="18"
-                CornerRadius="9"
-                Background="Red"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top">
-
-                                    <TextBlock Text="{Binding UnreadMessages}"
-                       Foreground="White"
-                       FontSize="10"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
-                                </Border>
-                            </Grid>
-
-                        </Button>
 
                         <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
                             <TextBlock x:Name="TxtNomeUsuario"
