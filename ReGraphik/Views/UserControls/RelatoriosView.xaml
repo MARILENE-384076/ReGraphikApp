@@ -158,47 +158,55 @@
             </Border>
 
             <!-- Cards de Resumo -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,20">
-                <Border Background="#0d2a56" CornerRadius="12" Padding="20" Margin="0,0,16,0" Height="90" Width="210">
+            <Grid Grid.Row="2" Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="#0d2a56" CornerRadius="12" Padding="20" Height="100" Margin="0,0,12,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding TotalResiduos}" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Total de Resíduos" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                        <TextBlock Text="{Binding TotalResiduos}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Total de Resíduos" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
-                <Border Background="#1649a2" CornerRadius="12" Padding="20" Margin="0,0,16,0" Height="90" Width="210">
+                <Border Grid.Column="1" Background="#1649a2" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding PesoTotal, StringFormat={}{0:N2} kg}" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Peso Total" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                        <TextBlock Text="{Binding PesoTotal, StringFormat={}{0:N2} kg}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Peso Total" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
-                <Border Background="#3274ba" CornerRadius="12" Padding="20" Margin="0,0,16,0" Height="90" Width="210">
+                <Border Grid.Column="2" Background="#3274ba" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Reaproveitados}" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Reaproveitados" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                        <TextBlock Text="{Binding Reaproveitados}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Reaproveitados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
-                <Border Background="#2f80ec" CornerRadius="12" Padding="20" Height="90" Width="210">
+                <Border Grid.Column="3" Background="#2f80ec" CornerRadius="12" Padding="20" Height="100" Margin="12,0,0,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding ValorEconomico}" FontSize="22" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Valor Econômico" FontSize="13" Foreground="#CBD5E1" Margin="0,4,0,0"/>
+                        <TextBlock Text="{Binding ValorEconomico}" FontSize="18" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="Total Econômico" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
-            </StackPanel>
+            </Grid>
+
 
             <!-- Tabela de Resultados -->
             <Border Grid.Row="3" Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,10">
