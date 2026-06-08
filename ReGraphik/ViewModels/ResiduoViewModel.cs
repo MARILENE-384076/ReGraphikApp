@@ -163,12 +163,14 @@ namespace ReGraphik.ViewModels
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Todos os arquivos (*.*)|*.*",
+                Filter = "Imagens e Vídeos|*.jpg;*.jpeg;*.png;*.bmp;*.mp4;*.mkv;*.avi;*.mov|" +
+                 "Imagens (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp|" +
+                 "Vídeos (*.mp4, *.mkv, *.avi, *.mov)|*.mp4;*.mkv;*.avi;*.mov",
                 Title = "Selecione um arquivo para anexar"
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                NomeArquivo = openFileDialog.FileName;
+                NomeArquivo = openFileDialog.SafeFileName;
             }
         }
 

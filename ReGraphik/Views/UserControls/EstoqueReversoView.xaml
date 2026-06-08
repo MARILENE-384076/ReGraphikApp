@@ -55,7 +55,7 @@
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
                         <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0">
-                            <ComboBoxItem Content="Todos"/>
+                            <ComboBoxItem Content="Selecionar Material"/>
                             <ComboBoxItem Content="Papel Couché"/>
                             <ComboBoxItem Content="Adesivo Vinil"/>
                         </ComboBox>
@@ -63,8 +63,8 @@
 
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0">
-                            <ComboBoxItem Content="Todas"/>
+                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Selecionar Origem"/>
                             <ComboBoxItem Content="Impressão Digital"/>
                             <ComboBoxItem Content="Restos de Corte"/>
                         </ComboBox>
@@ -72,8 +72,8 @@
 
                     <StackPanel Grid.Column="4">
                         <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0">
-                            <ComboBoxItem Content="Todos"/>
+                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Selecionar Status"/>
                             <ComboBoxItem Content="Em Estoque"/>
                             <ComboBoxItem Content="Processado"/>
                         </ComboBox>
@@ -90,8 +90,8 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" Margin="0,0,8,0">
-                                    <ComboBoxItem Content="Todos"/>
+                                <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" Margin="0,0,8,0" SelectionChanged="ComboBox_SelectionChanged">
+                                    <ComboBoxItem Content="Selecionar Período"/>
                                     <ComboBoxItem Content="Últimos 30 dias"/>
                                 </ComboBox>
                                 <Button Grid.Column="1" Content="Filtrar" Width="80" Height="38" Background="#1649a2" Foreground="White" FontWeight="SemiBold" BorderThickness="0">
