@@ -5,14 +5,8 @@ using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
 {
-    /// <summary>
-    /// ViewModel principal da aplicação, responsável por gerenciar a navegação entre as diferentes views (Dashboard, Resíduos, Estoque, Mapa, Relatórios e Conta).
-    /// </summary>
     public class MainViewModel : BaseViewModel
     {
-        /// <summary>
-        /// Referência para a janela física (MainWindow) para permitir o fechamento da aplicação ao clicar em "Sair".
-        /// </summary>
         private readonly Window _currentWindow;
         private object _currentView;
         private string _nomeUsuario = string.Empty;
@@ -20,9 +14,6 @@ namespace ReGraphik.ViewModels
 
         public Usuario UsuarioLogado { get; }
 
-        /// <summary>
-        /// Propriedade que representa a view atualmente exibida no frame principal da janela.
-        /// </summary>
         public object CurrentView
         {
             get => _currentView;
@@ -41,6 +32,15 @@ namespace ReGraphik.ViewModels
             set { _btnAtivo = value; OnPropertyChanged(); }
         }
 
+        // ── Views criadas uma única vez e reutilizadas ──────────
+        private readonly DashboardView _dashboardView;
+        private readonly ResiduosView _residuosView;
+        private readonly EstoqueReversoView _estoqueView;
+        private readonly MapaView _mapaView;
+        private readonly RelatoriosView _relatoriosView;
+        private readonly ContaView _contaView;
+        // ────────────────────────────────────────────────────────
+
         public ICommand NavegarDashboardCommand { get; }
         public ICommand NavegarResiduosCommand { get; }
         public ICommand NavegarEstoqueCommand { get; }
@@ -49,37 +49,38 @@ namespace ReGraphik.ViewModels
         public ICommand NavegarContaCommand { get; }
         public ICommand SairCommand { get; }
 
-        /// <summary>
-        /// Construtor do MainViewModel, que recebe o usuário logado e a janela atual como parâmetros. 
-        /// Ele inicializa a view para a Dashboard e configura os comandos de navegação para cada seção da aplicação, além do comando de sair.
-        /// </summary>
-        /// <param name="usuario">O usuário logado na aplicação.</param>
-        /// <param name="window">A janela atual (MainWindow) da aplicação.</param>
-        /// 
         public MainViewModel(Usuario usuario, Window window)
         {
             UsuarioLogado = usuario;
             _currentWindow = window;
             NomeUsuario = usuario.Nome ?? "Usuário";
 
-            // Inicializa na Dashboard
-            _currentView = new DashboardView(NomeUsuario);
+            // Instancia cada view apenas uma vez
+            _dashboardView = new DashboardView(NomeUsuario);
+            _residuosView = new ResiduosView();
+            _estoqueView = new EstoqueReversoView();
+            _mapaView = new MapaView();
+            _relatoriosView = new RelatoriosView();
+            _contaView = new ContaView(UsuarioLogado);
+
+            // Começa na Dashboard
+            _currentView = _dashboardView;
             _btnAtivo = "Dashboard";
 
-            // Inicialização dos comandos
-            NavegarDashboardCommand = new RelayCommand(p => ExecutarNavegacao("Dashboard", new DashboardView(NomeUsuario)));
-            NavegarResiduosCommand = new RelayCommand(p => ExecutarNavegacao("Residuos", new ResiduosView()));
-            NavegarEstoqueCommand = new RelayCommand(p => ExecutarNavegacao("Estoque", new EstoqueReversoView()));
-            NavegarMapaCommand = new RelayCommand(p => ExecutarNavegacao("Mapa", new MapaView()));
-            NavegarRelatoriosCommand = new RelayCommand(p => ExecutarNavegacao("Relatorios", new RelatoriosView()));
-            NavegarContaCommand = new RelayCommand(p => ExecutarNavegacao("Conta", new ContaView(UsuarioLogado)));
+            // Comandos reutilizam a mesma instância
+            NavegarDashboardCommand = new RelayCommand(p => ExecutarNavegacao("Dashboard", _dashboardView));
+            NavegarResiduosCommand = new RelayCommand(p => ExecutarNavegacao("Residuos", _residuosView));
+            NavegarEstoqueCommand = new RelayCommand(p => ExecutarNavegacao("Estoque", _estoqueView));
+            NavegarMapaCommand = new RelayCommand(p => ExecutarNavegacao("Mapa", _mapaView));
+            NavegarRelatoriosCommand = new RelayCommand(p => ExecutarNavegacao("Relatorios", _relatoriosView));
+            NavegarContaCommand = new RelayCommand(p => ExecutarNavegacao("Conta", _contaView));
             SairCommand = new RelayCommand(p => ExecutarSair());
         }
 
-        private void ExecutarNavegacao(string nomeBotao, object novaView)
+        private void ExecutarNavegacao(string nomeBotao, object view)
         {
             BtnAtivo = nomeBotao;
-            CurrentView = novaView;
+            CurrentView = view;
         }
 
         private void ExecutarSair()
@@ -91,9 +92,7 @@ namespace ReGraphik.ViewModels
                 MessageBoxImage.Question);
 
             if (resultado == MessageBoxResult.Yes)
-            {
                 _currentWindow.Close();
-            }
         }
     }
 }
