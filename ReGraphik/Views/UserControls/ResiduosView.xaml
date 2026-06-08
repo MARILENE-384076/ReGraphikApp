@@ -86,6 +86,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Grid>
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoMaterial}" Foreground="DarkRed" Margin="0,7,0,0"/>
                         </StackPanel>
 
                         <!-- Especificação -->
@@ -142,6 +143,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Grid>
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaOrigem}" Foreground="DarkRed" Margin="0,7,0,0"/>
                         </StackPanel>
 
                         <!-- Projeto/Cliente de Origem -->
@@ -207,11 +209,13 @@
                                         </TextBlock.Style>
                                     </TextBlock>
                                 </Grid>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaQuantidade}" Foreground="DarkRed" Margin="0,7,0,0"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
                                 <TextBlock Text="Data" Style="{StaticResource FieldLabelStyle}"/>
                                 <DatePicker SelectedDate="{Binding Data}" Height="38" Padding="5" VerticalContentAlignment="Center"/>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaData}" Foreground="DarkRed"/>
                             </StackPanel>
                         </Grid>
 
@@ -245,7 +249,7 @@
                         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="Dimensões" Style="{StaticResource FieldLabelStyle}"/>
 
                         <!-- Comprimento -->
-                        <Grid Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">
+                        <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">
                             <Grid>
                                 <TextBox x:Name="TxtComprimento" Text="{Binding Comprimento, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
                                 <TextBlock Text="Comprimento do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
@@ -264,10 +268,11 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Grid>
-                        </Grid>
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaComprimento}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                        </StackPanel>
 
                         <!-- Largura -->
-                        <Grid Grid.Row="4" Grid.Column="2" Margin="0,0,0,16">
+                        <StackPanel Grid.Row="4" Grid.Column="2" Margin="0,0,0,16">
                             <Grid>
                                 <TextBox x:Name="TxtLargura" Text="{Binding Largura, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
                                 <TextBlock Text="Largura do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
@@ -286,7 +291,8 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Grid>
-                        </Grid>
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLargura}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                        </StackPanel>
 
                         <!-- Observações -->
                         <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,16">
@@ -332,6 +338,12 @@
                                 <TextBox Grid.Column="1" Text="{Binding NomeArquivo}" Style="{StaticResource InputControlStyle}" 
                                          IsReadOnly="True" Margin="0,0,0,0" Background="White"/>
                             </Grid>
+                            <TextBlock Text="{Binding MensagemErroGeral}" 
+                                       Foreground="DarkRed" 
+                                       FontSize="13" 
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       Margin="0,7,0,0"/>
                         </StackPanel>
 
                         <!-- Área de Botões de Limpar e Salvar -->
@@ -357,7 +369,6 @@
                             </Button>
                         </StackPanel>
                     </Grid>
-
                 </Grid>
             </Border>
         </Grid>
