@@ -22,7 +22,10 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-           </ResourceDictionary>
+            <converters:NaoLidasVisibilidadeConverter x:Key="NaoLidasVisConv"/>
+            <converters:BadgeNotificacaoConverter x:Key="BadgeConv"/>
+            <BooleanToVisibilityConverter x:Key="BoolVis"/>
+        </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
