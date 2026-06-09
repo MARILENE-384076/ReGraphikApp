@@ -66,4 +66,41 @@ public class RelayCommand : ICommand
         else if (_executeWithParam != null) _executeWithParam(parameter);
         else _executeNoParam?.Invoke();
     }
+
+
+}
+
+public class RelayCommand<T> : ICommand
+{
+    private readonly Func<T?, Task> _executeAsync;
+    private readonly Action<T?> _execute;
+    private readonly Predicate<T?>? _canExecute;
+
+    public RelayCommand(Func<T?, Task> executeAsync, Predicate<T?>? canExecute = null)
+    {
+        _executeAsync = executeAsync;
+        _canExecute = canExecute;
+    }
+
+    public RelayCommand(Action<T?> execute, Predicate<T?>? canExecute = null)
+    {
+        _execute = execute;
+        _canExecute = canExecute;
+    }
+
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
+
+    public bool CanExecute(object? parameter)
+        => _canExecute == null || _canExecute(parameter is T t ? t : default);
+
+    public async void Execute(object? parameter)
+    {
+        var param = parameter is T t ? t : default;
+        if (_executeAsync != null) await _executeAsync(param);
+        else _execute?.Invoke(param);
+    }
 }
