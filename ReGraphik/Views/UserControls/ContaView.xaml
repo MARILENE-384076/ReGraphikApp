@@ -6,70 +6,89 @@
              xmlns:local="clr-namespace:ReGraphik.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="#F3F4F6">
-    
+
+
     <UserControl.Resources>
-        <Style x:Key="LabelStyle" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#4A5568"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,15,0,5"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="TextBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="BorderBrush" Value="#82A0C2"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="#F8FAFC"/>
-            <Setter Property="Padding" Value="10,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="14"/>
-        </Style>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
 
-        <Style TargetType="PasswordBox">
-            <Setter Property="Height" Value="38"/>
-            <Setter Property="BorderBrush" Value="#82A0C2"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Background" Value="#F8FAFC"/>
-            <Setter Property="Padding" Value="10,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="14"/>
-        </Style>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="40">
-            <StackPanel MaxWidth="450" HorizontalAlignment="Left">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-                <TextBlock Text="Meu Perfil" FontSize="26" FontWeight="Bold" Foreground="#1E293B"/>
-                <TextBlock Text="Atualize os dados da sua conta abaixo." FontSize="14" Foreground="#64748B" Margin="0,5,0,10"/>
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="4" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+            </Border.Effect>
 
-                <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
-                <TextBox x:Name="TxtNome"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 
-                <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
-                <TextBox x:Name="TxtCpf"/>
+                <Grid Margin="24,24,24,16" VerticalAlignment="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                <TextBox x:Name="TxtEmail"/>
+                    <StackPanel Grid.Column="0" Margin="0,0,39,0">
+                        <TextBlock Text="Meu Perfil" FontSize="26" FontWeight="Bold" Foreground="#1E293B"/>
+                        <TextBlock Text="Gerencie os dados da sua conta." FontSize="14" Foreground="#64748B" Margin="0,5,0,20"/>
 
-                <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                <TextBox x:Name="TxtLogin"/>
+                        <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="TxtNome" Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
 
-                <TextBlock Text="Nova Senha (deixe em branco para não alterar)" Style="{StaticResource LabelStyle}"/>
-                <PasswordBox x:Name="TxtSenha"/>
+                        <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="TxtCpf" Text="{Binding Cpf}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
 
-                <Button x:Name="BtnSalvar" Content="Salvar Alterações" Height="45" Margin="0,30,0,0"
-                    Background="#15529D" Foreground="White" FontSize="15" FontWeight="Bold" 
-                    Cursor="Hand" BorderThickness="0"
-                    Click="BtnSalvar_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="4"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                        <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="TxtEmail" Text="{Binding Email}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
 
-            </StackPanel>
-        </Grid>
-    </ScrollViewer>
+                        <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                        <TextBox x:Name="TxtLogin" Text="{Binding Login}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
+
+                        <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
+                        <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,24"/>
+
+                        <Button x:Name="BtnSalvar" Content="Salvar Alterações" Height="45" HorizontalAlignment="Stretch"
+                                Style="{StaticResource BtnPrimaryStyle}" FontSize="15" FontWeight="Bold" 
+                                Cursor="Hand" BorderThickness="0">
+                        </Button>
+                    </StackPanel>
+
+
+                    <Grid Grid.Column="2" VerticalAlignment="Stretch" Margin="10,80,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" MaxWidth="350" MaxHeight="350" Margin="0,0,0,16">
+                            <Border x:Name="FotoContainer" Width="200" Height="200" CornerRadius="100" BorderThickness="1" BorderBrush="#E2E8F0">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding ImgFoto, TargetNullValue={x:Null}, FallbackValue={x:Null}}" 
+                                    Stretch="UniformToFill" />
+                                </Border.Background>
+                            </Border>
+                        </Viewbox>
+
+                        <Button x:Name="BtnMudarFoto" Grid.Row="1" Command="{Binding SelecionarFotoCommand}" Content="Mudar Foto"
+                                Height="35" Width="130" HorizontalAlignment="Center" Margin="0,10,0,0"
+                                FontSize="13" FontWeight="Bold" 
+                                Cursor="Hand" BorderThickness="0" Style="{StaticResource BtnFoto}">
+                        </Button>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>
