@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Microsoft.Win32;
-using ReGraphik.Models;
-using ReGraphik.Services;
-using ReGraphik.Services.Interface;
+﻿using Microsoft.Win32;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using ReGraphik.Models;
+using ReGraphik.Services;
+using ReGraphik.Services.Interface;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
 {
@@ -166,6 +167,11 @@ namespace ReGraphik.ViewModels
             if (DataFim.HasValue) filtrados = filtrados.Where(r => r.DataCadastro <= DataFim.Value.AddDays(1));
 
             var lista = filtrados.OrderByDescending(r => r.DataCadastro).ToList();
+
+            for (int i = 0; i < lista.Count; i++)
+            {
+                lista[i].Id = (i + 1).ToString();
+            }
 
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
