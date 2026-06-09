@@ -5,7 +5,6 @@ namespace ReGraphik.ViewModels
 {
     public class UsuarioViewModel : BaseViewModel
     {
-        // Foto vem do serviço compartilhado
         public string? ImgFoto
         {
             get => UsuarioSessaoService.Instancia.FotoCaminho;
@@ -50,7 +49,11 @@ namespace ReGraphik.ViewModels
         {
             SelecionarFotoCommand = new RelayCommand(SelecionarFoto);
 
-            // Escuta mudanças no serviço para atualizar o binding
+            // Carrega foto salva do disco ao iniciar
+            var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
+            if (fotoSalva != null)
+                UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
+
             UsuarioSessaoService.Instancia.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))
@@ -67,7 +70,11 @@ namespace ReGraphik.ViewModels
             };
 
             if (dialog.ShowDialog() == true)
-                ImgFoto = dialog.FileName; // caminho completo, não SafeFileName
+            {
+                ImgFoto = dialog.FileName;
+                // Salva no disco para persistir entre sessões
+                ConfiguracaoLocalService.SalvarFoto(dialog.FileName);
+            }
         }
     }
 }
