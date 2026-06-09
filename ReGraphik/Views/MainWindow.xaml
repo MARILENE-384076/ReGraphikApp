@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" 
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:converters="clr-namespace:ReGraphik.Converters"
+    xmlns:uc="clr-namespace:ReGraphik.Views.UserControls"
     Title="ReGraphik"
     Height="720"
     Width="1200"
@@ -20,8 +22,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BoolVis"/>
-        </ResourceDictionary>
+           </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
