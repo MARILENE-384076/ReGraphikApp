@@ -1,30 +1,18 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
+using ReGraphik.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ReGraphik.Views.UserControls
 {
-    /// <summary>
-    /// Interaction logic for ContaView.xaml
-    /// </summary>
     public partial class ContaView : UserControl
     {
         private Usuario _usuarioAtual;
         private readonly IAutorizarService _autorizarService;
+        private readonly UsuarioViewModel _viewModel;
 
         public ContaView(Usuario usuario)
         {
@@ -33,15 +21,26 @@ namespace ReGraphik.Views.UserControls
             _usuarioAtual = usuario;
             _autorizarService = new AutorizarService();
 
+            // Instancia o ViewModel e define como DataContext
+            // (isso faz o botão Mudar Foto e a foto funcionarem)
+            _viewModel = new UsuarioViewModel();
+            DataContext = _viewModel;
+
             CarregarDadosNaTela();
         }
 
         private void CarregarDadosNaTela()
         {
+            // Preenche tanto a tela quanto o ViewModel
             TxtNome.Text = _usuarioAtual.Nome;
             TxtCpf.Text = _usuarioAtual.CPF;
             TxtEmail.Text = _usuarioAtual.Email;
             TxtLogin.Text = _usuarioAtual.Login;
+
+            _viewModel.Nome = _usuarioAtual.Nome ?? string.Empty;
+            _viewModel.Cpf = _usuarioAtual.CPF ?? string.Empty;
+            _viewModel.Email = _usuarioAtual.Email ?? string.Empty;
+            _viewModel.Login = _usuarioAtual.Login ?? string.Empty;
         }
 
         private async void BtnSalvar_Click(object sender, RoutedEventArgs e)
@@ -52,22 +51,15 @@ namespace ReGraphik.Views.UserControls
                 return;
             }
 
-            /// Atualiza os dados comuns
             _usuarioAtual.Nome = TxtNome.Text;
             _usuarioAtual.CPF = TxtCpf.Text;
             _usuarioAtual.Email = TxtEmail.Text;
             _usuarioAtual.Login = TxtLogin.Text;
 
-            /// Se o usuário digitou algo na senha, enviamos a nova senha
             if (!string.IsNullOrWhiteSpace(TxtSenha.Password))
-            {
                 _usuarioAtual.Senha = TxtSenha.Password;
-            }
             else
-            {
-                /// Deixamos como null para a API não duplicar no Firebase
                 _usuarioAtual.Senha = null;
-            }
 
             try
             {
