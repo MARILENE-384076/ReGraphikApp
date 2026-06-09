@@ -20,27 +20,62 @@ namespace ReGraphik.Views.UserControls
 
             _usuarioAtual = usuario;
             _autorizarService = new AutorizarService();
-
-            // Instancia o ViewModel e define como DataContext
-            // (isso faz o botão Mudar Foto e a foto funcionarem)
             _viewModel = new UsuarioViewModel();
             DataContext = _viewModel;
 
             CarregarDadosNaTela();
+            AplicarMascaras();
         }
 
         private void CarregarDadosNaTela()
         {
-            // Preenche tanto a tela quanto o ViewModel
             TxtNome.Text = _usuarioAtual.Nome;
-            TxtCpf.Text = _usuarioAtual.CPF;
-            TxtEmail.Text = _usuarioAtual.Email;
+            TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
+            TxtEmail.Text = MascararEmail(_usuarioAtual.Email);
             TxtLogin.Text = _usuarioAtual.Login;
 
             _viewModel.Nome = _usuarioAtual.Nome ?? string.Empty;
             _viewModel.Cpf = _usuarioAtual.CPF ?? string.Empty;
             _viewModel.Email = _usuarioAtual.Email ?? string.Empty;
             _viewModel.Login = _usuarioAtual.Login ?? string.Empty;
+        }
+
+        private void AplicarMascaras()
+        {
+            // Ao focar: mostra valor real
+            TxtCpf.GotFocus += (s, e) => TxtCpf.Text = _usuarioAtual.CPF ?? string.Empty;
+            TxtEmail.GotFocus += (s, e) => TxtEmail.Text = _usuarioAtual.Email ?? string.Empty;
+
+            // Ao perder foco: volta a mascarar
+            TxtCpf.LostFocus += (s, e) =>
+            {
+                _usuarioAtual.CPF = TxtCpf.Text;
+                TxtCpf.Text = MascararCpf(TxtCpf.Text);
+            };
+            TxtEmail.LostFocus += (s, e) =>
+            {
+                _usuarioAtual.Email = TxtEmail.Text;
+                TxtEmail.Text = MascararEmail(TxtEmail.Text);
+            };
+        }
+
+        // CPF: 123.456.789-10 → 123.***.***-**
+        private static string MascararCpf(string? cpf)
+        {
+            if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
+            var digits = System.Text.RegularExpressions.Regex.Replace(cpf, @"\D", "");
+            if (digits.Length >= 3)
+                return digits[..3] + ".***.***-**";
+            return cpf;
+        }
+
+        // Email: teste@gmail.com → te***@gmail.com
+        private static string MascararEmail(string? email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return string.Empty;
+            var at = email.IndexOf('@');
+            if (at <= 2) return email;
+            return email[..2] + new string('*', at - 2) + email[at..];
         }
 
         private async void BtnSalvar_Click(object sender, RoutedEventArgs e)
@@ -52,9 +87,8 @@ namespace ReGraphik.Views.UserControls
             }
 
             _usuarioAtual.Nome = TxtNome.Text;
-            _usuarioAtual.CPF = TxtCpf.Text;
-            _usuarioAtual.Email = TxtEmail.Text;
             _usuarioAtual.Login = TxtLogin.Text;
+            // CPF e Email já foram atualizados no LostFocus
 
             if (!string.IsNullOrWhiteSpace(TxtSenha.Password))
                 _usuarioAtual.Senha = TxtSenha.Password;
@@ -72,6 +106,9 @@ namespace ReGraphik.Views.UserControls
                 {
                     MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
                     TxtSenha.Clear();
+                    // Reaplica máscaras após salvar
+                    TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
+                    TxtEmail.Text = MascararEmail(_usuarioAtual.Email);
                 }
                 else
                 {
