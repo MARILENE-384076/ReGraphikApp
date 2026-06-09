@@ -18,7 +18,9 @@ namespace ReGraphik.ViewModels
 {
     public class MapaViewModel : BaseViewModel
     {
-        // Instancia única do HttpClient para toda a classe, seguindo as melhores práticas
+        /// <summary>
+        /// Instancia única do HttpClient para toda a classe, seguindo as melhores práticas
+        /// </summary>
         private readonly HttpClient _http = new();
         private bool _mapaCarregado = false;
         private string _cidade = string.Empty;
@@ -29,7 +31,9 @@ namespace ReGraphik.ViewModels
 
         public event Action<string>? SolicitouNavegacaoMapa;
 
-        // Propriedades públicas para vinculação à interface
+        /// <summary>
+        /// Propriedades públicas para vinculação à interface
+        /// </summary>
         public string Cidade
         {
             get => _cidade;
@@ -42,7 +46,9 @@ namespace ReGraphik.ViewModels
             set { _pontosAtuais = value; OnPropertyChanged(); OnPropertyChanged(nameof(MostrarEstadoVazio)); }
         }
 
-        // Referências públicas para os elementos visuais, a serem atribuídas pela View
+        /// <summary>
+        /// Referências públicas para os elementos visuais, a serem atribuídas pela View
+        /// </summary>
         public bool IsCarregando
         {
             get => _isCarregando;
@@ -54,15 +60,19 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // Referências públicas para os elementos visuais, a serem atribuídas pela View
+        /// <summary>
+        /// Referências públicas para os elementos visuais, a serem atribuídas pela View
+        /// </summary>
         public bool MostrarEstadoVazio => !IsCarregando && (PontosAtuais == null || PontosAtuais.Count == 0);
 
-        // Comando para iniciar a busca dos pontos de coleta
+        /// <summary>
+        /// Comando para iniciar a busca dos pontos de coleta
+        /// </summary>
         public ICommand BuscarCommand { get; set; }
 
         public MapaViewModel()
         {
-            // Inicializa o comando de busca com a função assíncrona correspondente
+            /// Inicializa o comando de busca com a função assíncrona correspondente
             BuscarCommand = new RelayCommand(() =>
             {
                 Task.Run(async () =>
@@ -91,7 +101,7 @@ namespace ReGraphik.ViewModels
 
             try
             {
-                // Faz uma requisição POST para a API para sincronizar os pontos de coleta da cidade informada
+                /// Faz uma requisição POST para a API para sincronizar os pontos de coleta da cidade informada
                 string urlSincronizar = $"https://webregraphik.runasp.net/api/PontosColeta/sincronizar?cidade={Uri.EscapeDataString(Cidade)}";
                 var conteudoVazio = new StringContent("", Encoding.UTF8, "application/json");
 
@@ -107,13 +117,13 @@ namespace ReGraphik.ViewModels
 
                     PontosAtuais = new ObservableCollection<PontosColeta>(filtrados);
 
-                    // Após atualizar a coleção, recarrega o mapa para refletir os novos pontos
+                    /// Após atualizar a coleção, recarrega o mapa para refletir os novos pontos
                     CarregarMapa(filtrados);
                     IsCarregando = false;
                 }
                 else
                 {
-                    // Em caso de erro na API, exibe a mensagem de erro retornada
+                    /// Em caso de erro na API, exibe a mensagem de erro retornada
                     IsCarregando = false;
                     string erroApi = await response.Content.ReadAsStringAsync();
                     MessageBox.Show($"Erro na API ao sincronizar: {erroApi}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -126,22 +136,27 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista, solicitando o foco no mapa
+        /// <summary>
+        /// Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista, solicitando o foco no mapa
+        /// </summary>
+        /// <param name="ponto"></param>
         public void FocarNoPonto(PontosColeta ponto)
         {
             if (_mapaCarregado && PontosAtuais != null)
             {
-                // Encontra o índice do ponto selecionado na coleção atual
+                /// Encontra o índice do ponto selecionado na coleção atual
                 var idx = PontosAtuais.IndexOf(ponto);
                 if (idx >= 0)
                 {
-                    // Solicita à View que centralize o ponto correspondente no mapa
+                    /// Solicita à View que centralize o ponto correspondente no mapa
                     SolicitouFocoNoMapa?.Invoke(idx);
                 }
             }
         }
 
-        // Método público para ser chamado pela View quando o mapa estiver completamente carregado
+        /// <summary>
+        /// Método público para ser chamado pela View quando o mapa estiver completamente carregado
+        /// </summary>
         public void NotificarMapaCarregado()
         {
             _mapaCarregado = true;
@@ -152,13 +167,13 @@ namespace ReGraphik.ViewModels
             var lista = new List<PontosColeta>();
             try
             {
-                // Faz uma requisição GET para a API para obter os pontos de coleta
+                /// Faz uma requisição GET para a API para obter os pontos de coleta
                 var urlApi = "https://webregraphik.runasp.net/api/PontosColeta";
                 var resposta = await _http.GetAsync(urlApi);
 
                 if (resposta.IsSuccessStatusCode)
                 {
-                    // Lê o conteúdo JSON da resposta e desserializa para a lista de pontos de coleta
+                    /// Lê o conteúdo JSON da resposta e desserializa para a lista de pontos de coleta
                     var json = await resposta.Content.ReadAsStringAsync();
                     var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                     return JsonSerializer.Deserialize<List<PontosColeta>>(json, opcoes) ?? lista;
@@ -173,40 +188,50 @@ namespace ReGraphik.ViewModels
 
         private void CarregarMapa(List<PontosColeta> pontos)
         {
-            // Gera o HTML do mapa com os pontos de coleta e salva em um arquivo temporário
+            /// Gera o HTML do mapa com os pontos de coleta e salva em um arquivo temporário
             var html = GerarHtml(pontos);
             var tmpFile = Path.Combine(Path.GetTempPath(), "regraphik_mapa.html");
             File.WriteAllText(tmpFile, html, Encoding.UTF8);
             _mapaCarregado = false;
 
-            // Solicita à View que navegue para o arquivo HTML gerado
+            /// Solicita à View que navegue para o arquivo HTML gerado
             SolicitouNavegacaoMapa?.Invoke(tmpFile);
         }
 
-        // Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista
+        /// <summary>
+        /// Gera o código HTML completo contendo o mapa Leaflet e os marcadores de cada ponto de coleta.
+        /// Injeta os dados do C# (nome, endereço, resíduos, telefone e site) dinamicamente no JavaScript.
+        /// </summary>
+        /// <param name="pontos">A lista de pontos de coleta a serem exibidos no mapa.</param>
+        /// <returns>Uma string contendo o HTML e JavaScript necessários para renderizar o mapa no WebView2.</returns>
         private string GerarHtml(List<PontosColeta> pontos)
         {
+            /// Inicia a construção de um array de objetos em formato JSON para o JavaScript ler
             var marcadoresJs = new StringBuilder("[");
             for (int i = 0; i < pontos.Count; i++)
             {
                 var p = pontos[i];
                 if (i > 0) marcadoresJs.Append(",");
 
-                // Se as coordenadas forem zero, utiliza uma localização padrão (São Paulo) para evitar erros no mapa
+                /// Se as coordenadas forem zero, utiliza uma localização padrão (São Paulo) para evitar que o mapa quebre
                 string latitude = p.Lat != 0 ? p.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-23.55052";
                 string longitude = p.Lng != 0 ? p.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-46.633308";
 
+                /// Monta a estrutura JSON com os dados do C#, escapando os textos para evitar erros de sintaxe no JS
                 marcadoresJs.Append($@"{{
                     ""idx"": {i},
                     ""nome"": ""{EscJs(p.NomePonto)}"",
                     ""endereco"": ""{EscJs(p.Cidade)}"",
                     ""tipos"": ""{EscJs(p.ResiduosAceitos)}"",
                     ""lat"": {latitude},
-                    ""lng"": {longitude}
+                    ""lng"": {longitude},
+                    ""telefone"": ""{EscJs(p.telefone)}"",
+                    ""site"": ""{EscJs(p.site)}""
                 }}");
             }
             marcadoresJs.Append("]");
 
+            /// Retorna o template HTML concatenado com o array de marcadores gerado acima
             return $@"<!DOCTYPE html>
 <html>
 <head>
@@ -216,8 +241,11 @@ namespace ReGraphik.ViewModels
     <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
     <style>
         html, body, #map {{ height: 100%; margin: 0; padding: 0; font-family: sans-serif; }}
-        .popup-custom {{ font-size: 14px; line-height: 1.4; }}
-        .popup-title {{ font-weight: bold; color: #2e7d32; margin-bottom: 4px; }}
+        .popup-custom {{ font-size: 14px; line-height: 1.4; min-width: 200px; }}
+        .popup-title {{ font-weight: bold; color: #2e7d32; margin-bottom: 8px; font-size: 15px; text-transform: uppercase; }}
+        .popup-info {{ margin-bottom: 4px; }}
+        .link-tel {{ color: #2e7d32; text-decoration: none; font-weight: 500; }}
+        .link-site {{ color: #1D4ED8; text-decoration: none; font-weight: 500; }}
     </style>
 </head>
 <body>
@@ -235,18 +263,36 @@ namespace ReGraphik.ViewModels
             var bounds = [];
             pontos.forEach(function(p) {{
                 var marker = L.marker([p.lat, p.lng]).addTo(map);
+                
+                /// Monta a estrutura HTML interna do balão (Popup) com as informações do local
                 var conteudo = '<div class=""popup-custom"">' +
                                '<div class=""popup-title"">' + p.nome + '</div>' +
-                               '<div><b>Endereço:</b> ' + p.endereco + '</div>' +
-                               '<div><b>Resíduos:</b> ' + p.tipos + '</div>' +
-                               '</div>';
+                               '<div class=""popup-info""><b>Endereço:</b> ' + p.endereco + '</div>' +
+                               '<div class=""popup-info""><b>Resíduos:</b> ' + p.tipos + '</div>';
+                
+                /// Valida e insere o Telefone como link clicável (tel:), ou exibe mensagem de ausência
+                if (p.telefone && p.telefone !== 'Não informado' && p.telefone !== '') {{
+                    conteudo += '<div class=""popup-info""><b>Telefone:</b> <a href=""tel:' + p.telefone + '"" class=""link-tel"">' + p.telefone + '</a></div>';
+                }} else {{
+                    conteudo += '<div class=""popup-info"" style=""color: #777;""><b>Telefone:</b> Não informado</div>';
+                }}
+
+                /// Valida e insere o Site como link clicável que abre em nova aba (target='_blank')
+                if (p.site && p.site !== 'Não informado' && p.site !== '') {{
+                    conteudo += '<div class=""popup-info""><b>Site:</b> <a href=""' + p.site + '"" target=""_blank"" class=""link-site"">Acessar site</a></div>';
+                }}
+
+                conteudo += '</div>';
+
                 marker.bindPopup(conteudo);
                 marcadores.push(marker);
                 bounds.push([p.lat, p.lng]);
             }});
+            /// Ajusta o zoom do mapa automaticamente para mostrar todos os pontos
             map.fitBounds(bounds);
         }}
 
+        /// Função acionada pelo C# para centralizar e abrir o popup de um ponto específico
         function centralizarPonto(index) {{
             if (marcadores[index]) {{
                 var m = marcadores[index];
@@ -259,10 +305,15 @@ namespace ReGraphik.ViewModels
 </html>";
         }
 
-        // Método público para ser chamado pela View quando um ponto de coleta for selecionado na lista, solicitando o foco no mapa
+        /// <summary>
+        /// Escapa caracteres especiais em strings que serão injetadas dentro do código JavaScript.
+        /// </summary>
+        /// <param name="texto">A string bruta vinda do modelo.</param>
+        /// <returns>Uma string limpa e segura para uso no JSON gerado no StringBuilder.</returns>
         private string EscJs(string texto)
         {
             if (string.IsNullOrEmpty(texto)) return "";
+            /// Remove quebras de linha e escapa barras e aspas duplas
             return texto.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "").Replace("\n", " ");
         }
     }
