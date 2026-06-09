@@ -10,11 +10,17 @@ namespace ReGraphik.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
+        /// <summary>
+        /// A MainViewModel é responsável por gerenciar a navegação entre as diferentes views da aplicação,
+        /// </summary>
         private readonly Window _currentWindow;
         private object _currentView;
         private string _nomeUsuario = string.Empty;
         private string _btnAtivo = string.Empty;
 
+        /// <summary>
+        /// Armazena as informações do usuário logado, permitindo que elas sejam acessadas por todas as views e viewmodels,
+        /// </summary>
         public Usuario UsuarioLogado { get; }
 
         public object CurrentView
@@ -35,15 +41,20 @@ namespace ReGraphik.ViewModels
             set { _btnAtivo = value; OnPropertyChanged(); }
         }
 
-        // ── Views criadas uma única vez e reutilizadas ──────────
+        /// <summary>
+        /// Instancia cada view apenas uma vez para garantir que o estado seja mantido ao navegar entre elas, 
+        /// evitando a criação de múltiplas instâncias e melhorando a performance da aplicação.
+        /// </summary>
         private readonly DashboardView _dashboardView;
         private readonly ResiduosView _residuosView;
         private readonly EstoqueReversoView _estoqueView;
         private readonly MapaView _mapaView;
         private readonly RelatoriosView _relatoriosView;
         private readonly ContaView _contaView;
-        // ────────────────────────────────────────────────────────
 
+        /// <summary>
+        /// Comandos de navegação reutilizam a mesma instância, centralizando a lógica de navegação no método ExecutarNavegacao,
+        /// </summary>
         public ICommand NavegarDashboardCommand { get; }
         public ICommand NavegarResiduosCommand { get; }
         public ICommand NavegarEstoqueCommand { get; }
@@ -52,6 +63,11 @@ namespace ReGraphik.ViewModels
         public ICommand NavegarContaCommand { get; }
         public ICommand SairCommand { get; }
 
+        /// <summary>
+        /// O construtor recebe o usuário logado e a janela atual para gerenciar a navegação e o estado visual do menu lateral.
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="window"></param>
         public MainViewModel(Usuario usuario, Window window)
         {
             UsuarioLogado = usuario;
@@ -73,11 +89,11 @@ namespace ReGraphik.ViewModels
             _relatoriosView = new RelatoriosView();
             _contaView = new ContaView(UsuarioLogado);
 
-            // Começa na Dashboard
+            /// Começa na Dashboard
             _currentView = _dashboardView;
             _btnAtivo = "Dashboard";
 
-            // Comandos reutilizam a mesma instância
+            /// Comandos reutilizam a mesma instância
             NavegarDashboardCommand = new RelayCommand(p => ExecutarNavegacao("Dashboard", _dashboardView));
             NavegarResiduosCommand = new RelayCommand(p => ExecutarNavegacao("Residuos", _residuosView));
             NavegarEstoqueCommand = new RelayCommand(p => ExecutarNavegacao("Estoque", _estoqueView));
@@ -87,12 +103,30 @@ namespace ReGraphik.ViewModels
             SairCommand = new RelayCommand(p => ExecutarSair());
         }
 
+        /// <summary>
+        /// Centraliza a lógica de navegação, garantindo que a mesma instância de cada view seja reutilizada e
+        /// que a Dashboard atualize a foto do usuário sempre que for acessada.
+        /// </summary>
+        /// <param name="nomeBotao"></param>
+        /// <param name="view"></param>
         private void ExecutarNavegacao(string nomeBotao, object view)
         {
             BtnAtivo = nomeBotao;
             CurrentView = view;
+
+            if (nomeBotao == "Dashboard" && view is FrameworkElement elementoVisual)
+            {
+                /// Atualiza a foto do usuário na Dashboard toda vez que ela for acessada, garantindo que a imagem mais recente seja exibida.
+                if (elementoVisual.DataContext is DashboardViewModel dashboardVM)
+                {
+                    dashboardVM.ImgFoto = FotoUserService.Foto;
+                }
+            }
         }
 
+        /// <summary>
+        /// Exibe uma mensagem de confirmação antes de fechar a aplicação, garantindo que o usuário não saia acidentalmente.
+        /// </summary>
         private void ExecutarSair()
         {
             var resultado = MessageBox.Show(

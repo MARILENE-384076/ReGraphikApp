@@ -43,7 +43,51 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
-        public ICommand SelecionarFotoCommand { get; }
+        /// <summary>
+        /// O método AlterarFoto é responsável por permitir que o usuário selecione uma nova foto de perfil, faça o upload para 
+        /// o Firebase Storage e atualize a URL da foto no Realtime Database, garantindo que a nova imagem seja exibida corretamente na aplicação. 
+        /// </summary>
+        /// <returns></returns>
+        private async Task AlterarFoto()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Imagens (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string caminhoLocalImagem = openFileDialog.FileName;
+
+                try
+                {
+                    Ocupado = true;
+
+                    // 1. Chame o novo serviço do Imgur (Totalmente Grátis)
+                    var imgurService = new ImgurApiService();
+
+                    // O Imgur só precisa do caminho do arquivo, ele gera o link na hora!
+                    string urlPublicaImgur = await imgurService.EnviarFotoPerfilAsync(caminhoLocalImagem);
+
+                    // 2. Atualiza o objeto do usuário na memória do WPF
+                    string fotoAntiga = UsuarioLogado.FotoPerfil;
+                    UsuarioLogado.FotoPerfil = urlPublicaImgur;
+
+                    // 3. Envia para o seu backend da Runasp salvar no banco de dados!
+                    string senhaAntiga = UsuarioLogado.Senha;
+                    UsuarioLogado.Senha = null;
+
+                    bool sucessoApi = await _autorizarService.AtualizarAsync(UsuarioLogado.Id, UsuarioLogado);
+
+                    UsuarioLogado.Senha = senhaAntiga; // Restaura localmente
+
+                    if (sucessoApi)
+                    {
+                        // 4. Carrega a foto na Dashboard na hora
+                        BitmapImage novaFoto = new BitmapImage();
+                        novaFoto.BeginInit();
+                        novaFoto.UriSource = new Uri(urlPublicaImgur, UriKind.Absolute);
+                        novaFoto.CacheOption = BitmapCacheOption.OnLoad;
+                        novaFoto.EndInit();
+                        novaFoto.Freeze();
 
         public UsuarioViewModel()
         {

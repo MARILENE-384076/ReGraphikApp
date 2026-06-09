@@ -9,10 +9,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Imgs\IconePerfil.png" />
 		<None Remove="Imgs\logoRegraphik.png" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Imgur.API" Version="5.0.0" />
 		<PackageReference Include="MahApps.Metro.IconPacks.Material" Version="6.2.1" />
 		<PackageReference Include="MahApps.Metro.SimpleChildWindow" Version="2.2.1" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
@@ -21,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Imgs\IconePerfil.png" />
 		<Resource Include="Imgs\logoRegraphik.png" />
 	</ItemGroup>
 

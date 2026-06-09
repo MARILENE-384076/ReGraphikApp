@@ -1,11 +1,12 @@
-﻿using ReGraphik.Models;
+﻿using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using OxyPlot;
-using OxyPlot.Series;
-using OxyPlot.Axes;
+using System.Windows.Media;
 
 namespace ReGraphik.ViewModels
 {
@@ -78,6 +79,7 @@ namespace ReGraphik.ViewModels
 
         public DashboardViewModel(string nomeUsuario)
         {
+            _residuoService = new ResiduoService();
             GraficoPizzaModel = new PlotModel();
             GraficoBarrasModel = new PlotModel();
             NomeUsuario = nomeUsuario;
@@ -243,6 +245,8 @@ namespace ReGraphik.ViewModels
 
                     App.Current.Dispatcher.Invoke(() =>
                     {
+                        ImgFoto = FotoUserService.Foto;
+
                         ResiduosDb = totalResiduos;
                         Reaproveitar = totalReaproveitar;
                         Estoque = totalEstoque;
