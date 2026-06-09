@@ -56,4 +56,11 @@
         </Setter>
     </Style>
 
+    <Style x:Key="LabelStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="#4A5568"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Margin" Value="0,15,0,5"/>
+    </Style>
+
 </ResourceDictionary>
