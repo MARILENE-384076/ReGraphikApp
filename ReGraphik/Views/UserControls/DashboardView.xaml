@@ -41,11 +41,14 @@
 
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Border Background="#0d2a56" CornerRadius="25" Width="50" Height="50">
+                        <Border x:Name="FotoPerfil" CornerRadius="25" Width="50" Height="50">
                             <Border.Effect>
                                 <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                             </Border.Effect>
-                            <Image Source="/Imgs/logoRegraphik.png" Width="900" Height="40"/>
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding ImgFoto, TargetNullValue={x:Null}, FallbackValue={x:Null}}" 
+                                   Stretch="UniformToFill" />
+                            </Border.Background>
                         </Border>
 
                         <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">

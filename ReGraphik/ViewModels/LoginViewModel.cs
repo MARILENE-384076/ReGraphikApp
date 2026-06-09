@@ -1,4 +1,5 @@
-﻿using MahApps.Metro.IconPacks;
+﻿using ControlzEx.Standard;
+using MahApps.Metro.IconPacks;
 using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace ReGraphik.ViewModels
 {
@@ -44,7 +46,10 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
-        // Propriedade para indicar se o processo de login está em andamento, usada para desabilitar o botão de login enquanto a operação está sendo processada
+        /// <summary>
+        /// Propriedade que indica se o processo de login está em andamento. Ela é usada para desabilitar o botão de login enquanto 
+        /// a autenticação está sendo processada, evitando múltiplas tentativas de login simultâneas.
+        /// </summary>
         public bool Ocupado
         {
             get => _ocupado;
@@ -69,19 +74,28 @@ namespace ReGraphik.ViewModels
             set { _mensagemErroGeral = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Comandos que serão vinculados aos botões na interface de usuário para realizar as ações de login, revelar
+        /// a senha e abrir a janela de recuperação de senha.
+        /// </summary>
         public ICommand EntrarCommand { get; }
         public ICommand RevelarSenhaCommand { get; }
 
         public ICommand EsqueciSenhaCommand { get; }
 
+        /// <summary>
+        /// Construtor da classe LoginViewModel. Ele inicializa o serviço de autorização e os comandos que serão usados para realizar o 
+        /// login, revelar a senha e abrir a janela de recuperação de senha.
+        /// </summary>
         public LoginViewModel()
         {
+            // Modo de design para evitar que o serviço de autorização seja inicializado durante a fase de design da interface
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
             _autorizarService = new AutorizarService();
 
-            // Inicializa o comando de login, associando-o ao método Entrar
+            /// Inicializa o comando de login, associando-o ao método Entrar
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
 
             RevelarSenhaCommand = new RelayCommand(RevelarSenha);
@@ -89,33 +103,42 @@ namespace ReGraphik.ViewModels
             EsqueciSenhaCommand = new RelayCommand(EsqueciSenha);
         }
 
-        // Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
+        /// <summary>
+        /// Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         private bool CanEntrar(object parameter) => !Ocupado;
 
+        /// <summary>
+        /// Método responsável por realizar o processo de login. Ele valida as credenciais fornecidas pelo usuário,
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         private async Task Entrar(object parameter)
         {
             MensaLogin = string.Empty;
             MensaSenha = string.Empty;
             MensagemErroGeral = string.Empty;
 
-            // Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
+            /// Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
                 MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
-            // Obtém a senha digitada pelo usuário a partir do PasswordBox
+            /// Obtém a senha digitada pelo usuário a partir do PasswordBox
             string senhaDigitada = passwordBox.Password;
             bool possuiErro = false;
 
-            // Validação de login
+            /// Validação de login
             if (string.IsNullOrWhiteSpace(Login))
             {
                 MensaLogin = "O login é obrigatório!";
                 possuiErro = true;
             }
 
-            // Validação de senha
+            /// Validação de senha
             if (string.IsNullOrWhiteSpace(senhaDigitada))
             {
                 MensaSenha = "A senha é obrigatória!";
@@ -139,6 +162,45 @@ namespace ReGraphik.ViewModels
                     return;
                 }
 
+                if (!string.IsNullOrEmpty(usuario.FotoPerfil))
+                {
+                    try
+                    {
+                        // Descobre a pasta onde o seu app está rodando
+                        string pastaApp = AppDomain.CurrentDomain.BaseDirectory;
+
+                        // Caminho completo até a pasta de uploads (ajuste o nome "Uploads" para o nome real da sua pasta)
+                        string caminhoCompleto = System.IO.Path.Combine(pastaApp, "Uploads", usuario.FotoPerfil);
+
+                        if (System.IO.File.Exists(caminhoCompleto))
+                        {
+                            BitmapImage bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = new Uri(caminhoCompleto, UriKind.Absolute);
+                            bitmap.CacheOption = BitmapCacheOption.OnLoad; // Libera o arquivo para não travar o Windows
+                            bitmap.EndInit();
+                            bitmap.Freeze(); // Permite enviar para a UI Thread de forma segura
+
+                            FotoUserService.Foto = bitmap;
+                        }
+                        else
+                        {
+                            // Se o arquivo sumiu da pasta por algum motivo, carrega a padrão
+                            CarregarFotoPadrao();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        CarregarFotoPadrao();
+                    }
+                }
+                else
+                {
+                    CarregarFotoPadrao();
+                }
+
+                /// Armazena o nome do usuário no serviço de foto para que possa ser acessado em outras partes da aplicação
+                var dashboardVM = new DashboardViewModel(usuario.Nome);
 
                 var main = new MainWindow(usuario);
                 main.Show();
@@ -159,6 +221,22 @@ namespace ReGraphik.ViewModels
             finally { Ocupado = false; }
 
         }
+
+        /// <summary>
+        /// Carrega a foto padrão para o usuário, caso ele não tenha uma foto de perfil definida ou se houver um erro ao tentar carregar a foto do usuário.
+        /// </summary>
+        private void CarregarFotoPadrao()
+        {
+            FotoUserService.Foto = new BitmapImage(
+                new Uri("pack://application:,,,/ReGraphik;component/Imgs/IconePerfil.png", UriKind.Absolute)
+            ); 
+        }
+
+        /// <summary>
+        /// Método para alternar a visibilidade da senha digitada pelo usuário. Ele busca os componentes de senha e texto 
+        /// dentro do Grid, e alterna entre eles para mostrar ou ocultar a senha, além de trocar o ícone do botão de revelação.
+        /// </summary>
+        /// <param name="parameter">O parâmetro passado para o comando</param>
         private void RevelarSenha(object parameter)
         {
 
@@ -168,7 +246,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            // Buscando os componentes de dentro do Grid através do nome ou tipo
+            /// Buscando os componentes de dentro do Grid através do nome ou tipo
             var txtSenhaLogin = gridContainer.Children.OfType<PasswordBox>().FirstOrDefault(x => x.Name == "TxtSenhaLogin");
             var txtSenhaVisivelLogin = gridContainer.Children.OfType<TextBox>().FirstOrDefault(x => x.Name == "TxtSenhaVisivelLogin");
             var btnRevelar = gridContainer.Children.OfType<Button>().FirstOrDefault(x => x.Name == "BtnRevelarSenha");
@@ -197,6 +275,11 @@ namespace ReGraphik.ViewModels
             }
         }
 
+        /// <summary>
+        /// Método para abrir a janela de recuperação de senha. Ele cria uma nova instância da RecuperarSenhaWindow, 
+        /// define o proprietário e a posição de inicialização, e exibe a janela como um diálogo modal.
+        /// </summary>
+        /// <returns></returns>
         private async Task EsqueciSenha()
         {
             RecuperarSenhaWindow recuperacaoTela = new RecuperarSenhaWindow();
