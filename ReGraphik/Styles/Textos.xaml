@@ -35,4 +35,14 @@
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
 
+    <Style TargetType="TextBox">
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="BorderBrush" Value="#82A0C2"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="#F8FAFC"/>
+        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
 </ResourceDictionary>
