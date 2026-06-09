@@ -67,7 +67,7 @@ namespace ReGraphik.ViewModels
             // Instancia o ViewModel do chat passando o usuário logado
             ChatViewModel = new ChatViewModel(usuario);
 
-            // ── TRECHO ADICIONADO ───────────────────────────────────
+           
             // Carrega foto persistida do disco
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
             if (fotoSalva != null)
