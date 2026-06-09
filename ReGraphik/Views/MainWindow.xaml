@@ -20,6 +20,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolVis"/>
         </ResourceDictionary>
     </Window.Resources>
 
