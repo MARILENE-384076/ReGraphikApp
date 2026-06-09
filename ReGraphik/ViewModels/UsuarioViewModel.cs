@@ -1,20 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using ReGraphik.Services;
 
 namespace ReGraphik.ViewModels
 {
     public class UsuarioViewModel : BaseViewModel
     {
-        private string _imgFoto; 
-        public string ImgFoto
+        // Foto vem do serviço compartilhado
+        public string? ImgFoto
         {
-            get => _imgFoto;
-            set { _imgFoto = value; OnPropertyChanged(); }
+            get => UsuarioSessaoService.Instancia.FotoCaminho;
+            set
+            {
+                UsuarioSessaoService.Instancia.FotoCaminho = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _nome = string.Empty;
+        public string Nome
+        {
+            get => _nome;
+            set { _nome = value; OnPropertyChanged(); }
+        }
+
+        private string _cpf = string.Empty;
+        public string Cpf
+        {
+            get => _cpf;
+            set { _cpf = value; OnPropertyChanged(); }
+        }
+
+        private string _email = string.Empty;
+        public string Email
+        {
+            get => _email;
+            set { _email = value; OnPropertyChanged(); }
+        }
+
+        private string _login = string.Empty;
+        public string Login
+        {
+            get => _login;
+            set { _login = value; OnPropertyChanged(); }
         }
 
         public ICommand SelecionarFotoCommand { get; }
@@ -22,21 +49,25 @@ namespace ReGraphik.ViewModels
         public UsuarioViewModel()
         {
             SelecionarFotoCommand = new RelayCommand(SelecionarFoto);
+
+            // Escuta mudanças no serviço para atualizar o binding
+            UsuarioSessaoService.Instancia.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))
+                    OnPropertyChanged(nameof(ImgFoto));
+            };
         }
 
-        public void SelecionarFoto()
+        private void SelecionarFoto()
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Imagens (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp",
-                Title = "Selecione um arquivo para anexar"
+                Filter = "Imagens (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp",
+                Title = "Selecione uma foto de perfil"
             };
 
-            if (openFileDialog.ShowDialog() == true)
-            {
-                ImgFoto = openFileDialog.SafeFileName;
-            }
+            if (dialog.ShowDialog() == true)
+                ImgFoto = dialog.FileName; // caminho completo, não SafeFileName
         }
     }
-
 }
