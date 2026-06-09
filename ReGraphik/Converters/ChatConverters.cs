@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace ReGraphik.Converters
 {
@@ -28,7 +29,9 @@ namespace ReGraphik.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool ehMinha = value is bool b && b;
-            return ehMinha ? "#1649a2" : "#FFFFFF";
+            return ehMinha
+                ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1649a2"))
+                : new SolidColorBrush(Colors.White);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -43,7 +46,9 @@ namespace ReGraphik.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool ehMinha = value is bool b && b;
-            return ehMinha ? "#FFFFFF" : "#1E293B";
+            return ehMinha
+                ? new SolidColorBrush(Colors.White)
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B"));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
