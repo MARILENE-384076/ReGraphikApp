@@ -3,6 +3,8 @@ using ReGraphik.Services;
 using ReGraphik.Views.UserControls;
 using System.Windows;
 using System.Windows.Input;
+// Certifique-se de adicionar o using correto para os seus serviços aqui se necessário, ex:
+// using ReGraphik.Services; 
 
 namespace ReGraphik.ViewModels
 {
@@ -72,7 +74,14 @@ namespace ReGraphik.ViewModels
             _currentWindow = window;
             NomeUsuario = usuario.Nome ?? "Usuário";
 
-            /// Instancia cada view apenas uma vez
+            // ── TRECHO ADICIONADO ───────────────────────────────────
+            // Carrega foto persistida do disco
+            var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
+            if (fotoSalva != null)
+                UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
+            // ────────────────────────────────────────────────────────
+
+            // Instancia cada view apenas uma vez
             _dashboardView = new DashboardView(NomeUsuario);
             _residuosView = new ResiduosView();
             _estoqueView = new EstoqueReversoView();
