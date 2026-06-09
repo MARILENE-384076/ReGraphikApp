@@ -100,7 +100,7 @@ namespace ReGraphik.Views.UserControls
                 BtnSalvar.IsEnabled = false;
                 BtnSalvar.Content = "Salvando...";
 
-                bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
+                bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual); 
 
                 if (sucesso)
                 {
