@@ -17,6 +17,12 @@ namespace ReGraphik.ViewModels
 
         public Usuario UsuarioLogado { get; }
 
+        /// <summary>
+        /// ViewModel do chat — exposto para o DataContext da MainWindow
+        /// poder fazer binding no botão de mensagem e no painel flutuante.
+        /// </summary>
+        public ChatViewModel ChatViewModel { get; }
+
         public object CurrentView
         {
             get => _currentView;
