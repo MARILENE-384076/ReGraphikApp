@@ -59,7 +59,7 @@
                         <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
                         <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,24"/>
 
-                        <Button x:Name="BtnSalvar" Command="{Binding SalvarAlteracoesCommand}" Content="Salvar Alterações" Height="45" HorizontalAlignment="Stretch"
+                        <Button x:Name="BtnSalvar" Content="Salvar Alterações" Height="45" HorizontalAlignment="Stretch"
                                 Style="{StaticResource BtnPrimaryStyle}" FontSize="15" FontWeight="Bold" 
                                 Cursor="Hand" BorderThickness="0">
                         </Button>
@@ -81,7 +81,7 @@
                             </Border>
                         </Viewbox>
 
-                        <Button x:Name="BtnMudarFoto" Grid.Row="1" Command="{Binding AlterarFotoCommand}" Content="Mudar Foto"
+                        <Button x:Name="BtnMudarFoto" Grid.Row="1" Command="{Binding SelecionarFotoCommand}" Content="Mudar Foto"
                                 Height="35" Width="130" HorizontalAlignment="Center" Margin="0,10,0,0"
                                 FontSize="13" FontWeight="Bold" 
                                 Cursor="Hand" BorderThickness="0" Style="{StaticResource BtnFoto}">
