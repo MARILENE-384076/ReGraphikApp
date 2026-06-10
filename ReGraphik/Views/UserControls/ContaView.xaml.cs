@@ -14,6 +14,7 @@ namespace ReGraphik.Views.UserControls
         private Usuario _usuarioAtual;
         private readonly IAutorizarService _autorizarService;
         private readonly UsuarioViewModel _viewModel;
+        private string _emailReal = string.Empty;
 
         public ContaView(Usuario usuario)
         {
@@ -32,31 +33,26 @@ namespace ReGraphik.Views.UserControls
             TxtNome.Text = _usuarioAtual.Nome ?? string.Empty;
             TxtLogin.Text = _usuarioAtual.Login ?? string.Empty;
 
+            // CPF: mascarado e bloqueado
             TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
-            TxtEmail.Text = MascararEmail(_usuarioAtual.Email);
+
+            // Email: mascarado mas editável
+            _emailReal = _usuarioAtual.Email ?? string.Empty;
+            TxtEmail.Text = MascararEmail(_emailReal);
         }
 
-       
-        private void TxtCpf_GotFocus(object sender, RoutedEventArgs e)
-            => TxtCpf.Text = _usuarioAtual.CPF ?? string.Empty;
-
-        private void TxtCpf_LostFocus(object sender, RoutedEventArgs e)
-        {
-            _usuarioAtual.CPF = TxtCpf.Text;
-            TxtCpf.Text = MascararCpf(TxtCpf.Text);
-        }
-
-       
+        // ── Email: mostra real ao focar, mascara ao sair ─────────
         private void TxtEmail_GotFocus(object sender, RoutedEventArgs e)
-            => TxtEmail.Text = _usuarioAtual.Email ?? string.Empty;
+            => TxtEmail.Text = _emailReal;
 
         private void TxtEmail_LostFocus(object sender, RoutedEventArgs e)
         {
-            _usuarioAtual.Email = TxtEmail.Text;
-            TxtEmail.Text = MascararEmail(TxtEmail.Text);
+            _emailReal = TxtEmail.Text;
+            _usuarioAtual.Email = _emailReal;
+            TxtEmail.Text = MascararEmail(_emailReal);
         }
 
-       
+        // ── Máscaras ─────────────────────────────────────────────
         private static string MascararCpf(string? cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
@@ -64,7 +60,6 @@ namespace ReGraphik.Views.UserControls
             return d.Length >= 3 ? d[..3] + ".***.***-**" : cpf;
         }
 
-       
         private static string MascararEmail(string? email)
         {
             if (string.IsNullOrWhiteSpace(email)) return string.Empty;
@@ -73,7 +68,7 @@ namespace ReGraphik.Views.UserControls
             return email[..2] + new string('*', at - 2) + email[at..];
         }
 
-        
+        // ── Salvar ───────────────────────────────────────────────
         private async void BtnSalvar_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtNome.Text) || string.IsNullOrWhiteSpace(TxtLogin.Text))
@@ -85,7 +80,7 @@ namespace ReGraphik.Views.UserControls
 
             _usuarioAtual.Nome = TxtNome.Text;
             _usuarioAtual.Login = TxtLogin.Text;
-            // CPF e Email já atualizados no LostFocus
+            _usuarioAtual.Email = _emailReal;
 
             _usuarioAtual.Senha = !string.IsNullOrWhiteSpace(TxtSenha.Password)
                 ? TxtSenha.Password
@@ -103,9 +98,7 @@ namespace ReGraphik.Views.UserControls
                     MessageBox.Show("Dados atualizados com sucesso!", "Sucesso",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                     TxtSenha.Clear();
-                    // Reaplica máscaras após salvar
-                    TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
-                    TxtEmail.Text = MascararEmail(_usuarioAtual.Email);
+                    TxtEmail.Text = MascararEmail(_emailReal);
                 }
                 else
                 {
