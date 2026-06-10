@@ -1,11 +1,18 @@
-﻿<UserControl
-    x:Class="ReGraphik.Views.UserControls.ChatPainelView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:ReGraphik.Converters"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
-
-    <UserControl.Resources>
+﻿<Window x:Class="ReGraphik.Views.ChatPainelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReGraphik.Views"
+        xmlns:converters="clr-namespace:ReGraphik.Converters"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True">
+    
+    <Window.Resources>
         <converters:MensagemAlinhamentoConverter x:Key="AlinhamentoConv"/>
         <converters:MensagemCorFundoConverter x:Key="CorFundoConv"/>
         <converters:MensagemCorTextoConverter x:Key="CorTextoConv"/>
@@ -82,15 +89,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
-    </UserControl.Resources>
+    </Window.Resources>
 
     <!-- Painel flutuante do chat (posicionado no canto inferior direito pela MainWindow) -->
     <Border Width="360"
-            Height="520"
-            Background="White"
-            CornerRadius="12"
-            BorderBrush="#E2E8F0"
-            BorderThickness="1">
+        Height="520"
+        Background="White"
+        CornerRadius="12"
+        BorderBrush="#E2E8F0"
+        BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect BlurRadius="20" ShadowDepth="4" Color="#000000" Opacity="0.12"/>
         </Border.Effect>
@@ -103,9 +110,9 @@
 
             <!-- ═══ CABEÇALHO DO CHAT ═══ -->
             <Border Grid.Row="0"
-                    Background="#093e75"
-                    CornerRadius="12,12,0,0"
-                    Padding="14,12">
+                Background="#093e75"
+                CornerRadius="12,12,0,0"
+                Padding="14,12">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -116,18 +123,18 @@
 
                     <!-- Botão voltar (só aparece dentro de conversa) -->
                     <Button Grid.Column="0"
-                            Style="{StaticResource BtnIconeStyle}"
-                            Command="{Binding VoltarListaCommand}"
-                            Visibility="{Binding TemConversaSelecionada, Converter={StaticResource BoolVis}}"
-                            Margin="0,0,6,0">
+                        Style="{StaticResource BtnIconeStyle}"
+                        Command="{Binding VoltarListaCommand}"
+                        Visibility="{Binding TemConversaSelecionada, Converter={StaticResource BoolVis}}"
+                        Margin="0,0,6,0">
                         <iconPacks:PackIconMaterial Kind="ArrowLeft" Width="16" Height="16" Foreground="White"/>
                     </Button>
 
                     <!-- Título -->
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock Foreground="White"
-                                   FontWeight="SemiBold"
-                                   FontSize="15">
+                               FontWeight="SemiBold"
+                               FontSize="15">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Text" Value="Mensagens"/>
@@ -140,25 +147,26 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBlock Text="Online"
-                                   Foreground="#10B981"
-                                   FontSize="11"
-                                   Visibility="{Binding TemConversaSelecionada, Converter={StaticResource BoolVis}}"/>
+                               Foreground="#10B981"
+                               FontSize="11"
+                               Visibility="{Binding TemConversaSelecionada, Converter={StaticResource BoolVis}}"/>
                     </StackPanel>
 
                     <!-- Botão nova conversa -->
                     <Button Grid.Column="2"
-                            Style="{StaticResource BtnIconeStyle}"
-                            Command="{Binding AbrirNovaConversaCommand}"
-                            ToolTip="Nova conversa"
-                            Margin="0,0,4,0">
+                        Style="{StaticResource BtnIconeStyle}"
+                        Command="{Binding AbrirNovaConversaCommand}"
+                        ToolTip="Nova conversa"
+                        Margin="0,0,4,0">
                         <iconPacks:PackIconMaterial Kind="PencilPlusOutline" Width="16" Height="16" Foreground="White"/>
                     </Button>
 
                     <!-- Botão fechar chat -->
                     <Button Grid.Column="3"
-                            Style="{StaticResource BtnIconeStyle}"
-                            Command="{Binding FecharChatCommand}"
-                            ToolTip="Fechar">
+                        Style="{StaticResource BtnIconeStyle}"
+                        Command="{Binding FecharChatCommand}"
+                        ToolTip="Fechar"
+                        Click="BtnFechar_Click">
                         <iconPacks:PackIconMaterial Kind="Close" Width="16" Height="16" Foreground="White"/>
                     </Button>
                 </Grid>
@@ -184,8 +192,8 @@
                         <StackPanel>
                             <!-- Estado vazio -->
                             <StackPanel Visibility="{Binding Conversas.Count, Converter={StaticResource NaoLidasVisConv}, ConverterParameter=Invert}"
-                                        HorizontalAlignment="Center"
-                                        Margin="0,60,0,0">
+                                    HorizontalAlignment="Center"
+                                    Margin="0,60,0,0">
                                 <StackPanel.Style>
                                     <Style TargetType="StackPanel">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -197,30 +205,30 @@
                                     </Style>
                                 </StackPanel.Style>
                                 <iconPacks:PackIconMaterial Kind="MessageOutline" Width="48" Height="48"
-                                                            Foreground="#CBD5E1" HorizontalAlignment="Center"/>
+                                                        Foreground="#CBD5E1" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Nenhuma conversa ainda"
-                                           Foreground="#94A3B8" FontSize="13"
-                                           HorizontalAlignment="Center" Margin="0,12,0,4"/>
+                                       Foreground="#94A3B8" FontSize="13"
+                                       HorizontalAlignment="Center" Margin="0,12,0,4"/>
                                 <TextBlock Text="Clique no lápis para iniciar"
-                                           Foreground="#CBD5E1" FontSize="12"
-                                           HorizontalAlignment="Center"/>
+                                       Foreground="#CBD5E1" FontSize="12"
+                                       HorizontalAlignment="Center"/>
                             </StackPanel>
 
                             <!-- Loading -->
                             <TextBlock Text="Carregando..." Foreground="#94A3B8"
-                                       FontSize="13" HorizontalAlignment="Center"
-                                       Margin="0,40,0,0"
-                                       Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
+                                   FontSize="13" HorizontalAlignment="Center"
+                                   Margin="0,40,0,0"
+                                   Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
 
                             <!-- Items de conversa -->
                             <ItemsControl ItemsSource="{Binding Conversas}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Button Style="{StaticResource ItemConversaStyle}"
-                                                Command="{Binding DataContext.SelecionarConversaCommand,
-                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                Margin="0,2">
+                                            Command="{Binding DataContext.SelecionarConversaCommand,
+                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Margin="0,2">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="44"/>
@@ -230,39 +238,39 @@
 
                                                 <!-- Avatar -->
                                                 <Border Grid.Column="0" Width="40" Height="40"
-                                                        Background="#1649a2" CornerRadius="20"
-                                                        HorizontalAlignment="Left">
+                                                    Background="#1649a2" CornerRadius="20"
+                                                    HorizontalAlignment="Left">
                                                     <TextBlock Text="{Binding Iniciais}"
-                                                               Foreground="White" FontWeight="Bold"
-                                                               FontSize="14"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center"/>
+                                                           Foreground="White" FontWeight="Bold"
+                                                           FontSize="14"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
                                                 </Border>
 
                                                 <!-- Nome e última mensagem -->
                                                 <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,4,0">
                                                     <TextBlock Text="{Binding UsuarioNome}"
-                                                               FontWeight="SemiBold" FontSize="14"
-                                                               Foreground="#1E293B"
-                                                               TextTrimming="CharacterEllipsis"/>
+                                                           FontWeight="SemiBold" FontSize="14"
+                                                           Foreground="#1E293B"
+                                                           TextTrimming="CharacterEllipsis"/>
                                                     <TextBlock Text="{Binding UltimaMensagem}"
-                                                               FontSize="12" Foreground="#64748B"
-                                                               TextTrimming="CharacterEllipsis"/>
+                                                           FontSize="12" Foreground="#64748B"
+                                                           TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
 
                                                 <!-- Horário e badge -->
                                                 <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                                     <TextBlock Text="{Binding HorarioFormatado}"
-                                                               FontSize="11" Foreground="#94A3B8"
-                                                               HorizontalAlignment="Right"/>
+                                                           FontSize="11" Foreground="#94A3B8"
+                                                           HorizontalAlignment="Right"/>
                                                     <Border Background="#EF4444" CornerRadius="10"
-                                                            Padding="5,1" MinWidth="20"
-                                                            HorizontalAlignment="Right" Margin="0,4,0,0"
-                                                            Visibility="{Binding MensagensNaoLidas, Converter={StaticResource NaoLidasVisConv}}">
+                                                        Padding="5,1" MinWidth="20"
+                                                        HorizontalAlignment="Right" Margin="0,4,0,0"
+                                                        Visibility="{Binding MensagensNaoLidas, Converter={StaticResource NaoLidasVisConv}}">
                                                         <TextBlock Text="{Binding MensagensNaoLidas}"
-                                                                   Foreground="White" FontSize="11"
-                                                                   FontWeight="Bold"
-                                                                   HorizontalAlignment="Center"/>
+                                                               Foreground="White" FontSize="11"
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
                                                     </Border>
                                                 </StackPanel>
                                             </Grid>
@@ -293,19 +301,19 @@
 
                     <!-- Mensagens -->
                     <ScrollViewer Grid.Row="0"
-                                  VerticalScrollBarVisibility="Auto"
-                                  x:Name="ScrollMensagens"
-                                  Padding="12,8">
+                              VerticalScrollBarVisibility="Auto"
+                              x:Name="ScrollMensagens"
+                              Padding="12,8">
                         <ItemsControl ItemsSource="{Binding Mensagens}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel HorizontalAlignment="{Binding EhMinhaMensagem, Converter={StaticResource AlinhamentoConv}}"
-                                                Margin="0,3"
-                                                MaxWidth="260">
+                                            Margin="0,3"
+                                            MaxWidth="260">
                                         <!-- Remetente (só aparece em mensagens recebidas) -->
                                         <TextBlock Text="{Binding RemetenteNome}"
-                                                   FontSize="11" Foreground="#64748B"
-                                                   Margin="4,0,0,2">
+                                               FontSize="11" Foreground="#64748B"
+                                               Margin="4,0,0,2">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -320,21 +328,21 @@
 
                                         <!-- Balão -->
                                         <Border Background="{Binding EhMinhaMensagem, Converter={StaticResource CorFundoConv}}"
-                                                CornerRadius="12" Padding="10,8">
+                                            CornerRadius="12" Padding="10,8">
                                             <Border.Effect>
                                                 <DropShadowEffect BlurRadius="4" ShadowDepth="1" Color="#000" Opacity="0.06"/>
                                             </Border.Effect>
                                             <TextBlock Text="{Binding Texto}"
-                                                       Foreground="{Binding EhMinhaMensagem, Converter={StaticResource CorTextoConv}}"
-                                                       FontSize="13"
-                                                       TextWrapping="Wrap"/>
+                                                   Foreground="{Binding EhMinhaMensagem, Converter={StaticResource CorTextoConv}}"
+                                                   FontSize="13"
+                                                   TextWrapping="Wrap"/>
                                         </Border>
 
                                         <!-- Horário -->
                                         <TextBlock Text="{Binding DataHora, Converter={StaticResource DataHoraConv}}"
-                                                   FontSize="10" Foreground="#94A3B8"
-                                                   HorizontalAlignment="{Binding EhMinhaMensagem, Converter={StaticResource AlinhamentoConv}}"
-                                                   Margin="4,2,4,0"/>
+                                               FontSize="10" Foreground="#94A3B8"
+                                               HorizontalAlignment="{Binding EhMinhaMensagem, Converter={StaticResource AlinhamentoConv}}"
+                                               Margin="4,2,4,0"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -343,9 +351,9 @@
 
                     <!-- Campo de digitação -->
                     <Border Grid.Row="1"
-                            BorderBrush="#E2E8F0"
-                            BorderThickness="0,1,0,0"
-                            Padding="10,8">
+                        BorderBrush="#E2E8F0"
+                        BorderThickness="0,1,0,0"
+                        Padding="10,8">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -353,23 +361,23 @@
                             </Grid.ColumnDefinitions>
 
                             <Border Grid.Column="0"
-                                    Background="#F8FAFC"
-                                    BorderBrush="#E2E8F0"
-                                    BorderThickness="1"
-                                    CornerRadius="20"
-                                    Padding="14,8"
-                                    Margin="0,0,8,0">
+                                Background="#F8FAFC"
+                                BorderBrush="#E2E8F0"
+                                BorderThickness="1"
+                                CornerRadius="20"
+                                Padding="14,8"
+                                Margin="0,0,8,0">
                                 <TextBox Text="{Binding TextoMensagem, UpdateSourceTrigger=PropertyChanged}"
-                                         BorderThickness="0"
-                                         Background="Transparent"
-                                         FontSize="13"
-                                         MaxHeight="80"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="False"
-                                         VerticalAlignment="Center">
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     FontSize="13"
+                                     MaxHeight="80"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="False"
+                                     VerticalAlignment="Center">
                                     <TextBox.InputBindings>
                                         <KeyBinding Key="Return"
-                                                    Command="{Binding EnviarMensagemCommand}"/>
+                                                Command="{Binding EnviarMensagemCommand}"/>
                                     </TextBox.InputBindings>
                                     <TextBox.Style>
                                         <Style TargetType="TextBox">
@@ -378,10 +386,10 @@
                                                     <ControlTemplate TargetType="TextBox">
                                                         <Grid>
                                                             <TextBlock Text="Digite uma mensagem..."
-                                                                       Foreground="#94A3B8"
-                                                                       FontSize="13"
-                                                                       VerticalAlignment="Center"
-                                                                       IsHitTestVisible="False">
+                                                                   Foreground="#94A3B8"
+                                                                   FontSize="13"
+                                                                   VerticalAlignment="Center"
+                                                                   IsHitTestVisible="False">
                                                                 <TextBlock.Style>
                                                                     <Style TargetType="TextBlock">
                                                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -404,9 +412,9 @@
                             </Border>
 
                             <Button Grid.Column="1"
-                                    Style="{StaticResource BtnEnviarStyle}"
-                                    Command="{Binding EnviarMensagemCommand}"
-                                    ToolTip="Enviar mensagem (Enter)">
+                                Style="{StaticResource BtnEnviarStyle}"
+                                Command="{Binding EnviarMensagemCommand}"
+                                ToolTip="Enviar mensagem (Enter)">
                                 <iconPacks:PackIconMaterial Kind="Send" Width="16" Height="16" Foreground="White"/>
                             </Button>
                         </Grid>
@@ -427,8 +435,8 @@
                     </Border.Style>
 
                     <Border Background="White" CornerRadius="8"
-                            Margin="12" Padding="0,0,0,8"
-                            VerticalAlignment="Top" MaxHeight="400">
+                        Margin="12" Padding="0,0,0,8"
+                        VerticalAlignment="Top" MaxHeight="400">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -439,11 +447,11 @@
                             <Border Grid.Row="0" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1" Padding="14,10">
                                 <Grid>
                                     <TextBlock Text="Nova Conversa"
-                                               FontWeight="SemiBold" FontSize="14"
-                                               Foreground="#1E293B" VerticalAlignment="Center"/>
+                                           FontWeight="SemiBold" FontSize="14"
+                                           Foreground="#1E293B" VerticalAlignment="Center"/>
                                     <Button HorizontalAlignment="Right"
-                                            Style="{StaticResource BtnIconeStyle}"
-                                            Command="{Binding FecharNovaConversaCommand}">
+                                        Style="{StaticResource BtnIconeStyle}"
+                                        Command="{Binding FecharNovaConversaCommand}">
                                         <iconPacks:PackIconMaterial Kind="Close" Width="14" Height="14" Foreground="#64748B"/>
                                     </Button>
                                 </Grid>
@@ -455,10 +463,10 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Button Style="{StaticResource ItemConversaStyle}"
-                                                    Command="{Binding DataContext.IniciarConversaCommand,
-                                                              RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Margin="0,2">
+                                                Command="{Binding DataContext.IniciarConversaCommand,
+                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Margin="0,2">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="44"/>
@@ -466,9 +474,9 @@
                                                     </Grid.ColumnDefinitions>
 
                                                     <Border Grid.Column="0" Width="36" Height="36"
-                                                            Background="#1649a2" CornerRadius="18">
+                                                        Background="#1649a2" CornerRadius="18">
                                                         <TextBlock Foreground="White" FontWeight="Bold" FontSize="13"
-                                                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center">
                                                             <TextBlock.Text>
                                                                 <MultiBinding StringFormat="{}{0}">
                                                                     <Binding Path="Nome"/>
@@ -479,11 +487,11 @@
 
                                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
                                                         <TextBlock Text="{Binding Nome}" FontWeight="SemiBold"
-                                                                   FontSize="13" Foreground="#1E293B"
-                                                                   TextTrimming="CharacterEllipsis"/>
+                                                               FontSize="13" Foreground="#1E293B"
+                                                               TextTrimming="CharacterEllipsis"/>
                                                         <TextBlock Text="{Binding Email}" FontSize="11"
-                                                                   Foreground="#94A3B8"
-                                                                   TextTrimming="CharacterEllipsis"/>
+                                                               Foreground="#94A3B8"
+                                                               TextTrimming="CharacterEllipsis"/>
                                                     </StackPanel>
                                                 </Grid>
                                             </Button>
@@ -497,4 +505,4 @@
             </Grid>
         </Grid>
     </Border>
-</UserControl>
+</Window>

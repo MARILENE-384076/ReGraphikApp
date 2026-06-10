@@ -1,5 +1,6 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Services;
+using ReGraphik.Views;
 using ReGraphik.Views.UserControls;
 using System.Windows;
 using System.Windows.Input;
@@ -68,6 +69,8 @@ namespace ReGraphik.ViewModels
         public ICommand NavegarContaCommand { get; }
         public ICommand SairCommand { get; }
 
+        public ICommand ChatCommand { get; }
+
         /// <summary>
         /// Construtor do MainViewModel. Recebe o usuário logado e a janela atual para controle de navegação.
         /// </summary>
@@ -82,7 +85,8 @@ namespace ReGraphik.ViewModels
             /// Instancia o ViewModel do chat passando o usuário logado
             ChatViewModel = new ChatViewModel(usuario);
 
-           
+            ChatCommand = new RelayCommand(ChatConversar);
+
             /// Carrega foto persistida do disco
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
             if (fotoSalva != null)
@@ -135,5 +139,12 @@ namespace ReGraphik.ViewModels
             if (resultado == MessageBoxResult.Yes)
                 _currentWindow.Close();
         }
+
+        private void ChatConversar()
+        {
+            var tela = new ChatPainelWindow();
+            tela.ShowDialog();
+        }
+
     }
 }

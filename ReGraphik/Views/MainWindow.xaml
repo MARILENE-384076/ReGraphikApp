@@ -62,7 +62,7 @@
 
                         <!-- ═══ BOTÃO DE CHAT (ícone balão) ═══ -->
                         <Button Grid.Column="1"
-                                    Command="{Binding ChatViewModel.AbrirChatCommand}"
+                                    Command="{Binding ChatCommand }"
                                     ToolTip="Mensagens"
                                     Cursor="Hand"
                                     Background="Transparent"
