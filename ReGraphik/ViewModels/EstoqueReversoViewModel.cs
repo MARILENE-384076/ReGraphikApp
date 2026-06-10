@@ -12,50 +12,72 @@ using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
 {
+    /// <summary>
+    /// ViewModel para o controle da tela de Estoque Reverso.
+    /// </summary>
     public class EstoqueReversoViewModel : BaseViewModel
     {
-        // Instância única do HttpClient para toda a classe
+        /// <summary>
+        /// Cliente para chamadas na API.
+        /// </summary>
         private readonly HttpClient _http = new();
 
-        // Lista de resíduos exibida no DataGrid
+        /// <summary>
+        /// Lista vinculada ao DataGrid na interface.
+        /// </summary>
         public ObservableCollection<Residuo> ListaResiduos { get; set; } = new();
 
         /// <summary>
-        /// Comando vinculado ao botão "💡 Sugestões" de cada linha do DataGrid.
-        /// Recebe o Residuo da linha como CommandParameter (object) e abre a janela modal.
+        /// Comando para abrir a tela de sugestões.
         /// </summary>
         public ICommand SugestaoCommand { get; }
 
+        /// <summary>
+        /// Comando para exportar os dados internamente (ex: Cadastro de Resíduos).
+        /// </summary>
+        public ICommand ExportarCommand { get; }
+
+        /// <summary>
+        /// Inicializa os comandos e carrega os dados ao abrir a tela.
+        /// </summary>
         public EstoqueReversoViewModel()
         {
-            // RelayCommand com parâmetro (Action<object>) para receber o Residuo da linha
             SugestaoCommand = new RelayCommand(
                 (param) => AbrirSugestoes(param),
                 (param) => param is Residuo
             );
 
+            ExportarCommand = new RelayCommand(() => ExportarDadosInternos());
+
             _ = CarregarEstoqueDoBancoAsync();
         }
 
-        // ─── Abre a janela de sugestões para o resíduo selecionado ────────
+        /// <summary>
+        /// Lógica para exportar os dados do estoque de volta para o Cadastro de resíduos.
+        /// </summary>
+        private void ExportarDadosInternos()
+        {
+            // TODO: Implementar a lógica de exportação interna.
+            MessageBox.Show("Comando de exportação acionado internamente!", "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        /// <summary>
+        /// Abre a tela de sugestões passando o resíduo selecionado.
+        /// </summary>
+        /// <param name="param">O objeto Residuo passado pelo botão da Grid.</param>
         private void AbrirSugestoes(object param)
         {
-            if (param is not Residuo residuo)
-            {
-                MessageBox.Show("Selecione um resíduo válido.", "Aviso",
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
+            if (param is not Residuo residuo) return;
 
-            // Verifica se a janela principal é do tipo MainWindow para evitar erros de cast
             if (Application.Current.MainWindow is MainWindow mainWin)
             {
-                // Substitui o conteúdo da janela principal pela view de sugestões, passando o resíduo selecionado
                 mainWin.Content = new SugestaoResiduoView(residuo);
             }
         }
 
-        // ─── Carrega resíduos da API ──────────────────────────────────────
+        /// <summary>
+        /// Busca a lista de resíduos no banco via API e atualiza a interface.
+        /// </summary>
         private async Task CarregarEstoqueDoBancoAsync()
         {
             try
@@ -67,27 +89,22 @@ namespace ReGraphik.ViewModels
                 {
                     var json = await resposta.Content.ReadAsStringAsync();
                     var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                    var listaResiduos = JsonSerializer.Deserialize<List<Residuo>>(json, opcoes);
+                    var lista = JsonSerializer.Deserialize<List<Residuo>>(json, opcoes);
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         ListaResiduos.Clear();
-                        if (listaResiduos != null)
+                        if (lista != null)
                         {
-                            foreach (var residuo in listaResiduos)
-                                ListaResiduos.Add(residuo);
+                            foreach (var item in lista)
+                                ListaResiduos.Add(item);
                         }
                     });
-                }
-                else
-                {
-                    MessageBox.Show("Não foi possível buscar a lista de resíduos no servidor.",
-                                    "Erro de Comunicação", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Erro ao conectar na API de Estoque: " + ex.Message);
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar estoque: {ex.Message}");
             }
         }
     }
