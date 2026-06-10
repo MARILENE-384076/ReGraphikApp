@@ -1,13 +1,16 @@
-﻿using MahApps.Metro.SimpleChildWindow;
+﻿using ControlzEx.Standard;
+using MahApps.Metro.SimpleChildWindow;
 using MahApps.Metro.SimpleChildWindow;
 using ReGraphik.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +29,16 @@ namespace ReGraphik.ViewModels
         /// Instância do HttpClient, que é usada para realizar as requisições HTTP para a API. Ele é configurado com a URL base da API para facilitar as chamadas aos endpoints.
         /// </summary>
         private readonly HttpClient _httpClient;
+
+        
+        private string _caminhoArquivoSelecionado = string.Empty;
+
+        // Opções de serialização reutilizadas para evitar overhead de JIT e reflexão em chamadas repetidas
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            PropertyNamingPolicy = null,
+            PropertyNameCaseInsensitive = true
+        };
 
         /// <summary>
         /// Propriedades para armazenar as credenciais de login e mensagens de erro, caso seja necessário autenticar o usuário antes de realizar o cadastro do resíduo.
@@ -70,8 +83,8 @@ namespace ReGraphik.ViewModels
             set { _projetoOrigem = value; OnPropertyChanged(); }
         }
 
-        private string _quantidade;
-        public string Quantidade
+        private double _quantidade;
+        public double Quantidade
         {
             get => _quantidade;
             set { _quantidade = value; OnPropertyChanged(); }
@@ -91,15 +104,15 @@ namespace ReGraphik.ViewModels
             set { _condicao = value; OnPropertyChanged(); }
         }
 
-        private string _comprimento;
-        public string Comprimento
+        private double _comprimento;
+        public double Comprimento
         {
             get => _comprimento;
             set { _comprimento = value; OnPropertyChanged(); }
         }
 
-        private string _largura;
-        public string Largura
+        private double _largura;
+        public double Largura
         {
             get => _largura;
             set { _largura = value; OnPropertyChanged(); }
@@ -186,12 +199,16 @@ namespace ReGraphik.ViewModels
         /// </summary>
         public ResiduoViewModel()
         {
-            // Configura o HttpClient com a URL base da API
-            _httpClient = new HttpClient { BaseAddress = new Uri("https://webregraphik.runasp.net/") };
+            /// Configura o HttpClient com a URL base da API
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://webregraphik.runasp.net/"),
+                Timeout = TimeSpan.FromSeconds(60)
+            };
 
-            // Inicializa os comandos com as ações correspondentes
+            /// Inicializa os comandos com as ações correspondentes
             SalvarResiduoCommand = new RelayCommand(async () => await SalvarResiduoAsync());
-            SelecionarArquivoCommand = new RelayCommand(SelecionarArquivo);
+            SelecionarArquivoCommand = new RelayCommand(async () => await SelecionarArquivoAsync());
             LimparCommand = new RelayCommand(LimparCampos);
         }
 
@@ -232,52 +249,58 @@ namespace ReGraphik.ViewModels
                     possuiErro = true;
                 }
 
-                if (string.IsNullOrWhiteSpace(Quantidade))
+                if (Quantidade <= 0)
                 {
                     MensaQuantidade = "A Quantidade é obrigatória!";
                     possuiErro = true;
                 }
 
-                if (string.IsNullOrWhiteSpace(Largura))
+                if (Largura <= 0)
                 {
                     MensaLargura= "A Largura é obrigatória!";
                     possuiErro = true;
                 }
 
-                if (string.IsNullOrWhiteSpace(Comprimento))
+                if (Comprimento <= 0)
                 {
                     MensaComprimento = "O Comprimento é obrigatório!";
                     possuiErro = true;
                 }
 
-                if (string.IsNullOrWhiteSpace(Origem) || string.IsNullOrWhiteSpace(Especificacao) ||
-                    string.IsNullOrWhiteSpace(ProjetoOrigem) || string.IsNullOrWhiteSpace(Observacoes))
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
+
+                string base64Payload = string.Empty;
+                if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
                 {
-                    MensagemErroGeral = "Preencha todos os campos.";
-                    return;
+                    // Leitura assíncrona por streams evita alocar buffers síncronos imensos no heap comum
+                    byte[] fileBytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
+                    base64Payload = Convert.ToBase64String(fileBytes);
                 }
 
-
-                // Cria o objeto Residuo com os dados do formulário
+                /// Cria o objeto Residuo com os dados do formulário
                 var novoResiduo = new Residuo
                 {
-                    Id = Guid.NewGuid().ToString(), // Gera um ID único para o resíduo
+                    Id = Guid.NewGuid().ToString(),
+
+                    /// O Id do usuário logado deve ser obtido a partir do contexto de autenticação da aplicação,
+                    IdUsuario = "Id_Do_Usuario_Logado",
+
                     TipoResiduo = TipoMaterial,
-                    Especificacao = Especificacao,
+                    Especificacao = Especificacao, 
                     Origem = Origem,
                     Projeto = ProjetoOrigem,
-                    Quantidade = double.TryParse(Quantidade, out var quant) ? quant : 0,
+                    Quantidade = Quantidade,
                     DataCadastro = Data,
                     Condicao = Condicao,
-                    DimensoesCm = double.TryParse(Comprimento, out var comp) ? comp : 0,
-                    DimensoesLm = double.TryParse(Largura, out var larg) ? larg : 0,
+                    DimensoesCm = Comprimento,
+                    DimensoesLm = Largura,
                     Observacao = Observacoes,
-                    Anexo = NomeArquivo, // Aqui você pode implementar a lógica para salvar o arquivo e obter o caminho real
+                    Anexo = base64Payload,
                     Status = "Disponível"
                 };
 
-                // Executa o POST na rota da API: api/Residuo
-                var response = await _httpClient.PostAsJsonAsync("api/Residuo", novoResiduo);
+                /// Executa o POST na rota da API: api/Residuo
+                var response = await _httpClient.PostAsJsonAsync("api/Residuo", novoResiduo, _jsonOptions, cts.Token).ConfigureAwait(true);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -286,7 +309,7 @@ namespace ReGraphik.ViewModels
                 }
                 else
                 {
-                    var erroDetalhes = await response.Content.ReadAsStringAsync();
+                    var erroDetalhes = await response.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(true);
                     MessageBox.Show($"Falha ao salvar: {response.StatusCode}\n{erroDetalhes}", "Erro API", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 }
@@ -297,34 +320,50 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        public void SelecionarArquivo()
+        /// <summary>
+        /// Método para abrir um diálogo de seleção de arquivos, permitindo que o usuário escolha um arquivo de imagem ou vídeo para anexar ao resíduo.
+        /// </summary>
+        private async Task SelecionarArquivoAsync()
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Imagens e Vídeos|*.jpg;*.jpeg;*.png;*.bmp;*.mp4;*.mkv;*.avi;*.mov|" +
-                 "Imagens (*.jpg, *.jpeg, *.png, *.bmp)|*.jpg;*.jpeg;*.png;*.bmp|" +
-                 "Vídeos (*.mp4, *.mkv, *.avi, *.mov)|*.mp4;*.mkv;*.avi;*.mov",
+                Filter = "Imagens e Vídeos|*.jpg;*.jpeg;*.png;*.bmp;*.mp4;*.mkv;*.avi;*.mov",
                 Title = "Selecione um arquivo para anexar"
             };
+
             if (openFileDialog.ShowDialog() == true)
             {
+                var fileInfo = new FileInfo(openFileDialog.FileName);
+
+                // Reduzido para 2MB para evitar estouros de string JSON HTTP clássicos
+                if (fileInfo.Length > 2 * 1024 * 1024)
+                {
+                    MessageBox.Show("Arquivos maiores que 2MB não são suportados para envio direto via JSON.", "Arquivo muito grande", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 NomeArquivo = openFileDialog.SafeFileName;
+                _caminhoArquivoSelecionado = openFileDialog.FileName;
             }
         }
 
+        /// <summary>
+        /// Método para limpar os campos do formulário após o cadastro de um resíduo ou quando o usuário desejar reiniciar o preenchimento.
+        /// </summary>
         private void LimparCampos()
         {
             TipoMaterial = null;
             Especificacao = string.Empty;
             Origem = null;
             ProjetoOrigem = string.Empty;
-            Quantidade = string.Empty;
+            Quantidade = 0;
             Data = DateTime.Now;
             Condicao = null;
-            Comprimento = string.Empty;
-            Largura = string.Empty;
+            Comprimento = 0;
+            Largura = 0;
             Observacoes = string.Empty;
             NomeArquivo = "Nenhum arquivo selecionado";
+            _caminhoArquivoSelecionado = string.Empty;
         }
 
     }

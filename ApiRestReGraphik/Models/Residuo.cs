@@ -57,7 +57,7 @@ namespace ApiRestReGraphik.Models
         public string Observacao { get; set; }
 
         [JsonPropertyName("anexo")]
-        public string Anexo { get; set; }
+        public string? Anexo { get; set; }
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
