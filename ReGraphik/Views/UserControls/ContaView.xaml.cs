@@ -3,6 +3,7 @@ using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using ReGraphik.ViewModels;
 using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,52 +25,48 @@ namespace ReGraphik.Views.UserControls
             DataContext = _viewModel;
 
             CarregarDadosNaTela();
-            AplicarMascaras();
         }
 
         private void CarregarDadosNaTela()
         {
-            TxtNome.Text = _usuarioAtual.Nome;
+            TxtNome.Text = _usuarioAtual.Nome ?? string.Empty;
+            TxtLogin.Text = _usuarioAtual.Login ?? string.Empty;
+
+            // Exibe mascarado ao carregar
             TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
             TxtEmail.Text = MascararEmail(_usuarioAtual.Email);
-            TxtLogin.Text = _usuarioAtual.Login;
-
-            _viewModel.Nome = _usuarioAtual.Nome ?? string.Empty;
-            _viewModel.Cpf = _usuarioAtual.CPF ?? string.Empty;
-            _viewModel.Email = _usuarioAtual.Email ?? string.Empty;
-            _viewModel.Login = _usuarioAtual.Login ?? string.Empty;
         }
 
-        private void AplicarMascaras()
+        // ── Máscara CPF ──────────────────────────────────────────
+        private void TxtCpf_GotFocus(object sender, RoutedEventArgs e)
+            => TxtCpf.Text = _usuarioAtual.CPF ?? string.Empty;
+
+        private void TxtCpf_LostFocus(object sender, RoutedEventArgs e)
         {
-            // Ao focar: mostra valor real
-            TxtCpf.GotFocus += (s, e) => TxtCpf.Text = _usuarioAtual.CPF ?? string.Empty;
-            TxtEmail.GotFocus += (s, e) => TxtEmail.Text = _usuarioAtual.Email ?? string.Empty;
-
-            // Ao perder foco: volta a mascarar
-            TxtCpf.LostFocus += (s, e) =>
-            {
-                _usuarioAtual.CPF = TxtCpf.Text;
-                TxtCpf.Text = MascararCpf(TxtCpf.Text);
-            };
-            TxtEmail.LostFocus += (s, e) =>
-            {
-                _usuarioAtual.Email = TxtEmail.Text;
-                TxtEmail.Text = MascararEmail(TxtEmail.Text);
-            };
+            _usuarioAtual.CPF = TxtCpf.Text;
+            TxtCpf.Text = MascararCpf(TxtCpf.Text);
         }
 
-        // CPF: 123.456.789-10 → 123.***.***-**
+        // ── Máscara Email ────────────────────────────────────────
+        private void TxtEmail_GotFocus(object sender, RoutedEventArgs e)
+            => TxtEmail.Text = _usuarioAtual.Email ?? string.Empty;
+
+        private void TxtEmail_LostFocus(object sender, RoutedEventArgs e)
+        {
+            _usuarioAtual.Email = TxtEmail.Text;
+            TxtEmail.Text = MascararEmail(TxtEmail.Text);
+        }
+
+        // ── Helpers de máscara ───────────────────────────────────
+        // 123456789 → 123.***.***-**
         private static string MascararCpf(string? cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
-            var digits = System.Text.RegularExpressions.Regex.Replace(cpf, @"\D", "");
-            if (digits.Length >= 3)
-                return digits[..3] + ".***.***-**";
-            return cpf;
+            var d = Regex.Replace(cpf, @"\D", "");
+            return d.Length >= 3 ? d[..3] + ".***.***-**" : cpf;
         }
 
-        // Email: teste@gmail.com → te***@gmail.com
+        // teste@gmail.com → te***@gmail.com
         private static string MascararEmail(string? email)
         {
             if (string.IsNullOrWhiteSpace(email)) return string.Empty;
@@ -78,33 +75,35 @@ namespace ReGraphik.Views.UserControls
             return email[..2] + new string('*', at - 2) + email[at..];
         }
 
+        // ── Salvar ───────────────────────────────────────────────
         private async void BtnSalvar_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtNome.Text) || string.IsNullOrWhiteSpace(TxtLogin.Text))
             {
-                MessageBox.Show("Nome e Login são obrigatórios.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Nome e Login são obrigatórios.", "Aviso",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             _usuarioAtual.Nome = TxtNome.Text;
             _usuarioAtual.Login = TxtLogin.Text;
-            // CPF e Email já foram atualizados no LostFocus
+            // CPF e Email já atualizados no LostFocus
 
-            if (!string.IsNullOrWhiteSpace(TxtSenha.Password))
-                _usuarioAtual.Senha = TxtSenha.Password;
-            else
-                _usuarioAtual.Senha = null;
+            _usuarioAtual.Senha = !string.IsNullOrWhiteSpace(TxtSenha.Password)
+                ? TxtSenha.Password
+                : null;
 
             try
             {
                 BtnSalvar.IsEnabled = false;
                 BtnSalvar.Content = "Salvando...";
 
-                bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual); 
+                bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
 
                 if (sucesso)
                 {
-                    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                     TxtSenha.Clear();
                     // Reaplica máscaras após salvar
                     TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
@@ -112,12 +111,14 @@ namespace ReGraphik.Views.UserControls
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao atualizar os dados.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Erro ao atualizar os dados.", "Erro",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ocorreu um erro: {ex.Message}", "Erro",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
