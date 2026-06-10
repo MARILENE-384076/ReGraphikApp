@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ReGraphik.Views.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800" Background="#F8FAFC">
 
@@ -18,191 +17,69 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="24">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <Grid Margin="24">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Cadastro de Resíduos" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
+                <TextBlock Grid.Row="0" Text="Cadastro de Resíduos" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
 
-            <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="24">
-                <Border.Effect>
-                    <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
-                </Border.Effect>
+                <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="24">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
+                    </Border.Effect>
 
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0" Text="Novo Resíduo" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20"/>
-
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="24"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Tipo de Material -->
-                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
-                            <TextBlock Text="Tipo de Material" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding TipoMaterial, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Papel Offset"/>
-                                    <ComboBoxItem Content="Papel Couché"/>
-                                    <ComboBoxItem Content="Papel Kraft"/>
-                                    <ComboBoxItem Content="Papelão"/>
-                                    <ComboBoxItem Content="Adesivo Vinil"/>
-                                    <ComboBoxItem Content="Lona"/>
-                                    <ComboBoxItem Content="PVC"/>
-                                    <ComboBoxItem Content="Acrílico"/>
-                                    <ComboBoxItem Content="Outro"/>
-                                </ComboBox>
-                                <TextBlock Text="Selecione o tipo de material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboTipoMaterial}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboTipoMaterial}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoResiduo}" Foreground="DarkRed" Margin="0,7,0,0"/>
-                        </StackPanel>
+                        <TextBlock Grid.Row="0" Text="Novo Resíduo" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20"/>
 
-                        <!-- Especificação -->
-                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
-                            <TextBlock Text="Especificação" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <ComboBox x:Name="CboEspecificacao" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Especificacao, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Brilhoso / Brilho"/>
-                                    <ComboBoxItem Content="Fosco"/>
-                                    <ComboBoxItem Content="Gramatura Alta"/>
-                                    <ComboBoxItem Content="Gramatura Baixa"/>
-                                    <ComboBoxItem Content="Transparente"/>
-                                    <ComboBoxItem Content="Padrão / Comum"/>
-                                </ComboBox>
-                                <TextBlock Text="Selecione a especificação do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboEspecificacao}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboEspecificacao}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                        </StackPanel>
-
-                        <!-- Origem -->
-                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
-                            <TextBlock Text="Origem" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <ComboBox x:Name="CboOrigem" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Origem, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Restos de Corte"/>
-                                    <ComboBoxItem Content="Sobra de Impressão"/>
-                                </ComboBox>
-                                <TextBlock Text="Selecione a origem do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboOrigem}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboOrigem}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaOrigem}" Foreground="DarkRed" Margin="0,7,0,0"/>
-                        </StackPanel>
-
-                        <!-- Projeto/Cliente de Origem -->
-                        <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,16">
-                            <TextBlock Text="Projeto/Cliente de Origem" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBox x:Name="TxtProjetoOrigem" Text="{Binding ProjetoOrigem, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                <TextBlock Text="Ex: Ambev / Projeto Verão"  Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtProjetoOrigem}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtProjetoOrigem}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                        </StackPanel>
-
-                        <Grid Grid.Row="2" Grid.Column="0" Margin="0,0,0,16">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="24"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                            <!-- Quantidade -->
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Quantidade" Style="{StaticResource FieldLabelStyle}"/>
+                            <!-- Tipo de Material -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
+                                <TextBlock Text="Tipo de Material" Style="{StaticResource FieldLabelStyle}"/>
                                 <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="TxtQuantidade" Text="{Binding Quantidade, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                    <ComboBox Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}" SelectedIndex="0" BorderThickness="0,1,1,1">
-                                        <ComboBoxItem Content="kg"/>
-                                        <ComboBoxItem Content="un"/>
+                                    <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding TipoMaterial, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Papel Offset"/>
+                                        <ComboBoxItem Content="Papel Couché"/>
+                                        <ComboBoxItem Content="Papel Kraft"/>
+                                        <ComboBoxItem Content="Papelão"/>
+                                        <ComboBoxItem Content="Adesivo Vinil"/>
+                                        <ComboBoxItem Content="Lona"/>
+                                        <ComboBoxItem Content="PVC"/>
+                                        <ComboBoxItem Content="Acrílico"/>
+                                        <ComboBoxItem Content="Outro"/>
                                     </ComboBox>
-                                    <TextBlock Text="Ex:20" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Selecione o tipo de material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtQuantidade}" Value="">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboTipoMaterial}" Value="{x:Null}">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtQuantidade}" Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboTipoMaterial}" Value="">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -210,168 +87,292 @@
                                         </TextBlock.Style>
                                     </TextBlock>
                                 </Grid>
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaQuantidade}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoResiduo}" Foreground="DarkRed" Margin="0,7,0,0"/>
                             </StackPanel>
 
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Data" Style="{StaticResource FieldLabelStyle}"/>
-                                <DatePicker SelectedDate="{Binding Data}" Height="38" Padding="5" VerticalContentAlignment="Center"/>
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaData}" Foreground="DarkRed"/>
+                            <!-- Especificação -->
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
+                                <TextBlock Text="Especificação" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <ComboBox x:Name="CboEspecificacao" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Especificacao, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Brilhoso / Brilho"/>
+                                        <ComboBoxItem Content="Fosco"/>
+                                        <ComboBoxItem Content="Gramatura Alta"/>
+                                        <ComboBoxItem Content="Gramatura Baixa"/>
+                                        <ComboBoxItem Content="Transparente"/>
+                                        <ComboBoxItem Content="Padrão / Comum"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Selecione a especificação do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboEspecificacao}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboEspecificacao}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Origem -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
+                                <TextBlock Text="Origem" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <ComboBox x:Name="CboOrigem" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Origem, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Restos de Corte"/>
+                                        <ComboBoxItem Content="Sobra de Impressão"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Selecione a origem do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboOrigem}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboOrigem}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaOrigem}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                            </StackPanel>
+
+                            <!-- Projeto/Cliente de Origem -->
+                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,16">
+                                <TextBlock Text="Projeto/Cliente de Origem" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox x:Name="TxtProjetoOrigem" Text="{Binding ProjetoOrigem, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                    <TextBlock Text="Ex: Ambev / Projeto Verão"  Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtProjetoOrigem}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtProjetoOrigem}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </StackPanel>
+
+                            <Grid Grid.Row="2" Grid.Column="0" Margin="0,0,0,16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Quantidade -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Quantidade" Style="{StaticResource FieldLabelStyle}"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox x:Name="TxtQuantidade" Text="{Binding Quantidade, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                        <ComboBox Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}" SelectedIndex="0" BorderThickness="0,1,1,1">
+                                            <ComboBoxItem Content="kg"/>
+                                            <ComboBoxItem Content="un"/>
+                                        </ComboBox>
+                                        <TextBlock Text="Ex:20" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Text, ElementName=TxtQuantidade}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Text, ElementName=TxtQuantidade}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                    <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaQuantidade}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Data" Style="{StaticResource FieldLabelStyle}"/>
+                                    <DatePicker SelectedDate="{Binding Data}" Height="38" Padding="5" VerticalContentAlignment="Center"/>
+                                    <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaData}" Foreground="DarkRed"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Condição -->
+                            <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,16">
+                                <TextBlock Text="Condição" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <ComboBox x:Name="CboCondicao" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Condicao, Mode=TwoWay}">
+                                        <ComboBoxItem Content="Ótima"/>
+                                        <ComboBoxItem Content="Regular / Usado"/>
+                                        <ComboBoxItem Content="Danificado"/>
+                                    </ComboBox>
+                                    <TextBlock Text="Selecione o tipo de condição" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboCondicao}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=CboCondicao}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="Dimensões" Style="{StaticResource FieldLabelStyle}"/>
+
+                            <!-- Comprimento -->
+                            <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">
+                                <Grid>
+                                    <TextBox x:Name="TxtComprimento" Text="{Binding Comprimento, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                    <TextBlock Text="Comprimento do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtComprimento}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtComprimento}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaComprimento}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                            </StackPanel>
+
+                            <!-- Largura -->
+                            <StackPanel Grid.Row="4" Grid.Column="2" Margin="0,0,0,16">
+                                <Grid>
+                                    <TextBox x:Name="TxtLargura" Text="{Binding Largura, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                    <TextBlock Text="Largura do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtLargura}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtLargura}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLargura}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                            </StackPanel>
+
+                            <!-- Observações -->
+                            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,16">
+                                <TextBlock Text="Observações" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <TextBox x:Name="TxtObservacoes" Text="{Binding Observacoes, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}" Height="80" 
+                                         AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Padding="8"/>
+                                    <TextBlock Text="Observação sobre o material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,10,0,0" VerticalAlignment="Top">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtObservacoes}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtObservacoes}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
                             </StackPanel>
                         </Grid>
 
-                        <!-- Condição -->
-                        <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,16">
-                            <TextBlock Text="Condição" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <ComboBox x:Name="CboCondicao" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Condicao, Mode=TwoWay}">
-                                    <ComboBoxItem Content="Ótima"/>
-                                    <ComboBoxItem Content="Regular / Usado"/>
-                                    <ComboBoxItem Content="Danificado"/>
-                                </ComboBox>
-                                <TextBlock Text="Selecione o tipo de condição" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboCondicao}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding SelectedValue, ElementName=CboCondicao}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                        </StackPanel>
+                        <Grid Grid.Row="2" Margin="0,10,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="Dimensões" Style="{StaticResource FieldLabelStyle}"/>
-
-                        <!-- Comprimento -->
-                        <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">
-                            <Grid>
-                                <TextBox x:Name="TxtComprimento" Text="{Binding Comprimento, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                <TextBlock Text="Comprimento do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtComprimento}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtComprimento}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaComprimento}" Foreground="DarkRed" Margin="0,7,0,0"/>
-                        </StackPanel>
-
-                        <!-- Largura -->
-                        <StackPanel Grid.Row="4" Grid.Column="2" Margin="0,0,0,16">
-                            <Grid>
-                                <TextBox x:Name="TxtLargura" Text="{Binding Largura, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                <TextBlock Text="Largura do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtLargura}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtLargura}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLargura}" Foreground="DarkRed" Margin="0,7,0,0"/>
-                        </StackPanel>
-
-                        <!-- Observações -->
-                        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,16">
-                            <TextBlock Text="Observações" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <TextBox x:Name="TxtObservacoes" Text="{Binding Observacoes, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}" Height="80" 
-                                         AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Padding="8"/>
-                                <TextBlock Text="Observação sobre o material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,10,0,0" VerticalAlignment="Top">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtObservacoes}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Text, ElementName=TxtObservacoes}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Grid>
-                        </StackPanel>
-                    </Grid>
-
-                    <Grid Grid.Row="2" Margin="0,10,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Área de Seleção de Arquivo -->
-                        <StackPanel Grid.Row="0" Margin="0,0,0,24">
-                            <TextBlock Text="Foto ou Vídeo do Material (opcional)" Style="{StaticResource FieldLabelStyle}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Button Command="{Binding SelecionarArquivoCommand}" Content="Escolher Arquivo"
+                            <!-- Área de Seleção de Arquivo -->
+                            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                                <TextBlock Text="Foto ou Vídeo do Material (opcional)" Style="{StaticResource FieldLabelStyle}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Command="{Binding SelecionarArquivoCommand}" Content="Escolher Arquivo"
                                         Padding="12,0" Height="38" Background="#F1F5F9" BorderBrush="#CBD5E1" Foreground="#1E293B"/>
-                                <TextBox Grid.Column="1" Text="{Binding NomeArquivo}" Style="{StaticResource InputControlStyle}" 
+                                    <TextBox Grid.Column="1" Text="{Binding NomeArquivo}" Style="{StaticResource InputControlStyle}" 
                                          IsReadOnly="True" Margin="0,0,0,0" Background="White"/>
-                            </Grid>
-                            <TextBlock Text="{Binding MensagemErroGeral}" 
+                                </Grid>
+                                <TextBlock Text="{Binding MensagemErroGeral}" 
                                        Foreground="DarkRed" 
                                        FontSize="13" 
                                        FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Margin="0,7,0,0"/>
-                        </StackPanel>
+                            </StackPanel>
 
-                        <!-- Área de Botões de Limpar e Salvar -->
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Command="{Binding LimparCommand}" Content="Limpar"
+                            <!-- Área de Botões de Limpar e Salvar -->
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Command="{Binding LimparCommand}" Content="Limpar"
                                     Width="100" Height="40" Background="#F1F5F9" BorderBrush="#CBD5E1" 
                                     Foreground="#1E293B" FontWeight="SemiBold" Margin="0,0,12,0">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="6"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
 
-                            <Button x:Name="BtnSalvar" Command="{Binding SalvarResiduoCommand}" Content="Salvar Resíduo"
+                                <Button x:Name="BtnSalvar" Command="{Binding SalvarResiduoCommand}" Content="Salvar Resíduo"
                                     Width="140" Height="40" Background="#1649a2" BorderThickness="0" 
                                     Foreground="White" FontWeight="SemiBold">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="6"/>
-                                    </Style>
-                                </Button.Resources>
-                            </Button>
-                        </StackPanel>
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="6"/>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Border>
-        </Grid>
-    </ScrollViewer>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

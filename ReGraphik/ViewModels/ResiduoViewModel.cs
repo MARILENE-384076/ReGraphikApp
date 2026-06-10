@@ -2,6 +2,8 @@
 using MahApps.Metro.SimpleChildWindow;
 using MahApps.Metro.SimpleChildWindow;
 using ReGraphik.Models;
+using ReGraphik.Services;
+using ReGraphik.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -194,6 +196,8 @@ namespace ReGraphik.ViewModels
 
         public ICommand SelecionarArquivoCommand {  get; }
 
+        public ICommand FecharDialogCommand {  get; }
+
         /// <summary>
         /// Construtor da classe ResiduoViewModel, onde o HttpClient é configurado com a URL base da API e os comandos são inicializados.
         /// </summary>
@@ -304,21 +308,43 @@ namespace ReGraphik.ViewModels
 
                 if (response.IsSuccessStatusCode)
                 {
-                    MessageBox.Show($"Salvo com sucesso!!", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                    LimparCampos();
+                    MostrarMensagemSucesso();
                 }
                 else
                 {
-                    var erroDetalhes = await response.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(true);
-                    MessageBox.Show($"Falha ao salvar: {response.StatusCode}\n{erroDetalhes}", "Erro API", MessageBoxButton.OK, MessageBoxImage.Error);
-
+                    MostrarMensagemErro();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro de conexão: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MostrarMensagemErro();
             }
         }
+
+        private void MostrarMensagemSucesso()
+        {
+            var tela = new MensagemWindow();
+
+            tela.TxtIcone.Text = "✓";
+            tela.TxtTitulo.Text = "SUCESSO!";
+            tela.TxtMensagem.Text = "Resíduo cadastrado com sucesso!";
+
+            tela.ShowDialog();
+
+            LimparCampos();
+        }
+
+        private void MostrarMensagemErro()
+        {
+            var tela = new MensagemWindow();
+            
+            tela.TxtIcone.Text = "X";
+            tela.TxtTitulo.Text = "ERRO!";
+            tela.TxtMensagem.Text = "Ocorreu um erro ao cadastrar o resíduo.";
+
+            tela.ShowDialog();
+        }
+
 
         /// <summary>
         /// Método para abrir um diálogo de seleção de arquivos, permitindo que o usuário escolha um arquivo de imagem ou vídeo para anexar ao resíduo.
