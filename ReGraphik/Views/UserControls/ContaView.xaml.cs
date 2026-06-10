@@ -32,12 +32,11 @@ namespace ReGraphik.Views.UserControls
             TxtNome.Text = _usuarioAtual.Nome ?? string.Empty;
             TxtLogin.Text = _usuarioAtual.Login ?? string.Empty;
 
-            // Exibe mascarado ao carregar
             TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
             TxtEmail.Text = MascararEmail(_usuarioAtual.Email);
         }
 
-        // ── Máscara CPF ──────────────────────────────────────────
+       
         private void TxtCpf_GotFocus(object sender, RoutedEventArgs e)
             => TxtCpf.Text = _usuarioAtual.CPF ?? string.Empty;
 
@@ -47,7 +46,7 @@ namespace ReGraphik.Views.UserControls
             TxtCpf.Text = MascararCpf(TxtCpf.Text);
         }
 
-        // ── Máscara Email ────────────────────────────────────────
+       
         private void TxtEmail_GotFocus(object sender, RoutedEventArgs e)
             => TxtEmail.Text = _usuarioAtual.Email ?? string.Empty;
 
@@ -57,8 +56,7 @@ namespace ReGraphik.Views.UserControls
             TxtEmail.Text = MascararEmail(TxtEmail.Text);
         }
 
-        // ── Helpers de máscara ───────────────────────────────────
-        // 123456789 → 123.***.***-**
+       
         private static string MascararCpf(string? cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
@@ -66,7 +64,7 @@ namespace ReGraphik.Views.UserControls
             return d.Length >= 3 ? d[..3] + ".***.***-**" : cpf;
         }
 
-        // teste@gmail.com → te***@gmail.com
+       
         private static string MascararEmail(string? email)
         {
             if (string.IsNullOrWhiteSpace(email)) return string.Empty;
@@ -75,7 +73,7 @@ namespace ReGraphik.Views.UserControls
             return email[..2] + new string('*', at - 2) + email[at..];
         }
 
-        // ── Salvar ───────────────────────────────────────────────
+        
         private async void BtnSalvar_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtNome.Text) || string.IsNullOrWhiteSpace(TxtLogin.Text))
