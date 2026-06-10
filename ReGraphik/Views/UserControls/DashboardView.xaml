@@ -114,7 +114,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Total}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Total Econômico" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Total Economizado" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
             </Grid>
