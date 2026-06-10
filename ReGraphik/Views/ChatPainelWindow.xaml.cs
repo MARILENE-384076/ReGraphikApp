@@ -1,15 +1,26 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.Views
 {
     /// <summary>
-    /// Code-behind do painel de chat.
-    /// Responsável por rolar automaticamente para a última mensagem ao receber novas.
+    /// Interaction logic for ChatPainelWindow.xaml
     /// </summary>
-    public partial class ChatPainelView : UserControl
+    public partial class ChatPainelWindow : Window
     {
-        public ChatPainelView()
+        public ChatPainelWindow()
         {
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;
@@ -33,6 +44,11 @@ namespace ReGraphik.Views.UserControls
                     ScrollMensagens.ScrollToBottom();
                 }, System.Windows.Threading.DispatcherPriority.Loaded);
             }
+        }
+
+        private void BtnFechar_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
