@@ -43,10 +43,12 @@
                         <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtNome" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
 
+                        <!-- CPF: somente leitura e mascarado -->
                         <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtCpf" Style="{StaticResource InputStyle}" Margin="0,0,0,12"
-                                 GotFocus="TxtCpf_GotFocus" LostFocus="TxtCpf_LostFocus"/>
+                                 IsReadOnly="True" Background="#F1F5F9" Foreground="#94A3B8"/>
 
+                        <!-- E-mail: editável, mascarado ao carregar/sair do campo -->
                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtEmail" Style="{StaticResource InputStyle}" Margin="0,0,0,12"
                                  GotFocus="TxtEmail_GotFocus" LostFocus="TxtEmail_LostFocus"/>
@@ -57,7 +59,6 @@
                         <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
                         <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,24"/>
 
-                        <!-- Click conectado -->
                         <Button x:Name="BtnSalvar" Content="Salvar Alterações" Height="45"
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource BtnPrimaryStyle}"
