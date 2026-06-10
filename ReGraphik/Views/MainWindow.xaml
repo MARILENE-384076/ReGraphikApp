@@ -60,7 +60,6 @@
                             </TextBlock.Inlines>
                         </TextBlock>
 
-                        <!-- ═══ BOTÃO DE CHAT (ícone balão) ═══ -->
                         <Button Grid.Column="1"
                                     Command="{Binding ChatCommand }"
                                     ToolTip="Mensagens"
