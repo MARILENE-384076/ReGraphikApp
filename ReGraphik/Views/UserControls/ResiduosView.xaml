@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -86,7 +87,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Grid>
-                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoMaterial}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                            <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoResiduo}" Foreground="DarkRed" Margin="0,7,0,0"/>
                         </StackPanel>
 
                         <!-- Especificação -->
@@ -358,7 +359,7 @@
                                 </Button.Resources>
                             </Button>
 
-                            <Button Command="{Binding SalvarResiduoCommand}" Content="Salvar Resíduo"
+                            <Button x:Name="BtnSalvar" Command="{Binding SalvarResiduoCommand}" Content="Salvar Resíduo"
                                     Width="140" Height="40" Background="#1649a2" BorderThickness="0" 
                                     Foreground="White" FontWeight="SemiBold">
                                 <Button.Resources>

@@ -173,10 +173,15 @@ namespace ApiRestReGraphik.Controllers
             {
                 var usuarioIdLogado = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                //  Caso o usuário logado não seja encontrado, atribuímos um ID de usuário padrão.
-                if (string.IsNullOrEmpty(usuarioIdLogado))
+                /// Se o WPF já enviou um IdUsuario preenchido de forma válida, mantemos ele
+                if (!string.IsNullOrEmpty(usuarioIdLogado))
                 {
-                    usuarioIdLogado = "0d95265b-2757-424e-8ea9-445e8fd2a422";
+                    residuo.IdUsuario = usuarioIdLogado;
+                }
+                else
+                {
+                    /// Caso contrário, para fins de teste, atribuímos um IdUsuario fixo (substitua pelo ID do usuário real conforme necessário)
+                    residuo.IdUsuario = "0d95265b-2757-424e-8ea9-445e8fd2a422";
                 }
 
                 if (residuo == null)
@@ -184,21 +189,19 @@ namespace ApiRestReGraphik.Controllers
                     return BadRequest("Resíduo inválido.");
                 }
 
-                residuo.IdUsuario = usuarioIdLogado;
-
                 await _residuoService.Criar(residuo);
 
                 return CreatedAtAction(nameof(GetById), new { id = residuo.Id }, residuo);
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida processada para criar resíduo.");
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao criar dados do resíduo.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
