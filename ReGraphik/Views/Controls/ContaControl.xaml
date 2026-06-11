@@ -51,7 +51,7 @@
                         <!-- E-mail: editável, mascarado ao carregar/sair do campo -->
                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtEmail" Text="{Binding Email}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"
-                                 GotFocus="TxtEmail_GotFocus" LostFocus="TxtEmail_LostFocus"/>
+                                 GotFocus="TxtEmail_GotFocus"/>
 
                         <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtLogin" Text="{Binding Login}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
@@ -63,8 +63,7 @@
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource BtnPrimaryStyle}"
                                 FontSize="15" FontWeight="Bold"
-                                Cursor="Hand" BorderThickness="0"
-                                Click="BtnSalvar_Click"/>
+                                Cursor="Hand" BorderThickness="0"/>
                     </StackPanel>
 
                     <Grid Grid.Column="2" VerticalAlignment="Stretch" Margin="10,80,0,0">

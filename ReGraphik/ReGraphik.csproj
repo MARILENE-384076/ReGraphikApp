@@ -9,22 +9,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Views\Controls\ResiduosControl.xaml.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Remove="Imgs\IconePerfil.png" />
 		<None Remove="Imgs\logoRegraphik.png" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Remove="Views\Controls\ResiduosControl.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="Views\Controls\ResiduosControl.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,10 +20,6 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
 		<PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
 		<PackageReference Include="QuestPDF" Version="2026.5.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Include="Views\Controls\ResiduosControl.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

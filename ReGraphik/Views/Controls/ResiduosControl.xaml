@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ReGraphik.Views.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="800" Background="#F8FAFC">
-
+             d:DesignHeight="450" d:DesignWidth="800" Background="#F3F4F6">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -300,7 +301,7 @@
                                 <TextBlock Text="Observações" Style="{StaticResource FieldLabelStyle}"/>
                                 <Grid>
                                     <TextBox x:Name="TxtObservacoes" Text="{Binding Observacoes, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}" Height="80" 
-                                         AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Padding="8"/>
+                                     AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Padding="8"/>
                                     <TextBlock Text="Observação sobre o material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,10,0,0" VerticalAlignment="Top">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -335,23 +336,23 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Command="{Binding SelecionarArquivoCommand}" Content="Escolher Arquivo"
-                                        Padding="12,0" Height="38" Background="#F1F5F9" BorderBrush="#CBD5E1" Foreground="#1E293B"/>
+                                    Padding="12,0" Height="38" Background="#F1F5F9" BorderBrush="#CBD5E1" Foreground="#1E293B"/>
                                     <TextBox Grid.Column="1" Text="{Binding NomeArquivo}" Style="{StaticResource InputControlStyle}" 
-                                         IsReadOnly="True" Margin="0,0,0,0" Background="White"/>
+                                     IsReadOnly="True" Margin="0,0,0,0" Background="White"/>
                                 </Grid>
                                 <TextBlock Text="{Binding MensagemErroGeral}" 
-                                       Foreground="DarkRed" 
-                                       FontSize="13" 
-                                       FontWeight="SemiBold"
-                                       TextWrapping="Wrap"
-                                       Margin="0,7,0,0"/>
+                                   Foreground="DarkRed" 
+                                   FontSize="13" 
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"
+                                   Margin="0,7,0,0"/>
                             </StackPanel>
 
                             <!-- Área de Botões de Limpar e Salvar -->
                             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button Command="{Binding LimparCommand}" Content="Limpar"
-                                    Width="100" Height="40" Background="#F1F5F9" BorderBrush="#CBD5E1" 
-                                    Foreground="#1E293B" FontWeight="SemiBold" Margin="0,0,12,0">
+                                Width="100" Height="40" Background="#F1F5F9" BorderBrush="#CBD5E1" 
+                                Foreground="#1E293B" FontWeight="SemiBold" Margin="0,0,12,0">
                                     <Button.Resources>
                                         <Style TargetType="Border">
                                             <Setter Property="CornerRadius" Value="6"/>
@@ -360,8 +361,8 @@
                                 </Button>
 
                                 <Button x:Name="BtnSalvar" Command="{Binding SalvarResiduoCommand}" Content="Salvar Resíduo"
-                                    Width="140" Height="40" Background="#1649a2" BorderThickness="0" 
-                                    Foreground="White" FontWeight="SemiBold">
+                                Width="140" Height="40" Background="#1649a2" BorderThickness="0" 
+                                Foreground="White" FontWeight="SemiBold">
                                     <Button.Resources>
                                         <Style TargetType="Border">
                                             <Setter Property="CornerRadius" Value="6"/>

@@ -1,7 +1,7 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Views;
-using ReGraphik.Views.UserControls;
+using ReGraphik.Views.Controls;
 using System.Windows;
 using System.Windows.Input;
 // Certifique-se de adicionar o using correto para os seus serviços aqui se necessário, ex:
@@ -55,12 +55,12 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Instancia cada view apenas uma vez e as mantém em memória para navegação rápida.
         /// </summary>
-        private readonly DashboardView _dashboardView;
-        private readonly ResiduosView _residuosView;
-        private readonly EstoqueReversoView _estoqueView;
-        private readonly MapaView _mapaView;
-        private readonly RelatoriosView _relatoriosView;
-        private readonly ContaView _contaView;
+        private readonly DashboardControl _dashboardView;
+        private readonly ResiduosControl _residuosView;
+        private readonly EstoqueReversoControl _estoqueView;
+        private readonly MapaControl _mapaView;
+        private readonly RelatoriosControl _relatoriosView;
+        private readonly ContaControl _contaView;
 
         /// <summary>
         /// Comandos de navegação para cada página. Reutilizam a mesma instância do comando,
@@ -96,12 +96,12 @@ namespace ReGraphik.ViewModels
                 UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
 
             /// Instancia cada view apenas uma vez
-            _dashboardView = new DashboardView(NomeUsuario);
-            _residuosView = new ResiduosView();
-            _estoqueView = new EstoqueReversoView();
-            _mapaView = new MapaView();
-            _relatoriosView = new RelatoriosView();
-            _contaView = new ContaView(UsuarioLogado);
+            _dashboardView = new DashboardControl(NomeUsuario);
+            _residuosView = new ResiduosControl();
+            _estoqueView = new EstoqueReversoControl();
+            _mapaView = new MapaControl();
+            _relatoriosView = new RelatoriosControl();
+            _contaView = new ContaControl(UsuarioLogado);
 
             /// Começa na Dashboard
             _currentView = _dashboardView;
