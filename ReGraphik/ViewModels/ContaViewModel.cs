@@ -1,55 +1,101 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
-using ReGraphik.ViewModels;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.ViewModels
 {
-    public partial class ContaView : UserControl
+    public class ContaViewModel : BaseViewModel
     {
         private Usuario _usuarioAtual;
         private readonly IAutorizarService _autorizarService;
         private readonly UsuarioViewModel _viewModel;
         private string _emailReal = string.Empty;
 
-        public ContaView(Usuario usuario)
+        private string _nome;
+        public string Nome
         {
-            InitializeComponent();
+            get => _nome;
+            set { _nome = value; OnPropertyChanged(); }
+        }
 
+        private string _cpf;
+        public string CPF
+        {
+            get => _cpf;
+            set { _cpf = value; OnPropertyChanged(); }
+        }
+
+        private string _email;
+        public string Email
+        {
+            get => _email;
+            set { _email = value; OnPropertyChanged(); }
+        }
+
+        private string _login;
+        public string Login
+        {
+            get => _login;
+            set { _login = value; OnPropertyChanged(); }
+        }
+
+        private PasswordBox _senha;
+        public PasswordBox Senha
+        {
+            get => _senha;
+            set { _senha = value; OnPropertyChanged(); }
+        }
+
+        private bool _ocupado;
+        public bool Ocupado
+        {
+            get => _ocupado;
+            set { _ocupado = value; OnPropertyChanged(); }
+        }
+
+        public ICommand SalvarCommand;
+
+        public ContaViewModel(Usuario usuario)
+        {
             _usuarioAtual = usuario;
             _autorizarService = new AutorizarService();
             _viewModel = new UsuarioViewModel();
-            DataContext = _viewModel;
 
             CarregarDadosNaTela();
+            SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync());
         }
 
         private void CarregarDadosNaTela()
         {
-            TxtNome.Text = _usuarioAtual.Nome ?? string.Empty;
-            TxtLogin.Text = _usuarioAtual.Login ?? string.Empty;
+            Nome = _usuarioAtual.Nome ?? string.Empty;
+            Login = _usuarioAtual.Login ?? string.Empty;
 
             // CPF: mascarado e bloqueado
-            TxtCpf.Text = MascararCpf(_usuarioAtual.CPF);
+            CPF = MascararCpf(_usuarioAtual.CPF);
 
             // Email: mascarado mas editável
             _emailReal = _usuarioAtual.Email ?? string.Empty;
-            TxtEmail.Text = MascararEmail(_emailReal);
+            Email = MascararEmail(_emailReal);
         }
 
         // ── Email: mostra real ao focar, mascara ao sair ─────────
         private void TxtEmail_GotFocus(object sender, RoutedEventArgs e)
-            => TxtEmail.Text = _emailReal;
+            => Email = _emailReal;
 
         private void TxtEmail_LostFocus(object sender, RoutedEventArgs e)
         {
-            _emailReal = TxtEmail.Text;
+            _emailReal = Email;
             _usuarioAtual.Email = _emailReal;
-            TxtEmail.Text = MascararEmail(_emailReal);
+            Email = MascararEmail(_emailReal);
         }
 
         // ── Máscaras ─────────────────────────────────────────────
@@ -69,27 +115,22 @@ namespace ReGraphik.Views.UserControls
         }
 
         // ── Salvar ───────────────────────────────────────────────
-        private async void BtnSalvar_Click(object sender, RoutedEventArgs e)
+        private async Task SalvarPerfilAsync()
         {
-            if (string.IsNullOrWhiteSpace(TxtNome.Text) || string.IsNullOrWhiteSpace(TxtLogin.Text))
+            if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Login))
             {
                 MessageBox.Show("Nome e Login são obrigatórios.", "Aviso",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            _usuarioAtual.Nome = TxtNome.Text;
-            _usuarioAtual.Login = TxtLogin.Text;
+            _usuarioAtual.Nome = Nome;
+            _usuarioAtual.Login = Login;
             _usuarioAtual.Email = _emailReal;
-
-            _usuarioAtual.Senha = !string.IsNullOrWhiteSpace(TxtSenha.Password)
-                ? TxtSenha.Password
-                : null;
 
             try
             {
-                BtnSalvar.IsEnabled = false;
-                BtnSalvar.Content = "Salvando...";
+                Ocupado = true;
 
                 bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
 
@@ -97,8 +138,7 @@ namespace ReGraphik.Views.UserControls
                 {
                     MessageBox.Show("Dados atualizados com sucesso!", "Sucesso",
                         MessageBoxButton.OK, MessageBoxImage.Information);
-                    TxtSenha.Clear();
-                    TxtEmail.Text = MascararEmail(_emailReal);
+                    Email = MascararEmail(_emailReal);
                 }
                 else
                 {
@@ -113,8 +153,7 @@ namespace ReGraphik.Views.UserControls
             }
             finally
             {
-                BtnSalvar.IsEnabled = true;
-                BtnSalvar.Content = "Salvar Alterações";
+                Ocupado = false;
             }
         }
     }

@@ -16,16 +16,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.Views.Controls
 {
     /// <summary>
-    /// Define a interação lógica para MapaView.xaml
+    /// Define a interação lógica para MapaControl.xaml
     /// </summary>
-    public partial class MapaView : UserControl
+    public partial class MapaControl : UserControl
     {
         private readonly MapaViewModel _viewModel;
 
-        public MapaView()
+        public MapaControl()
         {
             DefinirEmulacaoNavegador();
 
