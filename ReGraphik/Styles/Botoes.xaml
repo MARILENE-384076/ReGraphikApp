@@ -156,6 +156,18 @@
         </Setter>
     </Style>
 
+    <Style x:Key="MeusBotoesMenuLateral" TargetType="Button">
+        <Setter Property="Background" Value="#215ec0"/>
+        <Setter Property="Foreground" Value="White"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.BtnAtivo, RelativeSource={RelativeSource AncestorType=Window}}" Value="{Binding Path=Tag, RelativeSource={RelativeSource Self}}">
+                <Setter Property="Background" Value="#0b2a5c" />
+            </DataTrigger>
+
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="BtnTooltip" TargetType="ToolTip">
         <Setter Property="Background" Value="White"/>
         <Setter Property="Foreground" Value="#1649a2"/>
