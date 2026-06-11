@@ -20,8 +20,12 @@ namespace ReGraphik.ViewModels
         private readonly Window _currentWindow;
         private object _currentView;
         private string _nomeUsuario = string.Empty;
-        private string _btnAtivo = string.Empty;
+        private string _btnAtivo = "Dashboard";
 
+        /// <summary>
+        /// Propriedade que representa o usuário logado. Exposta para que outras partes da aplicação possam
+        /// acessar informações do usuário, como nome e foto, sem precisar passar o objeto de usuário por parâmetros.
+        /// </summary>
         public Usuario UsuarioLogado { get; }
 
         /// <summary>
@@ -33,7 +37,7 @@ namespace ReGraphik.ViewModels
         public object CurrentView
         {
             get => _currentView;
-            set { _currentView = value; OnPropertyChanged(); }
+            set { _currentView = value; OnPropertyChanged(nameof(CurrentView)); } /// Notifica a mudança da view atual para atualizar a interface
         }
 
         public string NomeUsuario
@@ -45,7 +49,7 @@ namespace ReGraphik.ViewModels
         public string BtnAtivo
         {
             get => _btnAtivo;
-            set { _btnAtivo = value; OnPropertyChanged(); }
+            set { _btnAtivo = value; OnPropertyChanged(nameof(BtnAtivo)); } /// Notifica a mudança do botão ativo para atualizar os estilos dos botões no menu lateral
         }
 
         /// <summary>
@@ -79,7 +83,6 @@ namespace ReGraphik.ViewModels
         public MainViewModel(Usuario usuario, Window window)
         {
             UsuarioLogado = usuario;
-            _currentWindow = window;
             NomeUsuario = usuario.Nome ?? "Usuário";
 
             /// Instancia o ViewModel do chat passando o usuário logado
@@ -102,16 +105,45 @@ namespace ReGraphik.ViewModels
 
             /// Começa na Dashboard
             _currentView = _dashboardView;
-            _btnAtivo = "Dashboard";
 
             /// Comandos reutilizam a mesma instância
-            NavegarDashboardCommand = new RelayCommand(p => ExecutarNavegacao("Dashboard", _dashboardView));
-            NavegarResiduosCommand = new RelayCommand(p => ExecutarNavegacao("Residuos", _residuosView));
-            NavegarEstoqueCommand = new RelayCommand(p => ExecutarNavegacao("Estoque", _estoqueView));
-            NavegarMapaCommand = new RelayCommand(p => ExecutarNavegacao("Mapa", _mapaView));
-            NavegarRelatoriosCommand = new RelayCommand(p => ExecutarNavegacao("Relatorios", _relatoriosView));
-            NavegarContaCommand = new RelayCommand(p => ExecutarNavegacao("Conta", _contaView));
+            NavegarDashboardCommand = new RelayCommand(p => NavegarParaDashboard());
+            NavegarResiduosCommand = new RelayCommand(p => NavegarParaResiduos());
+            NavegarEstoqueCommand = new RelayCommand(p => NavegarParaEstoque());
+            NavegarMapaCommand = new RelayCommand(p => NavegarParaMapa());
+            NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
+            NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
             SairCommand = new RelayCommand(p => ExecutarSair());
+        }
+
+        private void NavegarParaDashboard()
+        {
+            ExecutarNavegacao("Dashboard", _dashboardView);
+        }
+
+        private void NavegarParaResiduos()
+        {
+            ExecutarNavegacao("Residuos", _residuosView);
+        }
+
+        private void NavegarParaEstoque()
+        {
+            ExecutarNavegacao("Estoque", _estoqueView);
+        }
+
+        private void NavegarParaMapa()
+        {
+            ExecutarNavegacao("Mapa", _mapaView);
+        }
+
+        private void NavegarParaRelatorios()
+        {
+            ExecutarNavegacao("Relatorios", _relatoriosView);
+        }
+
+        private void NavegarParaConta()
+        {
+            ExecutarNavegacao("Conta", _contaView);
         }
 
         /// <summary>
@@ -131,19 +163,29 @@ namespace ReGraphik.ViewModels
         private void ExecutarSair()
         {
             var resultado = MessageBox.Show(
-                "Deseja realmente sair da aplicação?",
+                "Deseja voltar para a tela de login?",
                 "Confirmar Saída",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
             if (resultado == MessageBoxResult.Yes)
-                _currentWindow.Close();
+            {
+                var loginWindow = new LoginWindow();
+
+                if (Application.Current != null)
+                {
+                    Application.Current.MainWindow = loginWindow;
+                }
+
+                loginWindow.Show();
+            }
         }
 
         private void ChatConversar()
         {
             var tela = new ChatPainelWindow();
-            tela.ShowDialog();
+            tela.ShowDialog(); 
+            _currentWindow?.Close();
         }
 
     }
