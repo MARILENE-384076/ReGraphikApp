@@ -17,7 +17,7 @@ namespace ReGraphik.ViewModels
         private readonly Usuario _usuarioLogado;
         private readonly DispatcherTimer _timerAtualizacao;
 
-        // ── Propriedades observáveis ──────────────────────────────────────
+        
         private ObservableCollection<Conversa> _conversas = [];
         private ObservableCollection<Mensagem> _mensagens = [];
         private ObservableCollection<Usuario> _usuariosDisponiveis = [];
@@ -94,7 +94,9 @@ namespace ReGraphik.ViewModels
             set { _carregando = value; OnPropertyChanged(); }
         }
 
-        // ── Comandos ────────────────────────────────────────────────────
+        /// <summary>
+        /// Comandos
+        /// </summary>
         public ICommand AbrirChatCommand { get; }
         public ICommand FecharChatCommand { get; }
         public ICommand EnviarMensagemCommand { get; }
@@ -104,7 +106,10 @@ namespace ReGraphik.ViewModels
         public ICommand SelecionarConversaCommand { get; }
         public ICommand VoltarListaCommand { get; }
 
-        // ── Construtor ───────────────────────────────────────────────────
+        /// <summary>
+        /// Construtor
+        /// </summary>
+        /// <param name="usuarioLogado"></param>
         public ChatViewModel(Usuario usuarioLogado)
         {
             _usuarioLogado = usuarioLogado;
@@ -119,7 +124,7 @@ namespace ReGraphik.ViewModels
             SelecionarConversaCommand = new RelayCommand<Conversa>(c => ConversaSelecionada = c);
             VoltarListaCommand = new RelayCommand(() => ConversaSelecionada = null);
 
-            // Timer para verificar novas mensagens a cada 15 segundos
+            /// Timer para verificar novas mensagens a cada 15 segundos
             _timerAtualizacao = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(15)
@@ -127,11 +132,14 @@ namespace ReGraphik.ViewModels
             _timerAtualizacao.Tick += async (_, _) => await AtualizarNotificacoesAsync();
             _timerAtualizacao.Start();
 
-            // Carrega contagem inicial de não lidas
+            /// Carrega contagem inicial de não lidas
             _ = AtualizarNotificacoesAsync();
         }
 
-        // ── Métodos privados ─────────────────────────────────────────────
+        /// <summary>
+        /// Métodos privados
+        /// </summary>
+        /// <returns></returns>
         private async Task AbrirChatAsync()
         {
             ChatAberto = !ChatAberto;
@@ -198,7 +206,7 @@ namespace ReGraphik.ViewModels
                         msgs.OrderBy(m => m.DataHora));
                 });
 
-                // Marca como lidas
+                /// Marca como lidas
                 await _chatService.MarcarComoLidaAsync(outroUsuarioId, _usuarioLogado.Id);
                 await AtualizarNotificacoesAsync();
             }
@@ -227,12 +235,12 @@ namespace ReGraphik.ViewModels
 
             TextoMensagem = string.Empty;
 
-            // Adiciona localmente para resposta imediata (UX)
+            /// Adiciona localmente para resposta imediata (UX)
             Application.Current.Dispatcher.Invoke(() => Mensagens.Add(mensagem));
 
             await _chatService.EnviarMensagemAsync(mensagem);
 
-            // Atualiza lista de conversas
+            /// Atualiza lista de conversas
             await CarregarConversasAsync();
         }
 
@@ -253,15 +261,15 @@ namespace ReGraphik.ViewModels
 
             MostrarNovaConversa = false;
 
-            // Verifica se conversa já existe na lista
+            /// Verifica se conversa já existe na lista
             var existente = Conversas.FirstOrDefault(c => c.UsuarioId == usuario.Id);
             if (existente != null)
             {
                 ConversaSelecionada = existente;
                 return;
             }
-
-            // Cria conversa nova localmente
+            
+            /// Cria conversa nova localmente
             var novaConversa = new Conversa
             {
                 UsuarioId = usuario.Id,
