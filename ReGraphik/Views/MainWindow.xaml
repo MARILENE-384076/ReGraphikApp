@@ -22,6 +22,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
             <converters:NaoLidasVisibilidadeConverter x:Key="NaoLidasVisConv"/>
             <converters:BadgeNotificacaoConverter x:Key="BadgeConv"/>
             <BooleanToVisibilityConverter x:Key="BoolVis"/>
