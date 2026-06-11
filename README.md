@@ -64,20 +64,30 @@ O projeto segue rigorosamente o padrão **MVVM (Model-View-ViewModel)** na camad
  
 ```
 ReGraphikApp/
+├── ApiConfig/                 # Backend — ASP.NET Core REST API
+│   ├── Controllers/           # Endpoints HTTP (CRUD completo)
+│   ├── Data/                  # Configuração do Firebase Client
+│   ├── Models/                # Entidades do domínio
+│   ├── Services/              # Regras de negócio e acesso ao Firebase
+│   └── Program.cs             # Configuração da aplicação, DI, Swagger, CORS
+│
 ├── ApiRestReGraphik/          # Backend — ASP.NET Core REST API
 │   ├── Controllers/           # Endpoints HTTP (CRUD completo)
-│   ├── Services/              # Regras de negócio e acesso ao Firebase
-│   ├── Models/                # Entidades do domínio
 │   ├── Data/                  # Configuração do Firebase Client
+│   ├── Models/                # Entidades do domínio
+│   ├── Services/              # Regras de negócio e acesso ao Firebase
 │   └── Program.cs             # Configuração da aplicação, DI, Swagger, CORS
 │
 ├── ReGraphik/                 # Frontend — WPF Desktop (MVVM)
-│   ├── Views/                 # Janelas e páginas XAML
-│   │   └── Pages/             # Dashboard, Resíduos, Pontos de Coleta, Mapa, Relatórios
-│   ├── ViewModels/            # Lógica de apresentação (BaseViewModel, ResiduoViewModel)
+│   ├── Commands/              # RelayCommand (padrão Command do MVVM)
+│   ├── Converters/            # Implementam interfaces como IValueConverter
+│   ├── Imgs/                  # Pasta de imagens
 │   ├── Models/                # Espelho das entidades do domínio
 │   ├── Services/              # GooglePlacesService (integração com Maps)
-│   └── Commands/              # RelayCommand (padrão Command do MVVM)
+│   ├── Styles/              # Pasta de Estilos
+│   ├── ViewModels/            # Lógica de apresentação (BaseViewModel, ResiduoViewModel)
+│   └── Views/                 # Janelas e controls XAML
+│       └── Controls/       # Dashboard, Resíduos, Pontos de Coleta, Mapa, Relatórios
 │
 ├── Modelagem/                 # Documentação técnica (PDFs)
 └── Banco de Dados/            # Scripts e documentação do banco
