@@ -1,4 +1,5 @@
-﻿using ReGraphik.ViewModels;
+﻿using ReGraphik.Models;
+using ReGraphik.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for RelatoriosView.xaml
+    /// Interaction logic for SugestaoResiduoControl.xaml
     /// </summary>
-    public partial class RelatoriosView : UserControl
+    public partial class SugestaoResiduoControl : UserControl
     {
-        public RelatoriosView()
+        private Residuo _residuoSelecionado;
+        public SugestaoResiduoControl(Residuo residuo)
         {
             InitializeComponent();
-            DataContext = new RelatorioViewModel();
+            DataContext = new SugestaoResiduoViewModel(residuo);
+            _residuoSelecionado = residuo;
         }
     }
 }

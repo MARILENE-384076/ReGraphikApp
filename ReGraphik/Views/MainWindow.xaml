@@ -5,7 +5,7 @@
     xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" 
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:converters="clr-namespace:ReGraphik.Converters"
-    xmlns:uc="clr-namespace:ReGraphik.Views.UserControls"
+    xmlns:uc="clr-namespace:ReGraphik.Views.Controls"
     Title="ReGraphik"
     Height="720"
     Width="1200"
@@ -22,6 +22,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
             <converters:NaoLidasVisibilidadeConverter x:Key="NaoLidasVisConv"/>
             <converters:BadgeNotificacaoConverter x:Key="BadgeConv"/>
             <BooleanToVisibilityConverter x:Key="BoolVis"/>
@@ -34,7 +35,14 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Background="#093e75">
+        <Border>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#3274ba" Offset="0.0"/>
+                    <GradientStop Color="#1649a2" Offset="0.5"/>
+                    <GradientStop Color="#1E40AF" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -42,23 +50,20 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <Grid Margin="14,18,14,0">
+                    <Grid Margin="14,18,14,30">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
                         <!-- Título do app -->
-                        <TextBlock Grid.Column="0"
-                                       Foreground="White"
-                                       FontSize="22"
-                                       FontWeight="Bold"
+                        <StackPanel Grid.Column="0"
                                        VerticalAlignment="Center">
-                            <TextBlock.Inlines>
-                                <iconPacks:PackIconMaterial Kind="Recycle" Height="19" VerticalAlignment="Center" Width="22"/>
-                                <Run Text=" ReGraphik"/>
-                            </TextBlock.Inlines>
-                        </TextBlock>
+
+                            <iconPacks:PackIconMaterial Kind="Recycle" Foreground="White" Height="35" Width="37" Margin="1,0,0,0"/>
+                            <TextBlock Text="REGRAPHIK" Foreground="White" FontWeight="Bold" FontSize="20"/>
+
+                        </StackPanel>
 
                         <Button Grid.Column="1"
                                     Command="{Binding ChatCommand }"
@@ -105,28 +110,12 @@
                             </Button.Template>
                         </Button>
                     </Grid>
-
-                    <!-- Status do usuário logado -->
-                    <TextBlock x:Name="TxtNomeUsuario"
-                                   Foreground="#BFDBFE"
-                                   FontSize="14"
-                                   Margin="20,14,20,8">
-                            <Ellipse Width="7" Height="7" Fill="#10B981"
-                                     Margin="0,0,6,0" VerticalAlignment="Center">
-                                <Ellipse.Effect>
-                                    <DropShadowEffect BlurRadius="4" ShadowDepth="0" Color="#10B981" Opacity="0.6"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <TextBlock Text="Online" Foreground="#10B981" FontSize="13"
-                                       FontWeight="Bold" VerticalAlignment="Center"/>
-                            <Run Text="{Binding NomeUsuario, Mode=OneWay}"/>
-                        </TextBlock>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1">
                     <Button x:Name="BtnDashboard"
                             Style="{StaticResource NavBtnAtivo}"
-                            Command="{Binding NavegarDashboardCommand}">
+                            Command="{Binding NavegarDashboardCommand}" Tag="Dashboard">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                 <TextBlock Text="Botão para navegar para o Dashboard" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -141,7 +130,7 @@
 
                     <Button x:Name="BtnResiduos"
                             Style="{StaticResource NavBtn}"
-                            Command="{Binding NavegarResiduosCommand}">
+                            Command="{Binding NavegarResiduosCommand}" Tag="Residuos">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                 <TextBlock Text="Botão para navegar para a tela de Cadastrar Resíduos" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -156,7 +145,7 @@
 
                     <Button x:Name="BtnEstoqueReverso"
                             Style="{StaticResource NavBtn}"
-                            Command="{Binding NavegarEstoqueCommand}">
+                            Command="{Binding NavegarEstoqueCommand}" Tag="EstoqueReverso">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                 <TextBlock Text="Botão para navegar para a tela de Estoque Reverso" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -171,7 +160,7 @@
 
                     <Button x:Name="BtnMapa"
                             Style="{StaticResource NavBtn}"
-                            Command="{Binding NavegarMapaCommand}">
+                            Command="{Binding NavegarMapaCommand}" Tag="Mapa">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                 <TextBlock Text="Botão para navegar para a tela de Mapa dos pontos de coleta" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -186,7 +175,7 @@
 
                     <Button x:Name="BtnRelatorios"
                             Style="{StaticResource NavBtn}"
-                            Command="{Binding NavegarRelatoriosCommand}">
+                            Command="{Binding NavegarRelatoriosCommand}" Tag="Relatorios">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                 <TextBlock Text="Botão para navegar para a tela de Relatórios" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -201,9 +190,11 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Margin="8,0,8,12">
+                    <TextBlock Text="CONFIGURAÇÕES" FontSize="11" FontWeight="SemiBold" Foreground="#a9bcd2" Margin="20,16,20,8"/>
+
                     <Button x:Name="BtnConta"
                             Style="{StaticResource NavBtn}"
-                            Command="{Binding NavegarContaCommand}">
+                            Command="{Binding NavegarContaCommand}" Tag="Conta">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                 <TextBlock Text="Botão para navegar para a tela de modificações da conta" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>

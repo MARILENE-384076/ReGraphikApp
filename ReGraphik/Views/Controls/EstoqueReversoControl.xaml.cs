@@ -1,5 +1,4 @@
-﻿using ReGraphik.Models;
-using ReGraphik.ViewModels;
+﻿using ReGraphik.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,19 +14,22 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for SugestaoResiduoView.xaml
+    /// Define a interação lógica para EstoqueReversoControl.xaml
     /// </summary>
-    public partial class SugestaoResiduoView : UserControl
+    public partial class EstoqueReversoControl : UserControl
     {
-        private Residuo _residuoSelecionado;
-        public SugestaoResiduoView(Residuo residuo)
+        public EstoqueReversoControl()
         {
             InitializeComponent();
-            DataContext = new SugestaoResiduoViewModel(residuo);
-            _residuoSelecionado = residuo;
+            DataContext = new EstoqueReversoViewModel();
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

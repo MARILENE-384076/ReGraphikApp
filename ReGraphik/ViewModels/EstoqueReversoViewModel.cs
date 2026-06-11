@@ -1,6 +1,6 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Views;
-using ReGraphik.Views.UserControls;
+using ReGraphik.Views.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -71,7 +71,7 @@ namespace ReGraphik.ViewModels
 
             if (Application.Current.MainWindow is MainWindow mainWin)
             {
-                mainWin.Content = new SugestaoResiduoView(residuo);
+                mainWin.Content = new SugestaoResiduoControl(residuo);
             }
         }
 
