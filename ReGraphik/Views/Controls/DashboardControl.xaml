@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:oxy="http://oxyplot.org/wpf"
-             xmlns:local="clr-namespace:ReGraphik.Views.Controls"
-             xmlns:converters="clr-namespace:ReGraphik.Converters"
+             xmlns:local="clr-namespace:ReGraphik.Views.Controls" xmlns:converters="clr-namespace:ReGraphik.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024" Background="#F3F4F6">
 
@@ -16,11 +15,12 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
-
+    
     <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,24,24,16">
         <Grid>
             <Grid.RowDefinitions>

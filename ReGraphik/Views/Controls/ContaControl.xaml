@@ -50,8 +50,7 @@
 
                         <!-- E-mail: editável, mascarado ao carregar/sair do campo -->
                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                        <TextBox x:Name="TxtEmail" Text="{Binding Email}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"
-                                 GotFocus="TxtEmail_GotFocus"/>
+                        <TextBox x:Name="TxtEmail" Text="{Binding Email}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
 
                         <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtLogin" Text="{Binding Login}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
