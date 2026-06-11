@@ -14,17 +14,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.Views.Controls
 {
     /// <summary>
-    /// Interaction logic for ResiduosView.xaml
+    /// Define a interação lógica para DashboardControl.xaml
     /// </summary>
-    public partial class ResiduosView : UserControl
+    public partial class DashboardControl : UserControl
     {
-        public ResiduosView()
+        public DashboardControl(string nomeUsuario = "Usuário")
         {
             InitializeComponent();
-            DataContext = new ResiduoViewModel();
+            DataContext = new DashboardViewModel(nomeUsuario);
         }
     }
 }

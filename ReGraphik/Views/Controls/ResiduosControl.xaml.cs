@@ -14,22 +14,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ReGraphik.Views.UserControls
+namespace ReGraphik.Views.Controls
 {
     /// <summary>
-    /// Define a interação lógica para EstoqueReversoView.xaml
+    /// Interaction logic for ResiduosControl.xaml
     /// </summary>
-    public partial class EstoqueReversoView : UserControl
+    public partial class ResiduosControl : UserControl
     {
-        public EstoqueReversoView()
+        public ResiduosControl()
         {
             InitializeComponent();
-            DataContext = new EstoqueReversoViewModel();
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            DataContext = new ResiduoViewModel();
         }
     }
 }

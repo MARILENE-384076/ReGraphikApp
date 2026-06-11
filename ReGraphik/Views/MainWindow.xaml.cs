@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using ReGraphik.Models;
 using ReGraphik.ViewModels;
-using ReGraphik.Views.UserControls;
 
 namespace ReGraphik.Views
 {
