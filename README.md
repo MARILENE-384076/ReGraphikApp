@@ -107,7 +107,7 @@ Cliente WPF  →  API REST (ASP.NET Core)  →  Firebase Realtime Database
  
 ```xml
 <Button Content="Buscar"
-        Click="BtnBuscar_Click"/>
+        Command="{Binding BuscarCommand}"/>
  
 <TextBox x:Name="TxtCidade"
          Text="São Paulo"/>
