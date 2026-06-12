@@ -26,83 +26,110 @@
 
         <TextBlock Grid.Row="0" Text="Estoque Reverso" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
 
-        <!-- Filtros -->
-        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
-            <Border.Effect>
-                <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-            </Border.Effect>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+       <!-- Filtros -->
+<Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+    <Border.Effect>
+        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+    </Border.Effect>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,14"/>
+        <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
+                   Foreground="#1E293B" Margin="0,0,0,14"/>
 
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0">
-                            <ComboBoxItem Content="Selecionar Material"/>
-                            <ComboBoxItem Content="Papel Couché"/>
-                            <ComboBoxItem Content="Adesivo Vinil"/>
-                        </ComboBox>
-                    </StackPanel>
+            <!-- Tipo de Material -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
+                <ComboBox Style="{StaticResource FilterComboBoxStyle}"
+                          ItemsSource="{Binding ListaTipos}"
+                          SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"
+                          SelectedIndex="0"/>
+            </StackPanel>
 
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Selecionar Origem"/>
-                            <ComboBoxItem Content="Impressão Digital"/>
-                            <ComboBoxItem Content="Restos de Corte"/>
-                        </ComboBox>
-                    </StackPanel>
+            <!-- Origem -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
+                <ComboBox Style="{StaticResource FilterComboBoxStyle}"
+                          ItemsSource="{Binding ListaOrigens}"
+                          SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"
+                          SelectedIndex="0"/>
+            </StackPanel>
 
-                    <StackPanel Grid.Column="4">
-                        <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Selecionar Status"/>
-                            <ComboBoxItem Content="Em Estoque"/>
-                            <ComboBoxItem Content="Processado"/>
-                        </ComboBox>
-                    </StackPanel>
+            <!-- Status -->
+            <StackPanel Grid.Column="4">
+                <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
+                <ComboBox Style="{StaticResource FilterComboBoxStyle}"
+                          ItemsSource="{Binding ListaStatus}"
+                          SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"
+                          SelectedIndex="0"/>
+            </StackPanel>
 
-                    <Grid Grid.Column="6" VerticalAlignment="Bottom">
-                        <StackPanel>
-                            <TextBlock Text="Período" Style="{StaticResource FilterLabelStyle}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <ComboBox Style="{StaticResource FilterComboBoxStyle}" SelectedIndex="0" Margin="0,0,8,0" SelectionChanged="ComboBox_SelectionChanged">
-                                    <ComboBoxItem Content="Selecionar Período"/>
-                                    <ComboBoxItem Content="Últimos 30 dias"/>
-                                </ComboBox>
-                                <Button Grid.Column="1" Content="Filtrar" Width="80" Height="38" Background="#1649a2" Foreground="White" FontWeight="SemiBold" BorderThickness="0">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="6"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
-                        </StackPanel>
+            <!-- Período + botões -->
+            <Grid Grid.Column="6" VerticalAlignment="Bottom">
+                <StackPanel>
+                    <TextBlock Text="Período" Style="{StaticResource FilterLabelStyle}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Grid.Column="0"
+                                  Style="{StaticResource FilterComboBoxStyle}"
+                                  ItemsSource="{Binding ListaPeriodos}"
+                                  SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"
+                                  SelectedIndex="0"
+                                  Margin="0,0,6,0"/>
+
+                        <Button Grid.Column="1"
+                                Content="Filtrar"
+                                Command="{Binding FiltrarCommand}"
+                                Width="72" Height="38"
+                                Background="#1649a2" Foreground="White"
+                                FontWeight="SemiBold" BorderThickness="0"
+                                Margin="0,0,6,0" Cursor="Hand">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                        <Button Grid.Column="2"
+                                Content="Limpar"
+                                Command="{Binding LimparFiltrosCommand}"
+                                Width="68" Height="38"
+                                Background="White"
+                                BorderBrush="#CBD5E1" BorderThickness="1"
+                                Foreground="#64748B" FontWeight="SemiBold"
+                                Cursor="Hand">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
                     </Grid>
-                </Grid>
+                </StackPanel>
             </Grid>
-        </Border>
-
+        </Grid>
+    </Grid>
+</Border>
         <!-- Tabela -->
         <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="20">
             <Border.Effect>
@@ -129,7 +156,7 @@
                     </StackPanel>
                 </Grid>
 
-                <DataGrid ItemsSource="{Binding ListaResiduos}" Grid.Row="1"
+                <DataGrid ItemsSource="{Binding ResiduosFiltrados}"  Grid.Row="1"
                           AutoGenerateColumns="False" CanUserAddRows="False"
                           Background="White" BorderThickness="0"
                           GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9"
