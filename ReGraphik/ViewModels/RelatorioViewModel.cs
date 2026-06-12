@@ -229,7 +229,7 @@ namespace ReGraphik.ViewModels
                 var filtros = MontarDescricaoFiltros();
                 var caminho = dialog.FileName;
 
-                // Cores usando notação hex string (compatível com todas as versões do QuestPDF)
+                /// Cores usando notação hex string (compatível com todas as versões do QuestPDF)
                 const string azulEscuro = "#0D2A56";
                 const string azulMedio = "#1649A2";
                 const string azulClaro = "#3274BA";
@@ -248,7 +248,7 @@ namespace ReGraphik.ViewModels
                         page.Margin(30);
                         page.DefaultTextStyle(x => x.FontFamily("Arial").FontSize(9).FontColor(cinzaTexto));
 
-                        // ── Cabeçalho do PDF ──────────────────────────────
+                        /// Cabeçalho do PDF 
                         page.Header().Column(col =>
                         {
                             col.Item().Row(row =>
@@ -268,10 +268,10 @@ namespace ReGraphik.ViewModels
                             col.Item().PaddingTop(4).Text($"Filtros: {filtros}").FontSize(8).Italic().FontColor(Colors.Grey.Medium);
                         });
 
-                        // ── Conteúdo ───────────────────────────────
+                        /// Conteúdo
                         page.Content().PaddingTop(12).Column(col =>
                         {
-                            // Cards de resumo
+                            /// Cards de resumo
                             col.Item().Row(row =>
                             {
                                 Card(row, azulEscuro, "Total de Resíduos", lista.Count.ToString());
@@ -282,7 +282,7 @@ namespace ReGraphik.ViewModels
 
                             col.Item().PaddingTop(14);
 
-                            // Tabela
+                            /// Tabela
                             col.Item().Table(table =>
                             {
                                 table.ColumnsDefinition(c =>
@@ -297,13 +297,13 @@ namespace ReGraphik.ViewModels
                                     c.RelativeColumn(1.2f);
                                 });
 
-                                // Estilo do Cabeçalho da Tabela
+                                /// Estilo do Cabeçalho da Tabela
                                 IContainer CellHeader(IContainer c) =>
                                     c.Background(headerBg)
                                      .BorderBottom(1).BorderColor("#93C5FD")
                                      .Padding(6);
 
-                                // CORREÇÃO AQUI: table.Header é chamado apenas UMA vez
+                                /// CORREÇÃO AQUI: table.Header é chamado apenas UMA vez
                                 string[] headers = { "ID", "Material", "Origem", "Projeto", "Qtd (kg)", "Condição", "Data", "Status" };
                                 table.Header(header =>
                                 {
@@ -314,7 +314,7 @@ namespace ReGraphik.ViewModels
                                     }
                                 });
 
-                                // Linhas da Tabela
+                                /// Linhas da Tabela
                                 bool par = false;
                                 foreach (var r in lista)
                                 {
@@ -346,7 +346,7 @@ namespace ReGraphik.ViewModels
                             });
                         });
 
-                        // ── Rodapé ─────────────────────────────────
+                        /// Rodapé 
                         page.Footer().AlignCenter().Text(t =>
                         {
                             t.Span($"ReGraphik  •  Gerado em {DateTime.Now:dd/MM/yyyy HH:mm}  •  Página ").FontSize(8).FontColor(Colors.Grey.Medium);

@@ -28,7 +28,9 @@ namespace ReGraphik.ViewModels
         /// </summary>
         public ICollectionView ResiduosFiltrados { get; }
 
-        // ── Propriedades de filtro ───────────────────────────────────────────
+        /// <summary>
+        /// Propriedades de filtro 
+        /// </summary>
 
         private string _filtroTipo = string.Empty;
         public string FiltroTipo
@@ -58,7 +60,9 @@ namespace ReGraphik.ViewModels
             set { _filtroPeriodo = value; OnPropertyChanged(); }
         }
 
-        // ── Listas para os ComboBoxes (populadas dinamicamente do banco) ─────
+        /// <summary>
+        /// Listas para os ComboBoxes populadas dinamicamente do banco
+        /// </summary>
 
         public ObservableCollection<string> ListaTipos   { get; } = new() { "Todos" };
         public ObservableCollection<string> ListaOrigens { get; } = new() { "Todas" };
@@ -72,7 +76,9 @@ namespace ReGraphik.ViewModels
             "Últimos 90 dias"
         };
 
-        // ── Comandos ─────────────────────────────────────────────────────────
+        /// <summary>
+        /// Comandos 
+        /// </summary>
 
         public ICommand FiltrarCommand       { get; }
         public ICommand LimparFiltrosCommand { get; }
@@ -103,7 +109,7 @@ namespace ReGraphik.ViewModels
             _ = CarregarEstoqueDoBancoAsync();
         }
 
-        // ── Lógica de filtro ─────────────────────────────────────────────────
+        /// Lógica de filtro 
 
         /// <summary>
         /// Predicado do CollectionView — combina todos os filtros ativos com lógica AND.
@@ -140,7 +146,9 @@ namespace ReGraphik.ViewModels
             return true;
         }
 
-        // ── Ações ────────────────────────────────────────────────────────────
+        /// <summary>
+        /// Ações 
+        /// </summary>
 
         private void ExportarDadosInternos()
         {
@@ -155,7 +163,7 @@ namespace ReGraphik.ViewModels
                 mainWin.Content = new SugestaoResiduoControl(residuo);
         }
 
-        // ── Carregamento de dados ────────────────────────────────────────────
+        /// Carregamento de dados 
 
         /// <summary>
         /// Busca resíduos na API e popula os ComboBoxes com valores reais e distintos do banco.
