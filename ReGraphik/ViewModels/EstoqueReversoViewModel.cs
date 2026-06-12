@@ -17,7 +17,7 @@ namespace ReGraphik.ViewModels
     /// <summary>
     /// ViewModel para o controle da tela de Estoque Reverso.
     /// </summary>
-    
+    public class EstoqueReversoViewModel : BaseViewModel
     {
         /// <summary>
         /// Cliente para chamadas na API.
