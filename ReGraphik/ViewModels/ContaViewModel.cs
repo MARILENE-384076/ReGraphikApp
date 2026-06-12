@@ -87,15 +87,17 @@ namespace ReGraphik.ViewModels
             Nome = _usuarioAtual.Nome ?? string.Empty;
             Login = _usuarioAtual.Login ?? string.Empty;
 
-            // CPF: mascarado e bloqueado
+            /// CPF: mascarado e bloqueado
             CPF = MascararCpf(_usuarioAtual.CPF);
 
-            // Email: mascarado mas editável
+            /// Email: mascarado mas editável
             _emailReal = _usuarioAtual.Email ?? string.Empty;
             Email = MascararEmail(_emailReal);
         }
 
-        // ── Email: mostra real ao focar, mascara ao sair ─────────
+        /// <summary>
+        /// Email: mostra real ao focar, mascara ao sair
+        /// </summary>
         public void EmailGotFocus()
         {
             Email = _emailReal;
@@ -110,11 +112,15 @@ namespace ReGraphik.ViewModels
         }
         private void MudarFoto()
         {
-            // Lógica para abrir OpenFileDialog e definir ImgFoto
+            /// Lógica para abrir OpenFileDialog e definir ImgFoto
             MessageBox.Show("Abrir seletor de arquivo...");
         }
 
-        // ── Máscaras ─────────────────────────────────────────────
+        /// <summary>
+        /// Máscaras 
+        /// </summary>
+        /// <param name="cpf"></param>
+        /// <returns></returns>
         private static string MascararCpf(string? cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
@@ -130,7 +136,11 @@ namespace ReGraphik.ViewModels
             return email[..2] + new string('*', at - 2) + email[at..];
         }
 
-        // ── Salvar ───────────────────────────────────────────────
+        /// <summary>
+        /// Salvar
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         private async Task SalvarPerfilAsync(object? parameter)
         {
             if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Login))
