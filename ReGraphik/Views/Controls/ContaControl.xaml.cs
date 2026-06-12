@@ -17,7 +17,10 @@ namespace ReGraphik.Views.Controls
         public ContaControl(Usuario usuario)
         {
             InitializeComponent();
-            DataContext = new ContaViewModel(usuario);
+
+            // Passando a implementação real do serviço para a ViewModel
+            IAutorizarService autorizarService = new AutorizarService();
+            DataContext = new ContaViewModel(usuario, autorizarService);
         }
     }
 }
