@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace ReGraphik.Services
 {
     /// <summary>
-    /// Serviço de chat que consome a API REST do ReGraphik para troca de mensagens entre usuários.
+    /// Serviço de chat que consome a API REST do ReGraphik para troca de mensagens entre usuários
     /// </summary>
     public class ChatService
     {
