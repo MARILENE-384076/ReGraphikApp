@@ -64,11 +64,13 @@
 
                         <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtLogin" Text="{Binding Login}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
-                        
+
                         <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
-                        <PasswordBox x:Name="TxtSenha" PasswordChanged="{Binding Senha}" Style="{StaticResource PasswordStyle}" Margin="0,0,0,24"/>
+                        <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,24"/>
 
                         <Button x:Name="BtnSalvar" Content="Salvar Alterações" Height="45"
+                                Command="{Binding SalvarCommand}"
+                                CommandParameter="{Binding ElementName=TxtSenha}"
                                 HorizontalAlignment="Stretch"
                                 Style="{StaticResource BtnPrimaryStyle}"
                                 FontSize="15" FontWeight="Bold"

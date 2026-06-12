@@ -2,10 +2,6 @@
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,8 +12,8 @@ namespace ReGraphik.ViewModels
 {
     public class ContaViewModel : BaseViewModel
     {
-        private Usuario _usuarioAtual;
-        private readonly IAutorizarService _autorizarService;
+        private readonly Usuario _usuarioAtual;
+        private readonly IAutorizarService _autorizarService; // <-- CORRIGIDO: Campo adicionado de volta
         private readonly UsuarioViewModel _viewModel;
         private string _emailReal = string.Empty;
 
@@ -49,13 +45,6 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
-        private PasswordBox? _senha;
-        public PasswordBox Senha
-        {
-            get => _senha;
-            set { _senha = value; OnPropertyChanged(); }
-        }
-
         private bool _ocupado;
         public bool Ocupado
         {
@@ -63,20 +52,22 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
-        public ICommand SalvarCommand;
+        // ALTERADO: Transformado em propriedade { get; } com inicialização limpa
+        public ICommand SalvarCommand { get; }
         public ICommand EmailGotFocusCommand { get; }
         public ICommand EmailLostFocusCommand { get; }
         public ICommand SelecionarFotoCommand { get; }
 
-        public ContaViewModel(Usuario usuario)
+        public ContaViewModel(Usuario usuario, IAutorizarService autorizarService)
         {
             _usuarioAtual = usuario;
-            _autorizarService = new AutorizarService();
+            _autorizarService = autorizarService; // <-- CORRIGIDO: Agora o campo privado recebe a injeção
             _viewModel = new UsuarioViewModel();
 
             CarregarDadosNaTela();
-            SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync(param));
 
+            // Inicialização dos comandos
+            SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync(param));
             EmailGotFocusCommand = new RelayCommand(EmailGotFocus);
             EmailLostFocusCommand = new RelayCommand(EmailLostFocus);
             SelecionarFotoCommand = new RelayCommand((_) => MudarFoto());
@@ -100,14 +91,14 @@ namespace ReGraphik.ViewModels
         {
             Email = _emailReal;
         }
-           
 
         public void EmailLostFocus()
         {
-            _emailReal = Email;
+            _emailReal = Email ?? string.Empty;
             _usuarioAtual.Email = _emailReal;
             Email = MascararEmail(_emailReal);
         }
+
         private void MudarFoto()
         {
             // Lógica para abrir OpenFileDialog e definir ImgFoto
@@ -139,15 +130,15 @@ namespace ReGraphik.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            // Captura da senha de forma segura vinda da View via CommandParameter
             string novaSenha = string.Empty;
             if (parameter is PasswordBox passwordBox)
             {
                 novaSenha = passwordBox.Password;
             }
 
-            _usuarioAtual.Nome = Nome;
-            _usuarioAtual.Login = Login;
-            _usuarioAtual.Email = _emailReal;
+            // Atualiza o objeto com os dados da tela
             _usuarioAtual.Nome = Nome;
             _usuarioAtual.Login = Login;
             _usuarioAtual.Email = _emailReal;
@@ -156,6 +147,7 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = true;
 
+                // Envia para o serviço injetado
                 bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
 
                 if (sucesso)
@@ -172,7 +164,7 @@ namespace ReGraphik.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro: {ex.Message}", "Erro",
+                MessageBox.Show($"Ocorreu um erro ao conectar com o servidor: {ex.Message}", "Erro de Conexão",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
