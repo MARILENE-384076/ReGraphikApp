@@ -26,20 +26,26 @@ namespace ReGraphik.ViewModels
         private const string UrlApiSugestoes = "https://webregraphik.runasp.net/api/Sugestao";
         private const string UrlApiSugestaoResiduo = "https://webregraphik.runasp.net/api/SugestaoResiduos";
 
-        // ─── Evento disparado após aplicar sugestão com sucesso ───────────
+        ///Evento disparado após aplicar sugestão com sucesso
         /// <summary>
         /// Disparado quando a sugestão é registrada com sucesso.
         /// A View pode assinar este evento para fechar a janela automaticamente.
         /// </summary>
         public event Action SugestaoAplicadaComSucesso;
 
-        // ─── Resíduo alvo ─────────────────────────────────────────────────
+        /// <summary>
+        /// Resíduo alvo 
+        /// </summary>
         public Residuo Residuo { get; }
 
-        // ─── Lista de sugestões compatíveis com o tipo do resíduo ─────────
+        /// <summary>
+        /// Lista de sugestões compatíveis com o tipo do resíduo 
+        /// </summary>
         public ObservableCollection<Sugestao> Sugestoes { get; } = new();
 
-        // ─── Sugestão selecionada pelo usuário na lista ───────────────────
+        /// <summary>
+        /// Sugestão selecionada pelo usuário na lista 
+        /// </summary>
         private Sugestao _sugestaoSelecionada;
         public Sugestao SugestaoSelecionada
         {
@@ -51,7 +57,9 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ─── Controle de carregamento ─────────────────────────────────────
+        /// <summary>
+        /// Controle de carregamento 
+        /// </summary>
         private bool _carregando;
         public bool Carregando
         {
@@ -59,7 +67,9 @@ namespace ReGraphik.ViewModels
             set { _carregando = value; OnPropertyChanged(); }
         }
 
-        // ─── Mensagem de feedback ao usuário ─────────────────────────────
+        /// <summary>
+        /// Mensagem de feedback ao usuário 
+        /// </summary>
         private string _mensagem = "Carregando sugestões...";
         public string Mensagem
         {
@@ -67,10 +77,16 @@ namespace ReGraphik.ViewModels
             set { _mensagem = value; OnPropertyChanged(); }
         }
 
-        // ─── Comandos ─────────────────────────────────────────────────────
+        /// <summary>
+        /// Comandos 
+        /// </summary>
         public ICommand AplicarSugestaoCommand { get; }
 
-        // ─── Construtor ───────────────────────────────────────────────────
+        /// <summary>
+        /// Construtor 
+        /// </summary>
+        /// <param name="residuo"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public SugestaoResiduoViewModel(Residuo residuo)
         {
             Residuo = residuo ?? throw new ArgumentNullException(nameof(residuo));
@@ -80,11 +96,14 @@ namespace ReGraphik.ViewModels
                 _ => SugestaoSelecionada != null && !Carregando
             );
 
-            // Carrega as sugestões assim que o ViewModel for criado
+            /// Carrega as sugestões assim que o ViewModel for criado
             _ = CarregarSugestoesAsync();
         }
 
-        // ─── Busca sugestões compatíveis com o tipo do resíduo ────────────
+        /// <summary>
+        /// Busca sugestões compatíveis com o tipo do resíduo
+        /// </summary>
+        /// <returns></returns>
         private async Task CarregarSugestoesAsync()
         {
             Carregando = true;
@@ -135,7 +154,10 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ─── Registra a sugestão aplicada via POST em api/SugestaoResiduos ─
+        /// <summary>
+        /// Registra a sugestão aplicada via POST em api/SugestaoResiduos 
+        /// </summary>
+        /// <returns></returns>
         private async Task AplicarSugestaoAsync()
         {
             if (SugestaoSelecionada == null) return;
@@ -169,7 +191,7 @@ namespace ReGraphik.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
 
-                    // Notifica a View para fechar a janela
+                    /// Notifica a View para fechar a janela
                     SugestaoAplicadaComSucesso?.Invoke();
                 }
                 else
