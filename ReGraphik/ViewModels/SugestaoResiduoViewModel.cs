@@ -19,7 +19,9 @@ namespace ReGraphik.ViewModels
     /// </summary>
     public class SugestaoResiduoViewModel : BaseViewModel
     {
-        // ─── Infraestrutura ────────────────────────────────────────────────
+        /// <summary>
+        /// Infraestrutura 
+        /// </summary>
         private static readonly HttpClient _http = new();
         private const string UrlApiSugestoes = "https://webregraphik.runasp.net/api/Sugestao";
         private const string UrlApiSugestaoResiduo = "https://webregraphik.runasp.net/api/SugestaoResiduos";
