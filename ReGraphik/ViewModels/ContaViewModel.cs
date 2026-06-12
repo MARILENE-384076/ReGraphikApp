@@ -4,6 +4,7 @@ using ReGraphik.Services.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -20,35 +21,35 @@ namespace ReGraphik.ViewModels
         private readonly UsuarioViewModel _viewModel;
         private string _emailReal = string.Empty;
 
-        private string _nome;
+        private string? _nome;
         public string Nome
         {
             get => _nome;
             set { _nome = value; OnPropertyChanged(); }
         }
 
-        private string _cpf;
+        private string? _cpf;
         public string CPF
         {
             get => _cpf;
             set { _cpf = value; OnPropertyChanged(); }
         }
 
-        private string _email;
+        private string? _email;
         public string Email
         {
             get => _email;
             set { _email = value; OnPropertyChanged(); }
         }
 
-        private string _login;
+        private string? _login;
         public string Login
         {
             get => _login;
             set { _login = value; OnPropertyChanged(); }
         }
 
-        private PasswordBox _senha;
+        private PasswordBox? _senha;
         public PasswordBox Senha
         {
             get => _senha;
@@ -63,6 +64,9 @@ namespace ReGraphik.ViewModels
         }
 
         public ICommand SalvarCommand;
+        public ICommand EmailGotFocusCommand { get; }
+        public ICommand EmailLostFocusCommand { get; }
+        public ICommand SelecionarFotoCommand { get; }
 
         public ContaViewModel(Usuario usuario)
         {
@@ -71,7 +75,11 @@ namespace ReGraphik.ViewModels
             _viewModel = new UsuarioViewModel();
 
             CarregarDadosNaTela();
-            SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync());
+            SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync(param));
+
+            EmailGotFocusCommand = new RelayCommand(EmailGotFocus);
+            EmailLostFocusCommand = new RelayCommand(EmailLostFocus);
+            SelecionarFotoCommand = new RelayCommand((_) => MudarFoto());
         }
 
         private void CarregarDadosNaTela()
@@ -88,14 +96,22 @@ namespace ReGraphik.ViewModels
         }
 
         // ── Email: mostra real ao focar, mascara ao sair ─────────
-        private void TxtEmail_GotFocus(object sender, RoutedEventArgs e)
-            => Email = _emailReal;
+        public void EmailGotFocus()
+        {
+            Email = _emailReal;
+        }
+           
 
-        private void TxtEmail_LostFocus(object sender, RoutedEventArgs e)
+        public void EmailLostFocus()
         {
             _emailReal = Email;
             _usuarioAtual.Email = _emailReal;
             Email = MascararEmail(_emailReal);
+        }
+        private void MudarFoto()
+        {
+            // Lógica para abrir OpenFileDialog e definir ImgFoto
+            MessageBox.Show("Abrir seletor de arquivo...");
         }
 
         // ── Máscaras ─────────────────────────────────────────────
@@ -115,7 +131,7 @@ namespace ReGraphik.ViewModels
         }
 
         // ── Salvar ───────────────────────────────────────────────
-        private async Task SalvarPerfilAsync()
+        private async Task SalvarPerfilAsync(object? parameter)
         {
             if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Login))
             {
@@ -123,7 +139,15 @@ namespace ReGraphik.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+            string novaSenha = string.Empty;
+            if (parameter is PasswordBox passwordBox)
+            {
+                novaSenha = passwordBox.Password;
+            }
 
+            _usuarioAtual.Nome = Nome;
+            _usuarioAtual.Login = Login;
+            _usuarioAtual.Email = _emailReal;
             _usuarioAtual.Nome = Nome;
             _usuarioAtual.Login = Login;
             _usuarioAtual.Email = _emailReal;

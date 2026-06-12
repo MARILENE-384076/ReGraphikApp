@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:ReGraphik.Views.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="#F3F4F6">
@@ -50,7 +51,16 @@
 
                         <!-- E-mail: editável, mascarado ao carregar/sair do campo -->
                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                        <TextBox x:Name="TxtEmail" Text="{Binding Email}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
+                        <TextBox x:Name="TxtEmail" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,12">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="GotFocus">
+                                    <b:InvokeCommandAction Command="{Binding EmailGotFocusCommand}"/>
+                                </b:EventTrigger>
+                                <b:EventTrigger EventName="LostFocus">
+                                    <b:InvokeCommandAction Command="{Binding EmailLostFocusCommand}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </TextBox>
 
                         <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
                         <TextBox x:Name="TxtLogin" Text="{Binding Login}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
