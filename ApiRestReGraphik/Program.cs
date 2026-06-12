@@ -22,7 +22,6 @@ builder.Services.AddScoped<SugestaoResiduosService>();
 
 builder.Services.AddScoped<UsuarioService>();
 
-builder.Services.AddScoped<ChatService>();
 
 // Configura o Swagger para incluir comentários XML, permitindo que as descrições dos endpoints sejam exibidas na documentação gerada.
 builder.Services.AddSwaggerGen(options =>
