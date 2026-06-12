@@ -10,13 +10,19 @@ using System.Threading.Tasks;
 
 namespace ReGraphik.Services
 {
-    // Esta classe é responsável por lidar com a lógica relacionada aos resíduos, como obter a lista de resíduos do banco de dados.
+    /// <summary>
+    /// Esta classe é responsável por lidar com a lógica relacionada aos resíduos, como obter a lista de resíduos do banco de dados.
+    /// </summary>
     public class ResiduoService : IResiduoService
     {
-        // Usamos um HttpClient estático para reutilizar a mesma instância em toda a aplicação, evitando problemas de esgotamento de conexões.
+        /// Usamos um HttpClient estático para reutilizar a mesma instância em toda a aplicação, evitando problemas de esgotamento de conexões.
         private static readonly HttpClient _httpClient = new HttpClient { BaseAddress = new Uri("https://webregraphik.runasp.net/api/") };
 
-        // Método para obter todos os resíduos do banco de dados, fazendo uma requisição GET para a API.
+        /// <summary>
+        /// Método para obter todos os resíduos do banco de dados, fazendo uma requisição GET para a API.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<List<Residuo>> ObterTodosResiduosAsync()
         {
             HttpResponseMessage response = await _httpClient.GetAsync("Residuo");
