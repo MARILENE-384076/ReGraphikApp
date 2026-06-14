@@ -45,18 +45,20 @@
                                 </Border.Effect>
                             </Border>
 
-                            <!-- Foto de Perfil -->
                             <Border CornerRadius="25" ClipToBounds="True">
                                 <Border.Background>
                                     <ImageBrush ImageSource="{Binding FotoPerfil, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
-                                                Stretch="UniformToFill"/>
+                        Stretch="UniformToFill"/>
                                 </Border.Background>
                             </Border>
 
-                            <Image Source="/Imgs/logoRegraphik.png" Width="30" Height="30" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                    Visibility="{Binding FotoPerfil, Converter={StaticResource NullToVisibilityConverter}}"/>
+                            <Image Source="/Imgs/logoRegraphik.png" 
+                                   Width="30" 
+                                   Height="30" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center"
+                                   Visibility="{Binding FotoPerfil, Converter={StaticResource NullToVisibilityConverter}}"/>
 
-                            <!-- Botão Online -->
                             <Ellipse Width="12" Height="12" 
                                      Fill="#4BAC50" 
                                      Stroke="#0d2a56" 

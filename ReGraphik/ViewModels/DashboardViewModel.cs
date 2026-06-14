@@ -1,11 +1,12 @@
-﻿using ReGraphik.Models;
+﻿using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using OxyPlot;
-using OxyPlot.Series;
-using OxyPlot.Axes;
+using System.Windows.Media.Imaging;
 
 namespace ReGraphik.ViewModels
 {
@@ -20,8 +21,30 @@ namespace ReGraphik.ViewModels
             set { _nomeUsuario = value; OnPropertyChanged(); }
         }
 
-        // ← ADICIONE
-        public string? FotoPerfil => UsuarioSessaoService.Instancia.FotoCaminho;
+        private BitmapImage? _fotoPerfil;
+        public BitmapImage? FotoPerfil
+        {
+            get
+            {
+                string? caminho = UsuarioSessaoService.Instancia.FotoCaminho;
+                if (string.IsNullOrWhiteSpace(caminho))
+                    return null;
+
+                try
+                {
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.UriSource = new Uri(caminho, UriKind.RelativeOrAbsolute);
+                    bitmap.EndInit();
+                    return bitmap;
+                }
+                catch
+                {
+                    return null; 
+                }
+            }
+        }
 
         private int _residuosDb;
         public int ResiduosDb
@@ -71,6 +94,7 @@ namespace ReGraphik.ViewModels
             get => _ultimosResiduos;
             set { _ultimosResiduos = value; OnPropertyChanged(); }
         }
+
 
         public Func<double, string> FormatterTipos { get; set; } = value => value.ToString("N2") + " kg";
 
