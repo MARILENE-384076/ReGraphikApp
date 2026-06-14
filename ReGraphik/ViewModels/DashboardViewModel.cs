@@ -108,7 +108,7 @@ namespace ReGraphik.ViewModels
 
             AtualizarDadosCommand = new RelayCommand(async () => await CarregarDadosDaApiAsync());
 
-            // ← ADICIONE
+            
             UsuarioSessaoService.Instancia.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))

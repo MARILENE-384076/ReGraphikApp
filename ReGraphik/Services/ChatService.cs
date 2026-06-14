@@ -1,102 +1,138 @@
-﻿using ReGraphik.Models;
-using ReGraphik.Services.Interface;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using Firebase.Database;
+using Firebase.Database.Query;
+using ReGraphik.Models;
 using System.Text.Json;
 
 namespace ReGraphik.Services
 {
     /// <summary>
-    /// Serviço de chat que consome a API REST do ReGraphik para troca de mensagens entre usuários.
+    /// Servico de chat que persiste mensagens diretamente
+    /// no Firebase Realtime Database, sem passar pela API REST.
     /// </summary>
     public class ChatService
     {
-        private readonly HttpClient _httpClient;
-        private const string BaseUrl = "https://localhost:7002/api";
+        private readonly FirebaseClient _db;
+        private const string NodeMensagens = "mensagens";
+        private const string NodeUsuarios = "usuarios";
 
         public ChatService()
         {
-            _httpClient = new HttpClient();
+            _db = FirebaseConfig.Client;
         }
 
-        /// <summary>
-        /// Obtém todas as mensagens trocadas entre dois usuários, ordenadas por data/hora.
-        /// </summary>
-        public async Task<List<Mensagem>> ObterMensagensAsync(string usuarioId1, string usuarioId2)
+        // ------------------------------------------------
+        // Gera ID de conversa deterministico (menor ID primeiro)
+        // ------------------------------------------------
+        private static string ConversaId(string id1, string id2)
+        {
+            var ids = new[] { id1, id2 };
+            Array.Sort(ids, StringComparer.Ordinal);
+            return $"{ids[0]}_{ids[1]}";
+        }
+
+        // ------------------------------------------------
+        // ObterMensagensAsync
+        // ------------------------------------------------
+        public async Task<List<Mensagem>> ObterMensagensAsync(
+            string usuarioId1, string usuarioId2)
         {
             try
             {
-                var response = await _httpClient.GetAsync(
-                    $"{BaseUrl}/Chat/conversa/{usuarioId1}/{usuarioId2}");
+                var convId = ConversaId(usuarioId1, usuarioId2);
+                var items = await _db
+                    .Child(NodeMensagens)
+                    .Child(convId)
+                    .OnceAsync<Mensagem>();
 
-                if (!response.IsSuccessStatusCode)
-                    return [];
-
-                var mensagens = await response.Content.ReadFromJsonAsync<List<Mensagem>>();
-                return mensagens ?? [];
+                return items
+                    .Select(i => i.Object)
+                    .OrderBy(m => m.DataHora)
+                    .ToList();
             }
-            catch
-            {
-                return [];
-            }
+            catch { return []; }
         }
 
-        /// <summary>
-        /// Envia uma nova mensagem via API REST.
-        /// </summary>
+        // ------------------------------------------------
+        // EnviarMensagemAsync
+        // ------------------------------------------------
         public async Task EnviarMensagemAsync(Mensagem mensagem)
         {
-            await _httpClient.PostAsJsonAsync($"{BaseUrl}/Chat", mensagem);
+            var convId = ConversaId(
+                mensagem.RemetenteId, mensagem.DestinatarioId);
+
+            await _db
+                .Child(NodeMensagens)
+                .Child(convId)
+                .Child(mensagem.Id)
+                .PutAsync(mensagem);
         }
 
-        /// <summary>
-        /// Marca como lidas todas as mensagens recebidas de um remetente.
-        /// </summary>
-        public async Task MarcarComoLidaAsync(string remetenteId, string destinatarioId)
+        // ------------------------------------------------
+        // MarcarComoLidaAsync
+        // ------------------------------------------------
+        public async Task MarcarComoLidaAsync(
+            string remetenteId, string destinatarioId)
         {
-            await _httpClient.PutAsync(
-                $"{BaseUrl}/Chat/marcar-lida/{remetenteId}/{destinatarioId}", null);
+            var convId = ConversaId(remetenteId, destinatarioId);
+
+            var msgs = await _db
+                .Child(NodeMensagens)
+                .Child(convId)
+                .OnceAsync<Mensagem>();
+
+            var pendentes = msgs
+                .Where(i => i.Object.RemetenteId == remetenteId
+                         && !i.Object.Lida)
+                .ToList();
+
+            foreach (var item in pendentes)
+            {
+                await _db
+                    .Child(NodeMensagens)
+                    .Child(convId)
+                    .Child(item.Key)
+                    .Child("lida")
+                    .PutAsync(true);
+            }
         }
 
-        /// <summary>
-        /// Lista todos os usuários cadastrados (exceto o próprio) para iniciar conversas.
-        /// </summary>
+        // ------------------------------------------------
+        // ListarUsuariosAsync
+        // ------------------------------------------------
         public async Task<List<Usuario>> ListarUsuariosAsync()
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{BaseUrl}/Usuario");
-                if (!response.IsSuccessStatusCode)
-                    return [];
+                var items = await _db
+                    .Child(NodeUsuarios)
+                    .OnceAsync<Usuario>();
 
-                var usuarios = await response.Content.ReadFromJsonAsync<List<Usuario>>();
-                return usuarios ?? [];
+                return items.Select(i => i.Object).ToList();
             }
-            catch
-            {
-                return [];
-            }
+            catch { return []; }
         }
 
-        /// <summary>
-        /// Conta quantas mensagens não lidas o destinatário recebeu de um remetente.
-        /// </summary>
-        public async Task<int> ContarNaoLidasAsync(string destinatarioId, string remetenteId)
+        // ------------------------------------------------
+        // ContarNaoLidasAsync
+        // ------------------------------------------------
+        public async Task<int> ContarNaoLidasAsync(
+            string destinatarioId, string remetenteId)
         {
             try
             {
-                var response = await _httpClient.GetAsync(
-                    $"{BaseUrl}/Chat/nao-lidas/{destinatarioId}/{remetenteId}");
+                var convId = ConversaId(destinatarioId, remetenteId);
 
-                if (!response.IsSuccessStatusCode) return 0;
+                var msgs = await _db
+                    .Child(NodeMensagens)
+                    .Child(convId)
+                    .OnceAsync<Mensagem>();
 
-                var resultado = await response.Content.ReadFromJsonAsync<int>();
-                return resultado;
+                return msgs.Count(i =>
+                    i.Object.RemetenteId == remetenteId &&
+                    i.Object.DestinatarioId == destinatarioId &&
+                    !i.Object.Lida);
             }
-            catch
-            {
-                return 0;
-            }
+            catch { return 0; }
         }
     }
 }

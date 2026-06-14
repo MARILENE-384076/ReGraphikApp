@@ -269,7 +269,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
             
-            /// Cria conversa nova localmente
+            /   // Cria conversa nova localmente
             var novaConversa = new Conversa
             {
                 UsuarioId = usuario.Id,

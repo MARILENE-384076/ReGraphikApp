@@ -11,7 +11,9 @@ namespace ReGraphik.ViewModels
 {
     public class CadastroViewModel : BaseViewModel
     {
-        // Instancia do serviço de autorização para lidar com a lógica de cadastro
+        /// <summary>
+        /// Instancia do serviço de autorização para lidar com a lógica de cadastro
+        /// </summary>
         private readonly IAutorizarService _autorizarService;
 
         private string? _nome;
@@ -26,7 +28,9 @@ namespace ReGraphik.ViewModels
         private string? _mensaSenha;
         private string? _mensagemErroGeral;
 
-        // Segurança no cadastro
+        /// <summary>
+        /// Segurança no cadastro
+        /// </summary>
         private string? _tokenDigitado;
         private bool _isTokenValido;
         private string? _mensagemErroToken;
@@ -61,7 +65,9 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
-        // Mensagens de Alertas
+        /// <summary>
+        /// Mensagens de Alertas
+        /// </summary>
         public string MensaNome
         {
             get => _mensaNome;
@@ -108,14 +114,18 @@ namespace ReGraphik.ViewModels
             set { _tokenDigitado = value; OnPropertyChanged(nameof(TokenDigitado)); }
         }
 
-        // Controla se o formulário deve ser liberado ou não
+        /// <summary>
+        /// Controla se o formulário deve ser liberado ou não
+        /// </summary>
         public bool IsTokenValido
         {
             get => _isTokenValido;
             set { _isTokenValido = value; OnPropertyChanged(nameof(IsTokenValido)); }
         }
 
-        // Exibe erro caso o token seja inválido
+        /// <summary>
+        /// Exibe erro caso o token seja inválido
+        /// </summary>
         public string MensagemErroToken
         {
             get => _mensagemErroToken;
@@ -134,7 +144,7 @@ namespace ReGraphik.ViewModels
 
             _autorizarService = new AutorizarService();
 
-            //_autorizarService = new AutorizarService();
+            ///_autorizarService = new AutorizarService();
 
             CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
             IsTokenValido = false;
@@ -144,24 +154,28 @@ namespace ReGraphik.ViewModels
 
         private bool CanCadastrar(object parameter) => !Ocupado;
 
-        // Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
+        /// <summary>
+        /// Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         private async Task Cadastrar(object parameter)
         {
             MensaCpf = string.Empty;
             MensaEmail = string.Empty;
             MensagemErroGeral = string.Empty;
 
-            // O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
+            /// O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
                 MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
-            // Obtém a senha digitada no PasswordBox
+            /// Obtém a senha digitada no PasswordBox
             string senhaDigitada = passwordBox.Password;
             bool possuiErro = false;
 
-            // Validação simples de campos vazios
+            /// Validação simples de campos vazios
             if (string.IsNullOrWhiteSpace(CPF))
             {
                 MensaCpf = "O CPF é obrigatório!";
@@ -184,9 +198,9 @@ namespace ReGraphik.ViewModels
 
             try
             {
-                Ocupado = true; // Indica que o processo de cadastro está em andamento
+                Ocupado = true; /// Indica que o processo de cadastro está em andamento
 
-                // Cria um objeto anônimo representando o usuário a ser cadastrado, com as informações fornecidas e um ID gerado aleatoriamente
+                /// Cria um objeto anônimo representando o usuário a ser cadastrado, com as informações fornecidas e um ID gerado aleatoriamente
                 var novoUsuario = new Usuario
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -199,7 +213,7 @@ namespace ReGraphik.ViewModels
                     DataCadastro = DateTime.Now
                 };
 
-                // Chama o serviço de autorização para cadastrar o usuário
+                /// Chama o serviço de autorização para cadastrar o usuário
                 bool response = await _autorizarService.CadastrarAsync(novoUsuario);
 
                 if (response)
@@ -254,7 +268,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            // Buscando os componentes de dentro do Grid através do nome ou tipo
+            /// Buscando os componentes de dentro do Grid através do nome ou tipo
             var txtSenhaCadastro = gridContainer.Children.OfType<PasswordBox>().FirstOrDefault(x => x.Name == "TxtSenhaCadastro");
             var txtSenhaVisivelCadastro = gridContainer.Children.OfType<TextBox>().FirstOrDefault(x => x.Name == "TxtSenhaVisivelCadastro");
             var btnRevelar = gridContainer.Children.OfType<Button>().FirstOrDefault(x => x.Name == "BtnRevelarSenhaCadastro");

@@ -81,7 +81,7 @@ namespace ReGraphik.ViewModels
 
             _autorizarService = new AutorizarService();
 
-            // Inicializa o comando de login, associando-o ao método Entrar
+            /// Inicializa o comando de login, associando-o ao método Entrar
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
 
             RevelarSenhaCommand = new RelayCommand(RevelarSenha);
@@ -89,7 +89,11 @@ namespace ReGraphik.ViewModels
             EsqueciSenhaCommand = new RelayCommand(EsqueciSenha);
         }
 
-        // Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
+        /// <summary>
+        /// Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         private bool CanEntrar(object parameter) => !Ocupado;
 
         private async Task Entrar(object parameter)
@@ -98,24 +102,24 @@ namespace ReGraphik.ViewModels
             MensaSenha = string.Empty;
             MensagemErroGeral = string.Empty;
 
-            // Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
+            /// Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
                 MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
-            // Obtém a senha digitada pelo usuário a partir do PasswordBox
+            /// Obtém a senha digitada pelo usuário a partir do PasswordBox
             string senhaDigitada = passwordBox.Password;
             bool possuiErro = false;
 
-            // Validação de login
+            /// Validação de login
             if (string.IsNullOrWhiteSpace(Login))
             {
                 MensaLogin = "O login é obrigatório!";
                 possuiErro = true;
             }
 
-            // Validação de senha
+            /// Validação de senha
             if (string.IsNullOrWhiteSpace(senhaDigitada))
             {
                 MensaSenha = "A senha é obrigatória!";
@@ -169,7 +173,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            // Buscando os componentes de dentro do Grid através do nome ou tipo
+            /// Buscando os componentes de dentro do Grid através do nome ou tipo
             var txtSenhaLogin = gridContainer.Children.OfType<PasswordBox>().FirstOrDefault(x => x.Name == "TxtSenhaLogin");
             var txtSenhaVisivelLogin = gridContainer.Children.OfType<TextBox>().FirstOrDefault(x => x.Name == "TxtSenhaVisivelLogin");
             var btnRevelar = gridContainer.Children.OfType<Button>().FirstOrDefault(x => x.Name == "BtnRevelarSenha");

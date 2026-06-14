@@ -9,7 +9,9 @@ namespace ReGraphik.Services
     /// </summary>
     public class UsuarioSessaoService : INotifyPropertyChanged
     {
-        // Instância única compartilhada por toda a aplicação
+        /// <summary>
+        /// Instância única compartilhada por toda a aplicação
+        /// </summary>
         public static readonly UsuarioSessaoService Instancia = new();
 
         private string? _fotoCaminho;
