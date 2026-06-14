@@ -143,6 +143,7 @@ namespace ReGraphik.ViewModels
                     return;
                 }
 
+                UsuarioSessaoService.Instancia.FotoCaminho = usuario.FotoPerfil;
 
                 var main = new MainWindow(usuario);
                 main.Show();

@@ -1,4 +1,5 @@
-﻿using ReGraphik.Models;
+﻿using Microsoft.Win32;
+using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System;
@@ -7,15 +8,23 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace ReGraphik.ViewModels
 {
     public class ContaViewModel : BaseViewModel
     {
         private readonly Usuario _usuarioAtual;
-        private readonly IAutorizarService _autorizarService; // <-- CORRIGIDO: Campo adicionado de volta
+        private readonly IAutorizarService _autorizarService;
         private readonly UsuarioViewModel _viewModel;
         private string _emailReal = string.Empty;
+
+        private BitmapImage? _imgFoto;
+        public BitmapImage? ImgFoto
+        {
+            get => _imgFoto;
+            set { _imgFoto = value; OnPropertyChanged(); }
+        }
 
         private string? _nome;
         public string Nome
@@ -101,10 +110,45 @@ namespace ReGraphik.ViewModels
             Email = MascararEmail(_emailReal);
         }
 
-        private void MudarFoto()
+        private async void MudarFoto() 
         {
-            /// Lógica para abrir OpenFileDialog e definir ImgFoto
-            MessageBox.Show("Abrir seletor de arquivo...");
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "Selecionar Foto de Perfil",
+                    Filter = "Imagens (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png"
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    string caminhoDoArquivo = openFileDialog.FileName;
+
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.UriSource = new Uri(caminhoDoArquivo);
+                    bitmap.EndInit();
+
+                    ImgFoto = bitmap;
+
+                    _usuarioAtual.FotoPerfil = caminhoDoArquivo;
+
+                    UsuarioSessaoService.Instancia.FotoCaminho = caminhoDoArquivo;
+
+                    Ocupado = true;
+                    await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar ou salvar a foto: {ex.Message}", "Erro",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                Ocupado = false;
+            }
         }
 
         /// <summary>
