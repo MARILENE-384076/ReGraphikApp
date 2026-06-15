@@ -75,3 +75,47 @@ namespace ReGraphik.ViewModels
                 $"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm}   |   Empresa: {_usuario?.Nome ?? "—"}",
                 10, FontWeights.Normal, "#64748B"));
             doc.Blocks.Add(Separador());
+            // E — Ambiental
+            doc.Blocks.Add(Paragrafo("🌿  E — Ambiental (Environmental)",
+                14, FontWeights.Bold, "#166534"));
+            doc.Blocks.Add(Paragrafo(
+                "O ReGraphik atua diretamente na redução do impacto ambiental gerado pelo setor gráfico. " +
+                "Ao cadastrar resíduos como papel, cartão e vinil, as empresas parceiras transformam " +
+                "descarte em matéria-prima circular, reduzindo a quantidade de material enviado a aterros " +
+                "e diminuindo emissões de CO₂ associadas ao descarte inadequado.",
+                12, FontWeights.Normal, "#1E293B"));
+            doc.Blocks.Add(Paragrafo(
+                "Indicadores monitorados: kg de resíduos cadastrados · pontos de coleta ativados · " +
+                "estimativa de CO₂ evitado por tonelada reciclada.",
+                11, FontWeights.Normal, "#475569"));
+            doc.Blocks.Add(Separador());
+
+            // S — Social
+            doc.Blocks.Add(Paragrafo("🤝  S — Social",
+                14, FontWeights.Bold, "#1D4ED8"));
+            doc.Blocks.Add(Paragrafo(
+                "A plataforma conecta empresas gráficas a cooperativas e coletores, gerando renda " +
+                "para trabalhadores da cadeia de reciclagem. O sistema de sugestões de reaproveitamento " +
+                "permite que resíduos virem produtos personalizados — como camisetas e brindes — " +
+                "criando valor para toda a cadeia produtiva.",
+                12, FontWeights.Normal, "#1E293B"));
+            doc.Blocks.Add(Paragrafo(
+                "Benefícios: geração de renda para catadores · fomento à economia circular local · " +
+                "redução de custos operacionais de descarte para as empresas parceiras.",
+                11, FontWeights.Normal, "#475569"));
+            doc.Blocks.Add(Separador());
+
+            // G — Governança
+            doc.Blocks.Add(Paragrafo("📋  G — Governança",
+                14, FontWeights.Bold, "#6B21A8"));
+            doc.Blocks.Add(Paragrafo(
+                "O ReGraphik oferece rastreabilidade completa dos resíduos gerados: origem, tipo, " +
+                "quantidade, condição e destino final ficam registrados e auditáveis. Isso permite " +
+                "que as empresas demonstrem conformidade com a Política Nacional de Resíduos Sólidos " +
+                "(Lei 12.305/2010) e fortaleçam sua governança ambiental corporativa.",
+                12, FontWeights.Normal, "#1E293B"));
+            doc.Blocks.Add(Paragrafo(
+                "Diferenciais: histórico auditável · relatórios exportáveis · dados para laudos e " +
+                "prestação de contas a órgãos reguladores.",
+                11, FontWeights.Normal, "#475569"));
+            doc.Blocks.Add(Separador());
