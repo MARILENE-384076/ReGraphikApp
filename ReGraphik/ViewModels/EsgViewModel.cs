@@ -68,3 +68,10 @@ namespace ReGraphik.ViewModels
                 PagePadding = new Thickness(60, 48, 60, 48),
                 ColumnWidth = double.MaxValue
             };
+            // Cabeçalho
+            doc.Blocks.Add(Paragrafo("REGRAPHIK — Relatório de Proposta de Valor ESG",
+                16, FontWeights.Bold, "#1649a2"));
+            doc.Blocks.Add(Paragrafo(
+                $"Gerado em: {DateTime.Now:dd/MM/yyyy HH:mm}   |   Empresa: {_usuario?.Nome ?? "—"}",
+                10, FontWeights.Normal, "#64748B"));
+            doc.Blocks.Add(Separador());
