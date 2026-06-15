@@ -62,6 +62,7 @@ namespace ReGraphik.ViewModels
         private readonly MapaControl _mapaView;
         private readonly RelatoriosControl _relatoriosView;
         private readonly ContaControl _contaView;
+        private readonly EsgControl _esgView;
 
         /// <summary>
         /// Comandos de navegação para cada página. Reutilizam a mesma instância do comando,
@@ -75,6 +76,8 @@ namespace ReGraphik.ViewModels
         public ICommand SairCommand { get; }
 
         public ICommand ChatCommand { get; }
+        
+        public ICommand NavegarEsgCommand { get; }
 
         /// <summary>
         /// Construtor do MainViewModel. Recebe o usuário logado e a janela atual para controle de navegação.
@@ -103,6 +106,7 @@ namespace ReGraphik.ViewModels
             _mapaView = new MapaControl();
             _relatoriosView = new RelatoriosControl();
             _contaView = new ContaControl(UsuarioLogado);
+            _esgView = new EsgControl(UsuarioLogado);
 
             /// Começa na Dashboard
             _currentView = _dashboardView;
@@ -115,6 +119,7 @@ namespace ReGraphik.ViewModels
             NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
             NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
             SairCommand = new RelayCommand(p => ExecutarSair());
+            NavegarEsgCommand = new RelayCommand(p => NavegarParaEsg());
         }
 
         private void NavegarParaDashboard()
@@ -188,6 +193,7 @@ namespace ReGraphik.ViewModels
             tela.DataContext = ChatViewModel;
             tela.Show();
         }
+        private void NavegarParaEsg() => ExecutarNavegacao("Esg", _esgView);
 
 
     }
