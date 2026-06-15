@@ -61,7 +61,37 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
-        // ALTERADO: Transformado em propriedade { get; } com inicialização limpa
+        /// <summary>
+        /// Mensagem de erro inline para o campo de e-mail, exibida abaixo do campo sem MessageBox
+        /// </summary>
+        private string _mensagemErroEmail = string.Empty;
+        public string MensagemErroEmail
+        {
+            get => _mensagemErroEmail;
+            set { _mensagemErroEmail = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Mensagem de sucesso inline exibida abaixo do botão Salvar, sem MessageBox
+        /// </summary>
+        private string _mensagemSucesso = string.Empty;
+        public string MensagemSucesso
+        {
+            get => _mensagemSucesso;
+            set { _mensagemSucesso = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Mensagem de erro geral inline exibida abaixo do botão Salvar
+        /// </summary>
+        private string _mensagemErroGeral = string.Empty;
+        public string MensagemErroGeral
+        {
+            get => _mensagemErroGeral;
+            set { _mensagemErroGeral = value; OnPropertyChanged(); }
+        }
+
+        // Comandos da ViewModel
         public ICommand SalvarCommand { get; }
         public ICommand EmailGotFocusCommand { get; }
         public ICommand EmailLostFocusCommand { get; }
@@ -70,12 +100,12 @@ namespace ReGraphik.ViewModels
         public ContaViewModel(Usuario usuario, IAutorizarService autorizarService)
         {
             _usuarioAtual = usuario;
-            _autorizarService = autorizarService; // <-- CORRIGIDO: Agora o campo privado recebe a injeção
+            _autorizarService = autorizarService;
             _viewModel = new UsuarioViewModel();
 
             CarregarDadosNaTela();
 
-            // Inicialização dos comandos
+            /// Inicialização dos comandos
             SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync(param));
             EmailGotFocusCommand = new RelayCommand(EmailGotFocus);
             EmailLostFocusCommand = new RelayCommand(EmailLostFocus);
@@ -87,30 +117,43 @@ namespace ReGraphik.ViewModels
             Nome = _usuarioAtual.Nome ?? string.Empty;
             Login = _usuarioAtual.Login ?? string.Empty;
 
-            /// CPF: mascarado e bloqueado
+            /// CPF: mascarado e bloqueado — não pode ser editado pelo usuário
             CPF = MascararCpf(_usuarioAtual.CPF);
 
-            /// Email: mascarado mas editável
+            /// Email: mascarado mas editável — revela ao focar e mascara ao sair
             _emailReal = _usuarioAtual.Email ?? string.Empty;
             Email = MascararEmail(_emailReal);
         }
 
         /// <summary>
-        /// Email: mostra real ao focar, mascara ao sair
+        /// Email: mostra o valor real ao focar no campo para permitir edição
         /// </summary>
         public void EmailGotFocus()
         {
+            MensagemErroEmail = string.Empty;
             Email = _emailReal;
         }
 
+        /// <summary>
+        /// Email: salva o valor digitado e reaplica a máscara ao sair do campo
+        /// </summary>
         public void EmailLostFocus()
         {
-            _emailReal = Email ?? string.Empty;
-            _usuarioAtual.Email = _emailReal;
+            if (!string.IsNullOrWhiteSpace(Email) && !Email.Contains('@'))
+            {
+                MensagemErroEmail = "E-mail inválido. Verifique o endereço informado.";
+            }
+            else
+            {
+                MensagemErroEmail = string.Empty;
+                _emailReal = Email ?? string.Empty;
+                _usuarioAtual.Email = _emailReal;
+            }
+
             Email = MascararEmail(_emailReal);
         }
 
-        private async void MudarFoto() 
+        private async void MudarFoto()
         {
             try
             {
@@ -124,6 +167,7 @@ namespace ReGraphik.ViewModels
                 {
                     string caminhoDoArquivo = openFileDialog.FileName;
 
+                    /// Carrega a imagem em memória para exibição imediata na tela
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     bitmap.CacheOption = BitmapCacheOption.OnLoad;
@@ -132,9 +176,12 @@ namespace ReGraphik.ViewModels
 
                     ImgFoto = bitmap;
 
+                    /// Persiste o caminho da foto no modelo e no serviço de sessão compartilhado
                     _usuarioAtual.FotoPerfil = caminhoDoArquivo;
-
                     UsuarioSessaoService.Instancia.FotoCaminho = caminhoDoArquivo;
+
+                    /// Salva localmente para persistir entre sessões
+                    ConfiguracaoLocalService.SalvarFoto(caminhoDoArquivo);
 
                     Ocupado = true;
                     await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
@@ -152,10 +199,8 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Máscaras 
+        /// Máscaras de dados sensíveis para exibição na tela
         /// </summary>
-        /// <param name="cpf"></param>
-        /// <returns></returns>
         private static string MascararCpf(string? cpf)
         {
             if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
@@ -172,54 +217,62 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Salvar
+        /// Salva as alterações do perfil do usuário na API após validação dos campos
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
         private async Task SalvarPerfilAsync(object? parameter)
         {
+            MensagemSucesso = string.Empty;
+            MensagemErroGeral = string.Empty;
+
             if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Login))
             {
-                MessageBox.Show("Nome e Login são obrigatórios.", "Aviso",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MensagemErroGeral = "Nome e Login são obrigatórios.";
                 return;
             }
 
-            // Captura da senha de forma segura vinda da View via CommandParameter
-            string novaSenha = string.Empty;
-            if (parameter is PasswordBox passwordBox)
+            if (!string.IsNullOrWhiteSpace(MensagemErroEmail))
             {
-                novaSenha = passwordBox.Password;
+                MensagemErroGeral = "Corrija os erros antes de salvar.";
+                return;
             }
 
-            // Atualiza o objeto com os dados da tela
+            /// Captura da senha de forma segura vinda da View via CommandParameter
+            string novaSenha = string.Empty;
+            if (parameter is PasswordBox passwordBox)
+                novaSenha = passwordBox.Password;
+
+            /// Atualiza o objeto com os dados da tela
             _usuarioAtual.Nome = Nome;
             _usuarioAtual.Login = Login;
             _usuarioAtual.Email = _emailReal;
+
+            if (!string.IsNullOrWhiteSpace(novaSenha))
+                _usuarioAtual.Senha = novaSenha;
 
             try
             {
                 Ocupado = true;
 
-                // Envia para o serviço injetado
                 bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
 
                 if (sucesso)
                 {
-                    MessageBox.Show("Dados atualizados com sucesso!", "Sucesso",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    /// Exibe mensagem de sucesso inline sem MessageBox
+                    MensagemSucesso = "✔ Dados atualizados com sucesso!";
                     Email = MascararEmail(_emailReal);
+
+                    /// Limpa a mensagem de sucesso após 3 segundos
+                    await Task.Delay(3000);
+                    MensagemSucesso = string.Empty;
                 }
                 else
                 {
-                    MessageBox.Show("Erro ao atualizar os dados.", "Erro",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    MensagemErroGeral = "Erro ao atualizar os dados. Tente novamente.";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocorreu um erro ao conectar com o servidor: {ex.Message}", "Erro de Conexão",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                MensagemErroGeral = $"Erro de conexão: {ex.Message}";
             }
             finally
             {
