@@ -12,6 +12,7 @@
     MinHeight="600"
     MinWidth="960"
     WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
     Background="#F3F4F6"
     Icon="/Imgs/logoRegraphik.png">
 

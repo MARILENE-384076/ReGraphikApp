@@ -6,7 +6,9 @@
              xmlns:local="clr-namespace:ReGraphik.Views.Controls"
              xmlns:converters="clr-namespace:ReGraphik.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="#F8FAFC">
+             d:DesignHeight="450" 
+             d:DesignWidth="800" 
+             Background="#F8FAFC">
 
     <UserControl.Resources>
         <ResourceDictionary>
