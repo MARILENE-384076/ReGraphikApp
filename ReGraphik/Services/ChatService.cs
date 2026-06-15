@@ -20,9 +20,9 @@ namespace ReGraphik.Services
             _db = FirebaseConfig.Client;
         }
 
-        // ------------------------------------------------
-        // Gera ID de conversa deterministico (menor ID primeiro)
-        // ------------------------------------------------
+        
+        /// Gera ID de conversa deterministico (menor ID primeiro)
+        
         private static string ConversaId(string id1, string id2)
         {
             var ids = new[] { id1, id2 };
@@ -30,9 +30,8 @@ namespace ReGraphik.Services
             return $"{ids[0]}_{ids[1]}";
         }
 
-        // ------------------------------------------------
-        // ObterMensagensAsync
-        // ------------------------------------------------
+        
+        /// ObterMensagensAsync
         public async Task<List<Mensagem>> ObterMensagensAsync(
             string usuarioId1, string usuarioId2)
         {
@@ -52,9 +51,8 @@ namespace ReGraphik.Services
             catch { return []; }
         }
 
-        // ------------------------------------------------
-        // EnviarMensagemAsync
-        // ------------------------------------------------
+        
+        /// EnviarMensagemAsync
         public async Task EnviarMensagemAsync(Mensagem mensagem)
         {
             var convId = ConversaId(
@@ -67,9 +65,9 @@ namespace ReGraphik.Services
                 .PutAsync(mensagem);
         }
 
-        // ------------------------------------------------
-        // MarcarComoLidaAsync
-        // ------------------------------------------------
+        
+        /// MarcarComoLidaAsync
+        
         public async Task MarcarComoLidaAsync(
             string remetenteId, string destinatarioId)
         {
@@ -96,9 +94,11 @@ namespace ReGraphik.Services
             }
         }
 
-        // ------------------------------------------------
-        // ListarUsuariosAsync
-        // ------------------------------------------------
+        
+        /// <summary>
+        /// ListarUsuariosAsync
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<Usuario>> ListarUsuariosAsync()
         {
             try
@@ -107,14 +107,31 @@ namespace ReGraphik.Services
                     .Child(NodeUsuarios)
                     .OnceAsync<Usuario>();
 
-                return items.Select(i => i.Object).ToList();
+                return items
+                    .Select(i =>
+                    {
+                        var u = i.Object;
+                        // Garante que o Id vem da chave do Firebase
+                        // mesmo que o campo "id" dentro do JSON esteja vazio
+                        if (string.IsNullOrEmpty(u.Id))
+                            u.Id = i.Key;
+                        return u;
+                    })
+                    .Where(u => u != null)
+                    .ToList();
             }
             catch { return []; }
         }
 
-        // ------------------------------------------------
-        // ContarNaoLidasAsync
-        // ------------------------------------------------
+
+        
+        /// <summary>
+        /// ContarNaoLidasAsync
+        /// </summary>
+        /// <param name="destinatarioId"></param>
+        /// <param name="remetenteId"></param>
+        /// <returns></returns>
+        
         public async Task<int> ContarNaoLidasAsync(
             string destinatarioId, string remetenteId)
         {
