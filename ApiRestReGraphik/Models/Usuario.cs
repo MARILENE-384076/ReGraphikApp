@@ -27,7 +27,7 @@ namespace ApiRestReGraphik.Models
         public string Senha { get; set; }
 
         [JsonPropertyName("perfil")]
-        public string Perfil { get; set; }
+        public string Perfil { get; set; } = "User";
 
         [JsonPropertyName("data_cadastro")]
         public DateTime DataCadastro { get; set; }
