@@ -188,6 +188,20 @@
                             <TextBlock Text="Relatórios" FontWeight="Bold"/>
                         </StackPanel>
                     </Button>
+                    <Button x:Name="BtnEsg"
+                            Style="{StaticResource NavBtn}"
+                            Command="{Binding NavegarEsgCommand}" Tag="Esg">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
+                                <TextBlock Text="Proposta de Valor ESG e Certificação"
+                                           FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                            </ToolTip>
+                        </Button.ToolTip>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Leaf" Width="20" Height="20" Margin="0,0,8,0"/>
+                            <TextBlock Text="ESG / Certificação" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" Margin="8,0,8,12">
