@@ -3,6 +3,7 @@ using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.ComponentModel;
+using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,19 +22,43 @@ namespace ReGraphik.ViewModels
         private string? _email;
         private string? _login;
         private bool _ocupado;
-        private string? _mensaNome;
-        private string? _mensaCpf;
-        private string? _mensaEmail;
-        private string? _mensaLogin;
-        private string? _mensaSenha;
-        private string? _mensagemErroGeral;
+        private bool _formularioEnviado;
+
+        /// <summary>
+        /// Campo de mensagem de alerta
+        /// </summary>
+        private string _mensaNome;
+        private string _mensaCpf;
+        private string _mensaEmail;
+        private string _mensaLogin;
+        private string _mensaSenha;
+        private string _mensagemErroGeral;
+
+        private bool _exibirAlertaToken;
+        private string _tokenGeradoAlerta;
+
+        public bool ExibirAlertaToken
+        {
+            get => _exibirAlertaToken;
+            set { _exibirAlertaToken = value; OnPropertyChanged(); }
+        }
+
+        public string TokenGeradoAlerta
+        {
+            get => _tokenGeradoAlerta;
+            set { _tokenGeradoAlerta = value; OnPropertyChanged(); }
+        }
+
 
         /// <summary>
         /// Segurança no cadastro
         /// </summary>
-        private string? _tokenDigitado;
+        private string _tokenDigitado;
         private bool _isTokenValido;
-        private string? _mensagemErroToken;
+        private bool _ocupadoToken;
+        private string _mensagemErroToken;
+        public bool ExibirFormulario => !FormularioEnviado;
+        public bool ExibirPainelToken => FormularioEnviado && !IsTokenValido;
 
         public string Nome
         {
@@ -106,7 +131,22 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// 
+        /// Define se o token digitado foi validado com sucesso pela API.
+        /// </summary>
+        public bool IsTokenValido
+        {
+            get => _isTokenValido;
+            set
+            {
+                _isTokenValido = value;
+                OnPropertyChanged(nameof(IsTokenValido));
+                // Notifica o WPF para ocultar o painel do token e exibir o sucesso final
+                OnPropertyChanged(nameof(ExibirPainelToken));
+            }
+        }
+
+        /// <summary>
+        /// Token de segurança
         /// </summary>
         public string TokenDigitado
         {
@@ -117,10 +157,10 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Controla se o formulário deve ser liberado ou não
         /// </summary>
-        public bool IsTokenValido
+        public bool OcupadoToken
         {
-            get => _isTokenValido;
-            set { _isTokenValido = value; OnPropertyChanged(nameof(IsTokenValido)); }
+            get => _ocupadoToken;
+            set { _ocupadoToken = value; OnPropertyChanged(); }
         }
 
         /// <summary>
@@ -132,27 +172,44 @@ namespace ReGraphik.ViewModels
             set { _mensagemErroToken = value; OnPropertyChanged(nameof(MensagemErroToken)); }
         }
 
+        /// <summary>
+        /// Define se a API concluiu o pré-cadastro com sucesso e disparou o token.
+        /// </summary>
+        public bool FormularioEnviado
+        {
+            get => _formularioEnviado;
+            set
+            {
+                _formularioEnviado = value;
+                OnPropertyChanged(nameof(FormularioEnviado));
+                // Notifica o WPF para reavaliar o que deve ser exibido
+                OnPropertyChanged(nameof(ExibirFormulario));
+                OnPropertyChanged(nameof(ExibirPainelToken));
+            }
+        }
+
         public ICommand CadastrarCommand { get; }
         public ICommand ValidarTokenCommand { get; }
-
         public ICommand RevelarSenhaCadastroCommand { get; }
+        public ICommand FecharAlertaTokenCommand { get; }
 
-        public CadastroViewModel()
+        public CadastroViewModel(IAutorizarService? autorizarService = null)
         {
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-                return;
+            _autorizarService = autorizarService ?? new AutorizarService();
 
-            _autorizarService = new AutorizarService();
-
-            ///_autorizarService = new AutorizarService();
-
+            // Vinculação dos comandos aos métodos internos
             CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
+            ValidarTokenCommand = new RelayCommand(async (param) => await ValidarToken(), CanValidarToken);
+            RevelarSenhaCadastroCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
+
+            FormularioEnviado = false;
             IsTokenValido = false;
-            ValidarTokenCommand = new RelayCommand(ValidarToken);
-            RevelarSenhaCadastroCommand = new RelayCommand(RevelarSenha);
+
+            FecharAlertaTokenCommand = new RelayCommand(_ => ExibirAlertaToken = false);
         }
 
         private bool CanCadastrar(object parameter) => !Ocupado;
+        private bool CanValidarToken(object parameter) => !OcupadoToken;
 
         /// <summary>
         /// Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
@@ -161,140 +218,161 @@ namespace ReGraphik.ViewModels
         /// <returns></returns>
         private async Task Cadastrar(object parameter)
         {
-            MensaCpf = string.Empty;
-            MensaEmail = string.Empty;
-            MensagemErroGeral = string.Empty;
-
-            /// O parâmetro é esperado ser um PasswordBox para obter a senha digitada pelo usuário
-            if (parameter is not PasswordBox passwordBox)
-            {
-                MensaSenha = "Erro interno ao processar o campo de senha.";
-                return;
-            }
-            /// Obtém a senha digitada no PasswordBox
-            string senhaDigitada = passwordBox.Password;
+            LimparMensagensErro();
             bool possuiErro = false;
 
-            /// Validação simples de campos vazios
-            if (string.IsNullOrWhiteSpace(CPF))
+            string senhaCadastro = string.Empty;
+            if (parameter is Grid gridCampos)
             {
-                MensaCpf = "O CPF é obrigatório!";
-                possuiErro = true;
+                PasswordBox? passwordBox = null;
+                TextBox? textBoxVisivel = null;
+
+                foreach (var child in gridCampos.Children)
+                {
+                    if (child is PasswordBox pb) passwordBox = pb;
+                    else if (child is TextBox tb) textBoxVisivel = tb;
+                }
+
+                if (passwordBox != null && textBoxVisivel != null)
+                {
+                    // Se o PasswordBox estiver visível, pega dele. Se não, pega do TextBox de texto aberto.
+                    senhaCadastro = passwordBox.Visibility == Visibility.Visible
+                        ? passwordBox.Password
+                        : textBoxVisivel.Text;
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(Email))
-            {
-                MensaEmail = "O Email é obrigatório!";
-                possuiErro = true;
-            }
+            if (string.IsNullOrWhiteSpace(Nome)) { MensaNome = "O nome completo é obrigatório."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(CPF)) { MensaCpf = "O CPF é obrigatório."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(Email)) { MensaEmail = "O e-mail é obrigatório."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(Login)) { MensaLogin = "O campo login é obrigatório."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(senhaCadastro)) { MensaSenha = "A senha é obrigatória."; possuiErro = true; }
 
-            if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(CPF) ||
-                string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Login) ||
-                string.IsNullOrWhiteSpace(senhaDigitada))
+            if (possuiErro) return;
+
+            try
             {
-                MensagemErroGeral = "Preencha todos os campos. Tente novamente.";
+                Ocupado = true;
+
+                // Envia os dados para o endpoint unificado "Post" da sua API
+                var resultado = await _autorizarService.CadastrarAsync(Nome, CPF, Email, Login, senhaCadastro);
+
+                if (resultado != null)
+                {
+                    TokenGeradoAlerta = resultado.Token;
+                    ExibirAlertaToken = true;
+                    // Libera o container de Token na tela do WPF
+                    FormularioEnviado = true;
+                }
+                else
+                {
+                    MensagemErroGeral = "Não foi possível gerar o token de cadastro.";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Captura mensagens amigáveis lançadas pelo HttpClient do Service
+                MensagemErroGeral = ex.Message;
+            }
+            finally
+            {
+                Ocupado = false;
+            }
+        }
+
+        /// <summary>
+        /// Envia o token digitado pelo usuário para a API validar de forma assíncrona.
+        /// </summary>
+        private async Task ValidarToken()
+        {
+            MensagemErroToken = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(TokenDigitado))
+            {
+                MensagemErroToken = "Por favor, insira o token recebido.";
                 return;
             }
 
             try
             {
-                Ocupado = true; /// Indica que o processo de cadastro está em andamento
+                OcupadoToken = true;
+                bool sucesso = await _autorizarService.ValidarTokenAsync(Email, TokenDigitado.Trim());
 
-                /// Cria um objeto anônimo representando o usuário a ser cadastrado, com as informações fornecidas e um ID gerado aleatoriamente
-                var novoUsuario = new Usuario
+                if (sucesso)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Nome = Nome,
-                    CPF = CPF, 
-                    Email = Email,
-                    Login = Login,
-                    Senha = senhaDigitada,
-                    Perfil = "Administrador",
-                    DataCadastro = DateTime.Now
-                };
-
-                /// Chama o serviço de autorização para cadastrar o usuário
-                bool response = await _autorizarService.CadastrarAsync(novoUsuario);
-
-                if (response)
-                {
-                    MensagemErroGeral = "Cadastro realizado com sucesso!";
-                    LimparCampos();
-                    
+                    // Ativa o ícone de Check com animação de sucesso no seu XAML
+                    IsTokenValido = true;
+                    LimparMensagensErro();
                 }
                 else
                 {
-                    MensagemErroGeral = "Erro ao cadastrar usuário.";
+                    MensagemErroToken = "Token incorreto ou tempo limite expirado.";
                 }
-
-                passwordBox.Clear();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MensagemErroGeral = $"Erro ao cadastrar: {ex.Message}";
+                MensagemErroToken = "Falha na comunicação com o servidor de validação.";
+            }
+            finally
+            {
+                OcupadoToken = false;
             }
         }
-        private void LimparCampos()
-        {
-            Nome = "";
-            CPF = "";
-            Email = "";
-            Login = "";
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ValidarToken()
+        private void AlternarVisibilidadeSenha(object parameter)
         {
-            if (TokenDigitado == "REGRAFHIK2026")
+            // O parâmetro enviado pelo CommandParameter no XAML deve ser o Grid que envolve o PasswordBox e o TextBox
+            if (parameter is not Grid gridCampos) return;
+
+            PasswordBox passwordBox = null;
+            TextBox textBoxVisivel = null;
+            PackIconMaterial iconeOlho = null;
+
+            foreach (var child in gridCampos.Children)
             {
-                IsTokenValido = true;
-                MensagemErroToken = string.Empty;
+                if (child is PasswordBox pb) passwordBox = pb;
+                else if (child is TextBox tb) textBoxVisivel = tb;
+                else if (child is Button btn)
+                {
+                    if (btn.Content is PackIconMaterial icon)
+                    {
+                        iconeOlho = icon;
+                    }
+                    else if (btn.Template.FindName("IconeOlho", btn) is PackIconMaterial iconTemplate)
+                    {
+                        iconeOlho = iconTemplate;
+                    }
+                }
+            }
+
+            if (passwordBox == null || textBoxVisivel == null) return;
+
+            if (passwordBox.Visibility == Visibility.Visible)
+            {
+                textBoxVisivel.Text = passwordBox.Password;
+                passwordBox.Visibility = Visibility.Collapsed;
+                textBoxVisivel.Visibility = Visibility.Visible;
+
+                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.EyeOff;
             }
             else
             {
-                IsTokenValido = false;
-                MensagemErroToken = "Token inválido ou expirado!";
+                passwordBox.Password = textBoxVisivel.Text;
+                textBoxVisivel.Visibility = Visibility.Collapsed;
+                passwordBox.Visibility = Visibility.Visible;
+
+                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.Eye;
             }
         }
 
-        private void RevelarSenha(object parameter)
+        private void LimparMensagensErro()
         {
-
-            if (parameter is not Grid gridContainer)
-            {
-                MensaSenha = "Erro interno ao processar o campo de senha.";
-                return;
-            }
-
-            /// Buscando os componentes de dentro do Grid através do nome ou tipo
-            var txtSenhaCadastro = gridContainer.Children.OfType<PasswordBox>().FirstOrDefault(x => x.Name == "TxtSenhaCadastro");
-            var txtSenhaVisivelCadastro = gridContainer.Children.OfType<TextBox>().FirstOrDefault(x => x.Name == "TxtSenhaVisivelCadastro");
-            var btnRevelar = gridContainer.Children.OfType<Button>().FirstOrDefault(x => x.Name == "BtnRevelarSenhaCadastro");
-
-            if (txtSenhaCadastro== null || txtSenhaVisivelCadastro == null || btnRevelar == null) return;
-
-            var iconeOlho = btnRevelar.Content as PackIconMaterial;
-            if (iconeOlho == null) return;
-
-            if (txtSenhaCadastro.Visibility == Visibility.Visible)
-            {
-                txtSenhaVisivelCadastro.Text = txtSenhaCadastro.Password;
-                txtSenhaCadastro.Visibility = Visibility.Collapsed;
-                txtSenhaVisivelCadastro.Visibility = Visibility.Visible;
-
-                iconeOlho.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.EyeOff;
-            }
-            else
-            {
-
-                txtSenhaCadastro.Password = txtSenhaVisivelCadastro.Text;
-                txtSenhaVisivelCadastro.Visibility = Visibility.Collapsed;
-                txtSenhaCadastro.Visibility = Visibility.Visible;
-
-                iconeOlho.Kind = MahApps.Metro.IconPacks.PackIconMaterialKind.Eye;
-            }
+            MensaNome = string.Empty;
+            MensaCpf = string.Empty;
+            MensaEmail = string.Empty;
+            MensaLogin = string.Empty;
+            MensaSenha = string.Empty;
+            MensagemErroGeral = string.Empty;
         }
     }
 }

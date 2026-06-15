@@ -27,5 +27,6 @@ namespace ReGraphik.Views
             DataContext = new LoginViewModel();
             CadastroTab.DataContext = new CadastroViewModel();
         }
+        
     }
 }
