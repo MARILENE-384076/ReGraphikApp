@@ -34,3 +34,24 @@ namespace ReGraphik.ViewModels
             _usuario = usuario;
             ExportarPdfCommand = new RelayCommand(() => ExportarPdf());
         }
+        /// <summary>
+        /// Gera um FlowDocument com o conteúdo ESG e abre o diálogo de impressão,
+        /// permitindo salvar como PDF ou imprimir fisicamente.
+        /// </summary>
+        private void ExportarPdf()
+        {
+            try
+            {
+                var doc = CriarDocumento();
+                var dlg = new PrintDialog();
+                if (dlg.ShowDialog() != true) return;
+
+                IDocumentPaginatorSource idoc = doc;
+                dlg.PrintDocument(idoc.DocumentPaginator, "ReGraphik — Relatório ESG");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
