@@ -461,10 +461,9 @@
                                 <ItemsControl ItemsSource="{Binding UsuariosDisponiveis}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Button Style="{StaticResource ItemConversaStyle}"
-                                                Command="{Binding DataContext.IniciarConversaCommand,
-                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
+                                           <Button Command="{Binding DataContext.IniciarConversaCommand,
+                                                    RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    CommandParameter="{Binding}"
                                                 Margin="0,2">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
