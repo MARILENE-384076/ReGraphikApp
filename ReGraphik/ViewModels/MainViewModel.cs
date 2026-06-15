@@ -184,9 +184,10 @@ namespace ReGraphik.ViewModels
         private void ChatConversar()
         {
             var tela = new ChatPainelWindow();
-            tela.ShowDialog(); 
-            _currentWindow?.Close();
+            tela.DataContext = ChatViewModel;
+            tela.Show();
         }
+
 
     }
 }
