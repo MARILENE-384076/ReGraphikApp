@@ -173,7 +173,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding TotalResiduos}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Total de Resíduos" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Total de descartes registrados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
@@ -183,7 +183,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding PesoTotal, StringFormat={}{0:N2} kg}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Peso Total" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Peso acumulado de resíduos" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
@@ -193,7 +193,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Reaproveitados}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Reaproveitados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Total de materiais reciclados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
@@ -203,7 +203,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding ValorEconomico}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Total Econômico" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Valor economizado" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
             </Grid>
