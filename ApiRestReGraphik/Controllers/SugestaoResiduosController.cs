@@ -51,7 +51,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida ao listar as sugestões de resíduos");
-                return BadRequest(ex.Message);
+                return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (Exception ex)
             {
@@ -173,7 +173,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida processada para criar sugestão de resíduo.");
-                return BadRequest(ex.Message);
+                return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, $"Requisição inválida processada para atualizar sugestão de resíduos com ID {id}.");
-                return BadRequest(ex.Message);
+                return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (HttpRequestException ex)
             {
