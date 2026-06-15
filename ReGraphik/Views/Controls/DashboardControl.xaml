@@ -102,7 +102,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding ResiduosDb}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Resíduos Cadastrados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Total de itens registrados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
@@ -112,7 +112,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Reaproveitar}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Reaproveitados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Materiais reaproveitados" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
@@ -122,7 +122,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Estoque}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Em Estoque" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Quantidade armazenada" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
 
@@ -132,7 +132,7 @@
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Total}" FontSize="18" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="Total Economizado" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        <TextBlock Text="Economia gerada" FontSize="14" Foreground="White" Margin="0,4,0,0" TextWrapping="Wrap"/>
                     </StackPanel>
                 </Border>
             </Grid>
