@@ -3,6 +3,7 @@ using ReGraphik.Services;
 using ReGraphik.Views;
 using ReGraphik.Views.Controls;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 // Certifique-se de adicionar o using correto para os seus serviços aqui se necessário, ex:
 // using ReGraphik.Services; 
@@ -188,11 +189,12 @@ namespace ReGraphik.ViewModels
 
         private void ChatConversar()
         {
-            var tela = new ChatPainelWindow();
-            tela.ShowDialog(); 
-            _currentWindow?.Close();
+            var tela = new ChatPainelWindow(); //Define o ChatViewModel como DataContext da janela do chat
+            tela.DataContext = ChatViewModel;
+            tela.Show();
         }
         private void NavegarParaEsg() => ExecutarNavegacao("Esg", _esgView);
+
 
     }
 }
