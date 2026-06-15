@@ -64,13 +64,6 @@ O projeto segue rigorosamente o padrão **MVVM (Model-View-ViewModel)** na camad
  
 ```
 ReGraphikApp/
-├── ApiConfig/                 # Backend — ASP.NET Core REST API
-│   ├── Controllers/           # Endpoints HTTP (CRUD completo)
-│   ├── Data/                  # Configuração do Firebase Client
-│   ├── Models/                # Entidades do domínio
-│   ├── Services/              # Regras de negócio e acesso ao Firebase
-│   └── Program.cs             # Configuração da aplicação, DI, Swagger, CORS
-│
 ├── ApiRestReGraphik/          # Backend — ASP.NET Core REST API
 │   ├── Controllers/           # Endpoints HTTP (CRUD completo)
 │   ├── Data/                  # Configuração do Firebase Client
