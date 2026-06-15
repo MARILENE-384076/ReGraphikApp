@@ -119,3 +119,73 @@ namespace ReGraphik.ViewModels
                 "prestação de contas a órgãos reguladores.",
                 11, FontWeights.Normal, "#475569"));
             doc.Blocks.Add(Separador());
+            
+            // Guia de Certificação
+            doc.Blocks.Add(Paragrafo("🏅  Como obter o Certificado ReGraphik ESG",
+                14, FontWeights.Bold, "#B45309"));
+            doc.Blocks.Add(Paragrafo(
+                "O certificado é emitido para empresas parceiras que atingem critérios mínimos de " +
+                "engajamento com a plataforma e comprovam destinação sustentável dos seus resíduos.",
+                12, FontWeights.Normal, "#1E293B"));
+
+            var lista = new List
+            {
+                MarkerStyle = TextMarkerStyle.Decimal,
+                Padding     = new Thickness(20, 0, 0, 0)
+            };
+            lista.ListItems.Add(ItemLista("Cadastre sua empresa e realize o login na plataforma ReGraphik."));
+            lista.ListItems.Add(ItemLista("Registre todos os resíduos gerados mensalmente em \"Cadastrar Resíduos\", informando tipo, quantidade e condição."));
+            lista.ListItems.Add(ItemLista("No Estoque Reverso, aplique ao menos uma sugestão de reaproveitamento a cada lote de resíduos."));
+            lista.ListItems.Add(ItemLista("Localize um ponto de coleta homologado no Mapa e registre a destinação do resíduo."));
+            lista.ListItems.Add(ItemLista("Após 3 meses consecutivos de uso ativo, acesse Relatórios e gere o comprovante de movimentação."));
+            lista.ListItems.Add(ItemLista("Envie o relatório para certificacao@regraphik.com.br com CNPJ e razão social da empresa."));
+            lista.ListItems.Add(ItemLista("Nossa equipe avalia o dossiê em até 10 dias úteis e emite o Certificado ReGraphik ESG digitalmente."));
+            doc.Blocks.Add(lista);
+
+            doc.Blocks.Add(Separador());
+            doc.Blocks.Add(Paragrafo(
+                "O Certificado ReGraphik ESG pode ser utilizado em materiais de comunicação, licitações " +
+                "públicas, relatórios de sustentabilidade (GRI, CDP) e processos de due diligence ambiental.",
+                11, FontWeights.Normal, "#475569"));
+            doc.Blocks.Add(Separador());
+            doc.Blocks.Add(Paragrafo(
+                "ReGraphik — Gestão de Estoque Reverso para o Setor Gráfico · Desenvolvido por alunos do SENAI",
+                10, FontWeights.Normal, "#94A3B8"));
+
+            return doc;
+        }
+
+        // ── Helpers ──────────────────────────────────────────────────────────
+
+        private static Paragraph Paragrafo(string texto, double tamanho, FontWeight peso, string hex)
+        {
+            return new Paragraph(new Run(texto))
+            {
+                FontSize   = tamanho,
+                FontWeight = peso,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex)),
+                Margin     = new Thickness(0, 4, 0, 8)
+            };
+        }
+
+        private static BlockUIContainer Separador()
+        {
+            return new BlockUIContainer(new System.Windows.Shapes.Rectangle
+            {
+                Height = 1,
+                Fill   = new SolidColorBrush(Color.FromRgb(226, 232, 240)),
+                Margin = new Thickness(0, 8, 0, 12)
+            });
+        }
+
+        private static ListItem ItemLista(string texto)
+        {
+            return new ListItem(new Paragraph(new Run(texto))
+            {
+                FontSize   = 12,
+                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59)),
+                Margin     = new Thickness(0, 2, 0, 4)
+            });
+        }
+    }
+}
