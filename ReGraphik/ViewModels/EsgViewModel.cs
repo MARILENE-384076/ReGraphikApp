@@ -55,3 +55,16 @@ namespace ReGraphik.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        
+        /// <summary>
+        /// Monta o FlowDocument com todos os pilares ESG e o guia de certificação.
+        /// </summary>
+        private FlowDocument CriarDocumento()
+        {
+            var doc = new FlowDocument
+            {
+                FontFamily  = new FontFamily("Segoe UI"),
+                FontSize    = 12,
+                PagePadding = new Thickness(60, 48, 60, 48),
+                ColumnWidth = double.MaxValue
+            };
