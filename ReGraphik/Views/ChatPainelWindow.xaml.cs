@@ -48,7 +48,8 @@ namespace ReGraphik.Views
 
         private void BtnFechar_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            Hide(); // Oculta sem destruir — reutilizavel
         }
+
     }
 }
