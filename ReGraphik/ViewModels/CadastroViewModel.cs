@@ -49,7 +49,6 @@ namespace ReGraphik.ViewModels
             set { _tokenGeradoAlerta = value; OnPropertyChanged(); }
         }
 
-
         /// <summary>
         /// Segurança no cadastro
         /// </summary>
@@ -110,7 +109,6 @@ namespace ReGraphik.ViewModels
             get => _mensaEmail;
             set { _mensaEmail = value; OnPropertyChanged(); }
         }
-
 
         public string MensaLogin
         {
@@ -214,8 +212,6 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
         private async Task Cadastrar(object parameter)
         {
             LimparMensagensErro();
@@ -242,8 +238,21 @@ namespace ReGraphik.ViewModels
                 }
             }
 
+            // Validações de campos obrigatórios
             if (string.IsNullOrWhiteSpace(Nome)) { MensaNome = "O nome completo é obrigatório."; possuiErro = true; }
-            if (string.IsNullOrWhiteSpace(CPF)) { MensaCpf = "O CPF é obrigatório."; possuiErro = true; }
+
+            // Validação de CPF: obrigatório e deve ser válido pelo algoritmo dos dígitos verificadores
+            if (string.IsNullOrWhiteSpace(CPF))
+            {
+                MensaCpf = "O CPF é obrigatório.";
+                possuiErro = true;
+            }
+            else if (!ValidacaoCpfService.Validar(CPF))
+            {
+                MensaCpf = "CPF inválido. Verifique os dígitos informados.";
+                possuiErro = true;
+            }
+
             if (string.IsNullOrWhiteSpace(Email)) { MensaEmail = "O e-mail é obrigatório."; possuiErro = true; }
             if (string.IsNullOrWhiteSpace(Login)) { MensaLogin = "O campo login é obrigatório."; possuiErro = true; }
             if (string.IsNullOrWhiteSpace(senhaCadastro)) { MensaSenha = "A senha é obrigatória."; possuiErro = true; }
@@ -254,8 +263,11 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = true;
 
+                // Formata o CPF no padrão 000.000.000-00 antes de enviar para a API
+                string cpfFormatado = ValidacaoCpfService.Formatar(CPF);
+
                 // Envia os dados para o endpoint unificado "Post" da sua API
-                var resultado = await _autorizarService.CadastrarAsync(Nome, CPF, Email, Login, senhaCadastro);
+                var resultado = await _autorizarService.CadastrarAsync(Nome, cpfFormatado, Email, Login, senhaCadastro);
 
                 if (resultado != null)
                 {
@@ -335,13 +347,9 @@ namespace ReGraphik.ViewModels
                 else if (child is Button btn)
                 {
                     if (btn.Content is PackIconMaterial icon)
-                    {
                         iconeOlho = icon;
-                    }
                     else if (btn.Template.FindName("IconeOlho", btn) is PackIconMaterial iconTemplate)
-                    {
                         iconeOlho = iconTemplate;
-                    }
                 }
             }
 
