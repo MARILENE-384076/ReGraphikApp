@@ -1,4 +1,5 @@
 ﻿using ApiRestReGraphik.Models;
+using ApiRestReGraphik.Models.DTOs;
 using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ namespace ApiRestReGraphik.Controllers
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [HttpGet]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
@@ -53,7 +54,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida ao listar os usuários");
-                return BadRequest(ex.Message);
+                return BadRequest("Requisição inválida ao listar os usuários");
             }
             catch (Exception ex)
             {
@@ -153,7 +154,7 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] Usuario usuario)
+        public async Task<IActionResult> Post([FromBody] UsuarioDto dto)
         {
             try
             {
@@ -170,35 +171,50 @@ namespace ApiRestReGraphik.Controllers
                     });
                 }
 
-                if (!usuario.Email.EndsWith("@regraphik.com.br", StringComparison.OrdinalIgnoreCase))
+                if (!dto.Email.EndsWith("@regraphik.com.br", StringComparison.OrdinalIgnoreCase))
                 {
                     return BadRequest("Somente e-mails corporativos da ReGraphik podem realizar cadastro.");
                 }
 
-                if (usuariosExistentes.Any(x => x.Email.Equals(usuario.Email, StringComparison.OrdinalIgnoreCase)))
+                if (usuariosExistentes.Any(x => x.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase)))
                     return BadRequest("E-mail já cadastrado.");
 
-                if (usuariosExistentes.Any(x => x.CPF == usuario.CPF))
+                if (usuariosExistentes.Any(x => x.CPF == dto.CPF))
                     return BadRequest("CPF já cadastrado.");
 
-                if (usuariosExistentes.Any(x => x.Login.Equals(usuario.Login, StringComparison.OrdinalIgnoreCase)))
+                if (usuariosExistentes.Any(x => x.Login.Equals(dto.Login, StringComparison.OrdinalIgnoreCase)))
                     return BadRequest("Login já cadastrado.");
 
-                usuario.TokenValidacao = new Random().Next(100000, 999999).ToString();
-                usuario.Ativo = false;
-                usuario.Id = Guid.NewGuid().ToString();
-                usuario.DataCadastro = DateTime.UtcNow;
+                var novoUsuario = new Usuario
+                {
+                    Id = Guid.NewGuid().ToString(), // Gerado automaticamente aqui!
+                    Nome = dto.Nome,
+                    CPF = dto.CPF,
+                    Email = dto.Email,
+                    Login = dto.Login,
+                    Senha = dto.Senha,
+                    Perfil = dto.Perfil,
+                    DataCadastro = DateTime.UtcNow,
+                    Ativo = false,
+                    TokenValidacao = new Random().Next(100000, 999999).ToString()
+                };
 
-                _preCadastros.RemoveAll(x => x.Email.Equals(usuario.Email, StringComparison.OrdinalIgnoreCase));
-                _preCadastros.Add(usuario);
+                _preCadastros.RemoveAll(x => x.Email.Equals(novoUsuario.Email, StringComparison.OrdinalIgnoreCase));
+                _preCadastros.Add(novoUsuario);
 
-                _logger.LogInformation($"Token {usuario.TokenValidacao} gerado para {usuario.Email}");
+                _logger.LogInformation($"Token {novoUsuario.TokenValidacao} gerado para {novoUsuario.Email}");
 
                 return Ok(new
                 {
                     mensagem = "Token gerado e enviado para o e-mail com sucesso.",
-                    token = usuario.TokenValidacao
+                    token = novoUsuario.TokenValidacao
                 });
+            }
+            catch (ArgumentException ex)
+            {
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada para criar resíduo.");
+                return BadRequest("Requisição inválida processada para criar resíduo.");
             }
             catch (Exception ex)
             {
@@ -254,11 +270,19 @@ namespace ApiRestReGraphik.Controllers
 
                 return Ok("Conta ativada e cadastrada com sucesso.");
             }
+            catch (ArgumentException ex)
+            {
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                _logger.LogWarning(ex, "Requisição inválida processada para validar token.");
+                return BadRequest("Requisição inválida processada para validar token.");
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao salvar o cadastro final.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao salvar conta no banco de dados.");
             }
+
+            
         }
 
         /// <summary>
@@ -299,6 +323,11 @@ namespace ApiRestReGraphik.Controllers
                     return Unauthorized("Conta não validada. Verifique o token enviado.");
 
                 return Ok(usuario);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"Erro de validade de login ou senha.");
+                return StatusCode(StatusCodes.Status401Unauthorized, $"Erro de validade de login ou senha.");
             }
             catch (Exception ex)
             {
@@ -347,7 +376,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, $"Requisição inválida processada para atualizar usuário com ID {id}.");
-                return BadRequest(ex.Message);
+                return BadRequest($"Requisição inválida processada para atualizar usuário com ID {id}.");
             }
             catch (HttpRequestException ex)
             {
