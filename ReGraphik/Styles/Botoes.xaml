@@ -161,7 +161,7 @@
         <Setter Property="Foreground" Value="White"/>
 
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.BtnAtivo, RelativeSource={RelativeSource AncestorType=Window}}" Value="{Binding Path=Tag, RelativeSource={RelativeSource Self}}">
+            <DataTrigger Binding="{Binding Path=DataContext.BtnAtivo, RelativeSource={RelativeSource AncestorType=Window}}">
                 <Setter Property="Background" Value="#0b2a5c" />
             </DataTrigger>
 

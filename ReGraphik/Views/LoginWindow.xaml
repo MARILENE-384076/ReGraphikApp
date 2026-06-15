@@ -14,6 +14,8 @@
 
     <Window.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
@@ -40,7 +42,6 @@
                         CornerRadius="16,0,0,16"
                         ClipToBounds="True">
 
-                    <!-- Fundo com gradiente e elementos decorativos -->
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="#3274ba" Offset="0.0"/>
@@ -81,7 +82,6 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-
                             <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
                                 <Grid Margin="0,0,12,0" VerticalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="Recycle" Height="21" VerticalAlignment="Center" Width="26" Foreground="White"/>
@@ -92,7 +92,6 @@
                                 </StackPanel>
                             </StackPanel>
 
-                            <!-- Mensagem de boas-vindas -->
                             <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left" MaxWidth="400">
                                 <TextBlock Text="Olá,&#x0a;seja bem-vindo!" 
                                            FontSize="46" 
@@ -113,7 +112,6 @@
                                            LineHeight="22"/>
                             </StackPanel>
 
-                            <!-- Copyright -->
                             <TextBlock Grid.Row="2" 
                                        Text="© 2026 ReGraphik" 
                                        Foreground="White" 
@@ -122,14 +120,62 @@
                                        FontWeight="Medium"
                                        HorizontalAlignment="Left"/>
                         </Grid>
+                        <Grid Visibility="{Binding DataContext.ExibirAlertaToken, ElementName=CadastroTab, Converter={StaticResource BoolToVisConverter}, FallbackValue=Collapsed}">
+                            <Border Background="#40000000" CornerRadius="16,0,0,16"/>
+
+                            <Border Background="White" 
+                                    CornerRadius="12" 
+                                    Width="320" 
+                                    Height="190"
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"
+                                    BorderBrush="#CBD5E1"
+                                    BorderThickness="1">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="15" Direction="270" ShadowDepth="3" Opacity="0.2"/>
+                                </Border.Effect>
+
+                                <Grid Margin="20">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+                                        <iconPacks:PackIconMaterial Kind="Key" Foreground="#1649a2" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Token de Cadastro Gerado" FontSize="15" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Copie o token abaixo para validar o cadastro:" FontSize="12" Foreground="#64748B" Margin="0,0,0,6"/>
+                                        <TextBox Text="{Binding DataContext.TokenGeradoAlerta, ElementName=CadastroTab}" 
+                                                 IsReadOnly="True" 
+                                                 FontSize="18" 
+                                                 FontWeight="Bold" 
+                                                 Foreground="#1649a2" 
+                                                 Background="#F1F5F9" 
+                                                 BorderThickness="0" 
+                                                 Padding="8,6" 
+                                                 TextAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <Button Content="FECHAR AVISO" 
+                                            Grid.Row="2" 
+                                            Command="{Binding DataContext.FecharAlertaTokenCommand, ElementName=CadastroTab}" 
+                                            Style="{StaticResource BtnPrimario}" 
+                                            Height="32" 
+                                            FontSize="11"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
                     </Grid>
                 </Border>
-
-                <!-- Login Seção -->
+                
                 <Border Grid.Column="1" 
                         Background="White" 
                         BorderBrush="#CBD5E1" 
-                        BorderThickness="1,1,1,1" 
+                        BorderThickness="1" 
                         CornerRadius="0,16,16,0" 
                         Padding="50,40">
                     <Grid>
@@ -138,7 +184,6 @@
                             <TabItem Header="Fazer Login" Style="{StaticResource TabStyle}">
                                 <Grid Margin="32,16,32,0">
                                     <StackPanel Margin="0,10,0,10" HorizontalAlignment="Stretch">
-
                                         <StackPanel Margin="0,0,0,24">
                                             <TextBlock Text="Faça Login" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
                                             <TextBlock Text="Entre com suas credenciais para continuar." FontSize="13" Foreground="#64748B"/>
@@ -152,7 +197,6 @@
                                         <Grid x:Name="GridCamposSenha" Margin="0,0,0,4">
                                             <PasswordBox x:Name="TxtSenhaLogin" Style="{StaticResource PasswordStyle}" Padding="10,0,35,0"/>
                                             <TextBox x:Name="TxtSenhaVisivelLogin" Style="{StaticResource InputStyle}" Padding="10,0,35,0" Visibility="Collapsed"/>
-
                                             <Button x:Name="BtnRevelarSenha" 
                                                     Command="{Binding RevelarSenhaCommand}" 
                                                     CommandParameter="{Binding ElementName=GridCamposSenha}"
@@ -162,21 +206,9 @@
                                         </Grid>
                                         <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaSenha}" Margin="0,0,0,16" Foreground="DarkRed"/>
 
-                                        <TextBlock Text="{Binding MensagemErroGeral}" 
-                                                   Foreground="DarkRed" 
-                                                   FontSize="13" 
-                                                   FontWeight="SemiBold"
-                                                   HorizontalAlignment="Center"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,0,0,16"/>
+                                        <TextBlock Text="{Binding MensagemErroGeral}" Foreground="DarkRed" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,16"/>
 
-                                        <Button Content="ENTRAR" 
-                                                IsDefault="True"
-                                                Command="{Binding EntrarCommand}" 
-                                                CommandParameter="{Binding ElementName=TxtSenhaLogin}" 
-                                                Style="{StaticResource BtnPrimario}"
-                                                HorizontalAlignment="Stretch">
+                                        <Button Content="ENTRAR" IsDefault="True" Command="{Binding EntrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}" HorizontalAlignment="Stretch">
                                             <Button.ToolTip>
                                                 <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                                     <TextBlock Text="Botão para logar no sistema" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -184,18 +216,7 @@
                                             </Button.ToolTip>
                                         </Button>
 
-                                        <Button x:Name="BtnEsqueciSenha"
-                                                Content="Esquece minha Senha"
-                                                Grid.Column="1"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Foreground="#0284C7"
-                                                FontSize="12"
-                                                FontWeight="SemiBold"
-                                                Cursor="Hand"
-                                                VerticalAlignment="Bottom"
-                                                Margin="0,7,0,0"
-                                                Command="{Binding EsqueciSenhaCommand}">
+                                        <Button x:Name="BtnEsqueciSenha" Content="Esqueci minha Senha" Background="Transparent" BorderThickness="0" Foreground="#0284C7" FontSize="12" FontWeight="SemiBold" Cursor="Hand" VerticalAlignment="Bottom" Margin="0,7,0,0" Command="{Binding EsqueciSenhaCommand}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="Button">
                                                     <TextBlock Text="{TemplateBinding Content}"/>
@@ -206,45 +227,27 @@
                                 </Grid>
                             </TabItem>
 
-                            <!-- Tela de cadastro -->
                             <TabItem x:Name="CadastroTab" Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
                                 <Grid Margin="32,16,32,0">
 
-                                    <StackPanel x:Name="PainelValidacaoToken" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-                                        <StackPanel Margin="0,0,0,24">
-                                            <TextBlock Text="Chave de Acesso Necessária" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,6" TextWrapping="Wrap"/>
-                                            <TextBlock Text="Para criar uma conta no ReGraphik, insira o token de autorização fornecido pelo seu administrador." FontSize="13" Foreground="#64748B" TextWrapping="Wrap"/>
-                                        </StackPanel>
-
-                                        <TextBlock Text="Token de Autorização" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Text="{Binding TokenDigitado, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,12" HorizontalAlignment="Stretch"/>
-
-                                        <TextBlock Text="{Binding MensagemErroToken}" Foreground="DarkRed" FontSize="13" FontWeight="SemiBold" Margin="0,0,0,16"/>
-
-                                        <Button Content="VERIFICAR TOKEN" 
-                                                Command="{Binding ValidarTokenCommand}"
-                                                Style="{StaticResource BtnPrimario}"
-                                                HorizontalAlignment="Stretch"/>
-
-                                        <StackPanel.Style>
-                                            <Style TargetType="StackPanel">
+                                    <ScrollViewer x:Name="PainelFormularioCadastro"  
+                      VerticalScrollBarVisibility="Auto"  
+                      HorizontalScrollBarVisibility="Disabled">
+                                        <ScrollViewer.Style>
+                                            <Style TargetType="ScrollViewer">
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsTokenValido}" Value="True">
+                                                    <DataTrigger Binding="{Binding DataContext.FormularioEnviado, ElementName=CadastroTab}" Value="True">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </StackPanel.Style>
-                                    </StackPanel>
+                                        </ScrollViewer.Style>
 
-                                    <!-- Formulário de cadastro, visível apenas se o token for válido -->
-                                    <ScrollViewer x:Name="PainelFormularioCadastro" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                        <StackPanel HorizontalAlignment="Stretch" Margin="0,10,0,10">
-
+                                        <StackPanel HorizontalAlignment="Stretch" Margin="0,10,15,10">
                                             <StackPanel Margin="0,0,0,24">
                                                 <TextBlock Text="Crie sua conta" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4" TextWrapping="Wrap"/>
-                                                <TextBlock Text="Preencha os dados abaixo para se cadastrar." FontSize="13" Foreground="#64748B" TextWrapping="Wrap"/>
+                                                <TextBlock Text="Preencha os dados abaixo para iniciar seu cadastro no ReGraphik." FontSize="13" Foreground="#64748B" TextWrapping="Wrap"/>
                                             </StackPanel>
 
                                             <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
@@ -265,77 +268,89 @@
 
                                             <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
                                             <Grid x:Name="GridCamposSenhaCadastro" MinHeight="35" Margin="0,0,0,4" VerticalAlignment="Center">
-                                                <PasswordBox x:Name="TxtSenhaCadastro" 
-                                                             Style="{StaticResource PasswordStyle}" 
-                                                             VerticalAlignment="Stretch" 
-                                                             VerticalContentAlignment="Center"
-                                                             Padding="10,0,40,0"
-                                                             Margin="0"/>
-
-                                                <TextBox x:Name="TxtSenhaVisivelCadastro" 
-                                                         Style="{StaticResource InputStyle}" 
-                                                         VerticalAlignment="Stretch"
-                                                         VerticalContentAlignment="Center"
-                                                         Padding="10,0,40,0" 
-                                                         Visibility="Collapsed"
-                                                         Margin="0"/>
-
-                                                <Button x:Name="BtnRevelarSenhaCadastro" 
-                                                        Command="{Binding RevelarSenhaCadastroCommand}" 
-                                                        CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
-                                                        HorizontalAlignment="Right" 
-                                                        VerticalAlignment="Center"
-                                                        Width="30" 
-                                                        Height="30" 
-                                                        Margin="0,0,6,0" 
-                                                        Background="Transparent" 
-                                                        BorderThickness="0">
+                                                <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="10,0,40,0" Margin="0"/>
+                                                <TextBox x:Name="TxtSenhaVisivelCadastro" Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="10,0,40,0" Visibility="Collapsed" Margin="0"/>
+                                                <Button x:Name="BtnRevelarSenhaCadastro" Command="{Binding RevelarSenhaCadastroCommand}" CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="30" Height="30" Margin="0,0,6,0" Background="Transparent" BorderThickness="0">
                                                     <iconPacks:PackIconMaterial x:Name="IconeOlho1" Kind="Eye" Foreground="#64748B" Width="16" Height="16"/>
                                                 </Button>
                                             </Grid>
-
                                             <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaSenha}" Margin="0,0,0,20" Foreground="DarkRed"/>
 
-                                            <TextBlock Text="{Binding MensagemErroGeral}" 
-                                                       Foreground="DarkRed" 
-                                                       FontSize="13" 
-                                                       FontWeight="SemiBold"
-                                                       HorizontalAlignment="Center"
-                                                       TextAlignment="Center"
-                                                       TextWrapping="Wrap"
-                                                       Margin="0,0,0,16"/>
+                                            <TextBlock Text="{Binding MensagemErroGeral}" Foreground="DarkRed" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" Margin="0,0,0,16"/>
 
                                             <Button Content="CADASTRAR" 
-                                                    IsDefault="True"
+                                                    IsDefault="True" 
                                                     Command="{Binding CadastrarCommand}" 
-                                                    CommandParameter="{Binding ElementName=TxtSenhaCadastro}" 
-                                                    Style="{StaticResource BtnPrimario}"
+                                                    CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}" 
                                                     HorizontalAlignment="Stretch">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource BtnPrimario}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Ocupado}" Value="True">
+                                                                <Setter Property="IsEnabled" Value="False"/>
+                                                                <Setter Property="Content" Value="PROCESSANDO..."/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
                                                 <Button.ToolTip>
-                                                    <ToolTip Style="{Binding BtnToolTip}"  BorderThickness="0" HasDropShadow="True">
-                                                        <TextBlock Text="Botão para cadastrar uma nova conta" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                                                    <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
+                                                        <TextBlock Text="Botão para cadastrar no sistema" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
                                                     </ToolTip>
                                                 </Button.ToolTip>
                                             </Button>
                                         </StackPanel>
+                                    </ScrollViewer>
 
-                                        <ScrollViewer.Style>
-                                            <Style TargetType="ScrollViewer">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsTokenValido}" Value="True">
+                                                    <DataTrigger Binding="{Binding DataContext.FormularioEnviado, ElementName=CadastroTab}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding DataContext.IsTokenValido, ElementName=CadastroTab}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+
+                                        <TextBlock Text="Validação de Segurança" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,10"/>
+                                        <TextBlock Text="Um código foi enviado para seu e-mail. Digite-o abaixo para ativar sua conta." TextWrapping="Wrap" Foreground="#64748B" Margin="0,0,0,20"/>
+                                        <TextBlock Text="Token" Style="{StaticResource LabelStyle}"/>
+                                        <TextBox Text="{Binding TokenDigitado, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,10"/>
+                                        <TextBlock Text="{Binding MensagemErroToken}" Foreground="DarkRed" Margin="0,0,0,15"/>
+                                        <Button Content="VALIDAR TOKEN" Command="{Binding ValidarTokenCommand}" Style="{StaticResource BtnPrimario}"/>
+                                    </StackPanel>
+
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DataContext.IsTokenValido, ElementName=CadastroTab}" Value="True">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </ScrollViewer.Style>
-                                    </ScrollViewer>
+                                        </StackPanel.Style>
+
+                                        <TextBlock Text="✓" FontSize="70" Foreground="Green" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Cadastro concluído!" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,10"/>
+                                        <TextBlock Text="Sua conta foi ativada com sucesso." Foreground="#64748B" HorizontalAlignment="Center"/>
+                                    </StackPanel>
                                 </Grid>
                             </TabItem>
                         </TabControl>
+                        
                     </Grid>
+                    
                 </Border>
+                
             </Grid>
         </Border>
+        
     </Grid>
 </Window>

@@ -36,6 +36,9 @@ namespace ReGraphik.ViewModels
         private string _mensaLogin;
         private string _mensaSenha;
         private string _mensagemErroGeral;
+        private bool _formularioEnviado;
+        private bool _isTokenValido;
+        private string _tokenDigitado;
 
 
         public string Login
@@ -69,25 +72,38 @@ namespace ReGraphik.ViewModels
             set { _mensagemErroGeral = value; OnPropertyChanged(); }
         }
 
+        public bool FormularioEnviado
+        {
+            get => _formularioEnviado;
+            set { _formularioEnviado = value; OnPropertyChanged(); }
+        }
+
+        // Controla a transição da tela do Token para a animação de Sucesso (✓)
+        public bool IsTokenValido
+        {
+            get => _isTokenValido;
+            set { _isTokenValido = value; OnPropertyChanged(); }
+        }
+        public string TokenDigitado
+        {
+            get => _tokenDigitado;
+            set { _tokenDigitado = value; OnPropertyChanged(); }
+        }
+
         public ICommand EntrarCommand { get; }
+        public ICommand EsqueciSenhaCommand { get; }
         public ICommand RevelarSenhaCommand { get; }
 
-        public ICommand EsqueciSenhaCommand { get; }
-
-        public LoginViewModel()
+        public LoginViewModel(IAutorizarService? autorizarService = null)
         {
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-                return;
+            _autorizarService = autorizarService ?? new AutorizarService();
 
-            _autorizarService = new AutorizarService();
-
-            /// Inicializa o comando de login, associando-o ao método Entrar
+            // Inicializa apenas os comandos pertencentes ao fluxo de Login
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
-
-            RevelarSenhaCommand = new RelayCommand(RevelarSenha);
-
-            EsqueciSenhaCommand = new RelayCommand(EsqueciSenha);
+            EsqueciSenhaCommand = new RelayCommand((param) => EsqueciSenha());
+            RevelarSenhaCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
         }
+
 
         /// <summary>
         /// Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
@@ -98,43 +114,36 @@ namespace ReGraphik.ViewModels
 
         private async Task Entrar(object parameter)
         {
-            MensaLogin = string.Empty;
-            MensaSenha = string.Empty;
-            MensagemErroGeral = string.Empty;
+            LimparMensagensErro();
 
-            /// Verifica se o parâmetro é do tipo PasswordBox, que é necessário para obter a senha digitada pelo usuário
             if (parameter is not PasswordBox passwordBox)
             {
                 MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
-            /// Obtém a senha digitada pelo usuário a partir do PasswordBox
+
             string senhaDigitada = passwordBox.Password;
             bool possuiErro = false;
 
-            /// Validação de login
             if (string.IsNullOrWhiteSpace(Login))
             {
                 MensaLogin = "O login é obrigatório!";
                 possuiErro = true;
             }
 
-            /// Validação de senha
             if (string.IsNullOrWhiteSpace(senhaDigitada))
             {
                 MensaSenha = "A senha é obrigatória!";
                 possuiErro = true;
             }
 
-
             if (possuiErro) return;
 
             try
             {
-                /// Indicar que o processo de login está em andamento, o que pode ser usado para desabilitar o botão de login na interface
                 Ocupado = true;
 
-                /// Chama o serviço de autorização para tentar fazer o login com as credenciais fornecidas
+                // Realiza a autenticação direta pelo serviço
                 Usuario? usuario = await _autorizarService.LoginAsync(Login, senhaDigitada);
 
                 if (usuario == null)
@@ -145,71 +154,88 @@ namespace ReGraphik.ViewModels
 
                 UsuarioSessaoService.Instancia.FotoCaminho = usuario.FotoPerfil;
 
+                // Abre a tela principal caso o login seja bem-sucedido
                 var main = new MainWindow(usuario);
                 main.Show();
 
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is LoginWindow)
-                    {
-                        window.Close();
-                        break;
-                    }
-                }
+                FecharJanelaLogin();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MensagemErroGeral = "Não foi possível conectar ao servidor. Verifique sua internet.";
             }
-            finally { Ocupado = false; }
-
-        }
-        private void RevelarSenha(object parameter)
-        {
-
-            if (parameter is not Grid gridContainer)
+            finally
             {
-                MensaSenha = "Erro interno ao processar o campo de senha.";
-                return;
-            }
-
-            /// Buscando os componentes de dentro do Grid através do nome ou tipo
-            var txtSenhaLogin = gridContainer.Children.OfType<PasswordBox>().FirstOrDefault(x => x.Name == "TxtSenhaLogin");
-            var txtSenhaVisivelLogin = gridContainer.Children.OfType<TextBox>().FirstOrDefault(x => x.Name == "TxtSenhaVisivelLogin");
-            var btnRevelar = gridContainer.Children.OfType<Button>().FirstOrDefault(x => x.Name == "BtnRevelarSenha");
-
-            if (txtSenhaLogin == null || txtSenhaVisivelLogin == null || btnRevelar == null) return;
-
-            var iconeOlho = btnRevelar.Content as MahApps.Metro.IconPacks.PackIconMaterial;
-            if (iconeOlho == null) return;
-
-            if (txtSenhaLogin.Visibility == Visibility.Visible)
-            {
-                txtSenhaVisivelLogin.Text = txtSenhaLogin.Password;
-                txtSenhaLogin.Visibility = Visibility.Collapsed;
-                txtSenhaVisivelLogin.Visibility = Visibility.Visible;
-
-                iconeOlho.Kind = PackIconMaterialKind.EyeOff;
-            }
-            else
-            {
-
-                txtSenhaLogin.Password = txtSenhaVisivelLogin.Text;
-                txtSenhaVisivelLogin.Visibility = Visibility.Collapsed;
-                txtSenhaLogin.Visibility = Visibility.Visible;
-
-                iconeOlho.Kind = PackIconMaterialKind.Eye;
+                Ocupado = false;
             }
         }
 
-        private async Task EsqueciSenha()
+        private void FecharJanelaLogin()
         {
-            RecuperarSenhaWindow recuperacaoTela = new RecuperarSenhaWindow();
-            recuperacaoTela.Owner = Application.Current.MainWindow;
-            recuperacaoTela.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is LoginWindow)
+                {
+                    window.Close();
+                    break;
+                }
+            }
+        }
+        private void LimparMensagensErro()
+        {
+            MensaLogin = string.Empty;
+            MensaSenha = string.Empty;
+            MensagemErroGeral = string.Empty;
+        }
 
+        private void EsqueciSenha()
+        {
+            RecuperarSenhaWindow recuperacaoTela = new RecuperarSenhaWindow
+            {
+                Owner = Application.Current.MainWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
             recuperacaoTela.ShowDialog();
         }
 
+        private void AlternarVisibilidadeSenha(object parameter)
+        {
+            if (parameter is not Grid gridCampos) return;
+
+            PasswordBox passwordBox = null;
+            TextBox textBoxVisivel = null;
+            PackIconMaterial iconeOlho = null;
+
+            foreach (var child in gridCampos.Children)
+            {
+                if (child is PasswordBox pb) passwordBox = pb;
+                else if (child is TextBox tb) textBoxVisivel = tb;
+                else if (child is Button button)
+                {
+                    iconeOlho = gridCampos.FindName("IconeOlho") as PackIconMaterial
+                             ?? gridCampos.FindName("IconeOlho1") as PackIconMaterial;
+                }
+            }
+
+            if (passwordBox == null || textBoxVisivel == null) return;
+
+            if (passwordBox.Visibility == Visibility.Visible)
+            {
+                textBoxVisivel.Text = passwordBox.Password;
+                passwordBox.Visibility = Visibility.Collapsed;
+                textBoxVisivel.Visibility = Visibility.Visible;
+
+                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.EyeOff;
+            }
+            else
+            {
+                passwordBox.Password = textBoxVisivel.Text;
+                textBoxVisivel.Visibility = Visibility.Collapsed;
+                passwordBox.Visibility = Visibility.Visible;
+
+                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.Eye;
+            }
+        }
     }
+
 }

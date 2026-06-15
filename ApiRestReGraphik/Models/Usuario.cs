@@ -33,6 +33,12 @@ namespace ApiRestReGraphik.Models
         public DateTime DataCadastro { get; set; }
 
         [JsonPropertyName("foto_perfil")]
-        public string FotoPerfil { get; set; }
+        public string? FotoPerfil { get; set; }
+
+        [JsonPropertyName("ativo")]
+        public bool Ativo { get; set; }
+
+        [JsonPropertyName("token_validacao")]
+        public string? TokenValidacao { get; set; }
     }
 }
