@@ -139,12 +139,12 @@
 
         <!-- Cabeçalho do card -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-            <Border Background="#DBEAFE" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
+            <Border Background="#FEF3C7" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
                 <TextBlock Text="🏅" FontSize="18"/>
             </Border>
             <StackPanel VerticalAlignment="Center">
                 <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO"
-                           FontSize="15" FontWeight="Bold" Foreground="#1E40AF"/>
+                           FontSize="15" FontWeight="Bold" Foreground="#B45309"/>
                 <TextBlock Text="Caminho oficial para empresas parceiras do ReGraphik"
                            FontSize="12" Foreground="#64748B"/>
             </StackPanel>
