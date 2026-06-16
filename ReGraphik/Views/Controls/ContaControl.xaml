@@ -4,12 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:local="clr-namespace:ReGraphik.Views.Controls"
-             
              xmlns:converters="clr-namespace:ReGraphik.Converters"
-             
+             xmlns:local="clr-namespace:ReGraphik.Views.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="#F3F4F6">
+             d:DesignHeight="700" d:DesignWidth="1000" Background="#F3F4F6">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,107 +16,293 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="24">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="1.2*"/>
+            </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="4" Margin="0,0,0,20">
-            <Border.Effect>
-                <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-            </Border.Effect>
+            <!-- ══ COLUNA ESQUERDA: formulário ══ -->
+            <StackPanel Grid.Column="0">
 
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <Grid Margin="24,24,24,16" VerticalAlignment="Top">
+                <!-- Seção: Informações Pessoais -->
+                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel>
+
+                        <!-- Cabeçalho da seção -->
+                        <TextBlock Text="INFORMAÇÕES PESSOAIS" FontSize="11" FontWeight="Bold"
+           Foreground="#94A3B8" Margin="0,0,0,16"/>
+
+                        <!-- Linha 1: Nome + Login -->
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Nome completo" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource InputStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource InputStyle}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Linha 2: CPF + Email -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- CPF: somente leitura e mascarado -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding CPF}" Style="{StaticResource InputStyle}"
+                                         IsReadOnly="True" Background="#F1F5F9" Foreground="#94A3B8"/>
+                                <TextBlock Text="Não editável" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                            </StackPanel>
+
+                            <!-- Email: editável, mascarado ao carregar/sair -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                                <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource InputStyle}">
+                                    <b:Interaction.Triggers>
+                                        <b:EventTrigger EventName="GotFocus">
+                                            <b:InvokeCommandAction Command="{Binding EmailGotFocusCommand}"/>
+                                        </b:EventTrigger>
+                                        <b:EventTrigger EventName="LostFocus">
+                                            <b:InvokeCommandAction Command="{Binding EmailLostFocusCommand}"/>
+                                        </b:EventTrigger>
+                                    </b:Interaction.Triggers>
+                                </TextBox>
+                                <!-- Erro inline de e-mail -->
+                                <TextBlock Text="{Binding MensagemErroEmail}" Foreground="#DC2626"
+                                           FontSize="11" Margin="0,4,0,0"
+                                           Visibility="{Binding MensagemErroEmail, Converter={StaticResource StringToVisibilityConverter}}"/>
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Seção: Segurança -->
+                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel>
+
+                        <!-- Cabeçalho com link -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                            <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold"
+                                       Foreground="#94A3B8" VerticalAlignment="Center"/>
+                            <TextBlock Text=" — ALTERAR SENHA" FontSize="11" FontWeight="Bold"
+                                       Foreground="#1649a2" VerticalAlignment="Center"/>
+                            <TextBlock Text=" ↓" FontSize="11" Foreground="#1649a2" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!-- Campo Nova Senha -->
+                        <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
+                        <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,4"/>
+                        <TextBlock Text="Deixe em branco para manter a senha atual."
+                                   FontSize="11" Foreground="#94A3B8" Margin="0,0,0,0"/>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Botões -->
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0" Margin="0,0,39,0">
-                        <TextBlock Text="Meu Perfil" FontSize="26" FontWeight="Bold" Foreground="#1E293B"/>
-                        <TextBlock Text="Gerencie os dados da sua conta." FontSize="14" Foreground="#64748B" Margin="0,5,0,20"/>
+                    <Button Grid.Column="0" Content="Cancelar" Height="42"
+                            Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
+                            Foreground="#64748B" FontWeight="SemiBold" FontSize="14"
+                            Command="{Binding CancelarCommand}">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
 
-                        <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
-                        <TextBox x:Name="TxtNome" Text="{Binding Nome}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
+                    <Button Grid.Column="2" Content="Salvar alterações" Height="42"
+                            Background="#1649a2" BorderThickness="0"
+                            Foreground="White" FontWeight="SemiBold" FontSize="14"
+                            Command="{Binding SalvarCommand}"
+                            CommandParameter="{Binding ElementName=TxtSenha}">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
 
-                        <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
-                        <TextBox x:Name="TxtCpf" Text="{Binding CPF}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"
-                                 IsReadOnly="True" Background="#F1F5F9" Foreground="#94A3B8"/>
+                <!-- Mensagens de feedback inline -->
+                <TextBlock Text="{Binding MensagemSucesso}" Foreground="#16A34A"
+                           FontSize="13" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,12,0,0"
+                           Visibility="{Binding MensagemSucesso, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-                        <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                        <TextBox x:Name="TxtEmail" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource InputStyle}" Margin="0,0,0,4">
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="GotFocus">
-                                    <b:InvokeCommandAction Command="{Binding EmailGotFocusCommand}"/>
-                                </b:EventTrigger>
-                                <b:EventTrigger EventName="LostFocus">
-                                    <b:InvokeCommandAction Command="{Binding EmailLostFocusCommand}"/>
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </TextBox>
-                        <TextBlock Text="{Binding MensagemErroEmail}" Foreground="#DC2626"
-                                   FontSize="12" Margin="0,0,0,8"
-                                   Visibility="{Binding MensagemErroEmail, Converter={StaticResource StringToVisibilityConverter}}"/>
+                <TextBlock Text="{Binding MensagemErroGeral}" Foreground="#DC2626"
+                           FontSize="13" HorizontalAlignment="Center" Margin="0,12,0,0"
+                           Visibility="{Binding MensagemErroGeral, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-                        <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                        <TextBox x:Name="TxtLogin" Text="{Binding Login}" Style="{StaticResource InputStyle}" Margin="0,0,0,12"/>
+            </StackPanel>
 
-                        <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
-                        <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,24"/>
+            <!-- ══ COLUNA DIREITA: card do perfil ══ -->
+            <StackPanel Grid.Column="2">
 
-                        <Button x:Name="BtnSalvar" Content="Salvar Alterações" Height="45"
-                                Command="{Binding SalvarCommand}"
-                                CommandParameter="{Binding ElementName=TxtSenha}"
-                                HorizontalAlignment="Stretch"
-                                Style="{StaticResource BtnPrimaryStyle}"
-                                FontSize="15" FontWeight="Bold"
-                                Cursor="Hand" BorderThickness="0"/>
+                <!-- Card: Avatar + nome + status -->
+                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel HorizontalAlignment="Center">
 
-                        <TextBlock Text="{Binding MensagemSucesso}" Foreground="#16A34A"
-                                   FontSize="13" FontWeight="SemiBold"
-                                   HorizontalAlignment="Center" Margin="0,10,0,0"
-                                   Visibility="{Binding MensagemSucesso, Converter={StaticResource StringToVisibilityConverter}}"/>
+                        <!-- Avatar circular -->
+                        <Grid Width="110" Height="110" HorizontalAlignment="Center" Margin="0,0,0,16">
 
-                        <TextBlock Text="{Binding MensagemErroGeral}" Foreground="#DC2626"
-                                   FontSize="13" HorizontalAlignment="Center" Margin="0,10,0,0"
-                                   Visibility="{Binding MensagemErroGeral, Converter={StaticResource StringToVisibilityConverter}}"/>
-                    </StackPanel>
+                            <!-- Fundo com inicial do nome quando não há foto -->
+                            <Border CornerRadius="55" Background="#1649a2">
+                                <TextBlock Text="{Binding InicialNome}" FontSize="40" FontWeight="Bold"
+                                           Foreground="White" HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            </Border>
 
-                    <Grid Grid.Column="2" VerticalAlignment="Stretch" Margin="10,80,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Viewbox Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                 Stretch="Uniform" MaxWidth="350" MaxHeight="350" Margin="0,0,0,16">
-                            <Border x:Name="FotoContainer" Width="200" Height="200"
-                                    CornerRadius="100" BorderThickness="1" BorderBrush="#E2E8F0">
+                            <!-- Foto de perfil -->
+                            <Border CornerRadius="55" ClipToBounds="True">
                                 <Border.Background>
                                     <ImageBrush ImageSource="{Binding ImgFoto, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
                                                 Stretch="UniformToFill"/>
                                 </Border.Background>
                             </Border>
-                        </Viewbox>
 
-                        <Button x:Name="BtnMudarFoto" Grid.Row="1"
+                        </Grid>
+
+                        <!-- Nome do usuário -->
+                        <TextBlock Text="{Binding Nome}" FontSize="18" FontWeight="Bold"
+                                   Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+
+                        <!-- Login -->
+                        <TextBlock Text="{Binding LoginExibicao}" FontSize="13"
+                                   Foreground="#64748B" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+
+                        <!-- Badge: Conta ativa -->
+                        <Border Background="#DCFCE7" CornerRadius="10" Padding="10,4"
+                                HorizontalAlignment="Center" Margin="0,0,0,16">
+                            <TextBlock Text="✓ Conta ativa" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="#166534"/>
+                        </Border>
+
+                        <!-- Botão Mudar Foto -->
+                        <Button Content="🖼 Mudar foto" Height="36" Width="140"
                                 Command="{Binding SelecionarFotoCommand}"
-                                Content="Mudar Foto"
-                                Height="35" Width="130" HorizontalAlignment="Center" Margin="0,10,0,0"
-                                FontSize="13" FontWeight="Bold"
-                                Cursor="Hand" BorderThickness="0" Style="{StaticResource BtnFoto}"/>
-                    </Grid>
-                </Grid>
-            </ScrollViewer>
-        </Border>
-    </Grid>
+                                Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
+                                Foreground="#1E293B" FontWeight="Medium" FontSize="13"
+                                Cursor="Hand">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Card: Resumo da conta -->
+                <Border Background="White" CornerRadius="12" Padding="24">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel>
+
+                        <TextBlock Text="RESUMO DA CONTA" FontSize="11" FontWeight="Bold"
+                                   Foreground="#94A3B8" Margin="0,0,0,16"/>
+
+                        <!-- E-mail -->
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="✉" FontSize="14" Foreground="#64748B"
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="E-mail" FontSize="11" Foreground="#94A3B8"/>
+                                <TextBlock Text="{Binding EmailResumido}" FontSize="13"
+                                           Foreground="#1E293B" FontWeight="Medium"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,14"/>
+
+                        <!-- Perfil -->
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="👤" FontSize="14" Foreground="#64748B"
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Perfil" FontSize="11" Foreground="#94A3B8"/>
+                                <TextBlock Text="{Binding Perfil}" FontSize="13"
+                                           Foreground="#1E293B" FontWeight="Medium"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,14"/>
+
+                        <!-- Segurança -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="🔒" FontSize="14" Foreground="#64748B"
+                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Segurança" FontSize="11" Foreground="#94A3B8"/>
+                                <TextBlock Text="Senha definida" FontSize="13"
+                                           Foreground="#1E293B" FontWeight="Medium"/>
+                            </StackPanel>
+                            <Border Grid.Column="2" Background="#DCFCE7" CornerRadius="8" Padding="8,3"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="OK" FontSize="11" FontWeight="Bold" Foreground="#166534"/>
+                            </Border>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

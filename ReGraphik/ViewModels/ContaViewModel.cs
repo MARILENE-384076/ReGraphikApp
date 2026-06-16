@@ -16,21 +16,40 @@ namespace ReGraphik.ViewModels
     {
         private readonly Usuario _usuarioAtual;
         private readonly IAutorizarService _autorizarService;
-        private readonly UsuarioViewModel _viewModel;
         private string _emailReal = string.Empty;
 
         private BitmapImage? _imgFoto;
         public BitmapImage? ImgFoto
         {
             get => _imgFoto;
-            set { _imgFoto = value; OnPropertyChanged(); }
+            set { _imgFoto = value; OnPropertyChanged(); OnPropertyChanged(nameof(SemFoto)); }
         }
+
+        /// <summary>
+        /// Indica se o usuário não possui foto — exibe a inicial do nome no lugar
+        /// </summary>
+        public bool SemFoto => ImgFoto == null;
+
+        /// <summary>
+        /// Inicial do nome para exibir no avatar quando não há foto
+        /// </summary>
+        public string InicialNome => string.IsNullOrWhiteSpace(Nome) ? "?" : Nome[..1].ToUpper();
+
+        /// <summary>
+        /// Login formatado com @ para exibição no card do perfil
+        /// </summary>
+        public string LoginExibicao => string.IsNullOrWhiteSpace(Login) ? string.Empty : $"@{Login}";
+
+        /// <summary>
+        /// E-mail mascarado para exibição no resumo da conta
+        /// </summary>
+        public string EmailResumido => MascararEmail(_emailReal);
 
         private string? _nome;
         public string Nome
         {
             get => _nome;
-            set { _nome = value; OnPropertyChanged(); }
+            set { _nome = value; OnPropertyChanged(); OnPropertyChanged(nameof(InicialNome)); }
         }
 
         private string? _cpf;
@@ -51,7 +70,14 @@ namespace ReGraphik.ViewModels
         public string Login
         {
             get => _login;
-            set { _login = value; OnPropertyChanged(); }
+            set { _login = value; OnPropertyChanged(); OnPropertyChanged(nameof(LoginExibicao)); }
+        }
+
+        private string? _perfil;
+        public string Perfil
+        {
+            get => _perfil;
+            set { _perfil = value; OnPropertyChanged(); }
         }
 
         private bool _ocupado;
@@ -91,8 +117,9 @@ namespace ReGraphik.ViewModels
             set { _mensagemErroGeral = value; OnPropertyChanged(); }
         }
 
-        // Comandos da ViewModel
+        /// Comandos da ViewModel
         public ICommand SalvarCommand { get; }
+        public ICommand CancelarCommand { get; }
         public ICommand EmailGotFocusCommand { get; }
         public ICommand EmailLostFocusCommand { get; }
         public ICommand SelecionarFotoCommand { get; }
@@ -101,21 +128,27 @@ namespace ReGraphik.ViewModels
         {
             _usuarioAtual = usuario;
             _autorizarService = autorizarService;
-            _viewModel = new UsuarioViewModel();
 
             CarregarDadosNaTela();
 
             /// Inicialização dos comandos
             SalvarCommand = new RelayCommand(async (param) => await SalvarPerfilAsync(param));
+            CancelarCommand = new RelayCommand(_ => CarregarDadosNaTela());
             EmailGotFocusCommand = new RelayCommand(EmailGotFocus);
             EmailLostFocusCommand = new RelayCommand(EmailLostFocus);
-            SelecionarFotoCommand = new RelayCommand((_) => MudarFoto());
+            SelecionarFotoCommand = new RelayCommand(_ => MudarFoto());
+
+            /// Carrega foto persistida do disco ao abrir a tela
+            var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
+            if (fotoSalva != null)
+                CarregarBitmapDoCaminho(fotoSalva);
         }
 
         private void CarregarDadosNaTela()
         {
             Nome = _usuarioAtual.Nome ?? string.Empty;
             Login = _usuarioAtual.Login ?? string.Empty;
+            Perfil = _usuarioAtual.Perfil ?? "Usuário";
 
             /// CPF: mascarado e bloqueado — não pode ser editado pelo usuário
             CPF = MascararCpf(_usuarioAtual.CPF);
@@ -123,6 +156,8 @@ namespace ReGraphik.ViewModels
             /// Email: mascarado mas editável — revela ao focar e mascara ao sair
             _emailReal = _usuarioAtual.Email ?? string.Empty;
             Email = MascararEmail(_emailReal);
+
+            OnPropertyChanged(nameof(EmailResumido));
         }
 
         /// <summary>
@@ -139,6 +174,7 @@ namespace ReGraphik.ViewModels
         /// </summary>
         public void EmailLostFocus()
         {
+            /// Valida o formato básico do e-mail ao sair do campo
             if (!string.IsNullOrWhiteSpace(Email) && !Email.Contains('@'))
             {
                 MensagemErroEmail = "E-mail inválido. Verifique o endereço informado.";
@@ -148,54 +184,54 @@ namespace ReGraphik.ViewModels
                 MensagemErroEmail = string.Empty;
                 _emailReal = Email ?? string.Empty;
                 _usuarioAtual.Email = _emailReal;
+                OnPropertyChanged(nameof(EmailResumido));
             }
 
             Email = MascararEmail(_emailReal);
         }
 
-        private async void MudarFoto()
+        private void MudarFoto()
         {
             try
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog
+                var openFileDialog = new OpenFileDialog
                 {
                     Title = "Selecionar Foto de Perfil",
                     Filter = "Imagens (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png"
                 };
 
-                if (openFileDialog.ShowDialog() == true)
-                {
-                    string caminhoDoArquivo = openFileDialog.FileName;
+                if (openFileDialog.ShowDialog() != true) return;
 
-                    /// Carrega a imagem em memória para exibição imediata na tela
-                    BitmapImage bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = new Uri(caminhoDoArquivo);
-                    bitmap.EndInit();
+                string caminho = openFileDialog.FileName;
 
-                    ImgFoto = bitmap;
+                /// Carrega a imagem em memória para exibição imediata na tela
+                CarregarBitmapDoCaminho(caminho);
 
-                    /// Persiste o caminho da foto no modelo e no serviço de sessão compartilhado
-                    _usuarioAtual.FotoPerfil = caminhoDoArquivo;
-                    UsuarioSessaoService.Instancia.FotoCaminho = caminhoDoArquivo;
+                /// Persiste o caminho da foto no modelo e no serviço de sessão compartilhado
+                _usuarioAtual.FotoPerfil = caminho;
+                UsuarioSessaoService.Instancia.FotoCaminho = caminho;
 
-                    /// Salva localmente para persistir entre sessões
-                    ConfiguracaoLocalService.SalvarFoto(caminhoDoArquivo);
-
-                    Ocupado = true;
-                    await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
-                }
+                /// Salva localmente para persistir entre sessões
+                ConfiguracaoLocalService.SalvarFoto(caminho);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar ou salvar a foto: {ex.Message}", "Erro",
+                MessageBox.Show($"Erro ao carregar a foto: {ex.Message}", "Erro",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            finally
-            {
-                Ocupado = false;
-            }
+        }
+
+        /// <summary>
+        /// Carrega um BitmapImage a partir de um caminho local de forma segura
+        /// </summary>
+        private void CarregarBitmapDoCaminho(string caminho)
+        {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.UriSource = new Uri(caminho);
+            bitmap.EndInit();
+            ImgFoto = bitmap;
         }
 
         /// <summary>
@@ -221,6 +257,7 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private async Task SalvarPerfilAsync(object? parameter)
         {
+            /// Limpa mensagens anteriores
             MensagemSucesso = string.Empty;
             MensagemErroGeral = string.Empty;
 
@@ -230,6 +267,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
+            /// Bloqueia o salvamento se o e-mail estiver inválido
             if (!string.IsNullOrWhiteSpace(MensagemErroEmail))
             {
                 MensagemErroGeral = "Corrija os erros antes de salvar.";
@@ -257,16 +295,11 @@ namespace ReGraphik.ViewModels
 
                 if (sucesso)
                 {
-                    /// Informa o sistema inteiro sobre os novos dados de forma dinâmica para evitar quebras de build
-                    AtualizarSessaoSegura("Nome", Nome);
-                    AtualizarSessaoSegura("NomeCompleto", Nome);
-                    AtualizarSessaoSegura("NomeUsuario", Nome);
-                    AtualizarSessaoSegura("Email", _emailReal);
-                    AtualizarSessaoSegura("Login", Login);
-
                     /// Exibe mensagem de sucesso inline sem MessageBox
                     MensagemSucesso = "✔ Dados atualizados com sucesso!";
                     Email = MascararEmail(_emailReal);
+                    OnPropertyChanged(nameof(EmailResumido));
+                    OnPropertyChanged(nameof(LoginExibicao));
 
                     /// Limpa a mensagem de sucesso após 3 segundos
                     await Task.Delay(3000);
@@ -284,28 +317,6 @@ namespace ReGraphik.ViewModels
             finally
             {
                 Ocupado = false;
-            }
-        }
-
-        /// <summary>
-        /// Tenta definir o valor de uma propriedade na sessão via Reflection para contornar divergências de nomenclatura de propriedades
-        /// </summary>
-        private static void AtualizarSessaoSegura(string nomePropriedade, string? valor)
-        {
-            try
-            {
-                var instancia = UsuarioSessaoService.Instancia;
-                if (instancia == null) return;
-
-                var prop = instancia.GetType().GetProperty(nomePropriedade);
-                if (prop != null && prop.CanWrite)
-                {
-                    prop.SetValue(instancia, valor);
-                }
-            }
-            catch
-            {
-                /// Silencia exceções caso alguma variação de propriedade testada não exista na estrutura do serviço
             }
         }
     }
