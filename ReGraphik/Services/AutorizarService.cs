@@ -17,38 +17,29 @@ namespace ReGraphik.Services
 
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
+        public async Task<bool> SolicitarAcessoAsync(string email)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(new { email }), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("usuario", content);
+            return response.IsSuccessStatusCode;
+        }
+
         /// <summary>
         /// Envia os dados iniciais do usuário para o servidor realizar o pré-cadastro e gerar o token.
         /// </summary>
         /// <summary>
-        public async Task<CadastroResponse?> CadastrarAsync(string nome, string cpf, string email, string login, string senha)
+        public async Task<bool> FinalizarCadastroAsync(string nome, string cpf, string email, string login, string senha, string token)
         {
-            // CORREÇÃO: Propriedades agora batem exatamente com as expectativas do back-end (CPF em caixa alta e envio do Perfil)
             var payload = new Dictionary<string, object>
             {
-                { "name", nome },        
-                { "cpf", cpf },           
-                { "email", email },       
-                { "login", login },       
-                { "senha", senha },       
-                { "perfil", "Administrador" }      
-            };
+                { "name", nome }, { "cpf", cpf }, { "email", email }, { "login", login }, { "senha", senha }, { "perfil", "Administrador" }
+        };
 
-            var jsonEnviar = JsonSerializer.Serialize(payload);
-            var content = new StringContent(jsonEnviar, Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("usuario", content);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                var erroDaApi = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Erro no servidor ({response.StatusCode}): {erroDaApi}");
-            }
-
-            var jsonResposta = await response.Content.ReadAsStringAsync();
-
-            // Retorna o resultado mapeado (contendo o Token) para a CadastroViewModel manipular
-            return JsonSerializer.Deserialize<CadastroResponse>(jsonResposta, _jsonOptions);
+            // Passamos o token via query param para a API revalidar por segurança
+            var response = await _httpClient.PostAsync($"usuario/finalizar-cadastro?token={token}", content);
+            return response.IsSuccessStatusCode;
         }
 
         /// <summary>
@@ -72,12 +63,8 @@ namespace ReGraphik.Services
         /// </summary>
         public async Task<bool> ValidarTokenAsync(string email, string token)
         {
-            var payload = new { Email = email, Token = token };
-            var json = JsonSerializer.Serialize(payload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+            var content = new StringContent(JsonSerializer.Serialize(new { Email = email, Token = token }), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("usuario/validar-token", content);
-
             return response.IsSuccessStatusCode;
         }
 
@@ -89,8 +76,7 @@ namespace ReGraphik.Services
             var json = JsonSerializer.Serialize(usuario);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            // Nota: Se a sua API aceitar PUT para atualizações, mude para _httpClient.PutAsync
-            var response = await _httpClient.PostAsync($"usuario/{id}", content);
+            var response = await _httpClient.PutAsync($"usuario/{id}", content);
 
             if (!response.IsSuccessStatusCode)
             {

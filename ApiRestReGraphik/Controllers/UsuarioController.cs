@@ -9,7 +9,7 @@ namespace ApiRestReGraphik.Controllers
     [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
-        private static readonly List<Usuario> _preCadastros = new();
+        private static readonly Dictionary<string, string> _tokensAutorizados = new(StringComparer.OrdinalIgnoreCase);
         private readonly UsuarioService _usuarioService;
         private readonly ILogger<UsuarioController> _logger;
         private readonly IConfiguration _configuration;
@@ -52,13 +52,13 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida ao listar os usuários");
                 return BadRequest("Requisição inválida ao listar os usuários");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, "Falha ao listar os usuários");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
@@ -110,13 +110,13 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha ao obter usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados do usuário com ID {id}.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao obter dados do usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Não foi possível obter os dados do usuário com ID {id}.");
             }
@@ -124,10 +124,185 @@ namespace ApiRestReGraphik.Controllers
 
 
         /// <summary>
-        /// POST api/Usuario - Criar um novo usuário no ReGraphik.
+        /// POST api/Usuario - Usuário solicita a abertura da conta informando o e-mail.
         /// </summary>
         /// 
-        /// <remarks>Responsável por criar um novo usuário no ReGraphik.
+        /// <remarks>
+        /// Responsável por criar um novo usuário no ReGraphik.
+        /// 
+        /// Requisitos de validação:
+        /// - Email: Deve ser uma string representando o email do usuário, seguindo um formato de email válido. (ex: "joão@reagraphik.com.br")
+        /// 
+        /// Observação: Retorna um status 201 Created com os dados do usuário criado, um status 400 Bad Request se a requisição for inválida ou
+        /// um status 500 Internal Server Error em caso de falha.
+        /// </remarks>
+        /// 
+        /// <param name="dto">Objeto do tipo Usuario a ser criado.</param>
+        /// 
+        /// <response code="201">Usuário criado com sucesso.</response>
+        /// <response code="400">Requisição inválida, usuário não fornecido ou dados incorretos.</response>
+        /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Post([FromBody] SolicitarAcessoDto dto)
+        {
+            try
+            {
+                if (dto == null || string.IsNullOrWhiteSpace(dto.Email))
+                    return BadRequest("O e-mail é obrigatório.");
+
+                if (!dto.Email.EndsWith("@regraphik.com.br", StringComparison.OrdinalIgnoreCase))
+                    return BadRequest("Somente e-mails corporativos da ReGraphik podem solicitar acesso.");
+
+                // Verifica se o e-mail já existe na base (seja ativo ou já aguardando)
+                var usuariosExistentes = await _usuarioService.Listar();
+                if (usuariosExistentes.Any(x => x.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase)))
+                    return BadRequest("Este e-mail já possui uma solicitação ou já está cadastrado no sistema.");
+
+                var novoUsuarioPendente = new UsuarioDto
+                {
+                    Email = dto.Email,
+                };
+
+                _logger.LogInformation($"[SOLICITAÇÃO DE ACESSO] {dto.Email} enviado para a fila de aprovação.");
+
+                return StatusCode(StatusCodes.Status201Created, new { mensagem = "Solicitação enviada com sucesso! Aguarde a aprovação do administrador para liberar seu token de acesso." });
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Requisição inválida no processo de solicitação.");
+                return BadRequest("Dados inválidos fornecidos para a solicitação.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao iniciar processo de pré-cadastro.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro interno ao processar a solicitação.");
+            }
+        }
+
+        /// <summary>
+        /// POST api/Usuario/autorizar-token - Aprova o e-mail da fila e gera o token.
+        /// </summary>
+        /// 
+        /// <remarks>Responsável por validar o token de usuário no ReGraphik.
+        /// 
+        /// Requisitos de validação:
+        /// - Email: Deve ser uma string representando o email do usuário, seguindo um formato de email válido. (ex: "joão@regraphik.com.br")
+        /// - Token: Deve ser uma string representando o token do usuário. (ex: "263456")
+        /// 
+        /// Observação: Retorna um status 201 Created com os dados do usuário criado, um status 400 Bad Request se a requisição for inválida ou
+        /// um status 500 Internal Server Error em caso de falha.
+        /// </remarks>
+        /// 
+        /// <param name="email">Objeto do tipo Usuario a ser criado.</param>
+        /// 
+        /// <response code="201">Token criado com sucesso.</response>
+        /// <response code="400">Requisição inválida, token com dados incorretos.</response>
+        /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("autorizar-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult AutorizarToken([FromQuery] string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                    return BadRequest("O e-mail é obrigatório para autorização.");
+
+                string tokenGerado = new Random().Next(100000, 999999).ToString();
+
+                _tokensAutorizados[email] = tokenGerado;
+
+                _logger.LogInformation($"[ADMIN AUTORIZOU] Administrador liberou o acesso. Token {tokenGerado} gerado para {email}");
+
+                return Ok(new
+                {
+                    mensagem = $"Cadastro pré-autorizado com sucesso para {email}.",
+                    token = tokenGerado
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao autorizar token para o e-mail {email}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro interno ao gerar autorização.");
+            }
+        }
+
+        /// <summary>
+        /// POST api/Usuario/validar-token - WPF valida se o token bate com o e-mail.
+        /// </summary>
+        /// 
+        /// <remarks>Responsável por validar o token de usuário no ReGraphik.
+        /// 
+        /// Requisitos de validação:
+        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
+        /// - Email: Deve ser uma string representando o email do usuário, seguindo um formato de email válido. (ex: "joão@regraphik.com.br")
+        /// - Token: Deve ser uma string representando o token do usuário. (ex: "263456")
+        /// 
+        /// Observação: Retorna um status 201 Created com os dados do usuário criado, um status 400 Bad Request se a requisição for inválida ou
+        /// um status 500 Internal Server Error em caso de falha.
+        /// </remarks>
+        /// 
+        /// <param name="model">Objeto do tipo Usuario a ser criado.</param>
+        /// 
+        /// <response code="201">Token criado com sucesso.</response>
+        /// <response code="400">Requisição inválida, token com dados incorretos.</response>
+        /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        [HttpPost("validar-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ValidarToken([FromBody] RequisicaoToken model)
+        {
+            try
+            {
+                ///  Validação básica de entrada
+                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Token))
+                {
+                    return BadRequest(new { mensagem = "Dados de validação incompletos." });
+                }
+
+                /// Busca o token ativo para aquele e-mail no dicionário de memória
+                if (!_tokensAutorizados.TryGetValue(model.Email, out var tokenCorreto))
+                {
+                    return BadRequest(new { mensagem = "Nenhum token ativo foi encontrado para este e-mail ou ele já expirou." });
+                }
+
+                /// Compara se o token digitado está correto
+                if (tokenCorreto != model.Token)
+                {
+                    return BadRequest(new { mensagem = "Token inválido. Verifique o código digitado." });
+                }
+
+                _tokensAutorizados.Remove(model.Email);
+
+                _logger.LogInformation($"[VALIDADO & QUEIMADO] Token utilizado com sucesso por {model.Email}. Código inutilizado.");
+
+                return Ok(new { mensagem = "Token validado com sucesso! Prossiga com o cadastro." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao validar token para o e-mail: {model?.Email}");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a validação do token.");
+            }
+        }
+
+        /// <summary>
+        /// POST api/Usuario/finalizar-cadastro - Após validar o token, salva o usuário definitivo no banco.
+        /// </summary>
+        /// 
+        /// <remarks>Responsável por validar o token de usuário no ReGraphik.
         /// 
         /// Requisitos de validação:
         /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
@@ -143,146 +318,53 @@ namespace ApiRestReGraphik.Controllers
         /// um status 500 Internal Server Error em caso de falha.
         /// </remarks>
         /// 
-        /// <param name="usuario">Objeto do tipo Usuario a ser criado.</param>
-        /// 
-        /// <response code="201">Usuário criado com sucesso.</response>
-        /// <response code="400">Requisição inválida, usuário não fornecido ou dados incorretos.</response>
-        /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] UsuarioDto dto)
-        {
-            try
-            {
-                int limiteMaximoUsuario = _configuration.GetValue<int>("ConfiguracoesSistema:LimiteUsuarios");
-
-                var usuariosExistentes = await _usuarioService.Listar();
-                int totalUsuariosAtuais = usuariosExistentes.Count;
-
-                if (totalUsuariosAtuais >= limiteMaximoUsuario)
-                {
-                    return BadRequest(new
-                    {
-                        mensagem = "O limite máximo de usuários cadastrados no sistema foi atingido. Entre em contato com o administrador."
-                    });
-                }
-
-                if (!dto.Email.EndsWith("@regraphik.com.br", StringComparison.OrdinalIgnoreCase))
-                {
-                    return BadRequest("Somente e-mails corporativos da ReGraphik podem realizar cadastro.");
-                }
-
-                if (usuariosExistentes.Any(x => x.Email.Equals(dto.Email, StringComparison.OrdinalIgnoreCase)))
-                    return BadRequest("E-mail já cadastrado.");
-
-                if (usuariosExistentes.Any(x => x.CPF == dto.CPF))
-                    return BadRequest("CPF já cadastrado.");
-
-                if (usuariosExistentes.Any(x => x.Login.Equals(dto.Login, StringComparison.OrdinalIgnoreCase)))
-                    return BadRequest("Login já cadastrado.");
-
-                var novoUsuario = new Usuario
-                {
-                    Id = Guid.NewGuid().ToString(), // Gerado automaticamente aqui!
-                    Nome = dto.Nome,
-                    CPF = dto.CPF,
-                    Email = dto.Email,
-                    Login = dto.Login,
-                    Senha = dto.Senha,
-                    Perfil = dto.Perfil,
-                    DataCadastro = DateTime.UtcNow,
-                    Ativo = false,
-                    TokenValidacao = new Random().Next(100000, 999999).ToString()
-                };
-
-                _preCadastros.RemoveAll(x => x.Email.Equals(novoUsuario.Email, StringComparison.OrdinalIgnoreCase));
-                _preCadastros.Add(novoUsuario);
-
-                _logger.LogInformation($"Token {novoUsuario.TokenValidacao} gerado para {novoUsuario.Email}");
-
-                return Ok(new
-                {
-                    mensagem = "Token gerado e enviado para o e-mail com sucesso.",
-                    token = novoUsuario.TokenValidacao
-                });
-            }
-            catch (ArgumentException ex)
-            {
-                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
-                _logger.LogWarning(ex, "Requisição inválida processada para criar resíduo.");
-                return BadRequest("Requisição inválida processada para criar resíduo.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao iniciar processo de pré-cadastro.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro interno ao processar o pré-cadastro.");
-            }
-        }
-
-        /// <summary>
-        /// POST api/Usuario/validar-token - Valida um novo token de usuário no ReGraphik.
-        /// </summary>
-        /// 
-        /// <remarks>Responsável por validar o token de usuário no ReGraphik.
-        /// 
-        /// Requisitos de validação:
-        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
-        /// - Email: Deve ser uma string representando o email do usuário, seguindo um formato de email válido. (ex: "joão@regraphik.com.br")
-        /// - Token: Deve ser uma string representando o token do usuário. (ex: "263456")
-        /// 
-        /// Observação: Retorna um status 201 Created com os dados do usuário criado, um status 400 Bad Request se a requisição for inválida ou
-        /// um status 500 Internal Server Error em caso de falha.
-        /// </remarks>
-        /// 
-        /// <param name="request">Objeto do tipo Usuario a ser criado.</param>
+        /// <param name="email">Objeto do tipo Usuario a ser criado.</param>
         /// 
         /// <response code="201">Token criado com sucesso.</response>
         /// <response code="400">Requisição inválida, token com dados incorretos.</response>
         /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        [HttpPost("validar-token")]
+        [HttpPost("finalizar-cadastro")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ValidarToken([FromBody] AcessoCadastro request)
+        public async Task<IActionResult> FinalizarCadastro([FromBody] UsuarioDto dto, [FromQuery] string token)
         {
-            var usuarioPendente = _preCadastros.FirstOrDefault(x => x.Email.Equals(request.Email, StringComparison.OrdinalIgnoreCase));
-
-            if (usuarioPendente == null)
-                return NotFound("Nenhuma solicitação de cadastro encontrada para este e-mail.");
-
-            if (usuarioPendente.TokenValidacao != request.Token)
-                return BadRequest("Token inválido ou expirado.");
+            /// Dupla checagem de segurança para garantir que o token ainda é válido
+            if (!_tokensAutorizados.TryGetValue(dto.Email, out var tokenCorreto) || tokenCorreto != token)
+            {
+                return BadRequest("Sessão de cadastro inválida ou token expirado.");
+            }
 
             try
             {
-                usuarioPendente.Ativo = true;
-                usuarioPendente.TokenValidacao = string.Empty;
+                var novoUsuario = new Usuario
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Nome = dto.Nome,
+                    CPF = dto.CPF,
+                    Email = dto.Email,
+                    Login = dto.Login,
+                    Senha = dto.Senha, 
+                    Perfil = dto.Perfil,
+                    DataCadastro = DateTime.UtcNow,
+                    Ativo = true 
+                };
 
-                await _usuarioService.Criar(usuarioPendente);
-                _preCadastros.Remove(usuarioPendente);
+                await _usuarioService.Criar(novoUsuario);
 
-                return Ok("Conta ativada e cadastrada com sucesso.");
-            }
-            catch (ArgumentException ex)
-            {
-                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
-                _logger.LogWarning(ex, "Requisição inválida processada para validar token.");
-                return BadRequest("Requisição inválida processada para validar token.");
+                /// Remove o token que já que foi utilizado da memória
+                _tokensAutorizados.Remove(dto.Email);
+
+                return CreatedAtAction(nameof(GetById), new { id = novoUsuario.Id }, novoUsuario);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao salvar o cadastro final.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao salvar conta no banco de dados.");
+                _logger.LogError(ex, "Erro ao salvar cadastro definitivo.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao persistir usuário.");
             }
-
-            
         }
 
         /// <summary>
@@ -374,19 +456,19 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, $"Requisição inválida processada para atualizar usuário com ID {id}.");
                 return BadRequest($"Requisição inválida processada para atualizar usuário com ID {id}.");
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
+                /// Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
                 _logger.LogError(ex, $"Falha ao atualizar usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados do usuário com ID {id}.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao atualizar dados do usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
@@ -424,13 +506,13 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha ao excluir usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados do usuário com ID {id}.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
                 _logger.LogError(ex, $"Erro ao excluir dados do usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }

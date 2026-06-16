@@ -9,9 +9,14 @@ namespace ReGraphik.Services.Interface
     public interface IAutorizarService
     {
         /// <summary>
+        /// Solicita um acesso por email para o usuário.
+        /// </summary>
+        Task<bool> SolicitarAcessoAsync(string email);
+
+        /// <summary>
         /// Envia os dados do usuário para iniciar o fluxo de cadastro e gerar um token.
         /// </summary>
-        Task<CadastroResponse?> CadastrarAsync(string nome, string cpf, string email, string login, string senha);
+        Task<bool> FinalizarCadastroAsync(string nome, string cpf, string email, string login, string senha, string token);
 
         /// <summary>
         /// Realiza a autenticação direta do usuário por login e senha.
