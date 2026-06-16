@@ -9,8 +9,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Views\Controls\SugestaoResiduoControl.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Remove="Imgs\IconePerfil.png" />
 		<None Remove="Imgs\logoRegraphik.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="Views\Controls\SugestaoResiduoControl.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
