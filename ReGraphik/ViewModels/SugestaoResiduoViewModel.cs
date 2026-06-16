@@ -87,10 +87,8 @@ namespace ReGraphik.ViewModels
         /// </summary>
         /// <param name="residuo"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public SugestaoResiduoViewModel(Residuo residuo)
+        public SugestaoResiduoViewModel()
         {
-            Residuo = residuo ?? throw new ArgumentNullException(nameof(residuo));
-
             AplicarSugestaoCommand = new RelayCommand(
                 () => _ = AplicarSugestaoAsync(),
                 _ => SugestaoSelecionada != null && !Carregando

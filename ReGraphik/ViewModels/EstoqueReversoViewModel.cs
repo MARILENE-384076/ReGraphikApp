@@ -20,7 +20,7 @@ namespace ReGraphik.ViewModels
     /// </summary>
     public class EstoqueReversoViewModel : BaseViewModel
     {
-        private readonly HttpClient _http = new();
+        private static readonly HttpClient _http = new();
         private readonly ObservableCollection<Residuo> _todosResiduos = new();
 
         /// <summary>
@@ -31,7 +31,6 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Propriedades de filtro 
         /// </summary>
-
         private string _filtroTipo = string.Empty;
         public string FiltroTipo
         {
@@ -63,10 +62,9 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Listas para os ComboBoxes populadas dinamicamente do banco
         /// </summary>
-
-        public ObservableCollection<string> ListaTipos   { get; } = new() { "Todos" };
+        public ObservableCollection<string> ListaTipos { get; } = new() { "Todos" };
         public ObservableCollection<string> ListaOrigens { get; } = new() { "Todas" };
-        public ObservableCollection<string> ListaStatus  { get; } = new() { "Todos" };
+        public ObservableCollection<string> ListaStatus { get; } = new() { "Todos" };
 
         public List<string> ListaPeriodos { get; } = new()
         {
@@ -79,37 +77,31 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Comandos 
         /// </summary>
-
-        public ICommand FiltrarCommand       { get; }
+        public ICommand FiltrarCommand { get; }
         public ICommand LimparFiltrosCommand { get; }
-        public ICommand SugestaoCommand      { get; }
-        public ICommand ExportarCommand      { get; }
+        public ICommand SugestaoCommand { get; }
+        public ICommand ExportarCommand { get; }
 
         public EstoqueReversoViewModel()
         {
-            ResiduosFiltrados        = CollectionViewSource.GetDefaultView(_todosResiduos);
+            ResiduosFiltrados = CollectionViewSource.GetDefaultView(_todosResiduos);
             ResiduosFiltrados.Filter = AplicarFiltro;
 
-            SugestaoCommand = new RelayCommand(
-                (param) => AbrirSugestoes(param),
-                (param) => param is Residuo
-            );
+            SugestaoCommand = new RelayCommand((param) => AbrirSugestoes(param as Residuo));
 
-            ExportarCommand      = new RelayCommand(() => ExportarDadosInternos());
-            FiltrarCommand       = new RelayCommand(() => ResiduosFiltrados.Refresh());
+            ExportarCommand = new RelayCommand(() => ExportarDadosInternos());
+            FiltrarCommand = new RelayCommand(() => ResiduosFiltrados.Refresh());
             LimparFiltrosCommand = new RelayCommand(() =>
             {
-                FiltroTipo    = string.Empty;
-                FiltroOrigem  = string.Empty;
-                FiltroStatus  = string.Empty;
+                FiltroTipo = string.Empty;
+                FiltroOrigem = string.Empty;
+                FiltroStatus = string.Empty;
                 FiltroPeriodo = string.Empty;
                 ResiduosFiltrados.Refresh();
             });
 
             _ = CarregarEstoqueDoBancoAsync();
         }
-
-        /// Lógica de filtro 
 
         /// <summary>
         /// Predicado do CollectionView — combina todos os filtros ativos com lógica AND.
@@ -134,10 +126,10 @@ namespace ReGraphik.ViewModels
             {
                 int dias = FiltroPeriodo switch
                 {
-                    "Últimos 7 dias"  => 7,
+                    "Últimos 7 dias" => 7,
                     "Últimos 30 dias" => 30,
                     "Últimos 90 dias" => 90,
-                    _                 => 0
+                    _ => 0
                 };
                 if (dias > 0 && r.DataCadastro < DateTime.Now.AddDays(-dias))
                     return false;
@@ -146,24 +138,31 @@ namespace ReGraphik.ViewModels
             return true;
         }
 
-        /// <summary>
-        /// Ações 
-        /// </summary>
-
         private void ExportarDadosInternos()
         {
             MessageBox.Show("Comando de exportação acionado internamente!", "Aviso",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void AbrirSugestoes(object param)
+        /// <summary>
+        /// O método recebe o objeto Residuo específico da linha selecionada
+        /// </summary>
+        /// <param name="residuo"></param>
+        private void AbrirSugestoes(Residuo? residuo)
         {
-            if (param is not Residuo residuo) return;
-            if (Application.Current.MainWindow is MainWindow mainWin)
-                mainWin.Content = new SugestaoResiduoControl(residuo);
-        }
+            if (residuo == null)
+            {
+                MessageBox.Show("Não foi possível identificar o resíduo selecionado.", "Aviso",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
-        /// Carregamento de dados 
+            /// Cria a janela moldura 
+            var tela = new SugestaoResiduoWindow(residuo);
+            tela.Owner = Application.Current.MainWindow;
+
+            tela.ShowDialog();
+        }
 
         /// <summary>
         /// Busca resíduos na API e popula os ComboBoxes com valores reais e distintos do banco.
@@ -177,16 +176,16 @@ namespace ReGraphik.ViewModels
 
                 if (!resposta.IsSuccessStatusCode) return;
 
-                var json   = await resposta.Content.ReadAsStringAsync();
+                var json = await resposta.Content.ReadAsStringAsync();
                 var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var lista  = JsonSerializer.Deserialize<List<Residuo>>(json, opcoes);
+                var lista = JsonSerializer.Deserialize<List<Residuo>>(json, opcoes);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     _todosResiduos.Clear();
-                    ListaTipos.Clear();   ListaTipos.Add("Todos");
+                    ListaTipos.Clear(); ListaTipos.Add("Todos");
                     ListaOrigens.Clear(); ListaOrigens.Add("Todas");
-                    ListaStatus.Clear();  ListaStatus.Add("Todos");
+                    ListaStatus.Clear(); ListaStatus.Add("Todos");
 
                     if (lista == null) return;
 
