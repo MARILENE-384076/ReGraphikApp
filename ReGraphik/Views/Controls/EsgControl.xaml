@@ -211,6 +211,24 @@
 </Grid>
 
         </StackPanel>
+        <!-- Botão navegar para Relatórios -->
+        <Button Margin="0,16,0,0"
+                Command="{Binding IrParaRelatoriosCommand}"
+                Height="42" Padding="20,0"
+                HorizontalAlignment="Left"
+                Background="#B45309" Foreground="White"
+                FontWeight="SemiBold" BorderThickness="0"
+                Cursor="Hand">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="8"/>
+                </Style>
+            </Button.Resources>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="📄 " VerticalAlignment="Center"/>
+                <TextBlock Text="Gerar Relatório Comprobatório" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
 
         <!-- Links oficiais -->
         <Border Background="#FFFBEB" CornerRadius="8" Padding="16,14" Margin="0,8,0,0">

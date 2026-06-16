@@ -25,14 +25,17 @@ namespace ReGraphik.ViewModels
         /// Exporta o conteúdo ESG como documento PDF imprimível.
         /// </summary>
         public ICommand ExportarPdfCommand { get; }
+        public ICommand IrParaRelatoriosCommand { get; }
 
         /// <summary>
         /// Inicializa o ViewModel com o usuário logado.
         /// </summary>
-        public EsgViewModel(Usuario usuario)
+        // DEPOIS
+        public EsgViewModel(Usuario usuario, ICommand irParaRelatorios)
         {
             _usuario = usuario;
-            ExportarPdfCommand = new RelayCommand(() => ExportarPdf());
+            ExportarPdfCommand      = new RelayCommand(() => ExportarPdf());
+            IrParaRelatoriosCommand = irParaRelatorios;
         }
         /// <summary>
         /// Gera um FlowDocument com o conteúdo ESG e abre o diálogo de impressão,
@@ -187,5 +190,9 @@ namespace ReGraphik.ViewModels
                 Margin     = new Thickness(0, 2, 0, 4)
             });
         }
+        /// <summary>
+        /// Comando para navegar até a aba Relatórios.
+        /// </summary>
+        
     }
 }
