@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Specialized;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ReGraphik.Views
 {
-    /// <summary>
-    /// Interaction logic for ChatPainelWindow.xaml
-    /// </summary>
     public partial class ChatPainelWindow : Window
     {
         public ChatPainelWindow()
@@ -26,7 +12,7 @@ namespace ReGraphik.Views
             DataContextChanged += OnDataContextChanged;
         }
 
-        private void OnDataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is ViewModels.ChatViewModel vm)
             {
@@ -36,7 +22,6 @@ namespace ReGraphik.Views
 
         private void Mensagens_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            // Rola para a última mensagem quando novas chegam
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 Dispatcher.BeginInvoke(() =>
@@ -46,14 +31,22 @@ namespace ReGraphik.Views
             }
         }
 
-        private void BtnFechar_Click(object sender, RoutedEventArgs e)
+        // Permite arrastar a janela pelo cabeçalho (WindowStyle=None)
+        private void Cabecalho_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Hide(); // Oculta sem destruir — reutilizavel
+            if (e.ButtonState == MouseButtonState.Pressed)
+                DragMove();
         }
 
+<<<<<<< HEAD
         private void Cabecalho_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             throw new NotImplementedException();
+=======
+        private void BtnFechar_Click(object sender, RoutedEventArgs e)
+        {
+            Hide(); // Oculta sem destruir — reutilizável
+>>>>>>> cf9088e69cc907d9c28c2e61a88f724fd2274fae
         }
     }
 }
