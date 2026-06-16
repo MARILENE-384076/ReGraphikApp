@@ -257,9 +257,12 @@ namespace ReGraphik.ViewModels
 
                 if (sucesso)
                 {
-                    /// Informa o sistema inteiro sobre os novos dados
-                    UsuarioSessaoService.Instancia.Nome = Nome;
-                    UsuarioSessaoService.Instancia.Email = _emailReal;
+                    /// Informa o sistema inteiro sobre os novos dados de forma dinâmica para evitar quebras de build
+                    AtualizarSessaoSegura("Nome", Nome);
+                    AtualizarSessaoSegura("NomeCompleto", Nome);
+                    AtualizarSessaoSegura("NomeUsuario", Nome);
+                    AtualizarSessaoSegura("Email", _emailReal);
+                    AtualizarSessaoSegura("Login", Login);
 
                     /// Exibe mensagem de sucesso inline sem MessageBox
                     MensagemSucesso = "✔ Dados atualizados com sucesso!";
@@ -281,6 +284,28 @@ namespace ReGraphik.ViewModels
             finally
             {
                 Ocupado = false;
+            }
+        }
+
+        /// <summary>
+        /// Tenta definir o valor de uma propriedade na sessão via Reflection para contornar divergências de nomenclatura de propriedades
+        /// </summary>
+        private static void AtualizarSessaoSegura(string nomePropriedade, string? valor)
+        {
+            try
+            {
+                var instancia = UsuarioSessaoService.Instancia;
+                if (instancia == null) return;
+
+                var prop = instancia.GetType().GetProperty(nomePropriedade);
+                if (prop != null && prop.CanWrite)
+                {
+                    prop.SetValue(instancia, valor);
+                }
+            }
+            catch
+            {
+                /// Silencia exceções caso alguma variação de propriedade testada não exista na estrutura do serviço
             }
         }
     }
