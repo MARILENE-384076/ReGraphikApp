@@ -9,12 +9,11 @@ namespace ReGraphik.Services
     /// </summary>
     public class UsuarioSessaoService : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Instância única compartilhada por toda a aplicação
-        /// </summary>
-        public static readonly UsuarioSessaoService Instancia = new();
+        private static UsuarioSessaoService? _instancia;
+        public static UsuarioSessaoService Instancia => _instancia ??= new UsuarioSessaoService();
 
         private string? _fotoCaminho;
+
         public string? FotoCaminho
         {
             get => _fotoCaminho;
@@ -22,7 +21,11 @@ namespace ReGraphik.Services
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string? prop = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private UsuarioSessaoService() { } // Construtor privado para garantir o Singleton
     }
 }
