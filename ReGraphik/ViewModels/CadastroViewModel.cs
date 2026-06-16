@@ -3,7 +3,10 @@ using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System.ComponentModel;
+using System.Net.Http;
 using System.Reflection.Metadata;
+using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,7 +25,7 @@ namespace ReGraphik.ViewModels
         private string? _email;
         private string? _login;
         private bool _ocupado;
-        private bool _formularioEnviado;
+        private bool _solicitacaoEnviada;
 
         /// <summary>
         /// Campo de mensagem de alerta
@@ -34,21 +37,6 @@ namespace ReGraphik.ViewModels
         private string _mensaSenha;
         private string _mensagemErroGeral;
 
-        private bool _exibirAlertaToken;
-        private string _tokenGeradoAlerta;
-
-        public bool ExibirAlertaToken
-        {
-            get => _exibirAlertaToken;
-            set { _exibirAlertaToken = value; OnPropertyChanged(); }
-        }
-
-        public string TokenGeradoAlerta
-        {
-            get => _tokenGeradoAlerta;
-            set { _tokenGeradoAlerta = value; OnPropertyChanged(); }
-        }
-
         /// <summary>
         /// Segurança no cadastro
         /// </summary>
@@ -56,8 +44,12 @@ namespace ReGraphik.ViewModels
         private bool _isTokenValido;
         private bool _ocupadoToken;
         private string _mensagemErroToken;
-        public bool ExibirFormulario => !FormularioEnviado;
-        public bool ExibirPainelToken => FormularioEnviado && !IsTokenValido;
+
+        private bool _exibirToken;
+
+        private bool _cadastroFinalizadoComSucesso;
+        public bool ExibirSolicitacaoAcesso => !SolicitacaoEnviada;
+        public bool ExibirFormularioCompleto => IsTokenValido && !CadastroFinalizadoComSucesso;
 
         public string Nome
         {
@@ -137,9 +129,8 @@ namespace ReGraphik.ViewModels
             set
             {
                 _isTokenValido = value;
-                OnPropertyChanged(nameof(IsTokenValido));
-                // Notifica o WPF para ocultar o painel do token e exibir o sucesso final
-                OnPropertyChanged(nameof(ExibirPainelToken));
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ExibirFormularioCompleto));
             }
         }
 
@@ -171,53 +162,70 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Define se a API concluiu o pré-cadastro com sucesso e disparou o token.
+        /// Solicita um token de acesso.
         /// </summary>
-        public bool FormularioEnviado
+        public bool SolicitacaoEnviada
         {
-            get => _formularioEnviado;
+            get => _solicitacaoEnviada;
             set
             {
-                _formularioEnviado = value;
-                OnPropertyChanged(nameof(FormularioEnviado));
-                // Notifica o WPF para reavaliar o que deve ser exibido
-                OnPropertyChanged(nameof(ExibirFormulario));
-                OnPropertyChanged(nameof(ExibirPainelToken));
+                _solicitacaoEnviada = value;
+                OnPropertyChanged();
+                // Dispara a atualização explícita de todas as regras de visibilidade
+                OnPropertyChanged(nameof(ExibirSolicitacaoAcesso));
+                OnPropertyChanged(nameof(ExibirFormularioCompleto));
             }
         }
 
-        public ICommand CadastrarCommand { get; }
+        public bool CadastroFinalizadoComSucesso
+        {
+            get => _cadastroFinalizadoComSucesso;
+            set
+            {
+                _cadastroFinalizadoComSucesso = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ExibirFormularioCompleto));
+            }
+        }
+
+        public bool ExibirToken
+        {
+            get => _exibirToken;
+            set { _exibirToken = value; OnPropertyChanged(); }
+        }
+
+        public ICommand SolicitarAcessoCommand { get; }
         public ICommand ValidarTokenCommand { get; }
+        public ICommand FinalizarCadastroCommand { get; }
         public ICommand RevelarSenhaCadastroCommand { get; }
-        public ICommand FecharAlertaTokenCommand { get; }
 
         public CadastroViewModel(IAutorizarService? autorizarService = null)
         {
             _autorizarService = autorizarService ?? new AutorizarService();
 
             // Vinculação dos comandos aos métodos internos
-            CadastrarCommand = new RelayCommand(async (param) => await Cadastrar(param), CanCadastrar);
-            ValidarTokenCommand = new RelayCommand(async (param) => await ValidarToken(), CanValidarToken);
+            SolicitarAcessoCommand = new RelayCommand(async (_) => await SolicitarAcesso(), _ => !Ocupado);
+            ValidarTokenCommand = new RelayCommand(async (_) => await ValidarToken(), _ => !OcupadoToken);
+            FinalizarCadastroCommand = new RelayCommand(async (param) => await FinalizarCadastro(param), _ => !Ocupado);
             RevelarSenhaCadastroCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
 
-            FormularioEnviado = false;
+            SolicitacaoEnviada = false;
             IsTokenValido = false;
+            CadastroFinalizadoComSucesso = false;
 
-            FecharAlertaTokenCommand = new RelayCommand(_ => ExibirAlertaToken = false);
+            MensagemErroToken = string.Empty;
+            TokenDigitado = string.Empty;
         }
-
-        private bool CanCadastrar(object parameter) => !Ocupado;
-        private bool CanValidarToken(object parameter) => !OcupadoToken;
 
         /// <summary>
         /// Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
         /// </summary>
-        private async Task Cadastrar(object parameter)
+        private async Task FinalizarCadastro(object parameter)
         {
             LimparMensagensErro();
             bool possuiErro = false;
-
             string senhaCadastro = string.Empty;
+
             if (parameter is Grid gridCampos)
             {
                 PasswordBox? passwordBox = null;
@@ -263,27 +271,102 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = true;
 
-                // Formata o CPF no padrão 000.000.000-00 antes de enviar para a API
+                /// Formata o CPF no padrão 000.000.000-00 antes de enviar para a API
                 string cpfFormatado = ValidacaoCpfService.Formatar(CPF);
 
-                // Envia os dados para o endpoint unificado "Post" da sua API
-                var resultado = await _autorizarService.CadastrarAsync(Nome, cpfFormatado, Email, Login, senhaCadastro);
+                /// Envia os dados definitivos e o token provisório para persistência na API
+                bool cadastrado = await _autorizarService.FinalizarCadastroAsync(Nome, cpfFormatado, Email, Login, senhaCadastro, TokenDigitado.Trim());
 
-                if (resultado != null)
+                if (cadastrado)
                 {
-                    TokenGeradoAlerta = resultado.Token;
-                    ExibirAlertaToken = true;
-                    // Libera o container de Token na tela do WPF
-                    FormularioEnviado = true;
+                    CadastroFinalizadoComSucesso = true;
+                    MensagemErroGeral = "Sua conta corporativa foi criada e ativada com sucesso!";
                 }
                 else
                 {
-                    MensagemErroGeral = "Não foi possível gerar o token de cadastro.";
+                    MensagemErroGeral = "Erro ao finalizar o cadastro na API. Verifique os dados informados.";
+                }
+            }
+            catch (Exception)
+            {
+                MensagemErroGeral = "Erro ao conectar com a API.";
+            }
+            finally
+            {
+                Ocupado = false;
+            }
+        }
+
+        /// <summary>
+        /// Envia apenas o E-mail corporativo do usuário para a fila de aprovação da API.
+        /// </summary>
+        /// <returns></returns>
+        private async Task SolicitarAcesso()
+        {
+            LimparMensagensErro();
+
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                MensaEmail = "O e-mail é obrigatório.";
+                return;
+            }
+
+            if (!Email.EndsWith("@regraphik.com.br", StringComparison.OrdinalIgnoreCase))
+            {
+                MensaEmail = "Somente e-mails corporativos da ReGraphik podem realizar cadastro.";
+                return;
+            }
+
+            try
+            {
+                Ocupado = true;
+                using (var client = new HttpClient())
+                {
+                    // Rota principal unificada do Passo 1 (Pública)
+                    string url = "https://webregraphik.runasp.net/api/Usuario";
+
+                    // Monta o objeto DTO contendo apenas o e-mail que a API espera
+                    var dadosSolicitacao = new { email = Email.Trim() };
+                    string jsonBody = JsonSerializer.Serialize(dadosSolicitacao);
+
+                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync(url, content);
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+
+                    var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Mapeia a mensagem vinda do servidor ("Solicitação processada com sucesso...")
+                        var resultado = JsonSerializer.Deserialize<RespostaToken>(jsonResult, opcoes);
+
+                        SolicitacaoEnviada = true;
+                        MensagemErroGeral = resultado?.Mensagem ?? "Solicitação enviada! Aguarde a liberação do seu token.";
+
+                        // Como estamos no Cenário B, o token NÃO vem na resposta do Usuário Comum.
+                        // O campo de Debug da tela só será preenchido quando o administrador gerar o token no Swagger/Painel.
+                        TokenDigitado = string.Empty;
+                        MensagemErroToken = "Aguardando liberação do administrador...";
+                        ExibirToken = true;
+                    }
+                    else
+                    {
+                        // Captura mensagens de validação vindas da API (Ex: "E-mail já está cadastrado")
+                        try
+                        {
+                            var erroApi = JsonSerializer.Deserialize<RespostaToken>(jsonResult, opcoes);
+                            MensagemErroGeral = erroApi?.Mensagem ?? "Erro ao processar requisição corporativa.";
+                        }
+                        catch
+                        {
+                            MensagemErroGeral = "E-mail já cadastrado ou domínio recusado.";
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                // Captura mensagens amigáveis lançadas pelo HttpClient do Service
                 MensagemErroGeral = ex.Message;
             }
             finally
