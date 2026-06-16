@@ -172,43 +172,43 @@
             </Grid>
 
             <Grid Margin="0,0,0,14">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="#DBEAFE" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                    <TextBlock Text="2" FontWeight="Bold" Foreground="#1E40AF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                </Border>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                               Text="Acesse o site oficial do INMETRO"/>
-                    <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                               Text="No portal do INMETRO, localize um Organismo de Certificação Ambiental (OCA) acreditado para conduzir a auditoria ISO 14001 na sua empresa."/>
-                </StackPanel>
-            </Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+        <TextBlock Text="2" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+    </Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                   Text="Acesse o site oficial do INMETRO"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                   Text="No portal do INMETRO, localize um Organismo de Certificação Ambiental (OCA) acreditado para conduzir a auditoria ISO 14001 na sua empresa."/>
+    </StackPanel>
+</Grid>
 
-            <Grid Margin="0,0,0,14">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="#DBEAFE" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                    <TextBlock Text="3" FontWeight="Bold" Foreground="#1E40AF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                </Border>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                               Text="Entre em contato com o OCA escolhido"/>
-                    <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                               Text="Apresente o relatório do ReGraphik como evidência de gestão de resíduos. O OCA irá conduzir a análise documental e a auditoria presencial na sua empresa."/>
-                </StackPanel>
-            </Grid>
+<Grid Margin="0,0,0,14">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+        <TextBlock Text="3" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+    </Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                   Text="Entre em contato com o OCA escolhido"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                   Text="Apresente o relatório do ReGraphik como evidência de gestão de resíduos. O OCA irá conduzir a análise documental e a auditoria presencial na sua empresa."/>
+    </StackPanel>
+</Grid>
 
-            <Grid Margin="0,0,0,14">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="#DBEAFE" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                    <TextBlock Text="4" FontWeight="Bold" Foreground="#1E40AF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                </Border>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                               Text="Receba o Certificado ISO 14001"/>
-                    <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                               Text="Após a auditoria aprovada, o OCA emite o certificado e registra no sistema Certifiq do INMETRO. O certificado é válido por 3 anos com auditorias anuais de manutenção."/>
-                </StackPanel>
-            </Grid>
+<Grid Margin="0,0,0,14">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+        <TextBlock Text="4" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+    </Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                   Text="Receba o Certificado ISO 14001"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                   Text="Após a auditoria aprovada, o OCA emite o certificado e registra no sistema Certifiq do INMETRO. O certificado é válido por 3 anos com auditorias anuais de manutenção."/>
+    </StackPanel>
+</Grid>
 
         </StackPanel>
 

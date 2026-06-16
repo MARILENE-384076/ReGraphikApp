@@ -38,15 +38,13 @@ namespace ReGraphik.Views
                 DragMove();
         }
 
-<<<<<<< HEAD
-        private void Cabecalho_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            throw new NotImplementedException();
-=======
+
+
+
         private void BtnFechar_Click(object sender, RoutedEventArgs e)
         {
             Hide(); // Oculta sem destruir — reutilizável
->>>>>>> cf9088e69cc907d9c28c2e61a88f724fd2274fae
+
         }
     }
-}
+};
