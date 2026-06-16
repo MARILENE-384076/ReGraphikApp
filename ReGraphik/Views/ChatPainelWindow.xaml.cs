@@ -51,5 +51,9 @@ namespace ReGraphik.Views
             Hide(); // Oculta sem destruir — reutilizavel
         }
 
+        private void Cabecalho_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

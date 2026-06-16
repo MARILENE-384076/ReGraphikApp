@@ -17,5 +17,7 @@ namespace ReGraphik.Views.Controls
             InitializeComponent();
             DataContext = new EsgViewModel(usuario);
         }
+        
     }
+    
 }
