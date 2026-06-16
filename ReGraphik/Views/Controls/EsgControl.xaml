@@ -213,10 +213,10 @@
         </StackPanel>
 
         <!-- Links oficiais -->
-        <Border Background="#EFF6FF" CornerRadius="8" Padding="16,14" Margin="0,8,0,0">
+        <Border Background="#FFFBEB" CornerRadius="8" Padding="16,14" Margin="0,8,0,0">
             <StackPanel>
                 <TextBlock Text="🔗  Links oficiais" FontWeight="SemiBold"
-                           Foreground="#1E40AF" FontSize="13" Margin="0,0,0,10"/>
+                           Foreground="#B45309" FontSize="13" Margin="0,0,0,10"/>
 
                 <Button Cursor="Hand" HorizontalAlignment="Left" Margin="0,0,0,8"
                         Background="Transparent" BorderThickness="0"
