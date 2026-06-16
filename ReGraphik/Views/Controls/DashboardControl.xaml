@@ -71,7 +71,7 @@
 
                         <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
                             <TextBlock x:Name="TxtNomeUsuario"
-                                       Text="{Binding NomeUsuario, FallbackValue='Usuário'}"
+                                       Text="{Binding NomeUsuario}"
                                        FontSize="18" FontWeight="Bold" Foreground="#1E293B"/>
 
                             <!-- Campos do Usuário -->

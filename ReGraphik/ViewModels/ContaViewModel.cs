@@ -257,6 +257,10 @@ namespace ReGraphik.ViewModels
 
                 if (sucesso)
                 {
+                    /// Informa o sistema inteiro sobre os novos dados
+                    UsuarioSessaoService.Instancia.Nome = Nome;
+                    UsuarioSessaoService.Instancia.Email = _emailReal;
+
                     /// Exibe mensagem de sucesso inline sem MessageBox
                     MensagemSucesso = "✔ Dados atualizados com sucesso!";
                     Email = MascararEmail(_emailReal);
