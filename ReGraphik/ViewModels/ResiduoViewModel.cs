@@ -353,7 +353,7 @@ namespace ReGraphik.ViewModels
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "Imagens e Vídeos|*.jpg;*.jpeg;*.png;*.bmp;*.mp4;*.mkv;*.avi;*.mov",
+                Filter = "Imagens|*.jpg;*.jpeg;*.png;",
                 Title = "Selecione um arquivo para anexar"
             };
 
