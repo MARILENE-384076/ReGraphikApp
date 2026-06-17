@@ -63,4 +63,64 @@
         <Setter Property="Margin" Value="0,15,0,5"/>
     </Style>
 
+    <!-- Boão de Data -->
+    <Style x:Key="ModernDatePickerStyle" TargetType="DatePicker">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#CBD5E1"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="Height" Value="38"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DatePicker">
+                    <Grid x:Name="DatePickerRoot">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{TemplateBinding Background}" 
+                            CornerRadius="6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <DatePickerTextBox x:Name="PART_TextBox" 
+                                               Grid.Column="0" 
+                                               BorderThickness="0" 
+                                               Background="Transparent"
+                                               VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                               Padding="{TemplateBinding Padding}"
+                                               Foreground="#1E293B"/>
+
+                                <Button x:Name="PART_Button" 
+                                    Grid.Column="1" 
+                                    Width="30"
+                                    Background="Transparent" 
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    Focusable="False">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Grid Background="Transparent" Margin="0,0,8,0">
+                                                <TextBlock Text="📅" FontSize="14" Foreground="#64748B" 
+                                                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <Popup x:Name="PART_Popup" 
+                           AllowsTransparency="True" 
+                           Placement="Bottom" 
+                           PlacementTarget="{Binding ElementName=DatePickerRoot}" 
+                           StaysOpen="False"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

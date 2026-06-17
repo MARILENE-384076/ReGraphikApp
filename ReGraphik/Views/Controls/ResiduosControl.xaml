@@ -216,7 +216,7 @@
 
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Data" Style="{StaticResource FieldLabelStyle}"/>
-                                    <DatePicker SelectedDate="{Binding Data}" Height="38" Padding="5" VerticalContentAlignment="Center"/>
+                                    <DatePicker SelectedDate="{Binding Data}" Style="{StaticResource ModernDatePickerStyle}" VerticalContentAlignment="Center"/>
                                     <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaData}" Foreground="DarkRed"/>
                                 </StackPanel>
                             </Grid>

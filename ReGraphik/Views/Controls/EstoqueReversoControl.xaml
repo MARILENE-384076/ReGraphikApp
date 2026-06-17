@@ -73,27 +73,77 @@
 
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}"
-                                  ItemsSource="{Binding ListaTipos}"
-                                  SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"
-                                  SelectedIndex="0"/>
-                        
+                        <Grid>
+                            <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaTipos}"
+                              SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"/>
+
+                            <TextBlock Text="Selecione o tipo..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}"
-                                  ItemsSource="{Binding ListaOrigens}"
-                                  SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"
-                                  SelectedIndex="0"/>
+                        <Grid>
+                            <ComboBox x:Name="CboOrigem" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaOrigens}"
+                              SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"/>
+
+                            <TextBlock Text="Selecione a origem..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel Grid.Column="4">
                         <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}"
-                                  ItemsSource="{Binding ListaStatus}"
-                                  SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"
-                                  SelectedIndex="0"/>
+                        <Grid>
+                            <ComboBox x:Name="CboStatus" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaStatus}"
+                              SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"/>
+
+                            <TextBlock Text="Selecione o status..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                     <Grid Grid.Column="6" VerticalAlignment="Bottom">
@@ -106,12 +156,27 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ComboBox Grid.Column="0"
-                                          Style="{StaticResource FilterComboBoxStyle}"
-                                          ItemsSource="{Binding ListaPeriodos}"
-                                          SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"
-                                          SelectedIndex="0"
-                                          Margin="0,0,6,0"/>
+                                <Grid Grid.Column="0" Margin="0,0,6,0">
+                                    <ComboBox x:Name="CboPeriodo" Style="{StaticResource FilterComboBoxStyle}"
+                                      ItemsSource="{Binding ListaPeriodos}"
+                                      SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"/>
+
+                                    <TextBlock Text="Filtrar por data..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
 
                                 <Button Grid.Column="1"
                                         Content="Filtrar"
