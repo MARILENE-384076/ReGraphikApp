@@ -18,288 +18,308 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+
+
         </ResourceDictionary>
     </UserControl.Resources>
 
     <!-- Aba de Filtros -->
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <TextBlock Grid.Row="0" Text="Estoque Reverso" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
-
-        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
-            <Border.Effect>
-                <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-            </Border.Effect>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
-                           Foreground="#1E293B" Margin="0,0,0,14"/>
-
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="16"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
-                        <Grid>
-                            <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource FilterComboBoxStyle}"
-                              ItemsSource="{Binding ListaTipos}"
-                              SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"/>
-
-                            <TextBlock Text="Selecione o tipo..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="2">
-                        <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
-                        <Grid>
-                            <ComboBox x:Name="CboOrigem" Style="{StaticResource FilterComboBoxStyle}"
-                              ItemsSource="{Binding ListaOrigens}"
-                              SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"/>
-
-                            <TextBlock Text="Selecione a origem..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="4">
-                        <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
-                        <Grid>
-                            <ComboBox x:Name="CboStatus" Style="{StaticResource FilterComboBoxStyle}"
-                              ItemsSource="{Binding ListaStatus}"
-                              SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"/>
-
-                            <TextBlock Text="Selecione o status..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </StackPanel>
-
-                    <Grid Grid.Column="6" VerticalAlignment="Bottom">
-                        <StackPanel>
-                            <TextBlock Text="Período" Style="{StaticResource FilterLabelStyle}"/>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Grid Grid.Column="0" Margin="0,0,6,0">
-                                    <ComboBox x:Name="CboPeriodo" Style="{StaticResource FilterComboBoxStyle}"
-                                      ItemsSource="{Binding ListaPeriodos}"
-                                      SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"/>
-
-                                    <TextBlock Text="Filtrar por data..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="{x:Null}">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Grid>
-
-                                <Button Grid.Column="1"
-                                        Content="Filtrar"
-                                        Style="{StaticResource RoundedButtonStyle}"
-                                        Command="{Binding FiltrarCommand}"
-                                        Width="72" Height="38"
-                                        Background="#1649a2" Foreground="White"
-                                        FontWeight="SemiBold" BorderThickness="0"
-                                        Margin="0,0,6,0" Cursor="Hand" />
-
-                                <Button Grid.Column="2"
-                                        Content="Limpar"
-                                        Style="{StaticResource RoundedButtonStyle}"
-                                        Command="{Binding LimparFiltrosCommand}"
-                                        Width="68" Height="38"
-                                        Background="White"
-                                        BorderBrush="#CBD5E1" BorderThickness="1"
-                                        Foreground="#64748B" FontWeight="SemiBold"
-                                        Cursor="Hand" />
-                            </Grid>
-                        </StackPanel>
-                    </Grid>
-                </Grid>
-            </Grid>
-        </Border>
-
-        <!-- Aba de Cards -->
-        <Grid Grid.Row="2">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24,24,24,16">
+        <Grid Margin="24">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Resíduos em Estoque" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
+            <TextBlock Grid.Row="0" Text="Estoque Reverso" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
 
-            <ListBox Grid.Row="1" 
+            <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
+           Foreground="#1E293B" Margin="0,0,0,14"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,14">
+                        <Button
+                            Content="Limpar"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Command="{Binding LimparFiltrosCommand}" Height="38" Width="100"
+                            Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
+                            Foreground="#64748B" FontWeight="SemiBold" Cursor="Hand" 
+                            Margin="0,0,10,0" />
+                        
+                        <Button
+                            Content="Filtrar"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Command="{Binding FiltrarCommand}" Height="38" Width="100"
+                            Background="#1649a2" Foreground="White" FontWeight="SemiBold" 
+                            BorderThickness="0" Cursor="Hand" />
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
+                            <Grid>
+                                <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaTipos}"
+                              SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"/>
+
+                                <TextBlock Text="Selecione o tipo..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
+                            <Grid>
+                                <ComboBox x:Name="CboOrigem" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaOrigens}"
+                              SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"/>
+
+                                <TextBlock Text="Selecione a origem..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
+                            <Grid>
+                                <ComboBox x:Name="CboStatus" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaStatus}"
+                              SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"/>
+
+                                <TextBlock Text="Selecione o status..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
+
+                        <Grid Grid.Column="6" VerticalAlignment="Bottom" Margin="0">
+                            <StackPanel>
+                                <TextBlock Text="Período" Style="{StaticResource FilterLabelStyle}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0" Margin="0,0,6,0">
+                                        <ComboBox x:Name="CboPeriodo" Style="{StaticResource FilterComboBoxStyle}"
+                                      ItemsSource="{Binding ListaPeriodos}"
+                                      SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"/>
+
+                                        <TextBlock Text="Filtrar por data..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+
+
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- Aba de Cards -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="659*"/>
+                    <ColumnDefinition Width="245*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Resíduos em Estoque" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16" Grid.ColumnSpan="2"/>
+
+                <ListBox 
                      ItemsSource="{Binding ResiduosFiltrados}" 
                      Background="Transparent" 
                      BorderThickness="0"
                      HorizontalContentAlignment="Stretch"
                      VerticalContentAlignment="Stretch"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Margin="0,37,0,0" Grid.RowSpan="2">
 
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
 
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="White" Width="290" CornerRadius="12" Padding="16" Margin="0,0,16,16">
-                            <Border.Effect>
-                                <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.05" Color="#000"/>
-                            </Border.Effect>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" Width="370" CornerRadius="12" Padding="16" Margin="1,0,16,10">
+                                <Border.Effect>
+                                    <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.05" Color="#000"/>
+                                </Border.Effect>
 
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="150"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="0" Margin="0,0,0,12">
-                                    <TextBlock Text="{Binding Id, StringFormat='#\{0\}'}" 
-                                               Foreground="#64748B" FontWeight="Medium" FontSize="12" 
-                                               VerticalAlignment="Center"/>
+                                    <Grid Grid.Row="0" Background="#F1F5F9">
+                                        <Image Source="{Binding Anexo, TargetNullValue='pack://application:,,,/Assets/placeholder.png', FallbackValue='pack://application:,,,/Assets/placeholder.png'}" 
+                                           Stretch="UniformToFill"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
 
-                                    <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
-                                            CornerRadius="12" Padding="8,3" HorizontalAlignment="Right">
-                                        <TextBlock Text="{Binding Status}" 
+                                        <Border Background="#CC1E293B" CornerRadius="6" Padding="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
+                                            <TextBlock Text="{Binding Id, StringFormat='#\{0\}'}" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                                        </Border>
+
+                                        <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                            CornerRadius="12" Padding="8,3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12">
+                                            <TextBlock Text="{Binding Status}" 
                                                    Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
                                                    FontSize="10" FontWeight="SemiBold"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <Border Grid.Row="1" Padding="16,14,16,16">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Grid.Row="0" Text="{Binding TipoResiduo}" 
+                                                   FontSize="16" FontWeight="Bold" Foreground="#1E293B" 
+                                                   TextWrapping="Wrap" Margin="0,0,0,12" MinHeight="22"/>
+
+                                            <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <TextBlock Text="Origem:" Foreground="#64748B" FontSize="12"/>
+                                                        <TextBlock Text="{Binding Origem}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
+                                                    </Grid>
+
+                                                    <Grid Margin="0,0,0,6">
+                                                        <TextBlock Text="Quantidade:" Foreground="#64748B" FontSize="12"/>
+                                                        <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="#1E293B" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                    </Grid>
+
+                                                    <Grid>
+                                                        <TextBlock Text="Condição:" Foreground="#64748B" FontSize="12"/>
+                                                        <TextBlock Text="{Binding Condicao}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Grid.Row="2" Height="1" Background="#F1F5F9" Margin="0,0,0,12"/>
+
+                                            <Grid Grid.Row="3">
+                                                <StackPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="Cadastro" Foreground="#94A3B8" FontSize="10"/>
+                                                    <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="#64748B" FontSize="12" FontWeight="Medium"/>
+                                                </StackPanel>
+
+                                                <Button Content="💡 Sugestões"
+                                                    Style="{StaticResource RoundedButtonStyle}"
+                                                    Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Height="32" Padding="12,0" HorizontalAlignment="Right"
+                                                    Background="White" BorderBrush="#2563EB" BorderThickness="1"
+                                                    Foreground="#2563EB" FontSize="12" FontWeight="Medium"
+                                                    Cursor="Hand" />
+                                            </Grid>
+                                        </Grid>
                                     </Border>
                                 </Grid>
-
-                                <TextBlock Grid.Row="1" Text="{Binding TipoResiduo}" 
-                                           FontSize="16" FontWeight="Bold" Foreground="#1E293B" 
-                                           TextWrapping="Wrap" Margin="0,0,0,12"/>
-
-                                <Border Grid.Row="2" Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,12">
-                                    <StackPanel>
-                                        <Grid Margin="0,0,0,6">
-                                            <TextBlock Text="Origem:" Foreground="#64748B" FontSize="12"/>
-                                            <TextBlock Text="{Binding Origem}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
-                                        </Grid>
-
-                                        <Grid Margin="0,0,0,6">
-                                            <TextBlock Text="Quantidade:" Foreground="#64748B" FontSize="12"/>
-                                            <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="#1E293B" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
-                                        </Grid>
-
-                                        <Grid>
-                                            <TextBlock Text="Condição:" Foreground="#64748B" FontSize="12"/>
-                                            <TextBlock Text="{Binding Condicao}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
-                                        </Grid>
-                                    </StackPanel>
-                                </Border>
-
-                                <Border Grid.Row="3" Height="1" Background="#F1F5F9" Margin="0,0,0,12"/>
-
-                                <Grid Grid.Row="4">
-                                    <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="Cadastro" Foreground="#94A3B8" FontSize="10"/>
-                                        <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="#64748B" FontSize="12" FontWeight="Medium"/>
-                                    </StackPanel>
-
-                                    <Button Content="💡 Sugestões"
-                                            Style="{StaticResource RoundedButtonStyle}"
-                                            Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}"
-                                            Height="32" Padding="12,0" HorizontalAlignment="Right"
-                                            Background="White" BorderBrush="#2563EB" BorderThickness="1"
-                                            Foreground="#2563EB" FontSize="12" FontWeight="Medium"
-                                            Cursor="Hand" />
-                                </Grid>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
         </Grid>
-    </Grid>
+    </ScrollViewer>
 </UserControl>
