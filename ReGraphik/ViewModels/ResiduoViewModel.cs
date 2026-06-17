@@ -331,28 +331,27 @@ namespace ReGraphik.ViewModels
 
         private void MostrarMensagemSucesso()
         {
-            var tela = new MensagemWindow();
-
-            tela.TxtIcone.Text = "✓";
-            tela.TxtTitulo.Text = "SUCESSO!";
-            tela.TxtMensagem.Text = "Resíduo cadastrado com sucesso!";
-
-            tela.ShowDialog();
+            // O Dispatcher joga a execução de volta para a Thread correta (STA)
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var msgWindow = new MensagemWindow();
+                msgWindow.ShowDialog(); // ou msgWindow.Show();
+            });
 
             LimparCampos();
         }
 
         private void MostrarMensagemErro()
         {
-            var tela = new MensagemWindow();
-            
-            tela.TxtIcone.Text = "X";
-            tela.TxtTitulo.Text = "ERRO!";
-            tela.TxtMensagem.Text = "Ocorreu um erro ao cadastrar o resíduo.";
+            // O Dispatcher joga a execução de volta para a Thread correta (STA)
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var msgWindow = new MensagemWindow();
+                msgWindow.ShowDialog(); // ou msgWindow.Show();
+            });
 
-            tela.ShowDialog();
+            LimparCampos();
         }
-
 
         /// <summary>
         /// Método para abrir um diálogo de seleção de arquivos, permitindo que o usuário escolha um arquivo de imagem ou vídeo para anexar ao resíduo.
