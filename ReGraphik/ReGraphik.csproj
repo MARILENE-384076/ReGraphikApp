@@ -23,6 +23,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="FirebaseDatabase.Net" Version="4.2.0" />
+		<PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
 		<PackageReference Include="Imgur.API" Version="5.0.0" />
 		<PackageReference Include="MahApps.Metro.IconPacks.Material" Version="6.2.1" />
 		<PackageReference Include="MahApps.Metro.SimpleChildWindow" Version="2.2.1" />
