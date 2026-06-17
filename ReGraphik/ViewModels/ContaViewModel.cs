@@ -3,6 +3,8 @@ using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +18,7 @@ namespace ReGraphik.ViewModels
     {
         private readonly Usuario _usuarioAtual;
         private readonly IAutorizarService _autorizarService;
+        private readonly IResiduoService _residuoService;
         private string _emailReal = string.Empty;
 
         private BitmapImage? _imgFoto;
@@ -87,6 +90,60 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
+        // ── Estatísticas ─────────────────────────────────────────
+
+        /// <summary>
+        /// Total de resíduos cadastrados pelo usuário logado
+        /// </summary>
+        private int _totalResiduos;
+        public int TotalResiduos
+        {
+            get => _totalResiduos;
+            set { _totalResiduos = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Total de resíduos reaproveitados pelo usuário logado
+        /// </summary>
+        private int _totalReaproveitados;
+        public int TotalReaproveitados
+        {
+            get => _totalReaproveitados;
+            set { _totalReaproveitados = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Valor econômico total gerado pelo usuário, formatado em moeda
+        /// </summary>
+        private string _valorEconomico = "R$ 0,00";
+        public string ValorEconomico
+        {
+            get => _valorEconomico;
+            set { _valorEconomico = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Últimos 3 resíduos cadastrados pelo usuário para exibição na tela de perfil
+        /// </summary>
+        private ObservableCollection<Residuo> _ultimosResiduos = new();
+        public ObservableCollection<Residuo> UltimosResiduos
+        {
+            get => _ultimosResiduos;
+            set { _ultimosResiduos = value; OnPropertyChanged(); }
+        }
+
+        /// <summary>
+        /// Controla a animação de giro do botão atualizar enquanto os dados carregam
+        /// </summary>
+        private bool _carregandoEstatisticas;
+        public bool CarregandoEstatisticas
+        {
+            get => _carregandoEstatisticas;
+            set { _carregandoEstatisticas = value; OnPropertyChanged(); }
+        }
+
+        // ── Mensagens inline ─────────────────────────────────────
+
         /// <summary>
         /// Mensagem de erro inline para o campo de e-mail, exibida abaixo do campo sem MessageBox
         /// </summary>
@@ -123,11 +180,13 @@ namespace ReGraphik.ViewModels
         public ICommand EmailGotFocusCommand { get; }
         public ICommand EmailLostFocusCommand { get; }
         public ICommand SelecionarFotoCommand { get; }
+        public ICommand AtualizarEstatisticasCommand { get; }
 
         public ContaViewModel(Usuario usuario, IAutorizarService autorizarService)
         {
             _usuarioAtual = usuario;
             _autorizarService = autorizarService;
+            _residuoService = new ResiduoService();
 
             CarregarDadosNaTela();
 
@@ -137,11 +196,15 @@ namespace ReGraphik.ViewModels
             EmailGotFocusCommand = new RelayCommand(EmailGotFocus);
             EmailLostFocusCommand = new RelayCommand(EmailLostFocus);
             SelecionarFotoCommand = new RelayCommand(_ => MudarFoto());
+            AtualizarEstatisticasCommand = new RelayCommand(async _ => await CarregarEstatisticasAsync());
 
             /// Carrega foto persistida do disco ao abrir a tela
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
             if (fotoSalva != null)
                 CarregarBitmapDoCaminho(fotoSalva);
+
+            /// Carrega as estatísticas do usuário em background ao abrir a tela
+            _ = CarregarEstatisticasAsync();
         }
 
         private void CarregarDadosNaTela()
@@ -158,6 +221,50 @@ namespace ReGraphik.ViewModels
             Email = MascararEmail(_emailReal);
 
             OnPropertyChanged(nameof(EmailResumido));
+        }
+
+        /// <summary>
+        /// Carrega as estatísticas do usuário logado a partir da API de resíduos.
+        /// Também é chamado pelo botão de atualizar com animação de giro.
+        /// </summary>
+        private async Task CarregarEstatisticasAsync()
+        {
+            try
+            {
+                CarregandoEstatisticas = true;
+
+                var todos = await _residuoService.ObterTodosResiduosAsync();
+
+                /// Filtra apenas os resíduos do usuário logado pelo seu Id
+                var meus = todos
+                    .Where(r => r.IdUsuario == _usuarioAtual.Id)
+                    .ToList();
+
+                /// Calcula as estatísticas
+                TotalResiduos = meus.Count;
+                TotalReaproveitados = meus.Count(r => r.Status == "Reaproveitado");
+                ValorEconomico = meus.Sum(r => r.Quantidade * 5.50).ToString("C2");
+
+                /// Últimos 3 resíduos cadastrados pelo usuário
+                var ultimos = meus
+                    .OrderByDescending(r => r.DataCadastro)
+                    .Take(3)
+                    .ToList();
+
+                Application.Current.Dispatcher.Invoke(() =>
+                    UltimosResiduos = new ObservableCollection<Residuo>(ultimos));
+            }
+            catch (Exception)
+            {
+                /// Falha silenciosa — estatísticas ficam zeradas sem quebrar a tela
+                TotalResiduos = 0;
+                TotalReaproveitados = 0;
+                ValorEconomico = "R$ 0,00";
+            }
+            finally
+            {
+                CarregandoEstatisticas = false;
+            }
         }
 
         /// <summary>
