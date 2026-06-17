@@ -115,7 +115,7 @@
 
                 <StackPanel Grid.Row="1">
                     <Button x:Name="BtnDashboard"
-                            Style="{StaticResource NavBtn}"
+                            Style="{StaticResource NavBtnAtivo}"
                             Command="{Binding NavegarDashboardCommand}" Tag="Dashboard">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
