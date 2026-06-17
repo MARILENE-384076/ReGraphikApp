@@ -35,24 +35,26 @@ namespace ReGraphik.Views.Controls
 
             // Inscreve-se nos eventos da ViewModel para lidar com as ações solicitadas
             _viewModel.SolicitouFocoNoMapa += ViewModel_SolicitouFocoNoMapa;
-            _viewModel.SolicitouNavegacaoMapa += ViewModel_SolicitouNavegacaoMapa;
+            // Atualizado para receber o conteúdo HTML bruto diretamente em memória
+            _viewModel.SolicitouHtmlMapa += ViewModel_SolicitouHtmlMapa;
         }
 
-        private void ViewModel_SolicitouNavegacaoMapa(string caminhoArquivoHtml)
+        private void ViewModel_SolicitouHtmlMapa(string conteudoHtml)
         {
-            // Garante que a navegação do WebBrowser ocorra estritamente na UI Thread
+            // Garante que o carregamento do HTML ocorra estritamente na UI Thread
             Dispatcher.Invoke(() =>
             {
                 try
                 {
                     if (MapaBrowser != null)
                     {
-                        MapaBrowser.Navigate(new Uri(caminhoArquivoHtml));
+                        // Carrega o HTML direto da memória, eliminando bloqueios por arquivo local (ActiveX)
+                        MapaBrowser.NavigateToString(conteudoHtml);
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Erro crítico na navegação: " + ex.Message);
+                    System.Diagnostics.Debug.WriteLine("Erro crítico no carregamento do HTML: " + ex.Message);
                 }
             });
         }
@@ -88,8 +90,8 @@ namespace ReGraphik.Views.Controls
         {
             _viewModel.NotificarMapaCarregado();
 
-            // Oculta o placeholder assim que a primeira navegação real terminar
-            if (MapaPlaceholder != null && e.Uri.Scheme == "file")
+            // Oculta o placeholder assim que a renderização em memória terminar (esquema mudou de 'file' para 'about:blank')
+            if (MapaPlaceholder != null)
             {
                 MapaPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
             }
@@ -116,4 +118,3 @@ namespace ReGraphik.Views.Controls
         }
     }
 }
-

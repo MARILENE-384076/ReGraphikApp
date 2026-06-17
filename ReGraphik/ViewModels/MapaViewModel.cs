@@ -29,7 +29,8 @@ namespace ReGraphik.ViewModels
 
         public event Action<int>? SolicitouFocoNoMapa;
 
-        public event Action<string>? SolicitouNavegacaoMapa;
+        // Atualizado: Novo evento para transmitir o HTML em memória direto para o Code-behind da View
+        public event Action<string>? SolicitouHtmlMapa;
 
         /// <summary>
         /// Propriedades públicas para vinculação à interface
@@ -188,14 +189,12 @@ namespace ReGraphik.ViewModels
 
         private void CarregarMapa(List<PontosColeta> pontos)
         {
-            /// Gera o HTML do mapa com os pontos de coleta e salva em um arquivo temporário
+            /// Gera o HTML do mapa com os pontos de coleta diretamente na memória
             var html = GerarHtml(pontos);
-            var tmpFile = Path.Combine(Path.GetTempPath(), "regraphik_mapa.html");
-            File.WriteAllText(tmpFile, html, Encoding.UTF8);
             _mapaCarregado = false;
 
-            /// Solicita à View que navegue para o arquivo HTML gerado
-            SolicitouNavegacaoMapa?.Invoke(tmpFile);
+            /// Dispara o novo evento solicitando à View que renderize a string em memória
+            SolicitouHtmlMapa?.Invoke(html);
         }
 
         /// <summary>
@@ -203,7 +202,7 @@ namespace ReGraphik.ViewModels
         /// Injeta os dados do C# (nome, endereço, resíduos, telefone e site) dinamicamente no JavaScript.
         /// </summary>
         /// <param name="pontos">A lista de pontos de coleta a serem exibidos no mapa.</param>
-        /// <returns>Uma string contendo o HTML e JavaScript necessários para renderizar o mapa no WebView2.</returns>
+        /// <returns>Uma string contendo o HTML e JavaScript necessários para renderizar o mapa.</returns>
         private string GerarHtml(List<PontosColeta> pontos)
         {
             /// Inicia a construção de um array de objetos em formato JSON para o JavaScript ler
@@ -231,7 +230,7 @@ namespace ReGraphik.ViewModels
             }
             marcadoresJs.Append("]");
 
-            /// Retorna o template HTML concatenado com o array de marcadores gerado acima
+            /// Retorna o template HTML limpo diretamente para injeção sem quebras iniciais
             return $@"<!DOCTYPE html>
 <html>
 <head>
@@ -264,20 +263,17 @@ namespace ReGraphik.ViewModels
             pontos.forEach(function(p) {{
                 var marker = L.marker([p.lat, p.lng]).addTo(map);
                 
-                /// Monta a estrutura HTML interna do balão (Popup) com as informações do local
                 var conteudo = '<div class=""popup-custom"">' +
                                '<div class=""popup-title"">' + p.nome + '</div>' +
                                '<div class=""popup-info""><b>Endereço:</b> ' + p.endereco + '</div>' +
                                '<div class=""popup-info""><b>Resíduos:</b> ' + p.tipos + '</div>';
                 
-                /// Valida e insere o Telefone como link clicável (tel:), ou exibe mensagem de ausência
                 if (p.telefone && p.telefone !== 'Não informado' && p.telefone !== '') {{
                     conteudo += '<div class=""popup-info""><b>Telefone:</b> <a href=""tel:' + p.telefone + '"" class=""link-tel"">' + p.telefone + '</a></div>';
                 }} else {{
                     conteudo += '<div class=""popup-info"" style=""color: #777;""><b>Telefone:</b> Não informado</div>';
                 }}
 
-                /// Valida e insere o Site como link clicável que abre em nova aba (target='_blank')
                 if (p.site && p.site !== 'Não informado' && p.site !== '') {{
                     conteudo += '<div class=""popup-info""><b>Site:</b> <a href=""' + p.site + '"" target=""_blank"" class=""link-site"">Acessar site</a></div>';
                 }}
@@ -288,11 +284,9 @@ namespace ReGraphik.ViewModels
                 marcadores.push(marker);
                 bounds.push([p.lat, p.lng]);
             }});
-            /// Ajusta o zoom do mapa automaticamente para mostrar todos os pontos
             map.fitBounds(bounds);
         }}
 
-        /// Função acionada pelo C# para centralizar e abrir o popup de um ponto específico
         function centralizarPonto(index) {{
             if (marcadores[index]) {{
                 var m = marcadores[index];
