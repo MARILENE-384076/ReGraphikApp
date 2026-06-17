@@ -123,7 +123,7 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Últimos 3 resíduos cadastrados pelo usuário para exibição na tela de perfil
+        /// Todos os resíduos cadastrados pelo usuário, do mais recente ao mais antigo
         /// </summary>
         private ObservableCollection<Residuo> _ultimosResiduos = new();
         public ObservableCollection<Residuo> UltimosResiduos
@@ -245,14 +245,13 @@ namespace ReGraphik.ViewModels
                 TotalReaproveitados = meus.Count(r => r.Status == "Reaproveitado");
                 ValorEconomico = meus.Sum(r => r.Quantidade * 5.50).ToString("C2");
 
-                /// Últimos 3 resíduos cadastrados pelo usuário
-                var ultimos = meus
+                /// Todos os resíduos do usuário, do mais recente ao mais antigo — sem limite
+                var todos_ordenados = meus
                     .OrderByDescending(r => r.DataCadastro)
-                    .Take(3)
                     .ToList();
 
                 Application.Current.Dispatcher.Invoke(() =>
-                    UltimosResiduos = new ObservableCollection<Residuo>(ultimos));
+                    UltimosResiduos = new ObservableCollection<Residuo>(todos_ordenados));
             }
             catch (Exception)
             {
