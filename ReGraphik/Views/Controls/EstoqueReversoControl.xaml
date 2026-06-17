@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:ReGraphik.Views.Controls"
              xmlns:converters="clr-namespace:ReGraphik.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="450" 
-             d:DesignWidth="800" 
+             d:DesignHeight="700" 
+             d:DesignWidth="1000" 
              Background="#F8FAFC">
 
     <UserControl.Resources>
@@ -21,6 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <!-- Aba de Filtros -->
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -56,26 +57,77 @@
 
                     <StackPanel Grid.Column="0">
                         <TextBlock Text="Tipo de Material" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}"
-                                  ItemsSource="{Binding ListaTipos}"
-                                  SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"
-                                  SelectedIndex="0"/>
+                        <Grid>
+                            <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaTipos}"
+                              SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"/>
+
+                            <TextBlock Text="Selecione o tipo..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboTipoMaterial}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2">
                         <TextBlock Text="Origem" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}"
-                                  ItemsSource="{Binding ListaOrigens}"
-                                  SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"
-                                  SelectedIndex="0"/>
+                        <Grid>
+                            <ComboBox x:Name="CboOrigem" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaOrigens}"
+                              SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"/>
+
+                            <TextBlock Text="Selecione a origem..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboOrigem}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                     <StackPanel Grid.Column="4">
                         <TextBlock Text="Status" Style="{StaticResource FilterLabelStyle}"/>
-                        <ComboBox Style="{StaticResource FilterComboBoxStyle}"
-                                  ItemsSource="{Binding ListaStatus}"
-                                  SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"
-                                  SelectedIndex="0"/>
+                        <Grid>
+                            <ComboBox x:Name="CboStatus" Style="{StaticResource FilterComboBoxStyle}"
+                              ItemsSource="{Binding ListaStatus}"
+                              SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"/>
+
+                            <TextBlock Text="Selecione o status..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedItem, ElementName=CboStatus}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
                     </StackPanel>
 
                     <Grid Grid.Column="6" VerticalAlignment="Bottom">
@@ -88,41 +140,46 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ComboBox Grid.Column="0"
-                                          Style="{StaticResource FilterComboBoxStyle}"
-                                          ItemsSource="{Binding ListaPeriodos}"
-                                          SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"
-                                          SelectedIndex="0"
-                                          Margin="0,0,6,0"/>
+                                <Grid Grid.Column="0" Margin="0,0,6,0">
+                                    <ComboBox x:Name="CboPeriodo" Style="{StaticResource FilterComboBoxStyle}"
+                                      ItemsSource="{Binding ListaPeriodos}"
+                                      SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"/>
+
+                                    <TextBlock Text="Filtrar por data..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding SelectedItem, ElementName=CboPeriodo}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
 
                                 <Button Grid.Column="1"
                                         Content="Filtrar"
+                                        Style="{StaticResource RoundedButtonStyle}"
                                         Command="{Binding FiltrarCommand}"
                                         Width="72" Height="38"
                                         Background="#1649a2" Foreground="White"
                                         FontWeight="SemiBold" BorderThickness="0"
-                                        Margin="0,0,6,0" Cursor="Hand">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="6"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
+                                        Margin="0,0,6,0" Cursor="Hand" />
 
                                 <Button Grid.Column="2"
                                         Content="Limpar"
+                                        Style="{StaticResource RoundedButtonStyle}"
                                         Command="{Binding LimparFiltrosCommand}"
                                         Width="68" Height="38"
                                         Background="White"
                                         BorderBrush="#CBD5E1" BorderThickness="1"
                                         Foreground="#64748B" FontWeight="SemiBold"
-                                        Cursor="Hand">
-                                    <Button.Resources>
-                                        <Style TargetType="Border">
-                                            <Setter Property="CornerRadius" Value="6"/>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
+                                        Cursor="Hand" />
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -130,167 +187,119 @@
             </Grid>
         </Border>
 
-        <Border Grid.Row="2" Background="White" CornerRadius="8" Padding="20">
-            <Border.Effect>
-                <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-            </Border.Effect>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <!-- Aba de Cards -->
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,16">
-                    <TextBlock Text="Resíduos em Estoque" FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
-                </Grid>
+            <TextBlock Grid.Row="0" Text="Resíduos em Estoque" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
 
-                <DataGrid ItemsSource="{Binding ResiduosFiltrados}" Grid.Row="1"
-                          AutoGenerateColumns="False" CanUserAddRows="False"
-                          Background="White" BorderThickness="0"
-                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9"
-                          RowHeight="48" IsReadOnly="True" HeadersVisibility="Column"
-                          x:Name="GridResiduos">
+            <ListBox Grid.Row="1" 
+                     ItemsSource="{Binding ResiduosFiltrados}" 
+                     Background="Transparent" 
+                     BorderThickness="0"
+                     HorizontalContentAlignment="Stretch"
+                     VerticalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-                    <DataGrid.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Style.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#1E293B"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#1E293B"/>
-                            </Style.Resources>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Foreground" Value="#1E293B"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.CellStyle>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
 
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="#EFF6FF"/>
-                            <Setter Property="Foreground" Value="#1E40AF"/>
-                            <Setter Property="FontWeight" Value="Bold"/>
-                            <Setter Property="Padding" Value="12,10"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
 
-                    <DataGrid.RowStyle>
-                        <Style TargetType="DataGridRow">
-                            <Setter Property="Background" Value="White"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#F8FAFC"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.RowStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="White" Width="290" CornerRadius="12" Padding="16" Margin="0,0,16,16">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.05" Color="#000"/>
+                            </Border.Effect>
 
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="1*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Padding" Value="12,0,0,0"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#64748B"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                        <DataGridTextColumn Header="Material" Binding="{Binding TipoResiduo}" Width="1.4*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="FontWeight" Value="Medium"/>
-                                    <Setter Property="Foreground" Value="#1E293B"/>
-                                    <Setter Property="TextWrapping" Value="Wrap"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                                <Grid Grid.Row="0" Margin="0,0,0,12">
+                                    <TextBlock Text="{Binding Id, StringFormat='#\{0\}'}" 
+                                               Foreground="#64748B" FontWeight="Medium" FontSize="12" 
+                                               VerticalAlignment="Center"/>
 
-                        <DataGridTextColumn Header="Origem" Binding="{Binding Origem}" Width="1.4*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#334155"/>
-                                    <Setter Property="TextWrapping" Value="Wrap"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Qtd (kg)" Binding="{Binding Quantidade}" Width="0.7*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#1E293B"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Condição" Binding="{Binding Condicao}" Width="1.2*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#334155"/>
-                                    <Setter Property="TextWrapping" Value="Wrap"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="Data" Binding="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Width="0.9*">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="#64748B"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTemplateColumn Header="Status" Width="1.5*">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
                                     <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
-                                            CornerRadius="12" Padding="10,4"
-                                            HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            CornerRadius="12" Padding="8,3" HorizontalAlignment="Right">
                                         <TextBlock Text="{Binding Status}" 
                                                    Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
-                                                   FontSize="11" FontWeight="SemiBold"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                   FontSize="10" FontWeight="SemiBold"/>
                                     </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                                </Grid>
 
-                        <DataGridTemplateColumn Header="Ações" Width="1.5*">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
+                                <TextBlock Grid.Row="1" Text="{Binding TipoResiduo}" 
+                                           FontSize="16" FontWeight="Bold" Foreground="#1E293B" 
+                                           TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+                                <Border Grid.Row="2" Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,6">
+                                            <TextBlock Text="Origem:" Foreground="#64748B" FontSize="12"/>
+                                            <TextBlock Text="{Binding Origem}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+
+                                        <Grid Margin="0,0,0,6">
+                                            <TextBlock Text="Quantidade:" Foreground="#64748B" FontSize="12"/>
+                                            <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="#1E293B" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                        </Grid>
+
+                                        <Grid>
+                                            <TextBlock Text="Condição:" Foreground="#64748B" FontSize="12"/>
+                                            <TextBlock Text="{Binding Condicao}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Row="3" Height="1" Background="#F1F5F9" Margin="0,0,0,12"/>
+
+                                <Grid Grid.Row="4">
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="Cadastro" Foreground="#94A3B8" FontSize="10"/>
+                                        <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="#64748B" FontSize="12" FontWeight="Medium"/>
+                                    </StackPanel>
+
                                     <Button Content="💡 Sugestões"
-                                            Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            Style="{StaticResource RoundedButtonStyle}"
+                                            Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                             CommandParameter="{Binding}"
-                                            Height="28" Padding="8,0"
-                                            Background="White"
-                                            BorderBrush="#2563EB" BorderThickness="1"
-                                            Foreground="#2563EB" FontSize="12"
-                                            Cursor="Hand" Margin="0,0,20,0">
-                                        <Button.Resources>
-                                            <Style TargetType="Border">
-                                                <Setter Property="CornerRadius" Value="4"/>
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
-        </Border>
+                                            Height="32" Padding="12,0" HorizontalAlignment="Right"
+                                            Background="White" BorderBrush="#2563EB" BorderThickness="1"
+                                            Foreground="#2563EB" FontSize="12" FontWeight="Medium"
+                                            Cursor="Hand" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </UserControl>
