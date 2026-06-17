@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ReGraphik.Views"
         mc:Ignorable="d"
         Title="Sugestões de Reaproveitamento" 
-        Height="680" Width="840"
+        Height="440" Width="680"
         Background="Transparent"
         AllowsTransparency="True"
         WindowStyle="None" 
@@ -32,22 +32,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,12">
-                <TextBlock Text="💡 Sugestões de Reaproveitamento"
+            <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                <TextBlock Text="💡 Diretório de Sugestões de Reaproveitamento"
                            FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
             </StackPanel>
 
-            <Grid Grid.Row="1" Margin="0,0,0,16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <Grid Grid.Row="1" Margin="0,0,0,12">
                 <StackPanel>
                     <TextBlock Text="Selecione o Resíduo Alvo:" FontSize="12" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,6"/>
                     <ComboBox ItemsSource="{Binding ResiduosEstoque}" 
@@ -58,191 +52,50 @@
                               Padding="10,0"/>
 
                     <TextBlock Margin="2,6,0,0" FontSize="12" Foreground="#64748B">
-                        <Run Text="Especificação atual: "/>
-                        <Run Text="{Binding ResiduoSelecionado.Especificacao, FallbackValue='Nenhuma selecionada'}" FontWeight="Medium" Foreground="#334155"/>
+                        <Run Text="Especificação: "/>
+                        <Run Text="{Binding ResiduoSelecionado.Especificacao, FallbackValue='Nenhum selecionado'}" FontWeight="Medium" Foreground="#334155"/>
                         <Run Text=" — Condição: "/>
                         <Run Text="{Binding ResiduoSelecionado.Condicao, FallbackValue='-'}" Foreground="#334155"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
 
-            <Separator Grid.Row="2" Margin="0,0,0,16" Background="#E2E8F0"/>
+            <TextBlock Grid.Row="2" Text="{Binding Mensagem}" FontSize="12" Foreground="#1E40AF" Margin="2,0,0,8" FontWeight="Medium"/>
 
-            <Border Grid.Row="3" Margin="0,0,0,12"
-                    Background="#EFF6FF" CornerRadius="6" Padding="12,8">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="13" Foreground="#1649a2" Margin="0,0,8,0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Text" Value="ℹ️"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Carregando}" Value="True">
-                                        <Setter Property="Text" Value="⏳"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <TextBlock Text="{Binding Mensagem}" FontSize="13" Foreground="#1E40AF" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Border>
-
-            <Border Grid.Row="4" Background="White" CornerRadius="8" Margin="0,0,0,16" BorderBrush="#E2E8F0" BorderThickness="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <Border Grid.Row="0" Background="#EFF6FF" CornerRadius="8,8,0,0" Padding="16,10">
-                        <TextBlock Text="Destinos Prontos / Sugeridos pelo Banco de Dados"
-                                   FontWeight="Bold" Foreground="#1E40AF" FontSize="13"/>
+            <Grid Grid.Row="3" Margin="0,4,0,16">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top" Background="#EFF6FF" CornerRadius="6,6,0,0" Padding="12,10" BorderBrush="#E2E8F0" BorderThickness="1,1,1,0">
+                        <TextBlock Text="Ideias de Destinos Mapeadas no Sistema" FontWeight="Bold" Foreground="#1E40AF" FontSize="13"/>
                     </Border>
 
-                    <ListBox Grid.Row="1"
-                             ItemsSource="{Binding Sugestoes}"
-                             SelectedItem="{Binding SugestaoSelecionada}"
-                             BorderThickness="0"
-                             Background="Transparent"
-                             MaxHeight="180"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox ItemsSource="{Binding SugestoesFiltradas}"
+                             DisplayMemberPath="DescricaoSugestao"
+                             Background="White"
+                             BorderBrush="#E2E8F0"
+                             BorderThickness="1"
+                             Padding="8"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <Border x:Name="ItemBorder"
-                                                    BorderBrush="#F1F5F9" BorderThickness="0,0,0,1"
-                                                    Background="{TemplateBinding Background}"
-                                                    Padding="16,12">
-                                                <ContentPresenter/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="ItemBorder" Property="Background" Value="#EFF6FF"/>
-                                                    <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#BFDBFE"/>
-                                                </Trigger>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="ItemBorder" Property="Background" Value="#F8FAFC"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="Padding" Value="12,10"/>
+                                <Setter Property="Margin" Value="0,3"/>
+                                <Setter Property="Background" Value="#F8FAFC"/>
+                                <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Focusable" Value="False"/>
                             </Style>
                         </ListBox.ItemContainerStyle>
-
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="28"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <Ellipse Grid.Column="0" Width="18" Height="18" VerticalAlignment="Center">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Fill" Value="#CBD5E1"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
-                                                        <Setter Property="Fill" Value="#1649a2"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,8,0">
-                                        <TextBlock Text="{Binding DescricaoSugestao}"
-                                                   FontSize="14" Foreground="#1E293B"
-                                                   FontWeight="Medium"
-                                                   TextWrapping="Wrap"/>
-                                        <TextBlock FontSize="12" Foreground="#64748B" Margin="0,3,0,0">
-                                            <Run Text="Aceita: "/>
-                                            <Run Text="{Binding TipoResiduoAceito}" FontWeight="SemiBold" Foreground="#1649a2"/>
-                                        </TextBlock>
-                                    </StackPanel>
-
-                                    <Border Grid.Column="2" CornerRadius="10" Padding="8,3" VerticalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=IsSelected}" Value="True">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                        <Setter Property="Background" Value="#1649a2"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="✓ Selecionado" FontSize="11" FontWeight="SemiBold" Foreground="White"/>
-                                    </Border>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
                     </ListBox>
-                </Grid>
-            </Border>
+                </DockPanel>
+            </Grid>
 
-            <StackPanel Grid.Row="5" Margin="0,0,0,16">
-                <TextBlock Text="Ou escreva um destino manual customizado:" 
-                           FontSize="12" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,6"/>
-                <Grid>
-                    <TextBox x:Name="TxtSugestao"
-                             Text="{Binding NovaSugestaoTexto, UpdateSourceTrigger=PropertyChanged}"
-                             Height="70" 
-                             TextWrapping="Wrap" 
-                             AcceptsReturn="True" 
-                             VerticalScrollBarVisibility="Auto"
-                             Padding="10,8"
-                             MaxLength="300" />
-
-                    <TextBlock Text="Digite aqui para onde este resíduo deve ser encaminhado..." 
-                               Foreground="#94A3B8" 
-                               IsHitTestVisible="False" 
-                               Margin="12,10,0,0" 
-                               FontStyle="Italic"
-                               Visibility="Collapsed">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Text, ElementName=TxtSugestao}" Value="">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
-            </StackPanel>
-
-            <TextBlock Grid.Row="6" Margin="0,0,0,12"
-                       Text="Escolha um destino pronto ou preencha a sugestão manual antes de aplicar."
-                       FontSize="11" Foreground="#94A3B8" HorizontalAlignment="Center"/>
-
-            <Grid Grid.Row="7">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="12"/>
-                    <ColumnDefinition Width="180"/>
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="0"
-                        Content="Fechar"
+            <Grid Grid.Row="4" Margin="0,4,0,0">
+                <Button Content="Voltar para o Estoque"
                         Style="{StaticResource BtnSecondaryStyle}"
                         Click="BtnFechar_Click"
-                        Height="38" Padding="0"/>
-
-                <Button Grid.Column="2"
-                        Content="✅ Aplicar Sugestão"
-                        Style="{StaticResource BtnPrimaryStyle}"
-                        Command="{Binding AplicarSugestaoCommand}"
-                        Height="38" Padding="0"/>
+                        Height="38" 
+                        Width="200"
+                        HorizontalAlignment="Center"/>
             </Grid>
         </Grid>
     </Border>

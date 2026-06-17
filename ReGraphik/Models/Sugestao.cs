@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RestReGraphik.Models
+namespace ReGraphik.Models
 {
     /// <summary>
     /// Classe que representa a estrutura de dados para uma sugestão, contendo propriedades como tipo de resíduo aceito e descrição da sugestão.

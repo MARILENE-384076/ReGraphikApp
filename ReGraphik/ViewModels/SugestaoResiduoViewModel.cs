@@ -7,59 +7,53 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using RestReGraphik.Models;
 
 namespace ReGraphik.ViewModels
 {
     /// <summary>
-    /// ViewModel da janela de sugestões de reaproveitamento de um resíduo.
-    /// Busca as sugestões compatíveis via API, exibe-as e registra a aplicação
-    /// gravando um SugestaoResiduo no Firebase através da API REST.
+    /// ViewModel responsável por buscar sugestões de reaproveitamento no banco de dados
+    /// e exibi-las em modo de leitura com base no material selecionado no estoque reverso.
     /// </summary>
     public class SugestaoResiduoViewModel : BaseViewModel
     {
-        /// <summary>
-        /// Infraestrutura 
-        /// </summary>
         private static readonly HttpClient _http = new();
-        private const string UrlApiSugestoes = "https://webregraphik.runasp.net/api/Sugestao";
-        private const string UrlApiSugestaoResiduo = "https://webregraphik.runasp.net/api/SugestaoResiduos";
 
-        ///Evento disparado após aplicar sugestão com sucesso
+        private const string UrlApiResiduos = "https://webregraphik.runasp.net/api/Residuo";
+        private const string UrlApiSugestoesBanco = "https://webregraphik.runasp.net/api/Sugestao";
+
+        private List<Sugestao> _todasAsSugestoesDoBanco = new();
+
+    
         /// <summary>
-        /// Disparado quando a sugestão é registrada com sucesso.
-        /// A View pode assinar este evento para fechar a janela automaticamente.
+        /// Evento mantido para compatibilidade com o fechamento/atualização mapeado na View.
         /// </summary>
         public event Action SugestaoAplicadaComSucesso;
 
         /// <summary>
-        /// Resíduo alvo 
+        /// Coleção de resíduos disponíveis em estoque que alimenta o ComboBox da interface.
         /// </summary>
-        public Residuo Residuo { get; }
+        public ObservableCollection<Residuo> ResiduosEstoque { get; } = new();
 
         /// <summary>
-        /// Lista de sugestões compatíveis com o tipo do resíduo 
+        /// Coleção filtrada de sugestões compatíveis com o tipo de resíduo selecionado.
         /// </summary>
-        public ObservableCollection<Sugestao> Sugestoes { get; } = new();
+        public ObservableCollection<Sugestao> SugestoesFiltradas { get; } = new();
 
+        private Residuo _residuoSelecionado;
         /// <summary>
-        /// Sugestão selecionada pelo usuário na lista 
+        /// Obtém ou define o resíduo atualmente focado. Dispara a filtragem automática de sugestões ao ser alterado.
         /// </summary>
-        private Sugestao _sugestaoSelecionada;
-        public Sugestao SugestaoSelecionada
+        public Residuo ResiduoSelecionado
         {
-            get => _sugestaoSelecionada;
+            get => _residuoSelecionado;
             set
             {
-                _sugestaoSelecionada = value;
+                _residuoSelecionado = value;
                 OnPropertyChanged();
+                FiltrarSugestoesPorMaterial();
             }
         }
 
-        /// <summary>
-        /// Controle de carregamento 
-        /// </summary>
         private bool _carregando;
         public bool Carregando
         {
@@ -67,10 +61,7 @@ namespace ReGraphik.ViewModels
             set { _carregando = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Mensagem de feedback ao usuário 
-        /// </summary>
-        private string _mensagem = "Carregando sugestões...";
+        private string _mensagem = "Carregando dados do sistema...";
         public string Mensagem
         {
             get => _mensagem;
@@ -78,73 +69,62 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Comandos 
+        /// Inicializa uma nova instância da classe <see cref="SugestaoResiduoViewModel"/>.
         /// </summary>
-        public ICommand AplicarSugestaoCommand { get; }
-
-        /// <summary>
-        /// Construtor 
-        /// </summary>
-        /// <param name="residuo"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public SugestaoResiduoViewModel()
+        /// <param name="residuoInicial">Resíduo opcional para pré-seleção ao abrir a janela.</param>
+        public SugestaoResiduoViewModel(Residuo residuoInicial = null)
         {
-            AplicarSugestaoCommand = new RelayCommand(
-                () => _ = AplicarSugestaoAsync(),
-                _ => SugestaoSelecionada != null && !Carregando
-            );
-
-            /// Carrega as sugestões assim que o ViewModel for criado
-            _ = CarregarSugestoesAsync();
+            _ = InicializarDadosAsync(residuoInicial);
         }
 
         /// <summary>
-        /// Busca sugestões compatíveis com o tipo do resíduo
+        /// Realiza a busca paralela dos cadastros de resíduos e das ideias de sugestões existentes na API.
         /// </summary>
-        /// <returns></returns>
-        private async Task CarregarSugestoesAsync()
+        private async Task InicializarDadosAsync(Residuo residuoInicial)
         {
             Carregando = true;
-            Mensagem = "Buscando sugestões...";
+            Mensagem = " Consultando diretório de ideias no banco de dados...";
 
             try
             {
-                var resposta = await _http.GetAsync(UrlApiSugestoes);
+                var tarefaResiduos = _http.GetAsync(UrlApiResiduos);
+                var tarefaSugestoes = _http.GetAsync(UrlApiSugestoesBanco);
 
-                if (!resposta.IsSuccessStatusCode)
+                await Task.WhenAll(tarefaResiduos, tarefaSugestoes);
+
+                if (!tarefaResiduos.Result.IsSuccessStatusCode || !tarefaSugestoes.Result.IsSuccessStatusCode)
                 {
-                    Mensagem = "Não foi possível buscar as sugestões. Verifique sua conexão.";
+                    Mensagem = " Erro ao baixar tabelas do banco de dados.";
                     return;
                 }
 
-                var json = await resposta.Content.ReadAsStringAsync();
+                var jsonResiduos = await tarefaResiduos.Result.Content.ReadAsStringAsync();
+                var jsonSugestoes = await tarefaSugestoes.Result.Content.ReadAsStringAsync();
+
                 var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var todas = JsonSerializer.Deserialize<List<Sugestao>>(json, opcoes) ?? new List<Sugestao>();
+
+                var listaResiduos = JsonSerializer.Deserialize<List<Residuo>>(jsonResiduos, opcoes) ?? new List<Residuo>();
+                _todasAsSugestoesDoBanco = JsonSerializer.Deserialize<List<Sugestao>>(jsonSugestoes, opcoes) ?? new List<Sugestao>();
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Sugestoes.Clear();
-                    foreach (var s in todas)
+                    ResiduosEstoque.Clear();
+                    Residuo focar = null;
+
+                    foreach (var r in listaResiduos)
                     {
-                        bool semFiltro = string.IsNullOrWhiteSpace(s.TipoResiduoAceito);
-                        bool tipoCompat = !string.IsNullOrWhiteSpace(Residuo.TipoResiduo) &&
-                                          s.TipoResiduoAceito != null &&
-                                          s.TipoResiduoAceito.Contains(
-                                              Residuo.TipoResiduo,
-                                              StringComparison.OrdinalIgnoreCase);
-                        if (semFiltro || tipoCompat)
-                            Sugestoes.Add(s);
+                        ResiduosEstoque.Add(r);
+                        if (residuoInicial != null && r.Id == residuoInicial.Id) focar = r;
                     }
 
-                    Mensagem = Sugestoes.Count > 0
-                        ? $"{Sugestoes.Count} sugestão(ões) encontrada(s) para \"{Residuo.TipoResiduo}\"."
-                        : $"Nenhuma sugestão encontrada para o tipo \"{Residuo.TipoResiduo}\".";
+                    if (focar != null) ResiduoSelecionado = focar;
+                    else if (ResiduosEstoque.Count > 0) ResiduoSelecionado = ResiduosEstoque[0];
                 });
             }
             catch (Exception ex)
             {
-                Mensagem = $"Erro ao carregar sugestões: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine("Erro ao carregar sugestões: " + ex.Message);
+                Mensagem = " Falha de conexão de rede.";
+                MessageBox.Show($"Não foi possível carregar os dados: {ex.Message}", "Erro de Sincronização", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -153,73 +133,34 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Registra a sugestão aplicada via POST em api/SugestaoResiduos 
+        /// Filtra a lista com busca bidirecional e flexível eliminando problemas de correspondência estrita.
         /// </summary>
-        /// <returns></returns>
-        private async Task AplicarSugestaoAsync()
+        private void FiltrarSugestoesPorMaterial()
         {
-            if (SugestaoSelecionada == null) return;
+            if (ResiduoSelecionado == null) return;
 
-            Carregando = true;
-            Mensagem = "Aplicando sugestão...";
+            SugestoesFiltradas.Clear();
+            string materialAlvo = ResiduoSelecionado.TipoResiduo?.ToLower().Trim() ?? "";
 
-            try
+            foreach (var s in _todasAsSugestoesDoBanco)
             {
-                var payload = new
+                if (string.IsNullOrWhiteSpace(s.TipoResiduoAceito)) continue;
+
+                string tipoAceitoNoBanco = s.TipoResiduoAceito.ToLower().Trim();
+
+                if (tipoAceitoNoBanco.Contains(materialAlvo) || materialAlvo.Contains(tipoAceitoNoBanco))
                 {
-                    id = Guid.NewGuid().ToString(),
-                    id_cadastro_residuo = Residuo.Id,
-                    id_sugestao = SugestaoSelecionada.Id,
-                    data_aplicacao = DateTime.UtcNow
-                };
-
-                var body = JsonSerializer.Serialize(payload);
-                var content = new StringContent(body, Encoding.UTF8, "application/json");
-                var resposta = await _http.PostAsync(UrlApiSugestaoResiduo, content);
-
-                if (resposta.IsSuccessStatusCode)
-                {
-                    Mensagem = $"✅ Sugestão aplicada com sucesso ao resíduo \"{Residuo.TipoResiduo}\"!";
-
-                    MessageBox.Show(
-                        $"Sugestão aplicada com sucesso!\n\n" +
-                        $"Resíduo : {Residuo.TipoResiduo}\n" +
-                        $"Sugestão: {SugestaoSelecionada.DescricaoSugestao}",
-                        "Sugestão Aplicada",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-
-                    /// Notifica a View para fechar a janela
-                    SugestaoAplicadaComSucesso?.Invoke();
-                }
-                else
-                {
-                    var erro = await resposta.Content.ReadAsStringAsync();
-                    Mensagem = $"Erro ao aplicar sugestão: {resposta.StatusCode}";
-
-                    MessageBox.Show(
-                        $"Não foi possível aplicar a sugestão.\n" +
-                        $"Código  : {resposta.StatusCode}\n" +
-                        $"Detalhe : {erro}",
-                        "Erro",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                    SugestoesFiltradas.Add(s);
                 }
             }
-            catch (Exception ex)
-            {
-                Mensagem = $"Erro ao aplicar sugestão: {ex.Message}";
-                System.Diagnostics.Debug.WriteLine("Erro ao aplicar sugestão: " + ex.Message);
 
-                MessageBox.Show(
-                    $"Erro inesperado ao aplicar a sugestão:\n{ex.Message}",
-                    "Erro",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-            finally
+            if (SugestoesFiltradas.Count > 0)
             {
-                Carregando = false;
+                Mensagem = $" Exibindo {SugestoesFiltradas.Count} alternativas mapeadas para {ResiduoSelecionado.TipoResiduo}.";
+            }
+            else
+            {
+                Mensagem = $"Nenhuma sugestão direta localizada para {ResiduoSelecionado.TipoResiduo}.";
             }
         }
     }

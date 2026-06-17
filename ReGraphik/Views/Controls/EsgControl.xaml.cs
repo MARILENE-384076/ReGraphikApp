@@ -1,6 +1,7 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.ViewModels;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ReGraphik.Views.Controls
 {
@@ -12,10 +13,10 @@ namespace ReGraphik.Views.Controls
         /// <summary>
         /// Inicializa o controle com o usuário logado para personalizar o relatório exportado.
         /// </summary>
-        public EsgControl(Usuario usuario)
+        public EsgControl(Usuario usuario, ICommand irParaRelatorios)
         {
             InitializeComponent();
-            DataContext = new EsgViewModel(usuario);
+            DataContext = new EsgViewModel(usuario, irParaRelatorios);
         }
         /// <summary>
         /// Abre o link do botão no navegador padrão do sistema.

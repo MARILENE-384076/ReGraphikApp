@@ -98,6 +98,16 @@ namespace ReGraphik.ViewModels
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
             if (fotoSalva != null)
                 UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
+            
+            /// Comandos reutilizam a mesma instância
+            NavegarDashboardCommand = new RelayCommand(p => NavegarParaDashboard());
+            NavegarResiduosCommand = new RelayCommand(p => NavegarParaResiduos());
+            NavegarEstoqueCommand = new RelayCommand(p => NavegarParaEstoque());
+            NavegarMapaCommand = new RelayCommand(p => NavegarParaMapa());
+            NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
+            NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
+            NavegarEsgCommand = new RelayCommand(p => NavegarParaEsg());
+            SairCommand = new RelayCommand(p => ExecutarSair());
 
             /// Instancia cada view apenas uma vez
             _dashboardView = new DashboardControl(NomeUsuario);
@@ -106,20 +116,13 @@ namespace ReGraphik.ViewModels
             _mapaView = new MapaControl();
             _relatoriosView = new RelatoriosControl();
             _contaView = new ContaControl(UsuarioLogado);
-            _esgView = new EsgControl(UsuarioLogado);
+            _esgView = new EsgControl(UsuarioLogado, NavegarRelatoriosCommand);
 
             /// Começa na Dashboard
             _currentView = _dashboardView;
 
-            /// Comandos reutilizam a mesma instância
-            NavegarDashboardCommand = new RelayCommand(p => NavegarParaDashboard());
-            NavegarResiduosCommand = new RelayCommand(p => NavegarParaResiduos());
-            NavegarEstoqueCommand = new RelayCommand(p => NavegarParaEstoque());
-            NavegarMapaCommand = new RelayCommand(p => NavegarParaMapa());
-            NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
-            NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
-            SairCommand = new RelayCommand(p => ExecutarSair());
-            NavegarEsgCommand = new RelayCommand(p => NavegarParaEsg());
+            
+            
         }
 
         private void NavegarParaDashboard()
