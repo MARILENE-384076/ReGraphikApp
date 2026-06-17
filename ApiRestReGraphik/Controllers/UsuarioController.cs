@@ -19,6 +19,7 @@ namespace ApiRestReGraphik.Controllers
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros.</param>
         /// <param name="usuarioService">Serviço de Usuario para operações relacionadas.</param>
+        /// <param name="configuration">Configurações</param>
         public UsuarioController(ILogger<UsuarioController> logger, UsuarioService usuarioService, IConfiguration configuration)
         {
             _logger = logger;
