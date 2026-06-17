@@ -110,6 +110,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    
     </Style>
 
     <Style x:Key="NavBtnAtivo" TargetType="Button" BasedOn="{StaticResource NavBtn}">
