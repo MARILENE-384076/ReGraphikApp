@@ -24,114 +24,96 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="24">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="1.8*"/>
+                <ColumnDefinition Width="24"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ══ COLUNA ESQUERDA: formulário + estatísticas ══ -->
-            <StackPanel Grid.Column="0">
+            <!-- ══ COLUNA ESQUERDA ══ -->
+            <StackPanel Grid.Column="0" VerticalAlignment="Top">
 
                 <!-- Seção: Informações Pessoais -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
+                <StackPanel Margin="0,0,0,24">
+                    <TextBlock Text="INFORMAÇÕES PESSOAIS" FontSize="11" FontWeight="Bold"
+                               Foreground="#94A3B8" Margin="0,0,0,16"/>
 
-                        <TextBlock Text="INFORMAÇÕES PESSOAIS" FontSize="11" FontWeight="Bold"
-                                   Foreground="#94A3B8" Margin="0,0,0,16"/>
+                    <!-- Linha 1: Nome + Login -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <!-- Linha 1: Nome + Login -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="12"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Nome completo" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Linha 2: CPF + Email -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="12"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- CPF: somente leitura e mascarado -->
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Text="{Binding CPF}" Style="{StaticResource InputStyle}"
-                                         IsReadOnly="True" Background="#F1F5F9" Foreground="#94A3B8"/>
-                                <TextBlock Text="Não editável" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
-                            </StackPanel>
-
-                            <!-- Email: editável, mascarado ao carregar/sair -->
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}">
-                                    <b:Interaction.Triggers>
-                                        <b:EventTrigger EventName="GotFocus">
-                                            <b:InvokeCommandAction Command="{Binding EmailGotFocusCommand}"/>
-                                        </b:EventTrigger>
-                                        <b:EventTrigger EventName="LostFocus">
-                                            <b:InvokeCommandAction Command="{Binding EmailLostFocusCommand}"/>
-                                        </b:EventTrigger>
-                                    </b:Interaction.Triggers>
-                                </TextBox>
-                                <!-- Erro inline de e-mail -->
-                                <TextBlock Text="{Binding MensagemErroEmail}" Foreground="#DC2626"
-                                           FontSize="11" Margin="0,4,0,0"
-                                           Visibility="{Binding MensagemErroEmail, Converter={StaticResource StringToVisibilityConverter}}"/>
-                            </StackPanel>
-                        </Grid>
-
-                    </StackPanel>
-                </Border>
-
-                <!-- Seção: Segurança -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                            <TextBlock Text=" — ALTERAR SENHA ↓" FontSize="11" FontWeight="Bold" Foreground="#1649a2" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Nome completo" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}"/>
                         </StackPanel>
 
-                        <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
-                        <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,4"/>
-                        <TextBlock Text="Deixe em branco para manter a senha atual."
-                                   FontSize="11" Foreground="#94A3B8"/>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}"/>
+                        </StackPanel>
+                    </Grid>
 
+                    <!-- Linha 2: CPF + Email -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding CPF}" Style="{StaticResource InputStyle}"
+                                     IsReadOnly="True" Background="#E2E8F0" Foreground="#94A3B8"/>
+                            <TextBlock Text="Não editável" FontSize="11" Foreground="#94A3B8" Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                            <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="GotFocus">
+                                        <b:InvokeCommandAction Command="{Binding EmailGotFocusCommand}"/>
+                                    </b:EventTrigger>
+                                    <b:EventTrigger EventName="LostFocus">
+                                        <b:InvokeCommandAction Command="{Binding EmailLostFocusCommand}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </TextBox>
+                            <TextBlock Text="{Binding MensagemErroEmail}" Foreground="#DC2626"
+                                       FontSize="11" Margin="0,4,0,0"
+                                       Visibility="{Binding MensagemErroEmail, Converter={StaticResource StringToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <!-- Seção: Segurança -->
+                <StackPanel Margin="0,0,0,24">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                        <TextBlock Text=" — ALTERAR SENHA ↓" FontSize="11" FontWeight="Bold" Foreground="#1649a2" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Border>
 
-                <!-- Botões Cancelar e Salvar -->
-                <Grid Margin="0,0,0,16">
+                    <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
+                    <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,4"/>
+                    <TextBlock Text="Deixe em branco para manter a senha atual." FontSize="11" Foreground="#94A3B8"/>
+                </StackPanel>
+
+                <!-- Ações: Cancelar e Salvar -->
+                <Grid Margin="0,0,0,24">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="12"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Content="Cancelar" Height="42"
+                    <Button Grid.Column="0" Content="Cancelar" Height="42" HorizontalAlignment="Stretch"
                             Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
                             Foreground="#64748B" FontWeight="SemiBold" FontSize="14"
                             Command="{Binding CancelarCommand}">
@@ -142,7 +124,7 @@
                         </Button.Resources>
                     </Button>
 
-                    <Button Grid.Column="2" Content="Salvar alterações" Height="42"
+                    <Button Grid.Column="2" Content="Salvar alterações" Height="42" HorizontalAlignment="Stretch"
                             Background="#1649a2" BorderThickness="0"
                             Foreground="White" FontWeight="SemiBold" FontSize="14"
                             Command="{Binding SalvarCommand}"
@@ -155,7 +137,7 @@
                     </Button>
                 </Grid>
 
-                <!-- Mensagens de feedback inline -->
+                <!-- Feedbacks Inline -->
                 <TextBlock Text="{Binding MensagemSucesso}" Foreground="#16A34A"
                            FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,8"
                            Visibility="{Binding MensagemSucesso, Converter={StaticResource StringToVisibilityConverter}}"/>
@@ -163,114 +145,95 @@
                            FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,16"
                            Visibility="{Binding MensagemErroGeral, Converter={StaticResource StringToVisibilityConverter}}"/>
 
-                <!-- ══ Seção: Estatísticas do usuário ══ -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
+                <!-- Seção: Estatísticas do Usuário -->
+                <StackPanel Margin="0,0,0,0">
+                    <!-- Cabeçalho de Estatísticas -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                        <!-- Cabeçalho com botão de atualizar girando -->
-                        <Grid Margin="0,0,0,16">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold"
+                                   Foreground="#94A3B8" VerticalAlignment="Center"/>
 
-                            <TextBlock Grid.Column="0" Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold"
-                                       Foreground="#94A3B8" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Command="{Binding AtualizarEstatisticasCommand}"
+                                Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                ToolTip="Atualizar estatísticas" Width="28" Height="28">
+                            <TextBlock Text="↻" FontSize="18" Foreground="#64748B"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform Angle="0"/>
+                                </TextBlock.RenderTransform>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding CarregandoEstatisticas}" Value="True">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                             From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                                <DataTrigger.ExitActions>
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                             To="0" Duration="0:0:0.1"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.ExitActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Button>
+                    </Grid>
 
-                            <!-- Botão atualizar: a animação fica no TextBlock filho para evitar MC4011 -->
-                            <Button Grid.Column="1" Command="{Binding AtualizarEstatisticasCommand}"
-                                    Background="Transparent" BorderThickness="0" Cursor="Hand"
-                                    ToolTip="Atualizar estatísticas" Width="28" Height="28">
-                                <TextBlock Text="↻" FontSize="18" Foreground="#64748B"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           RenderTransformOrigin="0.5,0.5">
-                                    <TextBlock.RenderTransform>
-                                        <RotateTransform Angle="0"/>
-                                    </TextBlock.RenderTransform>
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding CarregandoEstatisticas}" Value="True">
-                                                    <DataTrigger.EnterActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                                    From="0" To="360"
-                                                                    Duration="0:0:1"
-                                                                    RepeatBehavior="Forever"/>
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </DataTrigger.EnterActions>
-                                                    <DataTrigger.ExitActions>
-                                                        <BeginStoryboard>
-                                                            <Storyboard>
-                                                                <DoubleAnimation
-                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                                    To="0" Duration="0:0:0.1"/>
-                                                            </Storyboard>
-                                                        </BeginStoryboard>
-                                                    </DataTrigger.ExitActions>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </Button>
-                        </Grid>
+                    <!-- Cards de Métricas -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <!-- Cards de métricas -->
-                        <Grid Margin="0,0,0,20">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="12"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="12"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Resíduos cadastrados" FontSize="12" Foreground="#64748B" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding TotalResiduos}" FontSize="24" FontWeight="Bold" Foreground="#1E293B"/>
+                            </StackPanel>
+                        </Border>
 
-                            <!-- Card: Total cadastrados -->
-                            <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="8" Padding="16">
-                                <StackPanel>
-                                    <TextBlock Text="Resíduos cadastrados" FontSize="12"
-                                               Foreground="#64748B" Margin="0,0,0,6" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding TotalResiduos}" FontSize="24"
-                                               FontWeight="Bold" Foreground="#1E293B"/>
-                                </StackPanel>
-                            </Border>
+                        <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Reaproveitados" FontSize="12" Foreground="#16A34A" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding TotalReaproveitados}" FontSize="24" FontWeight="Bold" Foreground="#1649a2"/>
+                            </StackPanel>
+                        </Border>
 
-                            <!-- Card: Reaproveitados -->
-                            <Border Grid.Column="2" Background="#F0FDF4" CornerRadius="8" Padding="16">
-                                <StackPanel>
-                                    <TextBlock Text="Reaproveitados" FontSize="12"
-                                               Foreground="#16A34A" Margin="0,0,0,6" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding TotalReaproveitados}" FontSize="24"
-                                               FontWeight="Bold" Foreground="#16A34A"/>
-                                </StackPanel>
-                            </Border>
+                        <Border Grid.Column="4" Background="White" CornerRadius="8" Padding="16">
+                            <StackPanel>
+                                <TextBlock Text="Valor economizado" FontSize="12" Foreground="#1649a2" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding ValorEconomico}" FontSize="24" FontWeight="Bold" Foreground="#1649a2"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
 
-                            <!-- Card: Valor econômico -->
-                            <Border Grid.Column="4" Background="#EFF6FF" CornerRadius="8" Padding="16">
-                                <StackPanel>
-                                    <TextBlock Text="Valor econômico" FontSize="12"
-                                               Foreground="#1649a2" Margin="0,0,0,6" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding ValorEconomico}" FontSize="20"
-                                               FontWeight="Bold" Foreground="#1649a2"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
+                    <!-- Lista de Resíduos -->
+                    <TextBlock Text="Resíduos cadastrados" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
 
-                        <!-- Lista: Últimos resíduos -->
-                        <TextBlock Text="Últimos resíduos cadastrados" FontSize="13"
-                                   FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
-
+                    <ScrollViewer Height="280" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <ItemsControl ItemsSource="{Binding UltimosResiduos}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="0,10" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1">
+                                    <Border Padding="0,10" BorderBrush="#CBD5E1" BorderThickness="0,0,0,1">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -279,16 +242,13 @@
                                             </Grid.ColumnDefinitions>
 
                                             <!-- Ícone -->
-                                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6"
-                                                    Background="#EFF6FF" Margin="0,0,12,0">
-                                                <TextBlock Text="♻" FontSize="16"
-                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6" Background="White" Margin="0,0,12,0">
+                                                <TextBlock Text="♻" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
 
-                                            <!-- Nome + detalhes -->
+                                            <!-- Detalhes -->
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding TipoResiduo}" FontSize="13"
-                                                           FontWeight="SemiBold" Foreground="#1E293B"/>
+                                                <TextBlock Text="{Binding TipoResiduo}" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B"/>
                                                 <TextBlock FontSize="12" Foreground="#64748B">
                                                     <Run Text="{Binding Origem}"/>
                                                     <Run Text=" · "/>
@@ -297,9 +257,8 @@
                                                 </TextBlock>
                                             </StackPanel>
 
-                                            <!-- Badge de status -->
-                                            <Border Grid.Column="2" CornerRadius="6" Padding="8,3"
-                                                    VerticalAlignment="Center">
+                                            <!-- Status -->
+                                            <Border Grid.Column="2" CornerRadius="6" Padding="8,3" VerticalAlignment="Center">
                                                 <Border.Style>
                                                     <Style TargetType="Border">
                                                         <Setter Property="Background" Value="#FEF08A"/>
@@ -334,132 +293,98 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-
-                    </StackPanel>
-                </Border>
-
+                    </ScrollViewer>
+                </StackPanel>
             </StackPanel>
 
-            <!-- ══ COLUNA DIREITA: card do perfil ══ -->
-            <StackPanel Grid.Column="2">
+            <!-- ══ COLUNA DIREITA ══ -->
+            <StackPanel Grid.Column="2" VerticalAlignment="Top">
 
-                <!-- Card: Avatar + nome + status -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel HorizontalAlignment="Center">
-
-                        <!-- Avatar circular -->
-                        <Grid Width="110" Height="110" HorizontalAlignment="Center" Margin="0,0,0,16">
-                            <!-- Fundo com inicial do nome quando não há foto -->
-                            <Border CornerRadius="55" Background="#1649a2">
-                                <TextBlock Text="{Binding InicialNome}" FontSize="40" FontWeight="Bold"
-                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            </Border>
-                            <!-- Foto de perfil -->
-                            <Border CornerRadius="55" ClipToBounds="True">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{Binding ImgFoto, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
-                                                Stretch="UniformToFill"/>
-                                </Border.Background>
-                            </Border>
-                        </Grid>
-
-                        <TextBlock Text="{Binding Nome}" FontSize="18" FontWeight="Bold"
-                                   Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-                        <TextBlock Text="{Binding LoginExibicao}" FontSize="13"
-                                   Foreground="#64748B" HorizontalAlignment="Center" Margin="0,0,0,12"/>
-
-                        <!-- Badge: Conta ativa -->
-                        <Border Background="#DCFCE7" CornerRadius="10" Padding="10,4"
-                                HorizontalAlignment="Center" Margin="0,0,0,16">
-                            <TextBlock Text="✓ Conta ativa" FontSize="12" FontWeight="SemiBold" Foreground="#166534"/>
+                <!-- Área de Perfil -->
+                <StackPanel HorizontalAlignment="Center" Margin="0,0,0,32">
+                    <Grid Width="110" Height="110" HorizontalAlignment="Center" Margin="0,0,0,16">
+                        <Border CornerRadius="55" Background="#1649a2">
+                            <TextBlock Text="{Binding InicialNome}" FontSize="40" FontWeight="Bold"
+                                       Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         </Border>
+                        <Border CornerRadius="55" ClipToBounds="True">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding ImgFoto, TargetNullValue={x:Null}, FallbackValue={x:Null}}" Stretch="UniformToFill"/>
+                            </Border.Background>
+                        </Border>
+                    </Grid>
 
-                        <!-- Botão Mudar Foto -->
-                        <Button Content="🖼 Mudar foto" Height="36" Width="140"
-                                Command="{Binding SelecionarFotoCommand}"
-                                Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
-                                Foreground="#1E293B" FontWeight="Medium" FontSize="13" Cursor="Hand">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="8"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
+                    <TextBlock Text="{Binding Nome}" FontSize="18" FontWeight="Bold" Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding LoginExibicao}" FontSize="13" Foreground="#64748B" HorizontalAlignment="Center" Margin="0,0,0,12"/>
 
-                    </StackPanel>
-                </Border>
+                    <Border Background="#DCFCE7" CornerRadius="10" Padding="10,4" HorizontalAlignment="Center" Margin="0,0,0,16">
+                        <TextBlock Text="✓ Conta ativa" FontSize="12" FontWeight="SemiBold" Foreground="#166534"/>
+                    </Border>
 
-                <!-- Card: Resumo da conta -->
-                <Border Background="White" CornerRadius="12" Padding="24">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
+                    <Button Content="🖼 Mudar foto" Height="36" Width="140"
+                            Command="{Binding SelecionarFotoCommand}"
+                            Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
+                            Foreground="#1E293B" FontWeight="Medium" FontSize="13" Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
 
-                        <TextBlock Text="RESUMO DA CONTA" FontSize="11" FontWeight="Bold"
-                                   Foreground="#94A3B8" Margin="0,0,0,16"/>
+                <!-- Área de Resumo da Conta -->
+                <StackPanel>
+                    <TextBlock Text="RESUMO DA CONTA" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" Margin="0,0,0,16"/>
 
-                        <!-- E-mail -->
-                        <Grid Margin="0,0,0,14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="✉" FontSize="14" Foreground="#64748B"
-                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="E-mail" FontSize="11" Foreground="#94A3B8"/>
-                                <TextBlock Text="{Binding EmailResumido}" FontSize="13"
-                                           Foreground="#1E293B" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Grid>
+                    <!-- Item: Email -->
+                    <Grid Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="✉" FontSize="14" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="E-mail" FontSize="11" Foreground="#94A3B8"/>
+                            <TextBlock Text="{Binding EmailResumido}" FontSize="13" Foreground="#1E293B" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
 
-                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,14"/>
+                    <Rectangle Height="1" Fill="#CBD5E1" Margin="0,0,0,14"/>
 
-                        <!-- Perfil -->
-                        <Grid Margin="0,0,0,14">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="👤" FontSize="14" Foreground="#64748B"
-                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="Perfil" FontSize="11" Foreground="#94A3B8"/>
-                                <TextBlock Text="{Binding Perfil}" FontSize="13"
-                                           Foreground="#1E293B" FontWeight="SemiBold"/>
-                            </StackPanel>
-                        </Grid>
+                    <!-- Item: Perfil -->
+                    <Grid Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="👤" FontSize="14" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Perfil" FontSize="11" Foreground="#94A3B8"/>
+                            <TextBlock Text="{Binding Perfil}" FontSize="13" Foreground="#1E293B" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Grid>
 
-                        <Rectangle Height="1" Fill="#F1F5F9" Margin="0,0,0,14"/>
+                    <Rectangle Height="1" Fill="#CBD5E1" Margin="0,0,0,14"/>
 
-                        <!-- Segurança -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="🔒" FontSize="14" Foreground="#64748B"
-                                       VerticalAlignment="Center" Margin="0,0,10,0"/>
-                            <StackPanel Grid.Column="1">
-                                <TextBlock Text="Segurança" FontSize="11" Foreground="#94A3B8"/>
-                                <TextBlock Text="Senha definida" FontSize="13"
-                                           Foreground="#1E293B" FontWeight="SemiBold"/>
-                            </StackPanel>
-                            <Border Grid.Column="2" Background="#DCFCE7" CornerRadius="8" Padding="8,3"
-                                    VerticalAlignment="Center">
-                                <TextBlock Text="OK" FontSize="11" FontWeight="Bold" Foreground="#166534"/>
-                            </Border>
-                        </Grid>
-
-                    </StackPanel>
-                </Border>
-
+                    <!-- Item: Segurança -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="🔒" FontSize="14" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="Segurança" FontSize="11" Foreground="#94A3B8"/>
+                            <TextBlock Text="Senha definida" FontSize="13" Foreground="#1E293B" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <Border Grid.Column="2" Background="#DCFCE7" CornerRadius="8" Padding="8,3" VerticalAlignment="Center">
+                            <TextBlock Text="OK" FontSize="11" FontWeight="Bold" Foreground="#166534"/>
+                        </Border>
+                    </Grid>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>
