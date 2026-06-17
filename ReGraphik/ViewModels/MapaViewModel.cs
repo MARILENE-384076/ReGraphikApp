@@ -199,7 +199,7 @@ namespace ReGraphik.ViewModels
 
         /// <summary>
         /// Gera o código HTML completo contendo o mapa Leaflet e os marcadores de cada ponto de coleta.
-        /// Injeta os dados do C# (nome, endereço, resíduos, telefone e site) dinamicamente no JavaScript.
+        /// Injeta os dados do C# (nome, endereço, resíduos) dinamicamente no JavaScript.
         /// </summary>
         /// <param name="pontos">A lista de pontos de coleta a serem exibidos no mapa.</param>
         /// <returns>Uma string contendo o HTML e JavaScript necessários para renderizar o mapa.</returns>
@@ -210,27 +210,26 @@ namespace ReGraphik.ViewModels
             for (int i = 0; i < pontos.Count; i++)
             {
                 var p = pontos[i];
+
                 if (i > 0) marcadoresJs.Append(",");
 
                 /// Se as coordenadas forem zero, utiliza uma localização padrão (São Paulo) para evitar que o mapa quebre
                 string latitude = p.Lat != 0 ? p.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-23.55052";
                 string longitude = p.Lng != 0 ? p.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-46.633308";
 
-                /// Monta a estrutura JSON com os dados do C#, escapando os textos para evitar erros de sintaxe no JS
+                /// Monta a estrutura JSON com os dados do C#, ignorando completamente telefone e site
                 marcadoresJs.Append($@"{{
                     ""idx"": {i},
                     ""nome"": ""{EscJs(p.NomePonto)}"",
                     ""endereco"": ""{EscJs(p.Cidade)}"",
                     ""tipos"": ""{EscJs(p.ResiduosAceitos)}"",
                     ""lat"": {latitude},
-                    ""lng"": {longitude},
-                    ""telefone"": ""{EscJs(p.telefone)}"",
-                    ""site"": ""{EscJs(p.site)}""
+                    ""lng"": {longitude}
                 }}");
             }
             marcadoresJs.Append("]");
 
-            /// Retorna o template HTML limpo diretamente para injeção sem quebras iniciais
+            /// Retorna o template HTML com o MOTW para remover os bloqueios de conteúdo ativo do IE/WebBrowser
             return $@"<!DOCTYPE html>
 <html>
 <head>
@@ -243,8 +242,6 @@ namespace ReGraphik.ViewModels
         .popup-custom {{ font-size: 14px; line-height: 1.4; min-width: 200px; }}
         .popup-title {{ font-weight: bold; color: #2e7d32; margin-bottom: 8px; font-size: 15px; text-transform: uppercase; }}
         .popup-info {{ margin-bottom: 4px; }}
-        .link-tel {{ color: #2e7d32; text-decoration: none; font-weight: 500; }}
-        .link-site {{ color: #1D4ED8; text-decoration: none; font-weight: 500; }}
     </style>
 </head>
 <body>
@@ -263,22 +260,12 @@ namespace ReGraphik.ViewModels
             pontos.forEach(function(p) {{
                 var marker = L.marker([p.lat, p.lng]).addTo(map);
                 
+                // Balão de informações limpo e direto ao ponto
                 var conteudo = '<div class=""popup-custom"">' +
                                '<div class=""popup-title"">' + p.nome + '</div>' +
                                '<div class=""popup-info""><b>Endereço:</b> ' + p.endereco + '</div>' +
-                               '<div class=""popup-info""><b>Resíduos:</b> ' + p.tipos + '</div>';
-                
-                if (p.telefone && p.telefone !== 'Não informado' && p.telefone !== '') {{
-                    conteudo += '<div class=""popup-info""><b>Telefone:</b> <a href=""tel:' + p.telefone + '"" class=""link-tel"">' + p.telefone + '</a></div>';
-                }} else {{
-                    conteudo += '<div class=""popup-info"" style=""color: #777;""><b>Telefone:</b> Não informado</div>';
-                }}
-
-                if (p.site && p.site !== 'Não informado' && p.site !== '') {{
-                    conteudo += '<div class=""popup-info""><b>Site:</b> <a href=""' + p.site + '"" target=""_blank"" class=""link-site"">Acessar site</a></div>';
-                }}
-
-                conteudo += '</div>';
+                               '<div class=""popup-info""><b>Resíduos:</b> ' + p.tipos + '</div>' +
+                               '</div>';
 
                 marker.bindPopup(conteudo);
                 marcadores.push(marker);

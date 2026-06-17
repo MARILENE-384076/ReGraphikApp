@@ -32,10 +32,10 @@ namespace ReGraphik.Models
         [JsonPropertyName("longitude")]
         public double Lng { get; set; } = 0.0;
 
-        [JsonPropertyName("Telefone")]
+        [JsonPropertyName("telefone")]
         public string Telefone { get; set; }
 
-        [JsonPropertyName("Site")]
+        [JsonPropertyName("site")]
         public string Site { get; set; }
     }
 }
