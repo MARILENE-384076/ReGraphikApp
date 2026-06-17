@@ -135,6 +135,9 @@
                 <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
             </Border.Effect>
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -142,17 +145,6 @@
 
                 <Grid Grid.Row="0" Margin="0,0,0,16">
                     <TextBlock Text="Resíduos em Estoque" FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Exportar" Command="{Binding ExportarCommand}" Width="90" Height="36"
-                                Background="White" BorderBrush="#1649a2" BorderThickness="1"
-                                Foreground="#1649a2" FontWeight="Medium">
-                            <Button.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="6"/>
-                                </Style>
-                            </Button.Resources>
-                        </Button>
-                    </StackPanel>
                 </Grid>
 
                 <DataGrid ItemsSource="{Binding ResiduosFiltrados}" Grid.Row="1"
@@ -265,13 +257,12 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
-                    CornerRadius="12" Padding="10,4"
-                    HorizontalAlignment="Left" VerticalAlignment="Center">
-
+                                            CornerRadius="12" Padding="10,4"
+                                            HorizontalAlignment="Left" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Status}" 
-                           Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
-                           FontSize="11" FontWeight="SemiBold"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                   Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
+                                                   FontSize="11" FontWeight="SemiBold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -287,7 +278,7 @@
                                             Background="White"
                                             BorderBrush="#2563EB" BorderThickness="1"
                                             Foreground="#2563EB" FontSize="12"
-                                            Cursor="Hand" Margin="0,0, 20, 0">
+                                            Cursor="Hand" Margin="0,0,20,0">
                                         <Button.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="CornerRadius" Value="4"/>
@@ -297,7 +288,6 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
