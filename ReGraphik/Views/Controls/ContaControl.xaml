@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="1.2*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- ══ COLUNA ESQUERDA: formulário ══ -->
+            <!-- ══ COLUNA ESQUERDA: formulário + estatísticas ══ -->
             <StackPanel Grid.Column="0">
 
                 <!-- Seção: Informações Pessoais -->
@@ -39,9 +39,8 @@
                     </Border.Effect>
                     <StackPanel>
 
-                        <!-- Cabeçalho da seção -->
                         <TextBlock Text="INFORMAÇÕES PESSOAIS" FontSize="11" FontWeight="Bold"
-           Foreground="#94A3B8" Margin="0,0,0,16"/>
+                                   Foreground="#94A3B8" Margin="0,0,0,16"/>
 
                         <!-- Linha 1: Nome + Login -->
                         <Grid Margin="0,0,0,12">
@@ -111,26 +110,21 @@
                     </Border.Effect>
                     <StackPanel>
 
-                        <!-- Cabeçalho com link -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold"
-                                       Foreground="#94A3B8" VerticalAlignment="Center"/>
-                            <TextBlock Text=" — ALTERAR SENHA" FontSize="11" FontWeight="Bold"
-                                       Foreground="#1649a2" VerticalAlignment="Center"/>
-                            <TextBlock Text=" ↓" FontSize="11" Foreground="#1649a2" VerticalAlignment="Center"/>
+                            <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                            <TextBlock Text=" — ALTERAR SENHA ↓" FontSize="11" FontWeight="Bold" Foreground="#1649a2" VerticalAlignment="Center"/>
                         </StackPanel>
 
-                        <!-- Campo Nova Senha -->
                         <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}"/>
                         <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,4"/>
                         <TextBlock Text="Deixe em branco para manter a senha atual."
-                                   FontSize="11" Foreground="#94A3B8" Margin="0,0,0,0"/>
+                                   FontSize="11" Foreground="#94A3B8"/>
 
                     </StackPanel>
                 </Border>
 
-                <!-- Botões -->
-                <Grid>
+                <!-- Botões Cancelar e Salvar -->
+                <Grid Margin="0,0,0,16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="12"/>
@@ -163,13 +157,186 @@
 
                 <!-- Mensagens de feedback inline -->
                 <TextBlock Text="{Binding MensagemSucesso}" Foreground="#16A34A"
-                           FontSize="13" FontWeight="SemiBold"
-                           HorizontalAlignment="Center" Margin="0,12,0,0"
+                           FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,8"
                            Visibility="{Binding MensagemSucesso, Converter={StaticResource StringToVisibilityConverter}}"/>
-
                 <TextBlock Text="{Binding MensagemErroGeral}" Foreground="#DC2626"
-                           FontSize="13" HorizontalAlignment="Center" Margin="0,12,0,0"
+                           FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,16"
                            Visibility="{Binding MensagemErroGeral, Converter={StaticResource StringToVisibilityConverter}}"/>
+
+                <!-- ══ Seção: Estatísticas do usuário ══ -->
+                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                    </Border.Effect>
+                    <StackPanel>
+
+                        <!-- Cabeçalho com botão de atualizar girando -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold"
+                                       Foreground="#94A3B8" VerticalAlignment="Center"/>
+
+                            <!-- Botão atualizar: a animação fica no TextBlock filho para evitar MC4011 -->
+                            <Button Grid.Column="1" Command="{Binding AtualizarEstatisticasCommand}"
+                                    Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                    ToolTip="Atualizar estatísticas" Width="28" Height="28">
+                                <TextBlock Text="↻" FontSize="18" Foreground="#64748B"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform>
+                                        <RotateTransform Angle="0"/>
+                                    </TextBlock.RenderTransform>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CarregandoEstatisticas}" Value="True">
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                    From="0" To="360"
+                                                                    Duration="0:0:1"
+                                                                    RepeatBehavior="Forever"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                                                    To="0" Duration="0:0:0.1"/>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Button>
+                        </Grid>
+
+                        <!-- Cards de métricas -->
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Card: Total cadastrados -->
+                            <Border Grid.Column="0" Background="#F8FAFC" CornerRadius="8" Padding="16">
+                                <StackPanel>
+                                    <TextBlock Text="Resíduos cadastrados" FontSize="12"
+                                               Foreground="#64748B" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding TotalResiduos}" FontSize="24"
+                                               FontWeight="Bold" Foreground="#1E293B"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Card: Reaproveitados -->
+                            <Border Grid.Column="2" Background="#F0FDF4" CornerRadius="8" Padding="16">
+                                <StackPanel>
+                                    <TextBlock Text="Reaproveitados" FontSize="12"
+                                               Foreground="#16A34A" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding TotalReaproveitados}" FontSize="24"
+                                               FontWeight="Bold" Foreground="#16A34A"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Card: Valor econômico -->
+                            <Border Grid.Column="4" Background="#EFF6FF" CornerRadius="8" Padding="16">
+                                <StackPanel>
+                                    <TextBlock Text="Valor econômico" FontSize="12"
+                                               Foreground="#1649a2" Margin="0,0,0,6" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding ValorEconomico}" FontSize="20"
+                                               FontWeight="Bold" Foreground="#1649a2"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Lista: Últimos resíduos -->
+                        <TextBlock Text="Últimos resíduos cadastrados" FontSize="13"
+                                   FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
+
+                        <ItemsControl ItemsSource="{Binding UltimosResiduos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="0,10" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Ícone -->
+                                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6"
+                                                    Background="#EFF6FF" Margin="0,0,12,0">
+                                                <TextBlock Text="♻" FontSize="16"
+                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <!-- Nome + detalhes -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding TipoResiduo}" FontSize="13"
+                                                           FontWeight="SemiBold" Foreground="#1E293B"/>
+                                                <TextBlock FontSize="12" Foreground="#64748B">
+                                                    <Run Text="{Binding Origem}"/>
+                                                    <Run Text=" · "/>
+                                                    <Run Text="{Binding Quantidade}"/>
+                                                    <Run Text=" kg"/>
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <!-- Badge de status -->
+                                            <Border Grid.Column="2" CornerRadius="6" Padding="8,3"
+                                                    VerticalAlignment="Center">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#FEF08A"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Disponível">
+                                                                <Setter Property="Background" Value="#DCFCE7"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Reaproveitado">
+                                                                <Setter Property="Background" Value="#DBEAFE"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="#854D0E"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Disponível">
+                                                                    <Setter Property="Foreground" Value="#166534"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Reaproveitado">
+                                                                    <Setter Property="Foreground" Value="#1E40AF"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
 
             </StackPanel>
 
@@ -185,15 +352,12 @@
 
                         <!-- Avatar circular -->
                         <Grid Width="110" Height="110" HorizontalAlignment="Center" Margin="0,0,0,16">
-
                             <!-- Fundo com inicial do nome quando não há foto -->
                             <Border CornerRadius="55" Background="#1649a2">
                                 <TextBlock Text="{Binding InicialNome}" FontSize="40" FontWeight="Bold"
-                                           Foreground="White" HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"
                                            Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}"/>
                             </Border>
-
                             <!-- Foto de perfil -->
                             <Border CornerRadius="55" ClipToBounds="True">
                                 <Border.Background>
@@ -201,30 +365,24 @@
                                                 Stretch="UniformToFill"/>
                                 </Border.Background>
                             </Border>
-
                         </Grid>
 
-                        <!-- Nome do usuário -->
                         <TextBlock Text="{Binding Nome}" FontSize="18" FontWeight="Bold"
                                    Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,0,0,4"/>
-
-                        <!-- Login -->
                         <TextBlock Text="{Binding LoginExibicao}" FontSize="13"
                                    Foreground="#64748B" HorizontalAlignment="Center" Margin="0,0,0,12"/>
 
                         <!-- Badge: Conta ativa -->
                         <Border Background="#DCFCE7" CornerRadius="10" Padding="10,4"
                                 HorizontalAlignment="Center" Margin="0,0,0,16">
-                            <TextBlock Text="✓ Conta ativa" FontSize="12" FontWeight="SemiBold"
-                                       Foreground="#166534"/>
+                            <TextBlock Text="✓ Conta ativa" FontSize="12" FontWeight="SemiBold" Foreground="#166534"/>
                         </Border>
 
                         <!-- Botão Mudar Foto -->
                         <Button Content="🖼 Mudar foto" Height="36" Width="140"
                                 Command="{Binding SelecionarFotoCommand}"
                                 Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
-                                Foreground="#1E293B" FontWeight="Medium" FontSize="13"
-                                Cursor="Hand">
+                                Foreground="#1E293B" FontWeight="Medium" FontSize="13" Cursor="Hand">
                             <Button.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="8"/>
@@ -256,7 +414,7 @@
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="E-mail" FontSize="11" Foreground="#94A3B8"/>
                                 <TextBlock Text="{Binding EmailResumido}" FontSize="13"
-                                           Foreground="#1E293B" FontWeight="Medium"/>
+                                           Foreground="#1E293B" FontWeight="SemiBold" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Grid>
 
@@ -273,7 +431,7 @@
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="Perfil" FontSize="11" Foreground="#94A3B8"/>
                                 <TextBlock Text="{Binding Perfil}" FontSize="13"
-                                           Foreground="#1E293B" FontWeight="Medium"/>
+                                           Foreground="#1E293B" FontWeight="SemiBold"/>
                             </StackPanel>
                         </Grid>
 
@@ -291,7 +449,7 @@
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="Segurança" FontSize="11" Foreground="#94A3B8"/>
                                 <TextBlock Text="Senha definida" FontSize="13"
-                                           Foreground="#1E293B" FontWeight="Medium"/>
+                                           Foreground="#1E293B" FontWeight="SemiBold"/>
                             </StackPanel>
                             <Border Grid.Column="2" Background="#DCFCE7" CornerRadius="8" Padding="8,3"
                                     VerticalAlignment="Center">
