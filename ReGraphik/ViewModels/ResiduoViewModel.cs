@@ -1,5 +1,6 @@
 ﻿using ControlzEx.Standard;
-using MahApps.Metro.SimpleChildWindow;
+using Firebase.Database;
+using Firebase.Database.Query;
 using MahApps.Metro.SimpleChildWindow;
 using ReGraphik.Models;
 using ReGraphik.Services;
@@ -271,9 +272,9 @@ namespace ReGraphik.ViewModels
                     possuiErro = true;
                 }
 
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
-
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 string base64Payload = string.Empty;
+
                 if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
                 {
                     // Leitura assíncrona por streams evita alocar buffers síncronos imensos no heap comum
@@ -303,15 +304,22 @@ namespace ReGraphik.ViewModels
                     Status = "Disponível"
                 };
 
-                /// Executa o POST na rota da API: api/Residuo
-                var response = await _httpClient.PostAsJsonAsync("api/Residuo", novoResiduo, _jsonOptions, cts.Token).ConfigureAwait(true);
-
-                if (response.IsSuccessStatusCode)
+                try
                 {
+                    /// Inicializa o cliente do Realtime Database
+                    var firebase = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
+
+                    /// Salva o objeto na tabela/nó "residuos" usando o Id como chave
+                    await firebase
+                        .Child("residuos")
+                        .Child(novoResiduo.Id)
+                        .PutAsync(novoResiduo);
+
                     MostrarMensagemSucesso();
                 }
-                else
+                catch (Exception ex)
                 {
+                    MensagemErroGeral = "Erro ao salvar os dados no Realtime Database.";
                     MostrarMensagemErro();
                 }
             }
