@@ -1,4 +1,3 @@
-
 # ReGraphik — Gestão de Estoque Reverso
  
 > Sistema de gestão e automação focado em sustentabilidade e eficiência operacional para o setor gráfico.
@@ -8,7 +7,8 @@
 ![Firebase](https://img.shields.io/badge/DB-Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black)
 ![Swagger](https://img.shields.io/badge/Docs-Swagger-85EA2D?style=flat-square&logo=swagger&logoColor=black)
 ![Google Maps](https://img.shields.io/badge/API-Google%20Maps-4285F4?style=flat-square&logo=googlemaps&logoColor=white)
- 
+![JWT](https://img.shields.io/badge/Auth-Token%20Validação-000000?style=flat-square&logo=jsonwebtokens)
+
 ---
 
 ## Sumário
@@ -20,17 +20,21 @@
 - [Tecnologias](#tecnologias)
 - [Estrutura do Repositório](#estrutura-do-repositório)
 - [API REST — Endpoints](#api-rest--endpoints)
+- [ApiConfig — Autenticação e Cadastro](#apiconfig--autenticação-e-cadastro)
 - [Modelos de Dados](#modelos-de-dados)
+- [Frontend Desktop (WPF)](#frontend-desktop-wpf)
 - [Integrações Externas](#integrações-externas)
 - [Como Executar](#como-executar)
 - [Documentação](#documentação)
 - [Integrantes](#integrantes)
+
 ---
+
 ## Sobre o Projeto
  
 O **ReGraphik** é um software desenvolvido para resolver um problema real do setor gráfico: o descarte inadequado de resíduos como papel, cartão e vinil. O sistema transforma esses materiais descartados em valor através de um ciclo completo de gestão — do cadastro do resíduo à localização de pontos de coleta e sugestão de reaproveitamento.
  
-O projeto é composto por uma **API REST** em ASP.NET Core integrada ao **Firebase Realtime Database** e um **cliente desktop** desenvolvido em WPF seguindo o padrão MVVM.
+O projeto é composto por uma **API REST** em ASP.NET Core integrada ao **Firebase Realtime Database**, um **serviço de autenticação** (`ApiConfig`) e um **cliente desktop** desenvolvido em WPF seguindo o padrão MVVM.
  
 ---
 
@@ -41,6 +45,7 @@ Empresas do setor gráfico geram diariamente resíduos como papel A4, cartões, 
 - Custos desnecessários de descarte
 - Alto impacto ambiental
 - Perda de matéria-prima que poderia ser reaproveitada
+
 ---
 
 ## Nossa Solução
@@ -64,27 +69,36 @@ O projeto segue rigorosamente o padrão **MVVM (Model-View-ViewModel)** na camad
  
 ```
 ReGraphikApp/
-├── ApiRestReGraphik/          # Backend — ASP.NET Core REST API
+├── ApiRestReGraphik/          # Backend principal — ASP.NET Core REST API
 │   ├── Controllers/           # Endpoints HTTP (CRUD completo)
 │   ├── Data/                  # Configuração do Firebase Client
 │   ├── Models/                # Entidades do domínio
 │   ├── Services/              # Regras de negócio e acesso ao Firebase
 │   └── Program.cs             # Configuração da aplicação, DI, Swagger, CORS
 │
+├── ApiConfig/                 # Serviço auxiliar — Autenticação e Cadastro
+│   ├── Controllers/           # Validação de token e cadastro de usuário
+│   ├── Models/                # Modelos de acesso e usuário
+│   ├── Services/              # TokenService (geração de código numérico)
+│   └── Program.cs
+│
 ├── ReGraphik/                 # Frontend — WPF Desktop (MVVM)
 │   ├── Commands/              # RelayCommand (padrão Command do MVVM)
-│   ├── Converters/            # Implementam interfaces como IValueConverter
-│   ├── Imgs/                  # Pasta de imagens
+│   ├── Converters/            # IValueConverter para binding de UI
+│   ├── Imgs/                  # Recursos de imagem
 │   ├── Models/                # Espelho das entidades do domínio
-│   ├── Services/              # GooglePlacesService (integração com Maps)
-│   ├── Styles/              # Pasta de Estilos
-│   ├── ViewModels/            # Lógica de apresentação (BaseViewModel, ResiduoViewModel)
-│   └── Views/                 # Janelas e controls XAML
-│       └── Controls/       # Dashboard, Resíduos, Pontos de Coleta, Mapa, Relatórios
+│   ├── Services/              # Serviços de negócio e integrações
+│   │   └── Interface/         # Interfaces dos serviços (IAutorizarService, etc.)
+│   ├── Styles/                # Estilos XAML globais
+│   ├── ViewModels/            # Lógica de apresentação (14 ViewModels)
+│   └── Views/                 # Janelas e controles XAML
+│       └── Controls/          # Dashboard, Resíduos, Mapa, Chat, ESG, Relatórios...
 │
 ├── Modelagem/                 # Documentação técnica (PDFs)
-└── Banco de Dados/            # Scripts e documentação do banco
+├── Banco de Dados/            # Scripts e documentação do banco
+└── ReGraphik_MVVM_APIRest.pptx  # Apresentação técnica da arquitetura
 ```
+
 **Fluxo da aplicação:**
  
 ```
@@ -92,10 +106,11 @@ Cliente WPF  →  API REST (ASP.NET Core)  →  Firebase Realtime Database
                         ↓
                Google Maps Places API  (busca de pontos de coleta)
 ```
- ## Como o Mapa funciona — do clique ao pin
- 
+
 ---
- 
+
+## Como o Mapa funciona — do clique ao pin
+
 ### 1. Usuário clica em "Buscar" (View — XAML)
  
 ```xml
@@ -105,8 +120,6 @@ Cliente WPF  →  API REST (ASP.NET Core)  →  Firebase Realtime Database
 <TextBox x:Name="TxtCidade"
          Text="São Paulo"/>
 ```
- 
----
  
 ### 2. WPF manda pedido pra API (MapaPage.xaml.cs)
  
@@ -122,8 +135,6 @@ private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
 }
 ```
  
----
- 
 ### 3. API pergunta pro Google Maps (PontosColetaController.cs)
  
 ```csharp
@@ -133,8 +144,6 @@ var url   = $"https://maps.googleapis.com/maps/api/place/textsearch/json" +
  
 var json = await _httpClient.GetStringAsync(url);
 ```
- 
----
  
 ### 4. Google Maps responde — API salva no Firebase (PontosColetaService.cs)
  
@@ -146,15 +155,11 @@ var resultado = await _firebaseClient
 novoPonto.Id = resultado.Key; // ID gerado pelo Firebase
 ```
  
----
- 
 ### 5. API devolve a lista pro WPF (PontosColetaController.cs)
  
 ```csharp
 return Ok(listaGoogle); // JSON com lat/lng de cada ponto
 ```
- 
----
  
 ### 6. Usuário vê os pontos no mapa (MapaPage.xaml.cs)
  
@@ -168,19 +173,22 @@ private void CarregarMapa(List<PontosColeta> pontos)
     MapaBrowser.Navigate(new Uri(tmpFile)); // abre no WebBrowser do WPF
 }
 ```
---- 
 
+---
+ 
 ## Tecnologias
  
 | Camada | Tecnologia |
 |---|---|
-| Linguagem | C# (.NET) |
+| Linguagem | C# (.NET 8) |
 | Frontend | WPF — Windows Presentation Foundation |
 | Padrão de Projeto | MVVM |
 | Backend | ASP.NET Core Web API |
 | Banco de Dados | Firebase Realtime Database |
 | Autenticação Firebase | Google Credential (Service Account JSON) |
 | Mapa | Google Maps Places API + Leaflet.js (WebBrowser/WebView2) |
+| Chat | Firebase Realtime Database (direto do cliente WPF) |
+| Validação de Cadastro | Token numérico de 6 dígitos gerado pelo ApiConfig |
 | Documentação API | Swagger / OpenAPI |
 | CORS | Aberto para qualquer origem (configurável para produção) |
  
@@ -208,30 +216,97 @@ ReGraphikApp/
 │   │   ├── Residuo.cs
 │   │   ├── PontosColeta.cs
 │   │   ├── Sugestao.cs
-│   │   └── SugestaoResiduo.cs
+│   │   ├── SugestaoResiduo.cs
+│   │   ├── LoginRequest.cs
+│   │   └── RequisicaoToken.cs
+│   ├── Models/DTOs/
+│   │   ├── UsuarioDto.cs
+│   │   ├── ResiduoDto.cs
+│   │   ├── PontosColetaDto.cs
+│   │   ├── SugestaoDto.cs
+│   │   ├── SugestaoResiduoDto.cs
+│   │   └── SolicitarAcessoDto.cs
 │   ├── Data/
 │   │   └── DbReGraphik.cs
 │   ├── Program.cs
-│   ├── appsettings.json
-│   └── appsettings.Development.json
+│   └── appsettings.json
+│
+├── ApiConfig/
+│   ├── Controllers/
+│   │   ├── AcessoCadastroController.cs
+│   │   └── UsuarioCadastroController.cs
+│   ├── Models/
+│   │   ├── AcessoCadastro.cs
+│   │   └── UsuarioCadastro.cs
+│   ├── Services/
+│   │   └── TokenService.cs
+│   └── Program.cs
 │
 ├── ReGraphik/
 │   ├── Views/
 │   │   ├── MainWindow.xaml
-│   │   └── Pages/
-│   │       ├── DashboardPage.xaml
-│   │       ├── ResiduosPage.xaml
-│   │       ├── EstoquereversoPage.xaml
-│   │       ├── MapaPage.xaml
-│   │       └── RelatoriosPage.xaml
+│   │   ├── LoginWindow.xaml
+│   │   ├── RecuperarSenhaWindow.xaml
+│   │   ├── ChatPainelWindow.xaml
+│   │   ├── MensagemWindow.xaml
+│   │   └── SugestaoResiduoWindow.xaml
+│   ├── Views/Controls/
+│   │   ├── DashboardControl.xaml
+│   │   ├── ResiduosControl.xaml
+│   │   ├── EstoqueReversoControl.xaml
+│   │   ├── MapaControl.xaml
+│   │   ├── SugestaoResiduoControl.xaml
+│   │   ├── RelatoriosControl.xaml
+│   │   ├── ContaControl.xaml
+│   │   └── EsgControl.xaml
 │   ├── ViewModels/
 │   │   ├── BaseViewModel.cs
-│   │   └── ResiduoViewModel.cs
+│   │   ├── MainViewModel.cs
+│   │   ├── LoginViewModel.cs
+│   │   ├── CadastroViewModel.cs
+│   │   ├── DashboardViewModel.cs
+│   │   ├── ResiduoViewModel.cs
+│   │   ├── EstoqueReversoViewModel.cs
+│   │   ├── MapaViewModel.cs
+│   │   ├── SugestaoResiduoViewModel.cs
+│   │   ├── ChatViewModel.cs
+│   │   ├── RelatorioViewModel.cs
+│   │   ├── ContaViewModel.cs
+│   │   ├── EsgViewModel.cs
+│   │   └── UsuarioViewModel.cs
 │   ├── Models/
+│   │   ├── Usuario.cs
+│   │   ├── Residuo.cs
+│   │   ├── PontosColeta.cs
+│   │   ├── Sugestao.cs
+│   │   ├── SugestaoResiduo.cs
+│   │   ├── Mensagem.cs
+│   │   ├── Conversa.cs
+│   │   └── RespostaToken.cs
 │   ├── Services/
-│   │   └── GooglePlacesService.cs
-│   └── Commands/
-│       └── RelayCommand.cs
+│   │   ├── Interface/
+│   │   │   ├── IAutorizarService.cs
+│   │   │   ├── IChatService.cs
+│   │   │   └── IResiduoService.cs
+│   │   ├── AutorizarService.cs
+│   │   ├── ChatService.cs
+│   │   ├── FirebaseConfig.cs
+│   │   ├── GooglePlacesService.cs
+│   │   ├── ResiduoService.cs
+│   │   ├── ConfiguracaoLocalService.cs
+│   │   ├── UsuarioSessaoService.cs
+│   │   └── ValidacaoCpfService.cs
+│   ├── Commands/
+│   │   └── RelayCommand.cs
+│   ├── Converters/
+│   │   ├── BadgeNotificacaoConverter.cs
+│   │   ├── BoolToVisibilityConverter.cs
+│   │   ├── ChatConverter.cs
+│   │   ├── NaoLidasVisibilidadeConverter.cs
+│   │   ├── NullToVisibilityConverter.cs
+│   │   ├── StatusToColorConverter.cs
+│   │   └── StringToVisibilityConverter.cs
+│   └── Styles/
 │
 ├── Modelagem/
 │   ├── MiniMundo Demanda.pdf
@@ -239,8 +314,10 @@ ReGraphikApp/
 │   ├── Modelo Lógico.pdf
 │   └── Modelo Físico.pdf
 │
-└── Banco de Dados/
-    └── Documentação Criação Modelagem.pdf
+├── Banco de Dados/
+│   └── Documentação Criação Modelagem.pdf
+│
+└── ReGraphik_MVVM_APIRest.pptx
 ```
  
 ---
@@ -251,7 +328,8 @@ Para garantir que a interface nunca trave durante as requisições, usamos dois 
 
 O **RelayCommand** é o que conecta os botões da tela à lógica do sistema — sem ele, teríamos código misturado com a interface, o que quebra o padrão MVVM.
 
-O **Async/Await** no `GooglePlacesService` garante que quando o app faz uma chamada ao Google Maps, a tela continua responsiva — o usuário não vê a janela travar enquanto espera a resposta.
+O **Async/Await** nos Services garante que quando o app faz chamadas externas (API, Firebase, Google Maps), a tela continua responsiva — o usuário não vê a janela travar enquanto espera a resposta.
+
 ### RelayCommand — Padrão de Binding
  
 O padrão `ICommand` garante que a View nunca acessa a ViewModel diretamente:
@@ -279,7 +357,6 @@ public class RelayCommand : ICommand
 Service completamente desacoplada da ViewModel, garantindo que a UI nunca trava durante chamadas HTTP externas:
  
 ```csharp
-// GooglePlacesService.cs
 public class GooglePlacesService
 {
     private readonly HttpClient _http;
@@ -295,12 +372,35 @@ public class GooglePlacesService
     }
 }
 ```
- 
-- **Async/Await** garante UI responsiva durante chamadas HTTP externas
-- **Service desacoplada** — ViewModel não toca no HttpClient
-- **Injeção via construtor** habilita testes unitários com mocks
----
 
+### ChatService — Firebase direto do cliente
+
+O chat comunica diretamente com o Firebase Realtime Database, sem passar pela API REST, para garantir baixa latência nas mensagens:
+
+```csharp
+public class ChatService
+{
+    private readonly FirebaseClient _db;
+    private const string NodeMensagens = "mensagens";
+
+    // ID de conversa determinístico — garante que a mesma conversa
+    // seja encontrada independentemente de quem iniciou
+    private static string ConversaId(string id1, string id2)
+    {
+        var ids = new[] { id1, id2 };
+        Array.Sort(ids, StringComparer.Ordinal);
+        return $"{ids[0]}_{ids[1]}";
+    }
+
+    public async Task EnviarMensagemAsync(Mensagem mensagem)
+    {
+        var convId = ConversaId(mensagem.RemetenteId, mensagem.DestinatarioId);
+        await _db.Child(NodeMensagens).Child(convId).Child(mensagem.Id).PutAsync(mensagem);
+    }
+}
+```
+
+---
 
 ## API REST — Endpoints
  
@@ -312,9 +412,23 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
 |---|---|---|
 | GET | `/api/Usuario` | Lista todos os usuários |
 | GET | `/api/Usuario/{id}` | Obtém usuário por ID |
-| POST | `/api/Usuario` | Cria novo usuário |
+| POST | `/api/Usuario` | Solicita acesso (pré-cadastro — envia token por e-mail) |
+| POST | `/api/Usuario/autorizar-token` | Autoriza token para prosseguir com o cadastro |
+| POST | `/api/Usuario/validar-token` | Valida token e ativa a conta |
+| POST | `/api/Usuario/finalizar-cadastro?token=` | Finaliza o cadastro com os dados completos |
+| POST | `/api/Usuario/login` | Autenticação por login e senha |
 | PUT | `/api/Usuario/{id}` | Atualiza usuário existente |
 | DELETE | `/api/Usuario/{id}` | Remove usuário |
+
+### Resíduo — `api/Residuo`
+
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/api/Residuo` | Lista todos os resíduos |
+| GET | `/api/Residuo/{id}` | Obtém resíduo por ID |
+| POST | `/api/Residuo` | Cria novo resíduo |
+| PUT | `/api/Residuo/{id}` | Atualiza resíduo existente |
+| DELETE | `/api/Residuo/{id}` | Remove resíduo |
 
 ### Pontos de Coleta — `api/PontosColeta`
  
@@ -323,13 +437,13 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
 | GET | `/api/PontosColeta` | Lista todos os pontos cadastrados no Firebase |
 | GET | `/api/PontosColeta/{id}` | Obtém ponto por ID |
 | POST | `/api/PontosColeta/google?cidade=...` | Cadastra pontos via Google Maps Places API e salva no Firebase |
-| POST | `/api/PontosColeta` | Cadastra novo ponto de coleta |
+| POST | `/api/PontosColeta` | Cadastra novo ponto de coleta manualmente |
 | PUT | `/api/PontosColeta/{id}` | Atualiza ponto existente |
 | DELETE | `/api/PontosColeta/{id}` | Remove ponto de coleta |
  
 > O endpoint `/google` valida se a cidade já está cadastrada no Firebase antes de consultar o Google Maps. Se autorizada, busca os pontos, salva automaticamente e retorna a lista com os IDs gerados.
->
-> ### Sugestão — `api/Sugestao`
+ 
+### Sugestão — `api/Sugestao`
  
 | Método | Rota | Descrição |
 |---|---|---|
@@ -351,7 +465,40 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
  
 ---
 
- ## Modelos de Dados
+## ApiConfig — Autenticação e Cadastro
+
+O `ApiConfig` é um projeto auxiliar responsável pelo fluxo de **validação de cadastro por token de e-mail**. Enquanto a `ApiRestReGraphik` cuida dos dados de negócio, o `ApiConfig` gerencia:
+
+- Pré-cadastro do usuário com geração de token numérico de 6 dígitos (`UsuarioCadastroController`)
+- Validação do token recebido por e-mail para ativar a conta (`AcessoCadastroController`)
+- Geração dos tokens via `TokenService`
+
+### Endpoints — ApiConfig
+
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/api/UsuarioCadastro` | Cria novo usuário e gera + envia token de validação por e-mail |
+| POST | `/api/AcessoCadastro/validar-token` | Valida o token de e-mail e ativa a conta |
+
+### Fluxo de cadastro completo
+
+```
+1. Usuário preenche o formulário (WPF)
+        ↓
+2. AutorizarService → POST /api/Usuario  (solicita acesso)
+        ↓
+3. API gera token e envia por e-mail
+        ↓
+4. Usuário digita o token recebido (WPF)
+        ↓
+5. AutorizarService → POST /api/Usuario/validar-token
+        ↓
+6. Conta ativada — usuário faz login
+```
+
+---
+
+## Modelos de Dados
  
 ### Usuario
 ```json
@@ -362,6 +509,7 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
   "email": "string",
   "login": "string",
   "senha": "string",
+  "perfil": "string",
   "data_cadastro": "datetime"
 }
 ```
@@ -418,21 +566,111 @@ A API expõe **5 controllers** com operações CRUD completas. A documentação 
   "data_aplicacao": "datetime?"
 }
 ```
- 
----## Frontend Desktop (WPF)
+
+### Mensagem (Chat — Firebase direto)
+```json
+{
+  "id": "string",
+  "remetente_id": "string",
+  "destinatario_id": "string",
+  "texto": "string",
+  "data_hora": "datetime",
+  "lida": "bool"
+}
+```
+
+---
+
+## Frontend Desktop (WPF)
  
 O cliente desktop foi desenvolvido em **WPF** com o padrão **MVVM**, garantindo separação entre interface e lógica de negócio.
  
 ### Navegação
  
-A janela principal (`MainWindow`) possui uma barra lateral de navegação com 5 seções:
+A janela principal (`MainWindow`) possui uma barra lateral de navegação com as seguintes seções:
  
-| Seção | Status | Descrição |
+| Seção | Arquivo | Status |
 |---|---|---|
-| Dashboard | Em desenvolvimento | Painel com visão geral do sistema |
-| Cadastrar Resíduos | Funcional | Formulário de cadastro de resíduos |
-| Mapa/Ponto de Coleta | Funcional | Mapa interativo com busca por cidade |
-| Relatórios | Em desenvolvimento | Geração de relatórios |
+| Dashboard | `DashboardControl.xaml` | Em desenvolvimento |
+| Cadastrar Resíduos | `ResiduosControl.xaml` | Funcional |
+| Estoque Reverso | `EstoqueReversoControl.xaml` | Funcional |
+| Mapa / Pontos de Coleta | `MapaControl.xaml` | Funcional |
+| Sugestão de Resíduos | `SugestaoResiduoControl.xaml` | Funcional |
+| Chat | `ChatPainelWindow.xaml` | Funcional |
+| Relatórios | `RelatoriosControl.xaml` | Em desenvolvimento |
+| Conta / Perfil | `ContaControl.xaml` | Em desenvolvimento |
+| ESG | `EsgControl.xaml` | Em desenvolvimento |
+
+### Janelas (Windows)
+
+| Janela | Descrição |
+|---|---|
+| `MainWindow.xaml` | Janela principal com barra de navegação lateral |
+| `LoginWindow.xaml` | Tela de autenticação (login e senha) |
+| `RecuperarSenhaWindow.xaml` | Fluxo de recuperação de acesso |
+| `ChatPainelWindow.xaml` | Painel de lista de conversas |
+| `MensagemWindow.xaml` | Janela de troca de mensagens entre usuários |
+| `SugestaoResiduoWindow.xaml` | Janela de aplicação de sugestões a resíduos |
+
+### Services do Cliente WPF
+
+| Service | Responsabilidade |
+|---|---|
+| `AutorizarService` | Login, cadastro, validação de token e atualização de usuário via API REST |
+| `ChatService` | Envio e recebimento de mensagens diretamente no Firebase |
+| `FirebaseConfig` | Configuração da conexão com o Firebase Realtime Database |
+| `GooglePlacesService` | Busca de pontos de coleta por cidade via Google Maps |
+| `ResiduoService` | Operações de resíduo via API REST |
+| `ConfiguracaoLocalService` | Persistência local de preferências (ex: foto de perfil) |
+| `UsuarioSessaoService` | Singleton que mantém o estado do usuário logado na sessão |
+| `ValidacaoCpfService` | Validação de CPF pelo algoritmo dos dígitos verificadores |
+
+---
+
+## Arquitetura do Projeto (MVVM)
+
+Este projeto foi desenvolvido utilizando o padrão **Model-View-ViewModel (MVVM)**, garantindo a separação clara entre a interface do usuário, a lógica de apresentação e as regras de negócio/dados.
+
+```mermaid
+flowchart LR
+    classDef view fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
+    classDef vm fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef model fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+
+    subgraph View ["📱 View (XAML)"]
+        UI["Páginas e Controles UI\n(ex: ResiduosControl.xaml)"]:::view
+    end
+
+    subgraph ViewModel ["🧠 ViewModel (C#)"]
+        CMD["RelayCommand\n(Ações)"]:::vm
+        VM["ViewModel\n(ex: ResiduoViewModel)"]:::vm
+        BVM["BaseViewModel\n(INotifyPropertyChanged)"]:::vm
+        
+        CMD --> VM
+        VM --> BVM
+    end
+
+    subgraph Model ["💾 Model & Services (C#)"]
+        SVC["Services\n(ex: AutorizarService, ChatService)"]:::model
+        MOD["Models\n(ex: Residuo, Mensagem)"]:::model
+        
+        SVC --> MOD
+    end
+
+    UI -- "1. Interação" --> CMD
+    VM -- "2. Solicita Dados" --> SVC
+    MOD -- "3. Alimenta Dados" --> VM
+    BVM -. "4. Atualiza XAML" .-> UI
+```
+
+### Como funciona o fluxo?
+
+1. **Ação do Usuário:** O usuário interage com a **View** (ex: clica num botão em `ResiduosControl.xaml`). Essa ação aciona um `RelayCommand`.
+2. **Processamento:** O comando avisa a **ViewModel** correspondente (`ResiduoViewModel`), que processa a lógica de tela.
+3. **Busca de Dados:** Se necessário, a ViewModel chama um **Service** (como `AutorizarService` ou `ChatService`), que consome APIs externas ou o Firebase, retornando objetos do tipo **Model**.
+4. **Atualização Reativa:** A ViewModel atualiza suas propriedades. Através da `BaseViewModel` (que implementa `INotifyPropertyChanged`), o XAML é notificado e atualiza a tela automaticamente via *Data Binding*.
+
+---
 
 ## Integrações Externas
  
@@ -442,6 +680,7 @@ Toda a persistência de dados é feita no **Firebase Realtime Database**. A aute
  
 - `https://www.googleapis.com/auth/userinfo.email`
 - `https://www.googleapis.com/auth/firebase.database`
+
 Os nós do banco de dados são:
  
 | Nó | Entidade |
@@ -451,6 +690,7 @@ Os nós do banco de dados são:
 | `pontos_coleta` | Pontos de coleta |
 | `sugestoes` | Sugestões de reaproveitamento |
 | `sugestoes_residuos` | Aplicação de sugestões a resíduos |
+| `mensagens` | Mensagens do chat entre usuários |
 
 ### Google Maps Places API
  
@@ -458,6 +698,7 @@ Utilizada em dois pontos do sistema:
  
 - **API REST** (`PontosColetaController`) — busca pontos de coleta por cidade, valida se a cidade está pré-autorizada no Firebase, salva os resultados e retorna com coordenadas de latitude/longitude
 - **WPF Client** (`GooglePlacesService`) — busca postos de coleta por cidade e material para exibição no mapa
+
 ---
  
 ## Como Executar
@@ -468,6 +709,7 @@ Utilizada em dois pontos do sistema:
 - Conta no Firebase com Realtime Database configurado
 - Chave de API do Google Maps habilitada para Places API
 - Visual Studio 2022 ou VS Code com extensões C#
+
 ### Configuração da API
  
 1. Clone o repositório:
@@ -501,57 +743,16 @@ dotnet run
 ```
  
 5. Acesse o Swagger em: `http://localhost:PORT/`
+
 ### Executando o Cliente WPF
  
 1. Abra a solution `ReGraphik.slnx` no Visual Studio
 2. Defina o projeto `ReGraphik` como projeto de inicialização
 3. Certifique-se que a API está em execução
 4. Pressione `F5` para rodar
+
 ---
-## Arquitetura do Projeto (MVVM)
 
-Este projeto foi desenvolvido utilizando o padrão **Model-View-ViewModel (MVVM)**, garantindo a separação clara entre a interface do usuário, a lógica de apresentação e as regras de negócio/dados. 
-
-Abaixo está o fluxo de comunicação entre as camadas da nossa aplicação:
-
-```mermaid
-flowchart LR
-    classDef view fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
-    classDef vm fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
-    classDef model fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-
-    subgraph View ["📱 View (XAML)"]
-        UI["Páginas e Controles UI\n(ex: ResiduosPage.xaml)"]:::view
-    end
-
-    subgraph ViewModel ["🧠 ViewModel (C#)"]
-        CMD["RelayCommand\n(Ações)"]:::vm
-        VM["ViewModel\n(ex: ResiduoViewModel)"]:::vm
-        BVM["BaseViewModel\n(INotifyPropertyChanged)"]:::vm
-        
-        CMD --> VM
-        VM --> BVM
-    end
-
-    subgraph Model ["💾 Model & Services (C#)"]
-        SVC["Services\n(ex: GooglePlacesService)"]:::model
-        MOD["Models\n(ex: Residuo, Pontos)"]:::model
-        
-        SVC --> MOD
-    end
-
-    UI -- "1. Interação" --> CMD
-    VM -- "2. Solicita Dados" --> SVC
-    MOD -- "3. Alimenta Dados" --> VM
-    BVM -. "4. Atualiza XAML" .-> UI
-```
-
-### Como funciona o fluxo?
-
-1. **Ação do Usuário:** O usuário interage com a **View** (ex: clica num botão em `ResiduosPage.xaml`). Essa ação aciona um `RelayCommand`.
-2. **Processamento:** O comando avisa a **ViewModel** correspondente (`ResiduoViewModel`), que processa a lógica de tela.
-3. **Busca de Dados:** Se necessário, a ViewModel chama um **Service** (como o `GooglePlacesService`), que consome APIs externas ou banco de dados, retornando objetos do tipo **Model** (`Residuo`, `PontosColeta`).
-4. **Atualização Reativa:** A ViewModel atualiza suas propriedades. Através da `BaseViewModel` (que implementa `INotifyPropertyChanged`), o XAML é notificado e atualiza a tela automaticamente via *Data Binding*.
 ## Documentação
  
 A estrutura de dados e o planejamento técnico completo estão disponíveis nas pastas do repositório:
@@ -561,6 +762,8 @@ A estrutura de dados e o planejamento técnico completo estão disponíveis nas 
 - [Modelo Lógico](./Modelagem/Modelo%20L%C3%B3gico.pdf) — estrutura lógica do banco de dados
 - [Modelo Físico](./Modelagem/Modelo%20F%C3%ADsico.pdf) — script e estrutura física do banco
 - [Documentação do Banco](./Banco%20de%20Dados/Documenta%C3%A7%C3%A3o%20Cria%C3%A7%C3%A3o%20Modelagem.pdf) — documentação de criação e modelagem
+- [Apresentação Técnica MVVM + API REST](./ReGraphik_MVVM_APIRest.pptx) — slides explicando a arquitetura do projeto
+
 A documentação interativa da API está disponível via **Swagger** ao rodar o projeto — é a página inicial da aplicação.
  
 ---
@@ -579,6 +782,4 @@ Projeto desenvolvido por alunos do SENAI:
  
 ---
  
-
   Desenvolvido com foco em sustentabilidade e economia circular para o setor gráfico
-
