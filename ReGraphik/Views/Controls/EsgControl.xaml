@@ -130,90 +130,144 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Card Certificação -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,8">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <Border Background="#FEF3C7" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
-                                <TextBlock Text="🏅" FontSize="18"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Como obter o Certificado ReGraphik ESG"
-                                           FontSize="15" FontWeight="Bold" Foreground="#B45309"/>
-                                <TextBlock Text="Passo a passo para empresas parceiras"
-                                           FontSize="12" Foreground="#64748B"/>
-                            </StackPanel>
-                        </StackPanel>
+                <!-- Card Certificação INMETRO -->
+<Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,8">
+    <Border.Effect>
+        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
+    </Border.Effect>
+    <StackPanel>
 
-                        <!-- Passos numerados -->
-                        <StackPanel>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="1" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="Cadastre sua empresa e realize o login na plataforma ReGraphik."/>
-                            </Grid>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="2" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="Registre todos os resíduos gerados mensalmente em &quot;Cadastrar Resíduos&quot;, informando tipo, quantidade e condição."/>
-                            </Grid>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="3" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="No Estoque Reverso, aplique ao menos uma sugestão de reaproveitamento a cada lote de resíduos gerados."/>
-                            </Grid>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="4" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="Localize um ponto de coleta homologado no Mapa e registre a destinação do resíduo."/>
-                            </Grid>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="5" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="Após 3 meses consecutivos de uso ativo, acesse Relatórios e gere o comprovante de movimentação."/>
-                            </Grid>
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="6" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="Envie o relatório para certificacao@regraphik.com.br com CNPJ e razão social da empresa."/>
-                            </Grid>
-                            <Grid>
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                                    <TextBlock Text="7" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                                </Border>
-                                <TextBlock Grid.Column="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" VerticalAlignment="Center"
-                                           Text="Nossa equipe avalia o dossiê em até 10 dias úteis e emite o Certificado ReGraphik ESG digitalmente."/>
-                            </Grid>
-                        </StackPanel>
+        <!-- Cabeçalho do card -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+            <Border Background="#FEF3C7" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
+                <TextBlock Text="🏅" FontSize="18"/>
+            </Border>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO"
+                           FontSize="15" FontWeight="Bold" Foreground="#B45309"/>
+                <TextBlock Text="Caminho oficial para empresas parceiras do ReGraphik"
+                           FontSize="12" Foreground="#64748B"/>
+            </StackPanel>
+        </StackPanel>
 
-                        <Border Background="#FFFBEB" CornerRadius="8" Padding="16,12" Margin="0,20,0,0">
-                            <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#92400E"
-                                       Text="💡  O Certificado ReGraphik ESG pode ser utilizado em materiais de comunicação, licitações públicas, relatórios de sustentabilidade (GRI, CDP) e processos de due diligence ambiental."/>
-                        </Border>
-                    </StackPanel>
+        <!-- Texto introdutório -->
+        <TextBlock TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="22"
+                   Margin="0,0,0,20"
+                   Text="O ReGraphik funciona como base documental para sua empresa iniciar o processo de certificação ambiental ISO 14001, reconhecida pelo INMETRO. O relatório gerado aqui comprova suas práticas de gestão de resíduos e pode ser apresentado ao organismo certificador durante a auditoria."/>
+
+        <!-- Passos -->
+        <StackPanel>
+
+            <Grid Margin="0,0,0,14">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+                    <TextBlock Text="1" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
                 </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                               Text="Gere o Relatório Comprobatório no ReGraphik"/>
+                    <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                               Text="Acesse a aba Relatórios, gere o comprovante de movimentação de resíduos e exporte em PDF. Esse documento será sua evidência de uso da plataforma."/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Margin="0,0,0,14">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+        <TextBlock Text="2" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+    </Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                   Text="Acesse o site oficial do INMETRO"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                   Text="No portal do INMETRO, localize um Organismo de Certificação Ambiental (OCA) acreditado para conduzir a auditoria ISO 14001 na sua empresa."/>
+    </StackPanel>
+</Grid>
+
+<Grid Margin="0,0,0,14">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+        <TextBlock Text="3" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+    </Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                   Text="Entre em contato com o OCA escolhido"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                   Text="Apresente o relatório do ReGraphik como evidência de gestão de resíduos. O OCA irá conduzir a análise documental e a auditoria presencial na sua empresa."/>
+    </StackPanel>
+</Grid>
+
+<Grid Margin="0,0,0,14">
+    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
+        <TextBlock Text="4" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+    </Border>
+    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
+                   Text="Receba o Certificado ISO 14001"/>
+        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
+                   Text="Após a auditoria aprovada, o OCA emite o certificado e registra no sistema Certifiq do INMETRO. O certificado é válido por 3 anos com auditorias anuais de manutenção."/>
+    </StackPanel>
+</Grid>
+
+        </StackPanel>
+        <!-- Botão navegar para Relatórios -->
+        <Button Margin="0,16,0,0"
+                Command="{Binding IrParaRelatoriosCommand}"
+                Height="42" Padding="20,0"
+                HorizontalAlignment="Left"
+                Background="#B45309" Foreground="White"
+                FontWeight="SemiBold" BorderThickness="0"
+                Cursor="Hand">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="8"/>
+                </Style>
+            </Button.Resources>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="📄 " VerticalAlignment="Center"/>
+                <TextBlock Text="Gerar Relatório Comprobatório" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+
+        <!-- Links oficiais -->
+        <Border Background="#FFFBEB" CornerRadius="8" Padding="16,14" Margin="0,8,0,0">
+            <StackPanel>
+                <TextBlock Text="🔗  Links oficiais" FontWeight="SemiBold"
+                           Foreground="#B45309" FontSize="13" Margin="0,0,0,10"/>
+
+                <Button Cursor="Hand" HorizontalAlignment="Left" Margin="0,0,0,8"
+                        Background="Transparent" BorderThickness="0"
+                        Tag="https://www.gov.br/inmetro/pt-br"
+                        Click="AbrirLink_Click">
+                    <TextBlock FontSize="12" Foreground="#2563EB"
+                               TextDecorations="Underline"
+                               Text="🌐  Portal INMETRO — gov.br/inmetro"/>
+                </Button>
+
+                <Button Cursor="Hand" HorizontalAlignment="Left" Margin="0,0,0,8"
+                        Background="Transparent" BorderThickness="0"
+                        Tag="https://www.gov.br/inmetro/pt-br/acesso-a-informacao/perguntas-frequentes/acreditacao/organismos-de-sistemas-de-gestao-ambiental-oca"
+                        Click="AbrirLink_Click">
+                    <TextBlock FontSize="12" Foreground="#2563EB"
+                               TextDecorations="Underline"
+                               Text="🔍  Buscar Organismo Certificador Ambiental (OCA) acreditado"/>
+                </Button>
+
+                <Button Cursor="Hand" HorizontalAlignment="Left"
+                        Background="Transparent" BorderThickness="0"
+                        Tag="https://certifiq.inmetro.gov.br"
+                        Click="AbrirLink_Click">
+                    <TextBlock FontSize="12" Foreground="#2563EB"
+                               TextDecorations="Underline"
+                               Text="📋  Certifiq — Consultar certificados ISO 14001 emitidos no Brasil"/>
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+    </StackPanel>
+</Border>
 
             </StackPanel>
         </ScrollViewer>
