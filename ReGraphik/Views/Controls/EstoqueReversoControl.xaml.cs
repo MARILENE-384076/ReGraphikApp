@@ -6,13 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ReGraphik.Models;           // Permite reconhecer a classe Residuo
+using ReGraphik.ViewModels;       // OBRIGATÓRIO: Permite reconhecer a EstoqueReversoViewModel
+using ReGraphik.Views;            // Permite abrir a SugestaoResiduoWindow
 
 namespace ReGraphik.Views.Controls
 {
@@ -27,5 +23,26 @@ namespace ReGraphik.Views.Controls
             DataContext = new EstoqueReversoViewModel();
         }
 
+        /// <summary>
+        /// Evento de clique do botão "Sugestões" do DataGrid
+        /// </summary>
+        private void BtnSugestoes_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtém o botão que foi clicado
+            var botao = sender as Button;
+
+            // Pega o objeto Residuo vinculado à linha atual da tabela
+            if (botao?.DataContext is Residuo residuoSelecionado)
+            {
+                // Cria a janela de sugestões passando o resíduo da linha por parâmetro!
+                SugestaoResiduoWindow window = new SugestaoResiduoWindow(residuoSelecionado);
+
+                // Define a janela principal do app como "mãe" desta para centralizar na tela
+                window.Owner = Application.Current.MainWindow;
+
+                // Abre em modo modal (bloqueia a tela de trás até fechar)
+                window.ShowDialog();
+            }
+        }
     }
 }
