@@ -264,17 +264,23 @@ namespace ReGraphik.ViewModels
         {
             if (usuario == null) return;
 
+            
+            if (usuario.Id == _usuarioLogado.Id || usuario.Login == _usuarioLogado.Login)
+            {
+                MostrarNovaConversa = false;
+                return;
+            }
+
             MostrarNovaConversa = false;
 
-            /// Verifica se conversa já existe na lista
+            
             var existente = Conversas.FirstOrDefault(c => c.UsuarioId == usuario.Id);
             if (existente != null)
             {
                 ConversaSelecionada = existente;
                 return;
             }
-            
-            /// Cria conversa nova localmente
+
             var novaConversa = new Conversa
             {
                 UsuarioId = usuario.Id,
