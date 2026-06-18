@@ -247,11 +247,16 @@ namespace ReGraphik.ViewModels
         private async Task AbrirNovaConversaAsync()
         {
             var usuarios = await _chatService.ListarUsuariosAsync();
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 UsuariosDisponiveis = new ObservableCollection<Usuario>(
-                    usuarios.Where(u => u.Id != _usuarioLogado.Id));
+                    usuarios.Where(u =>
+                        !string.IsNullOrEmpty(u.Id) &&           
+                        u.Id != _usuarioLogado.Id &&              
+                        u.Login != _usuarioLogado.Login));        
             });
+
             MostrarNovaConversa = true;
         }
 
