@@ -4,6 +4,7 @@ using ReGraphik.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,9 +19,6 @@ using System.Windows.Shapes;
 
 namespace ReGraphik.Views.Controls
 {
-    /// <summary>
-    /// Define a interação lógica para MapaControl.xaml
-    /// </summary>
     public partial class MapaControl : UserControl
     {
         private readonly MapaViewModel _viewModel;
@@ -33,35 +31,46 @@ namespace ReGraphik.Views.Controls
             _viewModel = new MapaViewModel();
             DataContext = _viewModel;
 
-            // Inscreve-se nos eventos da ViewModel para lidar com as ações solicitadas
             _viewModel.SolicitouFocoNoMapa += ViewModel_SolicitouFocoNoMapa;
-            // Atualizado para receber o conteúdo HTML bruto diretamente em memória
             _viewModel.SolicitouHtmlMapa += ViewModel_SolicitouHtmlMapa;
+
+            /// Atribui a ponte COM para comunicação segura Javascript -> C#
+            MapaBrowser.ObjectForScripting = new PonteScriptMapa(this);
+
+            this.Loaded += MapaControl_Loaded;
+        }
+
+        private void MapaControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            _viewModel.InicializarMapaLivre();
         }
 
         private void ViewModel_SolicitouHtmlMapa(string conteudoHtml)
         {
-            // Garante que o carregamento do HTML ocorra estritamente na UI Thread
             Dispatcher.Invoke(() =>
             {
                 try
                 {
                     if (MapaBrowser != null)
                     {
-                        // Carrega o HTML direto da memória, eliminando bloqueios por arquivo local (ActiveX)
+                        /// Desativa diálogos chados de erros de script nativos do componente WebBrowser
+                        dynamic activeX = MapaBrowser.GetType().InvokeMember("ActiveXInstance",
+                            System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                            null, MapaBrowser, null);
+                        if (activeX != null) activeX.Silent = true;
+
                         MapaBrowser.NavigateToString(conteudoHtml);
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Erro crítico no carregamento do HTML: " + ex.Message);
+                    System.Diagnostics.Debug.WriteLine("Erro ao renderizar HTML: " + ex.Message);
                 }
             });
         }
 
         private void ViewModel_SolicitouFocoNoMapa(int indice)
         {
-            // Também protege a chamada do JavaScript via Dispatcher
             Dispatcher.Invoke(() =>
             {
                 try
@@ -73,7 +82,7 @@ namespace ReGraphik.Views.Controls
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine("Erro ao invocar script do mapa: " + ex.Message);
+                    System.Diagnostics.Debug.WriteLine("Erro ao focar no marcador: " + ex.Message);
                 }
             });
         }
@@ -90,14 +99,12 @@ namespace ReGraphik.Views.Controls
         {
             _viewModel.NotificarMapaCarregado();
 
-            // Oculta o placeholder assim que a renderização em memória terminar (esquema mudou de 'file' para 'about:blank')
             if (MapaPlaceholder != null)
             {
                 MapaPlaceholder.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
 
-        // Método para definir a emulação do navegador para IE 11
         private static void DefinirEmulacaoNavegador()
         {
             try
@@ -109,12 +116,53 @@ namespace ReGraphik.Views.Controls
                 {
                     if (chave != null)
                     {
-                        // 11001 (0x2AF9) = Internet Explorer 11 Edge Mode (Máxima compatibilidade no WPF)
                         chave.SetValue(nomeProcesso, 11001, RegistryValueKind.DWord);
                     }
                 }
             }
             catch { }
+        }
+
+        /// <summary>
+        /// Classe de Interoperabilidade COM para ponte de comunicação Javascript para WPF
+        /// </summary>
+        [ComVisible(true)]
+        public class PonteScriptMapa
+        {
+            private readonly MapaControl _controle;
+
+            public PonteScriptMapa(MapaControl controle)
+            {
+                _controle = controle;
+            }
+
+            public void NotificarMovimentoMapa(double swLat, double swLng, double neLat, double neLng)
+            {
+                Task.Run(async () =>
+                {
+                    if (_controle._viewModel != null)
+                    {
+                        /// Busca os dados em Background
+                        await _controle._viewModel.BuscarPorCoordenadasAsync(swLat, swLng, neLat, neLng);
+
+                        /// Transforma a lista em JSON seguro
+                        string novoJson = _controle._viewModel.GerarJsonMarcadores(_controle._viewModel.PontosAtuais.ToList());
+
+                        /// Empurra os marcadores direto na função Javascript existente, sem recarregar e sem dar erros
+                        _controle.Dispatcher.Invoke(() =>
+                        {
+                            try
+                            {
+                                if (_controle.MapaBrowser != null)
+                                {
+                                    _controle.MapaBrowser.InvokeScript("renderizarPontos", new object[] { novoJson });
+                                }
+                            }
+                            catch { }
+                        });
+                    }
+                });
+            }
         }
     }
 }
