@@ -67,37 +67,7 @@ Algoritmos de sugestão que relacionam cada tipo de resíduo cadastrado à melho
  
 O projeto segue rigorosamente o padrão **MVVM (Model-View-ViewModel)** na camada de apresentação e uma arquitetura de **serviços desacoplados** na API REST.
  
-```
-ReGraphikApp/
-├── ApiRestReGraphik/          # Backend principal — ASP.NET Core REST API
-│   ├── Controllers/           # Endpoints HTTP (CRUD completo)
-│   ├── Data/                  # Configuração do Firebase Client
-│   ├── Models/                # Entidades do domínio
-│   ├── Services/              # Regras de negócio e acesso ao Firebase
-│   └── Program.cs             # Configuração da aplicação, DI, Swagger, CORS
-│
-├── ApiConfig/                 # Serviço auxiliar — Autenticação e Cadastro
-│   ├── Controllers/           # Validação de token e cadastro de usuário
-│   ├── Models/                # Modelos de acesso e usuário
-│   ├── Services/              # TokenService (geração de código numérico)
-│   └── Program.cs
-│
-├── ReGraphik/                 # Frontend — WPF Desktop (MVVM)
-│   ├── Commands/              # RelayCommand (padrão Command do MVVM)
-│   ├── Converters/            # IValueConverter para binding de UI
-│   ├── Imgs/                  # Recursos de imagem
-│   ├── Models/                # Espelho das entidades do domínio
-│   ├── Services/              # Serviços de negócio e integrações
-│   │   └── Interface/         # Interfaces dos serviços (IAutorizarService, etc.)
-│   ├── Styles/                # Estilos XAML globais
-│   ├── ViewModels/            # Lógica de apresentação (14 ViewModels)
-│   └── Views/                 # Janelas e controles XAML
-│       └── Controls/          # Dashboard, Resíduos, Mapa, Chat, ESG, Relatórios...
-│
-├── Modelagem/                 # Documentação técnica (PDFs)
-├── Banco de Dados/            # Scripts e documentação do banco
-└── ReGraphik_MVVM_APIRest.pptx  # Apresentação técnica da arquitetura
-```
+> A estrutura completa de pastas (controllers, services, viewmodels, etc.) está detalhada na seção [Estrutura do Repositório](#estrutura-do-repositório).
 
 **Fluxo da aplicação:**
  
@@ -111,17 +81,9 @@ Cliente WPF  →  API REST (ASP.NET Core)  →  Firebase Realtime Database
 
 ## Como o Mapa funciona — do clique ao pin
 
-### 1. Usuário clica em "Buscar" (View — XAML)
- 
-```xml
-<Button Content="Buscar"
-        Command="{Binding BuscarCommand}"/>
- 
-<TextBox x:Name="TxtCidade"
-         Text="São Paulo"/>
-```
- 
-### 2. WPF manda pedido pra API (MapaPage.xaml.cs)
+O usuário digita a cidade e clica em **Buscar**, disparando o `BuscarCommand` ligado ao botão no XAML.
+
+### 1. WPF manda pedido pra API (MapaPage.xaml.cs)
  
 ```csharp
 private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
@@ -135,7 +97,7 @@ private async void BtnBuscar_Click(object sender, RoutedEventArgs e)
 }
 ```
  
-### 3. API pergunta pro Google Maps (PontosColetaController.cs)
+### 2. API pergunta pro Google Maps (PontosColetaController.cs)
  
 ```csharp
 var query = $"ponto de coleta reciclagem {cidade}";
@@ -145,7 +107,7 @@ var url   = $"https://maps.googleapis.com/maps/api/place/textsearch/json" +
 var json = await _httpClient.GetStringAsync(url);
 ```
  
-### 4. Google Maps responde — API salva no Firebase (PontosColetaService.cs)
+### 3. Google Maps responde — API salva no Firebase e devolve a lista (PontosColetaService.cs)
  
 ```csharp
 var resultado = await _firebaseClient
@@ -154,14 +116,10 @@ var resultado = await _firebaseClient
  
 novoPonto.Id = resultado.Key; // ID gerado pelo Firebase
 ```
+
+A API então devolve a lista em JSON (`return Ok(listaGoogle)`), já com lat/lng de cada ponto.
  
-### 5. API devolve a lista pro WPF (PontosColetaController.cs)
- 
-```csharp
-return Ok(listaGoogle); // JSON com lat/lng de cada ponto
-```
- 
-### 6. Usuário vê os pontos no mapa (MapaPage.xaml.cs)
+### 4. Usuário vê os pontos no mapa (MapaPage.xaml.cs)
  
 ```csharp
 private void CarregarMapa(List<PontosColeta> pontos)
@@ -175,7 +133,7 @@ private void CarregarMapa(List<PontosColeta> pontos)
 ```
 
 ---
- 
+
 ## Tecnologias
  
 | Camada | Tecnologia |
@@ -501,83 +459,77 @@ O `ApiConfig` é um projeto auxiliar responsável pelo fluxo de **validação de
 ## Modelos de Dados
  
 ### Usuario
-```json
-{
-  "id": "string",
-  "name": "string",
-  "cpf": "string",
-  "email": "string",
-  "login": "string",
-  "senha": "string",
-  "perfil": "string",
-  "data_cadastro": "datetime"
-}
-```
- 
+
+| Campo | Tipo |
+|---|---|
+| id | string |
+| name | string |
+| cpf | string |
+| email | string |
+| login | string |
+| senha | string |
+| perfil | string |
+| data_cadastro | datetime |
+
 ### Residuo
-```json
-{
-  "id": "string",
-  "id_usuario": "string",
-  "tipo_residuo": "string",
-  "origem": "string",
-  "especificacao": "string",
-  "projeto": "string",
-  "quantidade": "double",
-  "data_cadastro": "datetime",
-  "condicao": "string",
-  "dimensoes_cm": "double?",
-  "dimensoes_lm": "double?",
-  "observacao": "string",
-  "anexo": "string",
-  "status": "string"
-}
-```
- 
+
+| Campo | Tipo |
+|---|---|
+| id | string |
+| id_usuario | string |
+| tipo_residuo | string |
+| origem | string |
+| especificacao | string |
+| projeto | string |
+| quantidade | double |
+| data_cadastro | datetime |
+| condicao | string |
+| dimensoes_cm | double? |
+| dimensoes_lm | double? |
+| observacao | string |
+| anexo | string |
+| status | string |
+
 ### PontosColeta
-```json
-{
-  "id": "string",
-  "nome_ponto": "string",
-  "cidade": "string",
-  "estado": "string",
-  "cep": "string",
-  "residuos_aceitos": "string",
-  "latitude": "double",
-  "longitude": "double"
-}
-```
- 
+
+| Campo | Tipo |
+|---|---|
+| id | string |
+| nome_ponto | string |
+| cidade | string |
+| estado | string |
+| cep | string |
+| residuos_aceitos | string |
+| latitude | double |
+| longitude | double |
+
 ### Sugestao
-```json
-{
-  "id": "string",
-  "tipo_residuo_aceito": "string",
-  "descricao_sugestao": "string"
-}
-```
- 
+
+| Campo | Tipo |
+|---|---|
+| id | string |
+| tipo_residuo_aceito | string |
+| descricao_sugestao | string |
+
 ### SugestaoResiduo
-```json
-{
-  "id": "string",
-  "id_cadastro_residuo": "int",
-  "id_sugestao": "int",
-  "data_aplicacao": "datetime?"
-}
-```
+
+| Campo | Tipo |
+|---|---|
+| id | string |
+| id_cadastro_residuo | int |
+| id_sugestao | int |
+| data_aplicacao | datetime? |
 
 ### Mensagem (Chat — Firebase direto)
-```json
-{
-  "id": "string",
-  "remetente_id": "string",
-  "destinatario_id": "string",
-  "texto": "string",
-  "data_hora": "datetime",
-  "lida": "bool"
-}
-```
+
+| Campo | Tipo |
+|---|---|
+| id | string |
+| remetente_id | string |
+| destinatario_id | string |
+| texto | string |
+| data_hora | datetime |
+| lida | bool |
 
 ---
 
@@ -627,9 +579,9 @@ A janela principal (`MainWindow`) possui uma barra lateral de navegação com as
 
 ---
 
-## Arquitetura do Projeto (MVVM)
+## Fluxo MVVM em Detalhe
 
-Este projeto foi desenvolvido utilizando o padrão **Model-View-ViewModel (MVVM)**, garantindo a separação clara entre a interface do usuário, a lógica de apresentação e as regras de negócio/dados.
+O diagrama abaixo detalha o ciclo de dados entre View, ViewModel e Model descrito na seção [Arquitetura](#arquitetura):
 
 ```mermaid
 flowchart LR
