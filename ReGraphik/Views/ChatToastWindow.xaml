@@ -1,0 +1,96 @@
+﻿<Window x:Class="ReGraphik.Views.ChatToastWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        Width="320"
+        Height="80"
+        WindowStartupLocation="Manual">
+
+    <Window.Triggers>
+        <!-- Animação de entrada (slide da direita) -->
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="ToastBorder"
+                                     Storyboard.TargetProperty="Opacity"
+                                     From="0" To="1" Duration="0:0:0.25"/>
+                    <ThicknessAnimation Storyboard.TargetName="ToastBorder"
+                                        Storyboard.TargetProperty="Margin"
+                                        From="40,0,0,0" To="0,0,0,0"
+                                        Duration="0:0:0.25">
+                        <ThicknessAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </ThicknessAnimation.EasingFunction>
+                    </ThicknessAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Border x:Name="ToastBorder"
+            Background="White"
+            CornerRadius="12"
+            BorderBrush="#E2E8F0"
+            BorderThickness="1"
+            Cursor="Hand"
+            MouseLeftButtonDown="Toast_Click">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="16" ShadowDepth="4"
+                              Color="#000000" Opacity="0.14"/>
+        </Border.Effect>
+
+        <Grid Margin="14,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Ícone -->
+            <Border Grid.Column="0"
+                    Width="40" Height="40"
+                    Background="#1649a2"
+                    CornerRadius="20"
+                    Margin="0,0,12,0">
+                <iconPacks:PackIconMaterial Kind="MessageText"
+                                            Width="18" Height="18"
+                                            Foreground="White"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+            </Border>
+
+            <!-- Textos -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="TxtRemetente"
+                           FontWeight="SemiBold"
+                           FontSize="13"
+                           Foreground="#1E293B"
+                           TextTrimming="CharacterEllipsis"/>
+                <TextBlock x:Name="TxtPreview"
+                           FontSize="12"
+                           Foreground="#64748B"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="0,2,0,0"/>
+            </StackPanel>
+
+            <!-- Botão fechar discreto -->
+            <Button Grid.Column="2"
+                    Width="24" Height="24"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="BtnFechar_Click">
+                <iconPacks:PackIconMaterial Kind="Close"
+                                            Width="12" Height="12"
+                                            Foreground="#94A3B8"/>
+            </Button>
+        </Grid>
+    </Border>
+</Window>
