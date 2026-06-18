@@ -320,12 +320,11 @@ namespace ReGraphik.ViewModels
                 catch (Exception ex)
                 {
                     MensagemErroGeral = "Erro ao salvar os dados no Realtime Database.";
-                    MostrarMensagemErro();
                 }
             }
             catch (Exception ex)
             {
-                MostrarMensagemErro();
+                MensagemErroGeral = "Erro ao salvar os dados no Realtime Database.";
             }
         }
 
@@ -341,17 +340,6 @@ namespace ReGraphik.ViewModels
             LimparCampos();
         }
 
-        private void MostrarMensagemErro()
-        {
-            // O Dispatcher joga a execução de volta para a Thread correta (STA)
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var msgWindow = new MensagemWindow();
-                msgWindow.ShowDialog(); // ou msgWindow.Show();
-            });
-
-            LimparCampos();
-        }
 
         /// <summary>
         /// Método para abrir um diálogo de seleção de arquivos, permitindo que o usuário escolha um arquivo de imagem ou vídeo para anexar ao resíduo.
