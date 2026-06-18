@@ -191,16 +191,14 @@
             </Border>
 
             <!-- Aba de Cards -->
-            <TextBlock Grid.Row="2" Text="Resíduos em Estoque" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,12"/>
-
             <ListBox Grid.Row="3"
-         ItemsSource="{Binding ResiduosFiltrados}" 
-         Background="Transparent" 
-         BorderThickness="0"
-         HorizontalContentAlignment="Stretch"
-         VerticalContentAlignment="Stretch"
-         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-         ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                     ItemsSource="{Binding ResiduosFiltrados}" 
+                     Background="Transparent" 
+                     BorderThickness="0"
+                     HorizontalContentAlignment="Stretch"
+                     VerticalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal"/>
@@ -238,15 +236,15 @@
 
                                 <Grid Grid.Row="0" Background="#F1F5F9">
                                     <Image Source="{Binding Anexo, Converter={StaticResource Base64ToImageConverter}, TargetNullValue='pack://application:,,,/Assets/placeholder.png', FallbackValue='pack://application:,,,/Assets/placeholder.png'}" 
-                               Stretch="UniformToFill"
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                                           Stretch="UniformToFill"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
 
                                     <Border Background="#CC1E293B" CornerRadius="6" Padding="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
                                         <TextBlock Text="{Binding Id, StringFormat='#\{0\}'}" Foreground="White" FontWeight="Bold" FontSize="11"/>
                                     </Border>
 
                                     <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
-                                CornerRadius="12" Padding="8,3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12">
+                                            CornerRadius="12" Padding="8,3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12">
                                         <TextBlock Text="{Binding Status}" 
                                        Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
                                        FontSize="10" FontWeight="SemiBold"/>
@@ -262,9 +260,13 @@
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <TextBlock Grid.Row="0" Text="{Binding TipoResiduo}" 
-                                       FontSize="16" FontWeight="Bold" Foreground="#1E293B" 
-                                       TextWrapping="Wrap" Margin="0,0,0,12" MinHeight="22"/>
+                                        <TextBlock Grid.Row="0" 
+                                                   Text="{Binding TipoResiduo}" 
+                                                   FontSize="16" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#1E293B" 
+                                                   TextWrapping="Wrap" 
+                                                   Margin="0,0,0,12" MinHeight="22"/>
 
                                         <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,12">
                                             <StackPanel>
@@ -294,13 +296,13 @@
                                             </StackPanel>
 
                                             <Button Content="💡 Sugestões"
-                                        Style="{StaticResource RoundedButtonStyle}"
-                                        Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        Height="32" Padding="12,0" HorizontalAlignment="Right"
-                                        Background="White" BorderBrush="#2563EB" BorderThickness="1"
-                                        Foreground="#2563EB" FontSize="12" FontWeight="Medium"
-                                        Cursor="Hand" />
+                                                    Style="{StaticResource RoundedButtonStyle}"
+                                                    Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Height="32" Padding="12,0" HorizontalAlignment="Right"
+                                                    Background="White" BorderBrush="#2563EB" BorderThickness="1"
+                                                    Foreground="#2563EB" FontSize="12" FontWeight="Medium"
+                                                    Cursor="Hand" />
                                         </Grid>
                                     </Grid>
                                 </Border>
