@@ -59,7 +59,10 @@
 
                             <!-- Tipo de Material -->
                             <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,16">
-                                <TextBlock Text="Tipo de Material" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Style="{StaticResource FieldLabelStyle}">
+                                    <Run Text="Tipo de Material"/>
+                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                </TextBlock>
                                 <Grid>
                                     <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding TipoMaterial, Mode=TwoWay}">
                                         <ComboBoxItem Content="Papel Offset"/>
@@ -94,7 +97,7 @@
                                         </TextBlock.Style>
                                     </TextBlock>
                                 </Grid>
-                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoResiduo}" Foreground="DarkRed" Margin="0,7,0,0"/>
+                                <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaTipoMaterial}" Foreground="DarkRed" Margin="0,7,0,0"/>
                             </StackPanel>
 
                             <!-- Especificação -->
@@ -138,7 +141,10 @@
 
                             <!-- Origem -->
                             <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,16">
-                                <TextBlock Text="Origem*" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Style="{StaticResource FieldLabelStyle}">
+                                    <Run Text="Origem"/>
+                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                </TextBlock>
                                 <Grid>
                                     <ComboBox x:Name="CboOrigem" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Origem, Mode=TwoWay}">
                                         <ComboBoxItem Content="Restos de Corte"/>
@@ -208,7 +214,10 @@
 
                                 <!-- Quantidade -->
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Quantidade*" Style="{StaticResource FieldLabelStyle}"/>
+                                    <TextBlock Style="{StaticResource FieldLabelStyle}">
+                                        <Run Text="Quantidade"/>
+                                        <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                    </TextBlock>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -238,10 +247,14 @@
                                     <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaQuantidade}" Foreground="DarkRed" Margin="0,7,0,0"/>
                                 </StackPanel>
 
+                                <!-- Data -->
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Data" Style="{StaticResource FieldLabelStyle}"/>
+                                    <TextBlock Style="{StaticResource FieldLabelStyle}">
+                                        <Run Text="Data"/>
+                                        <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                    </TextBlock>
                                     <DatePicker SelectedDate="{Binding Data}" Height="38" Padding="5" VerticalContentAlignment="Center"  Style="{StaticResource ModernDatePickerStyle}"/>
-                                    <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaData}" Foreground="DarkRed"/>
+                                    <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaData}" Foreground="DarkRed" Margin="0,7,0,0"/>
                                 </StackPanel>
                             </Grid>
 
@@ -314,7 +327,10 @@
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Text="Dimensões*" Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Style="{StaticResource FieldLabelStyle}">
+                                <Run Text="Dimensões"/>
+                                <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                            </TextBlock>
 
                             <!-- Comprimento -->
                             <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">

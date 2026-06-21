@@ -59,7 +59,7 @@ namespace ReGraphik.ViewModels
         /// especificação, origem, projeto de origem, quantidade, data, condição, dimensões e observações.
         /// </summary>
         private string _tipoMaterial;
-        public string TipoMaterial
+        public string? TipoMaterial
         {
             get => _tipoMaterial;
             set { _tipoMaterial = value; OnPropertyChanged(); }
@@ -73,7 +73,7 @@ namespace ReGraphik.ViewModels
         }
 
         private string _origem;
-        public string Origem
+        public string? Origem
         {
             get => _origem;
             set { _origem = value; OnPropertyChanged(); }
@@ -101,7 +101,7 @@ namespace ReGraphik.ViewModels
         }
 
         private string _condicao;
-        public string Condicao
+        public string? Condicao
         {
             get => _condicao;
             set { _condicao = value; OnPropertyChanged(); }
@@ -126,6 +126,13 @@ namespace ReGraphik.ViewModels
         {
             get => _observacoes;
             set { _observacoes = value; OnPropertyChanged(); }
+        }
+
+        private string _status;
+        public string Status
+        {
+            get => _status;
+            set { _status = value; OnPropertyChanged(); }
         }
 
         private string _nomeArquivo = "Nenhum arquivo selecionado";
@@ -224,16 +231,9 @@ namespace ReGraphik.ViewModels
         /// <returns></returns>
         private async Task SalvarResiduoAsync()
         {
-            MensaTipoMaterial = string.Empty;
-            MensaOrigem = string.Empty;
-            MensaData = string.Empty;
-            MensaQuantidade = string.Empty;
-            MensaComprimento = string.Empty;
-            MensaLargura = string.Empty;
-            MensagemErroGeral = string.Empty;
-
             try
             {
+                LimparMensagens();
                 bool possuiErro = false;
 
                 if (string.IsNullOrWhiteSpace(TipoMaterial))
@@ -272,12 +272,18 @@ namespace ReGraphik.ViewModels
                     possuiErro = true;
                 }
 
+                /// Caso o sistema tenha erro, para a execução!
+                if (possuiErro)
+                {
+                    return;
+                }
+
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 string base64Payload = string.Empty;
 
                 if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
                 {
-                    // Leitura assíncrona por streams evita alocar buffers síncronos imensos no heap comum
+                    /// Leitura assíncrona por streams evita alocar buffers síncronos imensos no heap comum
                     byte[] fileBytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
                     base64Payload = Convert.ToBase64String(fileBytes);
                 }
@@ -301,7 +307,7 @@ namespace ReGraphik.ViewModels
                     DimensoesLm = Largura,
                     Observacao = Observacoes,
                     Anexo = base64Payload,
-                    Status = "Disponível"
+                    Status = Status
                 };
 
                 try
@@ -330,11 +336,11 @@ namespace ReGraphik.ViewModels
 
         private void MostrarMensagemSucesso()
         {
-            // O Dispatcher joga a execução de volta para a Thread correta (STA)
+            /// O Dispatcher joga a execução de volta para a Thread correta (STA)
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var msgWindow = new MensagemWindow();
-                msgWindow.ShowDialog(); // ou msgWindow.Show();
+                msgWindow.ShowDialog(); 
             });
 
             LimparCampos();
@@ -356,7 +362,7 @@ namespace ReGraphik.ViewModels
             {
                 var fileInfo = new FileInfo(openFileDialog.FileName);
 
-                // Reduzido para 2MB para evitar estouros de string JSON HTTP clássicos
+                /// Reduzido para 2MB para evitar estouros de string JSON HTTP clássicos
                 if (fileInfo.Length > 2 * 1024 * 1024)
                 {
                     MessageBox.Show("Arquivos maiores que 2MB não são suportados para envio direto via JSON.", "Arquivo muito grande", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -385,6 +391,22 @@ namespace ReGraphik.ViewModels
             Observacoes = string.Empty;
             NomeArquivo = "Nenhum arquivo selecionado";
             _caminhoArquivoSelecionado = string.Empty;
+
+            LimparMensagens();
+        }
+
+        /// <summary>
+        /// Método para limpar das mensagens dos campos do formulário.
+        /// </summary>
+        private void LimparMensagens()
+        {
+            MensaTipoMaterial = string.Empty;
+            MensaOrigem = string.Empty;
+            MensaData = string.Empty;
+            MensaQuantidade = string.Empty;
+            MensaComprimento = string.Empty;
+            MensaLargura = string.Empty;
+            MensagemErroGeral = string.Empty;
         }
 
     }

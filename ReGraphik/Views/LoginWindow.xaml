@@ -195,11 +195,17 @@
                                             <TextBlock Text="Entre com suas credenciais para continuar." FontSize="13" Foreground="#64748B"/>
                                         </StackPanel>
 
-                                        <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                                        <TextBlock Style="{StaticResource LabelStyle}">
+                                            <Run Text="Login"/>
+                                            <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                        </TextBlock>
                                         <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,4" HorizontalAlignment="Stretch"/>
                                         <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaLogin}" Margin="0,0,0,16" Foreground="DarkRed"/>
 
-                                        <TextBlock Text="Senha" Style="{StaticResource LabelStyle}"/>
+                                        <TextBlock Style="{StaticResource LabelStyle}">
+                                            <Run Text="Senha"/>
+                                            <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                        </TextBlock>
                                         <Grid x:Name="GridCamposSenha" Margin="0,0,0,4">
                                             <PasswordBox x:Name="TxtSenhaLogin" Style="{StaticResource PasswordStyle}" Padding="10,0,35,0" Height="40" VerticalContentAlignment="Center"/>
                                             <TextBox x:Name="TxtSenhaVisivelLogin" Style="{StaticResource InputStyle}" Padding="10,0,35,0" Visibility="Collapsed" Height="40" VerticalContentAlignment="Center"/>
