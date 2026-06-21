@@ -1,4 +1,5 @@
-﻿using ReGraphik.Models;
+﻿using Firebase.Database;
+using ReGraphik.Models;
 using ReGraphik.Views;
 using ReGraphik.Views.Controls;
 using System;
@@ -167,43 +168,64 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Busca resíduos na API e popula os ComboBoxes com valores reais e distintos do banco.
         /// </summary>
-        private async Task CarregarEstoqueDoBancoAsync()
+        public async Task CarregarEstoqueDoBancoAsync()
         {
             try
             {
-                const string urlApi = "https://webregraphik.runasp.net/api/Residuo";
-                var resposta = await _http.GetAsync(urlApi);
+                var firebase = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
 
-                if (!resposta.IsSuccessStatusCode) return;
-
-                var json = await resposta.Content.ReadAsStringAsync();
-                var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var lista = JsonSerializer.Deserialize<List<Residuo>>(json, opcoes);
-
-                Application.Current.Dispatcher.Invoke(() =>
+                firebase
+                .Child("residuos")
+                .AsObservable<Residuo>()
+                .Subscribe(subsecao =>
                 {
-                    _todosResiduos.Clear();
-                    ListaTipos.Clear(); ListaTipos.Add("Todos");
-                    ListaOrigens.Clear(); ListaOrigens.Add("Todas");
-                    ListaStatus.Clear(); ListaStatus.Add("Todos");
-
-                    if (lista == null) return;
-
-                    foreach (var item in lista)
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _todosResiduos.Add(item);
+                        var residuoDoFirebase = subsecao.Object;
+                        if (residuoDoFirebase == null) return;
 
-                        if (!string.IsNullOrWhiteSpace(item.TipoResiduo) && !ListaTipos.Contains(item.TipoResiduo))
-                            ListaTipos.Add(item.TipoResiduo);
+                        // Garante que o ID interno bata com a chave do nó se necessário
+                        if (string.IsNullOrEmpty(residuoDoFirebase.Id))
+                        {
+                            residuoDoFirebase.Id = subsecao.Key;
+                        }
 
-                        if (!string.IsNullOrWhiteSpace(item.Origem) && !ListaOrigens.Contains(item.Origem))
-                            ListaOrigens.Add(item.Origem);
+                        if (subsecao.EventType == Firebase.Database.Streaming.FirebaseEventType.InsertOrUpdate)
+                        {
+                            // Remove uma versão antiga caso seja uma edição para não duplicar no grid
+                            var itemExistente = _todosResiduos.FirstOrDefault(r => r.Id == residuoDoFirebase.Id);
+                            if (itemExistente != null)
+                            {
+                                _todosResiduos.Remove(itemExistente);
+                            }
 
-                        if (!string.IsNullOrWhiteSpace(item.Status) && !ListaStatus.Contains(item.Status))
-                            ListaStatus.Add(item.Status);
-                    }
+                            // Adiciona o novo resíduo na lista
+                            _todosResiduos.Add(residuoDoFirebase);
 
-                    ResiduosFiltrados.Refresh();
+                            // Popula os ComboBoxes de filtros dinamicamente usando a variável certa
+                            if (!string.IsNullOrWhiteSpace(residuoDoFirebase.TipoResiduo) && !ListaTipos.Contains(residuoDoFirebase.TipoResiduo))
+                                ListaTipos.Add(residuoDoFirebase.TipoResiduo);
+
+                            if (!string.IsNullOrWhiteSpace(residuoDoFirebase.Origem) && !ListaOrigens.Contains(residuoDoFirebase.Origem))
+                                ListaOrigens.Add(residuoDoFirebase.Origem);
+
+                            if (!string.IsNullOrWhiteSpace(residuoDoFirebase.Status) && !ListaStatus.Contains(residuoDoFirebase.Status))
+                                ListaStatus.Add(residuoDoFirebase.Status);
+                        }
+
+                        // Se o evento for de exclusão direta no banco
+                        else if (subsecao.EventType == Firebase.Database.Streaming.FirebaseEventType.Delete)
+                        {
+                            var itemExistente = _todosResiduos.FirstOrDefault(r => r.Id == subsecao.Key);
+                            if (itemExistente != null)
+                            {
+                                _todosResiduos.Remove(itemExistente);
+                            }
+                        }
+
+                        // Força o DataGrid a se reorganizar aplicando os filtros ativos
+                        ResiduosFiltrados.Refresh();
+                    });
                 });
             }
             catch (Exception ex)
