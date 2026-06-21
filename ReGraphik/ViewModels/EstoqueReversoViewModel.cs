@@ -184,7 +184,7 @@ namespace ReGraphik.ViewModels
                         var residuoDoFirebase = subsecao.Object;
                         if (residuoDoFirebase == null) return;
 
-                        // Garante que o ID interno bata com a chave do nó se necessário
+                        /// Garante que o ID interno bata com a chave do nó se necessário
                         if (string.IsNullOrEmpty(residuoDoFirebase.Id))
                         {
                             residuoDoFirebase.Id = subsecao.Key;
@@ -192,17 +192,17 @@ namespace ReGraphik.ViewModels
 
                         if (subsecao.EventType == Firebase.Database.Streaming.FirebaseEventType.InsertOrUpdate)
                         {
-                            // Remove uma versão antiga caso seja uma edição para não duplicar no grid
+                            /// Remove uma versão antiga caso seja uma edição para não duplicar no grid
                             var itemExistente = _todosResiduos.FirstOrDefault(r => r.Id == residuoDoFirebase.Id);
                             if (itemExistente != null)
                             {
                                 _todosResiduos.Remove(itemExistente);
                             }
 
-                            // Adiciona o novo resíduo na lista
+                            /// Adiciona o novo resíduo na lista
                             _todosResiduos.Add(residuoDoFirebase);
 
-                            // Popula os ComboBoxes de filtros dinamicamente usando a variável certa
+                            /// Popula os ComboBoxes de filtros dinamicamente usando a variável certa
                             if (!string.IsNullOrWhiteSpace(residuoDoFirebase.TipoResiduo) && !ListaTipos.Contains(residuoDoFirebase.TipoResiduo))
                                 ListaTipos.Add(residuoDoFirebase.TipoResiduo);
 
@@ -213,7 +213,6 @@ namespace ReGraphik.ViewModels
                                 ListaStatus.Add(residuoDoFirebase.Status);
                         }
 
-                        // Se o evento for de exclusão direta no banco
                         else if (subsecao.EventType == Firebase.Database.Streaming.FirebaseEventType.Delete)
                         {
                             var itemExistente = _todosResiduos.FirstOrDefault(r => r.Id == subsecao.Key);
@@ -223,7 +222,7 @@ namespace ReGraphik.ViewModels
                             }
                         }
 
-                        // Força o DataGrid a se reorganizar aplicando os filtros ativos
+                        /// Força o DataGrid a se reorganizar aplicando os filtros ativos
                         ResiduosFiltrados.Refresh();
                     });
                 });
