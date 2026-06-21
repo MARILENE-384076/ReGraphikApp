@@ -18,7 +18,9 @@ namespace ReGraphik.ViewModels
         private string _nomeUsuario = string.Empty;
         private string _btnAtivo = "Dashboard";
 
-        // Mantém a instância única do painel de chat para reutilização
+        /// <summary>
+        /// Mantém a instância única do painel de chat para reutilização
+        /// </summary>
         private ChatPainelWindow? _chatWindow;
 
         public Usuario UsuarioLogado { get; }
@@ -52,16 +54,22 @@ namespace ReGraphik.ViewModels
         private readonly EstoqueReversoControl _estoqueView;
         private readonly MapaControl _mapaView;
         private readonly RelatoriosControl _relatoriosView;
+        private readonly EsgControl _esgView;
         private readonly ContaControl _contaView;
 
+        /// <summary>
+        /// Comandos 
+        /// </summary>
         public ICommand NavegarDashboardCommand { get; }
         public ICommand NavegarResiduosCommand { get; }
         public ICommand NavegarEstoqueCommand { get; }
         public ICommand NavegarMapaCommand { get; }
         public ICommand NavegarRelatoriosCommand { get; }
         public ICommand NavegarContaCommand { get; }
+        public ICommand NavegarEsgCommand { get; }
         public ICommand SairCommand { get; }
         public ICommand ChatCommand { get; }
+        public ICommand irParaRelatorios { get; }
 
         public MainViewModel(Usuario usuario, Window window)
         {
@@ -69,18 +77,18 @@ namespace ReGraphik.ViewModels
             _currentWindow = window;
             NomeUsuario = usuario.Nome ?? "Usuário";
 
-            // Instancia o ChatViewModel passando o usuário logado.
-            // A inscrição no Firebase (escuta em tempo real) começa aqui,
-            // assim o badge de notificações já funciona antes de abrir o chat.
+            /// Instancia o ChatViewModel passando o usuário logado.
+            /// A inscrição no Firebase (escuta em tempo real) começa aqui,
+            /// assim o badge de notificações já funciona antes de abrir o chat.
             ChatViewModel = new ChatViewModel(usuario);
 
-            // Quando o ChatViewModel receber uma nova mensagem em background,
-            // exibe um toast discreto na tela principal.
+            /// Quando o ChatViewModel receber uma nova mensagem em background,
+            /// exibe um toast discreto na tela principal.
             ChatViewModel.NovaMensagemRecebida += OnNovaMensagemRecebida;
 
             ChatCommand = new RelayCommand(ChatConversar);
 
-            // Carrega foto persistida do disco
+            /// Carrega foto persistida do disco
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
             if (fotoSalva != null)
                 UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
@@ -90,6 +98,7 @@ namespace ReGraphik.ViewModels
             _estoqueView = new EstoqueReversoControl();
             _mapaView = new MapaControl();
             _relatoriosView = new RelatoriosControl();
+            _esgView = new EsgControl(usuario, irParaRelatorios);
             _contaView = new ContaControl(UsuarioLogado);
 
             _currentView = _dashboardView;
@@ -99,16 +108,20 @@ namespace ReGraphik.ViewModels
             NavegarEstoqueCommand = new RelayCommand(p => NavegarParaEstoque());
             NavegarMapaCommand = new RelayCommand(p => NavegarParaMapa());
             NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
+            NavegarEsgCommand = new RelayCommand(p => NavegarParaEsg());
             NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
             SairCommand = new RelayCommand(p => ExecutarSair());
         }
 
-        // ── navegação ────────────────────────────────────────────────────────
+        /// <summary>
+        /// Controles de navegação entre abas
+        /// </summary>
         private void NavegarParaDashboard() => ExecutarNavegacao("Dashboard", _dashboardView);
         private void NavegarParaResiduos() => ExecutarNavegacao("Residuos", _residuosView);
         private void NavegarParaEstoque() => ExecutarNavegacao("Estoque", _estoqueView);
         private void NavegarParaMapa() => ExecutarNavegacao("Mapa", _mapaView);
         private void NavegarParaRelatorios() => ExecutarNavegacao("Relatorios", _relatoriosView);
+        private void NavegarParaEsg() => ExecutarNavegacao("ESG", _esgView);
         private void NavegarParaConta() => ExecutarNavegacao("Conta", _contaView);
 
         private void ExecutarNavegacao(string nomeBotao, object view)
@@ -117,8 +130,6 @@ namespace ReGraphik.ViewModels
             CurrentView = view;
         }
 
-        // ── chat ─────────────────────────────────────────────────────────────
-
         /// <summary>
         /// Abre (ou traz para frente) o painel de chat.
         /// As conversas já estão carregadas porque o ChatViewModel escuta o
@@ -126,7 +137,7 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private void ChatConversar()
         {
-            // Reutiliza a janela se já foi criada e ainda está aberta
+            /// Reutiliza a janela se já foi criada e ainda está aberta
             if (_chatWindow != null && _chatWindow.IsLoaded)
             {
                 _chatWindow.Activate();
@@ -136,8 +147,8 @@ namespace ReGraphik.ViewModels
             _chatWindow = new ChatPainelWindow();
             _chatWindow.DataContext = ChatViewModel;
 
-            // Ao abrir, força recarregamento das conversas para refletir
-            // mensagens novas recebidas enquanto o painel estava fechado
+            /// Ao abrir, força recarregamento das conversas para refletir
+            /// mensagens novas recebidas enquanto o painel estava fechado
             _ = ChatViewModel.CarregarConversasPublicAsync();
 
             _chatWindow.Show();
@@ -145,26 +156,27 @@ namespace ReGraphik.ViewModels
 
         /// <summary>
         /// Callback disparado pelo ChatViewModel quando uma mensagem nova
-        /// chega de outro usuário enquanto o painel está fechado.
-        /// Exibe um toast discreto sem interromper o fluxo do usuário.
+        /// chega de outro usuário enquanto o painel está fechado. Exibe um toast discreto sem interromper o fluxo do usuário.
         /// </summary>
         private void OnNovaMensagemRecebida(string remetenteNome, string textoPreview)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                // Só exibe o toast se o painel de chat não estiver visível
+                /// Só exibe o toast se o painel de chat não estiver visível
                 if (_chatWindow == null || !_chatWindow.IsVisible)
                 {
                     var toast = new ChatToastWindow(remetenteNome, textoPreview);
 
-                    // Ao clicar no toast, abre o chat direto na conversa certa
+                    /// Ao clicar no toast, abre o chat direto na conversa certa
                     toast.Clicado += () => ChatConversar();
                     toast.Show();
                 }
             });
         }
 
-        // ── sair ─────────────────────────────────────────────────────────────
+        /// <summary>
+        /// Volta para a tela de login/cadastro
+        /// </summary>
         private void ExecutarSair()
         {
             var resultado = MessageBox.Show(
@@ -175,7 +187,7 @@ namespace ReGraphik.ViewModels
 
             if (resultado == MessageBoxResult.Yes)
             {
-                // Para o timer e libera recursos do chat antes de sair
+                /// Para o timer e libera recursos do chat antes de sair
                 ChatViewModel.Dispose();
                 ChatViewModel.NovaMensagemRecebida -= OnNovaMensagemRecebida;
 
