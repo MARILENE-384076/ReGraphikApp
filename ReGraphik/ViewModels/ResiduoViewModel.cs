@@ -328,7 +328,13 @@ namespace ReGraphik.ViewModels
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var msgWindow = new MensagemWindow();
-                msgWindow.ShowDialog(); 
+                msgWindow.ShowDialog();
+
+                msgWindow.ShowInTaskbar = false;
+                msgWindow.Owner = Application.Current.MainWindow;
+                msgWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+                msgWindow.ShowDialog();
             });
 
             LimparCampos();

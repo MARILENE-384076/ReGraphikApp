@@ -147,6 +147,11 @@ namespace ReGraphik.ViewModels
             _chatWindow = new ChatPainelWindow();
             _chatWindow.DataContext = ChatViewModel;
 
+            _chatWindow.ShowInTaskbar = false;
+
+            // 2. Define a janela principal do sistema como dona do chat
+            _chatWindow.Owner = System.Windows.Application.Current.MainWindow;
+
             /// Ao abrir, força recarregamento das conversas para refletir
             /// mensagens novas recebidas enquanto o painel estava fechado
             _ = ChatViewModel.CarregarConversasPublicAsync();
