@@ -158,12 +158,6 @@ namespace ReGraphik.ViewModels
             set { _mensaOrigem = value; OnPropertyChanged(); }
         }
 
-        public string MensaData
-        {
-            get => _mensaData;
-            set { _mensaData = value; OnPropertyChanged(); }
-        }
-
         public string MensaQuantidade
         {
             get => _mensaQuantidade;
@@ -245,12 +239,6 @@ namespace ReGraphik.ViewModels
                 if (string.IsNullOrWhiteSpace(Origem))
                 {
                     MensaOrigem = "A Origem é obrigatória!";
-                    possuiErro = true;
-                }
-
-                if (string.IsNullOrWhiteSpace(Data.ToString()))
-                {
-                    MensaData = "A Data é obrigatória!";
                     possuiErro = true;
                 }
 
@@ -402,7 +390,6 @@ namespace ReGraphik.ViewModels
         {
             MensaTipoMaterial = string.Empty;
             MensaOrigem = string.Empty;
-            MensaData = string.Empty;
             MensaQuantidade = string.Empty;
             MensaComprimento = string.Empty;
             MensaLargura = string.Empty;

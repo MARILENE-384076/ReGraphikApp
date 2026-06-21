@@ -205,16 +205,21 @@ namespace ReGraphik.ViewModels
 
             PasswordBox passwordBox = null;
             TextBox textBoxVisivel = null;
-            PackIconMaterial iconeOlho = null;
 
-            foreach (var child in gridCampos.Children)
+            // Corrigido: Usamos a classe genérica base PackIconControlBase ou varremos dinamicamente 
+            // para evitar problemas de tipos fortemente declarados sem o namespace exato.
+            object iconeOlho = gridCampos.FindName("IconeOlho") ?? gridCampos.FindName("IconeOlho1");
+
+            // Busca os elementos diretamente na árvore pelo Name cadastrado no XAML
+            passwordBox = gridCampos.FindName("TxtSenhaLogin") as PasswordBox;
+            textBoxVisivel = gridCampos.FindName("TxtSenhaVisivel") as TextBox;
+
+            if (passwordBox == null || textBoxVisivel == null)
             {
-                if (child is PasswordBox pb) passwordBox = pb;
-                else if (child is TextBox tb) textBoxVisivel = tb;
-                else if (child is Button button)
+                foreach (var child in gridCampos.Children)
                 {
-                    iconeOlho = gridCampos.FindName("IconeOlho") as PackIconMaterial
-                             ?? gridCampos.FindName("IconeOlho1") as PackIconMaterial;
+                    if (child is PasswordBox pb) passwordBox = pb;
+                    else if (child is TextBox tb) textBoxVisivel = tb;
                 }
             }
 
@@ -226,7 +231,10 @@ namespace ReGraphik.ViewModels
                 passwordBox.Visibility = Visibility.Collapsed;
                 textBoxVisivel.Visibility = Visibility.Visible;
 
-                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.EyeOff;
+                if (iconeOlho is PackIconMaterial iconMat)
+                {
+                    iconMat.Kind = PackIconMaterialKind.EyeOff;
+                }
             }
             else
             {
@@ -234,7 +242,10 @@ namespace ReGraphik.ViewModels
                 textBoxVisivel.Visibility = Visibility.Collapsed;
                 passwordBox.Visibility = Visibility.Visible;
 
-                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.Eye;
+                if (iconeOlho is PackIconMaterial iconMat)
+                {
+                    iconMat.Kind = PackIconMaterialKind.Eye;
+                }
             }
         }
     }
