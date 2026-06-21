@@ -106,7 +106,8 @@ namespace ReGraphik.ViewModels
 
 
         /// <summary>
-        /// Método para verificar se o comando de login pode ser executado, desabilitando-o quando o processo de login estiver em andamento
+        /// Método para verificar se o comando de login pode ser executado, 
+        /// desabilitando-o quando o processo de login estiver em andamento
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>

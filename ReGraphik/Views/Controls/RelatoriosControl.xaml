@@ -51,7 +51,7 @@
                     <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
                            Foreground="#1E293B" Margin="0,0,0,14"/>
 
-                    <!-- Linha 1: Tipo, Origem, Status -->
+                    <!-- Tipo, Origem, Status -->
                     <Grid Grid.Row="1" Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -157,7 +157,7 @@
                         </StackPanel>
                     </Grid>
 
-                    <!-- Linha 2: Período + botões -->
+                    <!-- Período + botões -->
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
