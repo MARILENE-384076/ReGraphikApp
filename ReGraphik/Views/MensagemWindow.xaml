@@ -1,10 +1,11 @@
 ﻿<Window x:Class="ReGraphik.Views.MensagemWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        WindowStartupLocation="CenterScreen"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         WindowStyle="None"
-        Width="460"
+        Width="440"
         SizeToContent="Height" 
         Background="Transparent"
         AllowsTransparency="True">
@@ -19,88 +20,93 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="#1A000000" Margin="106,0,10,0">
-        <Border Background="White" CornerRadius="11" Padding="20" Margin="0,0,0,0">
+    <Grid Margin="16">
+        <Border Background="White" CornerRadius="16" Padding="24,20,24,24">
             <Border.Effect>
-                <DropShadowEffect ShadowDepth="1" BlurRadius="10" Opacity="0.08" Color="#000"/>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="16" Opacity="0.12" Color="#000000"/>
             </Border.Effect>
 
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Botão de Fechar -->
-                <Button Grid.Row="0" Grid.Column="1" 
-                    Content="✕" 
-                    Width="24" 
-                    Height="24" 
-                    Margin="0,-8,-8,0"
-                    HorizontalAlignment="Right" 
-                    Style="{StaticResource ModernCloseButton}"
-                    Click="BtnFechar_Click"/>
+                <Button Grid.Row="0"
+                        Content="✕" 
+                        Width="28" 
+                        Height="28" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Top"
+                        Margin="0,-8,-8,0"
+                        Foreground="#94A3B8"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        FontSize="14"
+                        Cursor="Hand"
+                        Click="BtnFechar_Click"/>
 
-                <!-- Caixa do Ícone -->
-                <Border Grid.Row="1" Grid.Column="0" 
-                    Background="#EAFDF5" 
-                    BorderBrush="#A7F3D0"
-                    BorderThickness="1.5"
-                    Width="76" 
-                    Height="76" 
-                    CornerRadius="22" 
-                    VerticalAlignment="Top" 
-                    Margin="0,8,20,24">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="8" Opacity="0.15" ShadowDepth="1" Color="#10B981"/>
-                    </Border.Effect>
-                    <!-- Ícone de folha -->
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="CheckCircle"
-                                                    Foreground="#10B981" 
-                                                    VerticalAlignment="Center"
-                                                    Margin="0,-2,0,0" RenderTransformOrigin="2.268,0.623" Height="41" Width="74"/>
+                <Grid Grid.Row="1" Margin="0,4,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Icone -->
+                    <Border Grid.Column="0" 
+                            Background="#F0FDF4" 
+                            BorderBrush="#DCFCE7"
+                            BorderThickness="1"
+                            Width="56" 
+                            Height="56" 
+                            CornerRadius="28" 
+                            VerticalAlignment="Top" 
+                            HorizontalAlignment="Center"
+                            Margin="0,0,16,0">
+
+                        <iconPacks:PackIconMaterial Kind="CheckCircleOutline"
+                                                    Foreground="#16A34A" 
+                                                    Width="28" 
+                                                    Height="28"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Mensagem -->
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock x:Name="TxtTitulo" 
+                                   Text="Sucesso!" 
+                                   FontSize="18" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1E293B" 
+                                   TextWrapping="Wrap"/>
+
+                        <TextBlock x:Name="TxtMensagem" 
+                                   Text="O resíduo foi cadastrado com sucesso no sistema."
+                                   FontSize="14" 
+                                   Foreground="#64748B" 
+                                   TextWrapping="Wrap" 
+                                   Margin="0,6,0,0" 
+                                   LineHeight="20"
+                                   LineStackingStrategy="BlockLineHeight"/>
                     </StackPanel>
-                </Border>
-
-                <!-- Bloco de Textos -->
-                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="0,8,0,24">
-                    <!-- Título -->
-                    <TextBlock x:Name="TxtTitulo" 
-                           Text="SUCESSO!!" 
-                           FontSize="20" 
-                           FontWeight="Bold" 
-                           Foreground="#4A5568" 
-                           TextWrapping="Wrap"
-                           LineHeight="24"
-                           LineStackingStrategy="BlockLineHeight"/>
-
-                    <!-- Subtítulo -->
-                    <TextBlock x:Name="TxtMensagem" 
-                           Text="Residuo foi cadastrado."
-                           FontSize="16" 
-                           Foreground="#718096" 
-                           TextWrapping="Wrap" 
-                           Margin="0,10,0,0" 
-                           LineHeight="20"
-                           LineStackingStrategy="BlockLineHeight"/>
-                </StackPanel>
+                </Grid>
 
                 <!-- Botão -->
-                <Button Grid.Row="2" Grid.Column="1" 
-                    Content="Ok, entendi" 
-                    Height="46" 
-                    HorizontalAlignment="Left" 
-                    Style="{StaticResource ModernRoundedButton}"
-                    Click="BtnFechar_Click"/>
+                <Button Grid.Row="2" 
+                        Content="Entendi" 
+                        Height="38" 
+                        Width="110"
+                        HorizontalAlignment="Right" 
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Background="#1649a2" 
+                        Foreground="White" 
+                        FontWeight="SemiBold" 
+                        BorderThickness="0" 
+                        Cursor="Hand"
+                        Click="BtnFechar_Click"/>
             </Grid>
         </Border>
     </Grid>
-
 </Window>
