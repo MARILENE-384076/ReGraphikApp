@@ -240,7 +240,7 @@
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
 
                                     <Border Background="#CC1E293B" CornerRadius="6" Padding="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
-                                        <TextBlock Text="{Binding Id, StringFormat='#\{0\}'}" Foreground="White" FontWeight="Bold" FontSize="11"/>
+                                        <TextBlock Text="{Binding IdCard}" Foreground="White" FontWeight="Bold" FontSize="11"/>
                                     </Border>
 
                                     <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"

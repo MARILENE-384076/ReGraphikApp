@@ -21,6 +21,8 @@ namespace ReGraphik.Views.Controls
         {
             InitializeComponent();
             DataContext = new EstoqueReversoViewModel();
+
+            this.IsVisibleChanged += EstoqueReversoControl_IsVisibleChanged;
         }
 
         /// <summary>
@@ -42,6 +44,19 @@ namespace ReGraphik.Views.Controls
 
                 // Abre em modo modal (bloqueia a tela de trás até fechar)
                 window.ShowDialog();
+            }
+        }
+
+        private async void EstoqueReversoControl_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Verifica se a tela ficou visível para o usuário
+            if ((bool)e.NewValue == true)
+            {
+                if (DataContext is EstoqueReversoViewModel viewModel)
+                {
+                    // Recarrega os dados do banco atualizando o Grid em tempo real
+                    await viewModel.CarregarEstoqueDoBancoAsync();
+                }
             }
         }
     }

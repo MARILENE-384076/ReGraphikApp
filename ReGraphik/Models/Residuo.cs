@@ -14,6 +14,22 @@ namespace ReGraphik.Models
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
+        /// <summary>
+        /// Retorna o ID formatado e encurtado para o Card (Ex: #10dcd90e)
+        /// </summary>
+        public string IdCard
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Id)) return "#00000000";
+
+                // Se o ID for um GUID completo, pega apenas os primeiros 8 caracteres
+                return Id.Length > 8
+                    ? $"#{Id.Substring(0, 8)}"
+                    : $"#{Id}";
+            }
+        }
+
         [JsonPropertyName("id_usuario")]
         [ForeignKey("Usuario")]
         public string? IdUsuario { get; set; }
