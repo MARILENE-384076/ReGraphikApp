@@ -298,7 +298,7 @@
                             Command="{Binding SairCommand}">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
-                                <TextBlock Text="Botão para sair da aplicação" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                                <TextBlock Text="Botão para voltar para a tela de login" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
                             </ToolTip>
                         </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
