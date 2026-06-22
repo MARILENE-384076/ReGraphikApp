@@ -82,8 +82,8 @@
         <!-- Titulo -->
         <Grid Grid.Row="0" Margin="0,0,0,24">
             <StackPanel>
-                <TextBlock Text="Proposta de Valor ESG" FontSize="24" FontWeight="Bold" Foreground="#0F172A"/>
-                <TextBlock Text="Ambiental · Social · Governança — Guia de Certificação Corporativa" FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+                <TextBlock Text="Painel de Impacto e Diretrizes ESG" FontSize="24" FontWeight="Bold" Foreground="#0F172A"/>
+                <TextBlock Text="Monitore indicadores, gerencie a conformidade e acelere sua certificação ambiental" FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
             </StackPanel>
 
             <Button HorizontalAlignment="Right" Command="{Binding ExportarPdfCommand}" Height="40" Padding="16,0" Background="#1649A2" Foreground="White" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" VerticalAlignment="Center">
