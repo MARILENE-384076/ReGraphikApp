@@ -689,6 +689,53 @@ private bool AplicarFiltro(object item)
 
 ---
 
+### Estoque Reverso — Observable em Tempo Real (Firebase Streaming)
+ 
+O carregamento do Estoque Reverso não usa uma lista estática — ele assina o nó `residuos` do Firebase com **`.AsObservable<Residuo>()`**, o que significa que qualquer inserção, edição ou exclusão feita por outro usuário aparece automaticamente na tela sem recarregar.
+ 
+```csharp
+// EstoqueReversoViewModel.cs
+firebase
+    .Child("residuos")
+    .AsObservable<Residuo>()
+    .Subscribe(subsecao =>
+    {
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            if (subsecao.EventType == FirebaseEventType.InsertOrUpdate)
+            {
+                // Remove versão antiga para evitar duplicatas no grid
+                var existente = _todosResiduos.FirstOrDefault(r => r.Id == subsecao.Object.Id);
+                if (existente != null) _todosResiduos.Remove(existente);
+ 
+                _todosResiduos.Add(subsecao.Object);
+            }
+            else if (subsecao.EventType == FirebaseEventType.Delete)
+            {
+                var existente = _todosResiduos.FirstOrDefault(r => r.Id == subsecao.Key);
+                if (existente != null) _todosResiduos.Remove(existente);
+            }
+ 
+            ResiduosFiltrados.Refresh(); // Reaplica os filtros ativos
+        });
+    });
+```
+ 
+Os ComboBoxes de filtro (Tipo, Origem, Status) são populados **dinamicamente** a partir dos próprios dados que chegam do Firebase — não são listas fixas no código. Cada novo resíduo que chega inclui seu valor nos filtros automaticamente se ele ainda não estiver presente.
+ 
+Os filtros disponíveis na tela de Estoque Reverso são:
+ 
+| Filtro | Lógica aplicada |
+|---|---|
+| Tipo | `Contains` case-insensitive sobre `TipoResiduo` |
+| Origem | `Contains` case-insensitive sobre `Origem` |
+| Status | `Contains` case-insensitive sobre `Status` |
+| Período | Últimos 7 / 30 / 90 dias por `DataCadastro` |
+ 
+Todos os filtros são combinados com lógica **AND** — o item precisa passar em todos para aparecer na lista.
+ 
+---
+
 ### ChatService — Firebase direto do cliente
 
 O chat comunica diretamente com o Firebase Realtime Database para garantir baixa latência. O ID de conversa é gerado de forma determinística — independente de quem iniciou a conversa.
@@ -709,6 +756,88 @@ public async Task EnviarMensagemAsync(Mensagem mensagem)
 }
 ```
 
+---
+
+---
+ 
+### ValidacaoCpfService — Algoritmo dos Dígitos Verificadores
+ 
+O cadastro de usuários valida o CPF via algoritmo oficial dos dois dígitos verificadores, implementado como serviço estático (`static class`) para ser chamado sem instância.
+ 
+```csharp
+// Services/ValidacaoCpfService.cs
+public static bool Validar(string? cpf)
+{
+    var digits = Regex.Replace(cpf, @"\D", "");
+ 
+    if (digits.Length != 11) return false;
+    if (new string(digits[0], 11) == digits) return false; // Bloqueia "111.111.111-11" etc.
+ 
+    // Primeiro dígito verificador
+    int soma = 0;
+    for (int i = 0; i < 9; i++)
+        soma += int.Parse(digits[i].ToString()) * (10 - i);
+    int resto = soma % 11;
+    int d1 = resto < 2 ? 0 : 11 - resto;
+    if (d1 != int.Parse(digits[9].ToString())) return false;
+ 
+    // Segundo dígito verificador
+    soma = 0;
+    for (int i = 0; i < 10; i++)
+        soma += int.Parse(digits[i].ToString()) * (11 - i);
+    resto = soma % 11;
+    int d2 = resto < 2 ? 0 : 11 - resto;
+    return d2 == int.Parse(digits[10].ToString());
+}
+```
+ 
+O service também expõe `Formatar(string? cpf)` que retorna o CPF no padrão `000.000.000-00` caso seja válido, usado na exibição no perfil do usuário.
+ 
+---
+ 
+### UsuarioSessaoService — Singleton de Sessão
+ 
+O `UsuarioSessaoService` é um **Singleton** que mantém o estado do usuário logado durante toda a sessão do aplicativo. Ele também implementa `INotifyPropertyChanged`, permitindo que qualquer ViewModel reaja a mudanças (como troca de foto de perfil) sem precisar ser reconstruído.
+ 
+```csharp
+// Services/UsuarioSessaoService.cs
+public class UsuarioSessaoService : INotifyPropertyChanged
+{
+    private static UsuarioSessaoService? _instancia;
+    public static UsuarioSessaoService Instancia => _instancia ??= new UsuarioSessaoService();
+ 
+    private string? _fotoCaminho;
+    public string? FotoCaminho
+    {
+        get => _fotoCaminho;
+        set { _fotoCaminho = value; OnPropertyChanged(); }
+    }
+ 
+    private UsuarioSessaoService() { } // Construtor privado — garante instância única
+}
+```
+ 
+---
+ 
+### ConfiguracaoLocalService — Persistência de Preferências
+ 
+O `ConfiguracaoLocalService` persiste preferências do usuário (como o caminho da foto de perfil) em disco, no diretório `AppData\Roaming\ReGraphik\config.txt`. Isso garante que a foto seja restaurada automaticamente no próximo login, sem precisar fazer novo upload.
+ 
+```csharp
+// Services/ConfiguracaoLocalService.cs
+private static readonly string _pasta =
+    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ReGraphik");
+ 
+public static void SalvarFoto(string caminho) =>
+    File.WriteAllText(Path.Combine(_pasta, "config.txt"), caminho);
+ 
+public static string? CarregarFoto()
+{
+    var caminho = File.ReadAllText(Path.Combine(_pasta, "config.txt")).Trim();
+    return File.Exists(caminho) ? caminho : null; // Só retorna se o arquivo ainda existir
+}
+```
+ 
 ---
 
 ### Mapa Interativo — Do clique ao pin
