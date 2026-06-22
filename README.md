@@ -35,6 +35,7 @@
 - [Modelos de Dados](#modelos-de-dados)
 - [Integrações Externas](#integrações-externas)
 - [Conceitos Técnicos Implementados](#conceitos-técnicos-implementados)
+- [Status dos Workflows de Status do Resíduo](#status-dos-workflows-de-status-do-resíduo)
 - [Como Executar o Projeto](#como-executar-o-projeto)
 - [Documentação Complementar](#documentação-complementar)
 - [Integrantes](#integrantes)
@@ -524,6 +525,22 @@ O serviço `AutorizarService.cs` no cliente WPF encapsula todas essas etapas, e 
 | `anexo` | `string` | URL da foto do material (Base64 → Imgur) |
 | `status` | `string` | `"Disponível"`, `"Reservado"` ou `"Descartado"` |
 
+#### Propriedade Calculada — `IdCard`
+
+O modelo `Residuo` expõe a propriedade calculada `IdCard` para exibir o ID de forma amigável nos cards da interface — sem lógica de formatação no XAML:
+
+```csharp
+public string IdCard
+{
+    get
+    {
+        if (string.IsNullOrEmpty(Id)) return "#00000000";
+        return Id.Length > 8 ? $"#{Id.Substring(0, 8)}" : $"#{Id}";
+    }
+}
+// Ex: ID "10dcd90e-f234-..." → exibe "#10dcd90e"
+```
+
 ### PontosColeta
 
 | Campo | Tipo | Descrição |
@@ -599,6 +616,32 @@ Utilizada em dois pontos do sistema:
 **No cliente WPF** (`GooglePlacesService`):
 - Busca pontos de coleta próximos por cidade e tipo de material
 - Gera HTML com Leaflet.js e abre via WebView2 para exibir o mapa interativo
+
+#### Google Places — Detalhe de Implementação (Cliente WPF)
+
+O `GooglePlacesService` faz dois níveis de chamada à API do Google Maps:
+
+1. **Text Search** — busca por termo livre (`"{material} em {cidade}"`) e retorna lista de locais com `place_id`
+2. **Place Details** — para cada `place_id` retornado, faz uma segunda chamada para obter telefone, site e endereço completo
+
+```csharp
+// GooglePlacesService.cs — query de busca
+string termoBusca = $"{material} em {cidade}";
+string searchUrl = $"https://maps.googleapis.com/maps/api/place/textsearch/json" +
+                   $"?query={Uri.EscapeDataString(termoBusca)}&key={_apiKey}";
+```
+
+Por segurança, falhas HTTP são capturadas e os detalhes (incluindo a API Key) são ocultados nos logs de diagnóstico:
+
+```csharp
+catch (HttpRequestException)
+{
+    Debug.WriteLine("[SEGURANÇA] Falha na comunicação. Detalhes ocultados para proteger as credenciais.");
+    return listaDePostos; // Retorna lista vazia em vez de propagar a exceção
+}
+```
+
+O mapa é renderizado usando **Leaflet.js** carregado via CDN dentro de um arquivo HTML temporário gerado em `Path.GetTempPath()`, aberto pelo componente `WebView2` (Microsoft Edge embutido). Isso permite renderização completa de mapas interativos dentro de uma janela WPF sem depender de WebBrowser legado.
 
 ### Imgur API
 
@@ -1005,6 +1048,42 @@ O módulo ESG apresenta os indicadores ambientais da empresa com base nos dados 
 
 ---
 
+### Conta / Perfil — Funcionalidades Detalhadas
+
+A tela de Conta gerencia o perfil completo do usuário logado. As propriedades calculadas evitam código na View:
+
+| Propriedade | Comportamento |
+|---|---|
+| `SemFoto` | `true` quando `ImgFoto == null` — exibe inicial do nome no lugar |
+| `InicialNome` | Primeiro caractere do nome em maiúsculo (`Nome[..1].ToUpper()`) |
+| `LoginExibicao` | Login formatado com `@` (ex: `@lucas.aquino`) |
+| `EmailResumido` | E-mail mascarado (ex: `l*****@regraphik.com.br`) para exibição no card |
+
+O upload de foto segue o fluxo: `OpenFileDialog` → leitura do arquivo → envio para a **Imgur API** → URL retornada salva no Firebase junto ao perfil → caminho local salvo em `ConfiguracaoLocalService` para acesso offline → `UsuarioSessaoService.FotoCaminho` atualizado para propagar para todas as Views abertas.
+
+---
+
+## Status dos Workflows de Status do Resíduo
+
+Os resíduos percorrem um ciclo de vida definido pelos seguintes status, cada um com cor associada na interface:
+
+```
+Cadastrado
+    ↓
+Aguardando Triagem  (#1649a2 — Azul Médio)
+    ↓
+Disponível          (#64748B — Cinza)
+    ├──→ Disponível para Coleta  (#3274ba — Azul Claro)
+    │        ↓
+    │    Aguardando CADRI        (#0d2a56 — Azul Escuro)
+    │
+    └──→ Liberado para Venda    (#2f80ec — Azul Vivo)
+```
+
+O `StatusToColorConverter` mapeia cada status para sua cor de badge e calcula automaticamente a cor do texto (`Foreground`) para garantir contraste — branco sobre fundos escuros, escuro sobre fundos claros.
+
+---
+
 ## Como Executar o Projeto
 
 ### Pré-requisitos
@@ -1080,6 +1159,19 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 2. Defina `ReGraphik` como projeto de inicialização
 3. Verifique se a API está em execução
 4. Pressione `F5` (ou `Run`) para iniciar o cliente
+
+---
+
+### Observações de ambiente
+
+- O cliente WPF requer **Windows 10 ou superior** — WPF não executa em macOS ou Linux.
+- O componente **WebView2** (usado no mapa) exige que o Microsoft Edge WebView2 Runtime esteja instalado. Em Windows 11 ele já vem pré-instalado. Em Windows 10, o instalador está disponível em [developer.microsoft.com/microsoft-edge/webview2](https://developer.microsoft.com/microsoft-edge/webview2).
+- O arquivo `ReGraphikFirebaseKey.json` (Service Account) **não deve ser versionado**. Adicione ao `.gitignore`:
+```
+ApiRestReGraphik/ReGraphikFirebaseKey.json
+```
+
+- O `appsettings.json` com a chave do Google Maps também não deve ser commitado com a chave real. Use variáveis de ambiente ou `appsettings.Development.json` (que já está no `.gitignore` do projeto).
 
 ---
 
