@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="700" d:DesignWidth="900"
+             d:DesignHeight="750" d:DesignWidth="1000"
              Background="#F8FAFC">
 
     <UserControl.Resources>
@@ -13,261 +13,310 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="CardInteractiveStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderBrush" Value="#E2E8F0"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.04" Color="#000"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#CBD5E1" Duration="0:0:0.2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" To="#E2E8F0" Duration="0:0:0.2"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.ExitActions>
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect ShadowDepth="4" BlurRadius="16" Opacity="0.08" Color="#000"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Key="LinkButtonStyle" TargetType="Button">
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontSize="12" Foreground="#2563EB"/>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="txt" Property="TextDecorations" Value="Underline"/>
+                                    <Setter TargetName="txt" Property="Foreground" Value="#1D4ED8"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="24">
+    <Grid Margin="32,24,32,24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Cabeçalho -->
-        <Grid Grid.Row="0" Margin="0,0,0,20">
+        <!-- Titulo -->
+        <Grid Grid.Row="0" Margin="0,0,0,24">
             <StackPanel>
-                <TextBlock Text="Proposta de Valor ESG"
-                           FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
-                <TextBlock Text="Ambiental · Social · Governança — Guia de Certificação"
-                           FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+                <TextBlock Text="Proposta de Valor ESG" FontSize="24" FontWeight="Bold" Foreground="#0F172A"/>
+                <TextBlock Text="Ambiental · Social · Governança — Guia de Certificação Corporativa" FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
             </StackPanel>
-            <Button HorizontalAlignment="Right"
-                    Command="{Binding ExportarPdfCommand}"
-                    Height="40" Padding="18,0"
-                    Background="#1649a2" Foreground="White"
-                    FontWeight="SemiBold" BorderThickness="0"
-                    Cursor="Hand" VerticalAlignment="Center">
+
+            <Button HorizontalAlignment="Right" Command="{Binding ExportarPdfCommand}" Height="40" Padding="16,0" Background="#1649A2" Foreground="White" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" VerticalAlignment="Center">
                 <Button.Resources>
                     <Style TargetType="Border">
                         <Setter Property="CornerRadius" Value="8"/>
                     </Style>
                 </Button.Resources>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="⬇ " VerticalAlignment="Center"/>
-                    <TextBlock Text="Exportar PDF" VerticalAlignment="Center"/>
+                    <TextBlock Text="📥 " VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBlock Text="Exportar Diretrizes (PDF)" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
         </Grid>
 
-        <!-- Conteúdo rolável -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0,0,12,0">
 
-                <!-- Card E — Ambiental -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#DCFCE7" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
-                                <TextBlock Text="E" FontSize="18" FontWeight="Bold" Foreground="#166534"/>
+                <Grid Margin="0,0,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Card Ambiental -->
+                    <Border Grid.Column="0" Style="{StaticResource CardInteractiveStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                                <Border Background="#DCFCE7" CornerRadius="6" Padding="10,6" Margin="0,0,12,0">
+                                    <TextBlock Text="E" FontSize="16" FontWeight="Bold" Foreground="#166534"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Ambiental" FontSize="15" FontWeight="Bold" Foreground="#1E293B"/>
+                                    <TextBlock Text="Impacto e Circularidade" FontSize="11" Foreground="#64748B"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="20"
+                                       Text="O ReGraphik transforma resíduos gráficos — papel, cartão e vinil — em matéria-prima circular. Reduz emissões de CO₂ e custos de descarte logístico evitando aterros comuns."/>
+
+                            <Border Grid.Row="2" Background="#F0FDF4" CornerRadius="6" Padding="12,8" Margin="0,12,0,0">
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#166534" FontWeight="Medium"
+                                           Text="📊 Indicadores: kg cadastrados · pontos homologados · estimativa de CO₂ evitado."/>
                             </Border>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Ambiental (Environmental)"
-                                           FontSize="15" FontWeight="Bold" Foreground="#166534"/>
-                                <TextBlock Text="Redução de impacto e circularidade de resíduos"
-                                           FontSize="12" Foreground="#64748B"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card Social -->
+                    <Border Grid.Column="2" Style="{StaticResource CardInteractiveStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                                <Border Background="#DBEAFE" CornerRadius="6" Padding="10,6" Margin="0,0,12,0">
+                                    <TextBlock Text="S" FontSize="16" FontWeight="Bold" Foreground="#1D4ED8"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Social" FontSize="15" FontWeight="Bold" Foreground="#1E293B"/>
+                                    <TextBlock Text="Cadeia Produtiva" FontSize="11" Foreground="#64748B"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="20"
+                                       Text="Conecta empresas a cooperativas e catadores, fomentando renda estável. O ecossistema transforma sobras em novos subprodutos comerciais locais."/>
+
+                            <Border Grid.Row="2" Background="#EFF6FF" CornerRadius="6" Padding="12,8" Margin="0,12,0,0">
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#1D4ED8" FontWeight="Medium"
+                                           Text="🤝 Benefícios: inclusão de catadores · economia circular ativa · engajamento local."/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card Governança -->
+                    <Border Grid.Column="4" Style="{StaticResource CardInteractiveStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                                <Border Background="#F3E8FF" CornerRadius="6" Padding="10,6" Margin="0,0,12,0">
+                                    <TextBlock Text="G" FontSize="16" FontWeight="Bold" Foreground="#6B21A8"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Governança" FontSize="15" FontWeight="Bold" Foreground="#1E293B"/>
+                                    <TextBlock Text="Rastreabilidade" FontSize="11" Foreground="#64748B"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="20"
+                                       Text="Histórico auditável contendo origem, volume e destino final. Garante conformidade total com a PNRS (Lei 12.305/10), facilitando laudos e auditorias."/>
+
+                            <Border Grid.Row="2" Background="#FAF5FF" CornerRadius="6" Padding="12,8" Margin="0,12,0,0">
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#6B21A8" FontWeight="Medium"
+                                           Text="📋 Diferenciais: dados para laudos · histórico protegido · relatórios GRI/CDP."/>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Card Certificação -->
+                <Border Background="White" CornerRadius="12" Padding="24" BorderThickness="1" BorderBrush="#E2E8F0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="32"/>
+                            <ColumnDefinition Width="1.2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <Border Background="#FEF3C7" CornerRadius="6" Padding="8">
+                                    <TextBlock Text="🏅" FontSize="16"/>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" Margin="12,0,0,0">
+                                    <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                                    <TextBlock Text="Caminho prático para homologação de sustentabilidade da sua empresa" FontSize="12" Foreground="#64748B"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock TextWrapping="Wrap" Foreground="#475569" FontSize="13" LineHeight="20" Margin="0,0,0,20"
+                                       Text="O ReGraphik automatiza sua base documental. Os relatórios gerados servem como evidência de auditoria para acelerar o processo junto aos órgãos certificadores."/>
+
+                            
+                            <StackPanel>
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="#F1F5F9" CornerRadius="16" Width="26" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <TextBlock Text="1" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Gere o Relatório Comprobatório"/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Exporte o PDF consolidado de movimentações na aba de Relatórios."/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="#F1F5F9" CornerRadius="16" Width="26" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <TextBlock Text="2" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Acesse o Portal do INMETRO"/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Identifique um Organismo de Certificação Ambiental (OCA) credenciado."/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="#F1F5F9" CornerRadius="16" Width="26" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <TextBlock Text="3" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Auditoria Documental"/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Apresente os dados do sistema ReGraphik como prova de destino correto."/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="16" Width="26" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                        <TextBlock Text="✨" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock FontWeight="SemiBold" Foreground="#B45309" FontSize="13" Text="Homologação e Certificado"/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Sua empresa inserida formalmente no sistema nacional Certifiq."/>
+                                    </StackPanel>
+                                </Grid>
                             </StackPanel>
                         </StackPanel>
-                        <TextBlock TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="22"
-                                   Text="O ReGraphik transforma resíduos gráficos — papel, cartão e vinil — em matéria-prima circular. Cada resíduo cadastrado deixa de ir ao aterro e passa a ter um destino sustentável, reduzindo emissões de CO₂ e custos de descarte."/>
-                        <Border Background="#F0FDF4" CornerRadius="8" Padding="16,10" Margin="0,14,0,0">
-                            <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#166534"
-                                       Text="📊  Indicadores: kg cadastrados · pontos de coleta homologados · estimativa de CO₂ evitado por tonelada reciclada."/>
-                        </Border>
-                    </StackPanel>
-                </Border>
 
-                <!-- Card S — Social -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#DBEAFE" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
-                                <TextBlock Text="S" FontSize="18" FontWeight="Bold" Foreground="#1D4ED8"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Social"
-                                           FontSize="15" FontWeight="Bold" Foreground="#1D4ED8"/>
-                                <TextBlock Text="Geração de valor para toda a cadeia produtiva"
-                                           FontSize="12" Foreground="#64748B"/>
+                        <!-- Botões -->
+                        <Grid Grid.Column="2" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="Ações Disponíveis" FontWeight="Bold" Foreground="#0F172A" FontSize="13" Margin="0,0,0,12"/>
+
+                                <Button Command="{Binding IrParaRelatoriosCommand}" Height="40" Background="#B45309" Foreground="White" FontWeight="SemiBold" BorderThickness="0" Cursor="Hand" Margin="0,0,0,20">
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </Button.Resources>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="📊 " VerticalAlignment="Center"/>
+                                        <TextBlock Text="Gerar Dados de Auditoria" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Border Background="#F8FAFC" CornerRadius="8" Padding="16" BorderThickness="1" BorderBrush="#E2E8F0">
+                                    <StackPanel>
+                                        <TextBlock Text="Atalhos do INMETRO" FontWeight="SemiBold" Foreground="#475569" FontSize="12" Margin="0,0,0,12"/>
+
+                                        <Button Style="{StaticResource LinkButtonStyle}" Tag="https://www.gov.br/inmetro/pt-br" Click="AbrirLink_Click" 
+                                                Content="🌐 Portal Oficial gov.br/inmetro"/>
+
+                                        <Button Style="{StaticResource LinkButtonStyle}" Tag="https://www.gov.br/inmetro/pt-br/acesso-a-informacao/perguntas-frequentes/acreditacao/organismos-de-sistemas-de-gestao-ambiental-oca" Click="AbrirLink_Click" 
+                                                Content="🔍 Buscar Organismos (OCA)"/>
+
+                                        <Button Style="{StaticResource LinkButtonStyle}" Tag="https://certifiq.inmetro.gov.br" Click="AbrirLink_Click" 
+                                                Content="📋 Banco de dados Certifiq"/>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
-                        </StackPanel>
-                        <TextBlock TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="22"
-                                   Text="A plataforma conecta empresas gráficas a cooperativas, catadores e coletores, gerando renda e formalização para trabalhadores da reciclagem. O sistema de sugestões permite que resíduos se tornem produtos — camisetas, canecas, brindes — criando novos mercados e fortalecendo a economia circular local."/>
-                        <Border Background="#EFF6FF" CornerRadius="8" Padding="16,10" Margin="0,14,0,0">
-                            <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#1D4ED8"
-                                       Text="🤝  Benefícios: geração de renda para catadores · fomento à economia circular · redução de custos operacionais para empresas parceiras."/>
-                        </Border>
-                    </StackPanel>
+                        </Grid>
+                    </Grid>
                 </Border>
-
-                <!-- Card G — Governança -->
-                <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,16">
-                    <Border.Effect>
-                        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
-                    </Border.Effect>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <Border Background="#F3E8FF" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
-                                <TextBlock Text="G" FontSize="18" FontWeight="Bold" Foreground="#6B21A8"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Governança"
-                                           FontSize="15" FontWeight="Bold" Foreground="#6B21A8"/>
-                                <TextBlock Text="Rastreabilidade, conformidade e transparência"
-                                           FontSize="12" Foreground="#64748B"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <TextBlock TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="22"
-                                   Text="Cada resíduo registrado tem origem, tipo, quantidade, condição e destino final auditáveis. Isso permite demonstrar conformidade com a Política Nacional de Resíduos Sólidos (Lei 12.305/2010) e fortalecer a governança ambiental corporativa, facilitando auditorias, licitações e relatórios GRI ou CDP."/>
-                        <Border Background="#FAF5FF" CornerRadius="8" Padding="16,10" Margin="0,14,0,0">
-                            <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="#6B21A8"
-                                       Text="📋  Diferenciais: histórico auditável · relatórios exportáveis · dados para laudos e prestação de contas a órgãos reguladores."/>
-                        </Border>
-                    </StackPanel>
-                </Border>
-
-                <!-- Card Certificação INMETRO -->
-<Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,8">
-    <Border.Effect>
-        <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.05" Color="#000"/>
-    </Border.Effect>
-    <StackPanel>
-
-        <!-- Cabeçalho do card -->
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-            <Border Background="#FEF3C7" CornerRadius="8" Padding="8,4" Margin="0,0,12,0">
-                <TextBlock Text="🏅" FontSize="18"/>
-            </Border>
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO"
-                           FontSize="15" FontWeight="Bold" Foreground="#B45309"/>
-                <TextBlock Text="Caminho oficial para empresas parceiras do ReGraphik"
-                           FontSize="12" Foreground="#64748B"/>
-            </StackPanel>
-        </StackPanel>
-
-        <!-- Texto introdutório -->
-        <TextBlock TextWrapping="Wrap" Foreground="#334155" FontSize="13" LineHeight="22"
-                   Margin="0,0,0,20"
-                   Text="O ReGraphik funciona como base documental para sua empresa iniciar o processo de certificação ambiental ISO 14001, reconhecida pelo INMETRO. O relatório gerado aqui comprova suas práticas de gestão de resíduos e pode ser apresentado ao organismo certificador durante a auditoria."/>
-
-        <!-- Passos -->
-        <StackPanel>
-
-            <Grid Margin="0,0,0,14">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-                    <TextBlock Text="1" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-                </Border>
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                               Text="Gere o Relatório Comprobatório no ReGraphik"/>
-                    <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                               Text="Acesse a aba Relatórios, gere o comprovante de movimentação de resíduos e exporte em PDF. Esse documento será sua evidência de uso da plataforma."/>
-                </StackPanel>
-            </Grid>
-
-            <Grid Margin="0,0,0,14">
-    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-        <TextBlock Text="2" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-    </Border>
-    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                   Text="Acesse o site oficial do INMETRO"/>
-        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                   Text="No portal do INMETRO, localize um Organismo de Certificação Ambiental (OCA) acreditado para conduzir a auditoria ISO 14001 na sua empresa."/>
-    </StackPanel>
-</Grid>
-
-<Grid Margin="0,0,0,14">
-    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-        <TextBlock Text="3" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-    </Border>
-    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                   Text="Entre em contato com o OCA escolhido"/>
-        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                   Text="Apresente o relatório do ReGraphik como evidência de gestão de resíduos. O OCA irá conduzir a análise documental e a auditoria presencial na sua empresa."/>
-    </StackPanel>
-</Grid>
-
-<Grid Margin="0,0,0,14">
-    <Grid.ColumnDefinitions><ColumnDefinition Width="36"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-    <Border Grid.Column="0" Background="#FEF3C7" CornerRadius="13" Width="26" Height="26" HorizontalAlignment="Left">
-        <TextBlock Text="4" FontWeight="Bold" Foreground="#B45309" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
-    </Border>
-    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"
-                   Text="Receba o Certificado ISO 14001"/>
-        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Margin="0,2,0,0"
-                   Text="Após a auditoria aprovada, o OCA emite o certificado e registra no sistema Certifiq do INMETRO. O certificado é válido por 3 anos com auditorias anuais de manutenção."/>
-    </StackPanel>
-</Grid>
-
-        </StackPanel>
-        <!-- Botão navegar para Relatórios -->
-        <Button Margin="0,16,0,0"
-                Command="{Binding IrParaRelatoriosCommand}"
-                Height="42" Padding="20,0"
-                HorizontalAlignment="Left"
-                Background="#B45309" Foreground="White"
-                FontWeight="SemiBold" BorderThickness="0"
-                Cursor="Hand">
-            <Button.Resources>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="8"/>
-                </Style>
-            </Button.Resources>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="📄 " VerticalAlignment="Center"/>
-                <TextBlock Text="Gerar Relatório Comprobatório" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Button>
-
-        <!-- Links oficiais -->
-        <Border Background="#FFFBEB" CornerRadius="8" Padding="16,14" Margin="0,8,0,0">
-            <StackPanel>
-                <TextBlock Text="🔗  Links oficiais" FontWeight="SemiBold"
-                           Foreground="#B45309" FontSize="13" Margin="0,0,0,10"/>
-
-                <Button Cursor="Hand" HorizontalAlignment="Left" Margin="0,0,0,8"
-                        Background="Transparent" BorderThickness="0"
-                        Tag="https://www.gov.br/inmetro/pt-br"
-                        Click="AbrirLink_Click">
-                    <TextBlock FontSize="12" Foreground="#2563EB"
-                               TextDecorations="Underline"
-                               Text="🌐  Portal INMETRO — gov.br/inmetro"/>
-                </Button>
-
-                <Button Cursor="Hand" HorizontalAlignment="Left" Margin="0,0,0,8"
-                        Background="Transparent" BorderThickness="0"
-                        Tag="https://www.gov.br/inmetro/pt-br/acesso-a-informacao/perguntas-frequentes/acreditacao/organismos-de-sistemas-de-gestao-ambiental-oca"
-                        Click="AbrirLink_Click">
-                    <TextBlock FontSize="12" Foreground="#2563EB"
-                               TextDecorations="Underline"
-                               Text="🔍  Buscar Organismo Certificador Ambiental (OCA) acreditado"/>
-                </Button>
-
-                <Button Cursor="Hand" HorizontalAlignment="Left"
-                        Background="Transparent" BorderThickness="0"
-                        Tag="https://certifiq.inmetro.gov.br"
-                        Click="AbrirLink_Click">
-                    <TextBlock FontSize="12" Foreground="#2563EB"
-                               TextDecorations="Underline"
-                               Text="📋  Certifiq — Consultar certificados ISO 14001 emitidos no Brasil"/>
-                </Button>
-
-            </StackPanel>
-        </Border>
-
-    </StackPanel>
-</Border>
 
             </StackPanel>
         </ScrollViewer>

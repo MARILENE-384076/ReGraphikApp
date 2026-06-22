@@ -53,16 +53,17 @@
                 <StackPanel Grid.Row="0">
                     <Grid Margin="14,18,14,30">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15*"/>
+                            <ColumnDefinition Width="143*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="2">
                             <iconPacks:PackIconMaterial Kind="Recycle" Foreground="White" Height="35" Width="37" Margin="1,0,0,0"/>
                             <TextBlock Text="REGRAPHIK" Foreground="White" FontWeight="Bold" FontSize="20"/>
                         </StackPanel>
 
-                        <Button Grid.Column="1"
+                        <Button Grid.Column="2"
                                 Command="{Binding ChatCommand}"
                                 ToolTip="Mensagens"
                                 Cursor="Hand"
