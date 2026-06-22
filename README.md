@@ -642,7 +642,94 @@ public class RelayCommand : ICommand
         Command="{Binding SalvarCommand}"
         CommandParameter="{Binding ResiduoSelecionado}" />
 ```
-
+### RelayCommand — Implementação Completa (4 variantes)
+ 
+O `RelayCommand` implementado no projeto suporta **quatro variantes** de execução para cobrir todos os padrões usados nas ViewModels — síncronos, assíncronos, com e sem parâmetro:
+ 
+```csharp
+// Commands/RelayCommand.cs — construtores disponíveis
+ 
+// 1. Ação assíncrona sem parâmetro — usado em carregamentos de tela
+new RelayCommand(async () => await CarregarDadosAsync())
+ 
+// 2. Ação assíncrona com parâmetro — usado com CommandParameter no XAML
+new RelayCommand(async (param) => await ProcessarAsync(param))
+ 
+// 3. Ação síncrona sem parâmetro — usado para navegação e limpeza de filtros
+new RelayCommand(() => LimparFiltros())
+ 
+// 4. Ação síncrona com parâmetro — usado para abrir janelas com item selecionado
+new RelayCommand((param) => AbrirSugestoes(param as Residuo))
+```
+ 
+O `CanExecuteChanged` é vinculado ao `CommandManager.RequerySuggested` do WPF, que reavalia automaticamente o estado (`CanExecute`) de todos os comandos sempre que há interação na UI — mantendo botões habilitados/desabilitados de forma reativa sem código extra.
+ 
+Existe também uma versão genérica `RelayCommand<T>` para uso fortemente tipado:
+ 
+```csharp
+// Uso tipado — sem cast manual no Execute
+public ICommand SelecionarResiduoCommand { get; } =
+    new RelayCommand<Residuo>(residuo => AbrirDetalhes(residuo));
+```
+ 
+---
+ 
+### Converters — Camada de Adaptação Visual
+ 
+O projeto usa **8 value converters** registrados como recursos globais no XAML para transformar dados do modelo em valores visuais sem lógica no code-behind:
+ 
+| Converter | Entrada → Saída |
+|---|---|
+| `StatusToColorConverter` | `string` (status) → `SolidColorBrush` (cor do badge) |
+| `StatusToColorConverter` (param `"Foreground"`) | `string` (status) → `Brushes.White` ou cor escura para contraste |
+| `Base64ToImageConverter` | `string` (Base64 ou data URL) → `BitmapImage` |
+| `BoolToVisibilityConverter` | `bool` → `Visibility.Visible` / `Collapsed` |
+| `NullToVisibilityConverter` | `null` / valor → `Visibility` |
+| `StringToVisibilityConverter` | `string` vazia/nula → `Visibility.Collapsed` |
+| `BadgeNotificacaoConverter` | contagem de notificações → texto do badge |
+| `NaoLidasVisibilidadeConverter` | contagem de não lidas → `Visibility` do indicador |
+| `ChatConverter` | dados de mensagem → alinhamento/cor da bolha do chat |
+ 
+O `Base64ToImageConverter` trata tanto strings Base64 puras quanto data URLs com prefixo (`data:image/jpeg;base64,...`), extraindo apenas o payload antes de decodificar:
+ 
+```csharp
+if (base64String.Contains(","))
+    base64String = base64String.Substring(base64String.IndexOf(",") + 1);
+```
+ 
+---
+ 
+### Tratamento de Erros na API — Padrão por Camada
+ 
+Todos os controllers da API seguem um padrão consistente de tratamento de exceções em três camadas:
+ 
+```csharp
+// Padrão aplicado em todos os controllers
+try
+{
+    var result = await _service.Listar();
+    return Ok(result);
+}
+catch (ArgumentException ex)
+{
+    _logger.LogWarning(ex, "Requisição inválida");
+    return BadRequest("Requisição inválida.");           // 400
+}
+catch (HttpRequestException ex)
+{
+    _logger.LogError(ex, "Falha de comunicação Firebase");
+    return StatusCode(404, "Recurso não encontrado.");  // 404
+}
+catch (Exception ex)
+{
+    _logger.LogError(ex, "Erro interno");
+    return StatusCode(500, "Erro interno ao processar a solicitação."); // 500
+}
+```
+ 
+Os services tratam ainda `FirebaseException` (falha de conexão/autenticação com o banco) e `JsonException` (dados corrompidos ou estrutura incompatível no Firebase), com mensagens de log específicas para cada cenário.
+ 
+---
 ---
 
 ### BaseViewModel — INotifyPropertyChanged
@@ -661,7 +748,33 @@ public class BaseViewModel : INotifyPropertyChanged
     }
 }
 ```
-
+### Conexão Firebase — API vs. Cliente WPF
+ 
+O projeto usa **duas formas diferentes** de conectar ao Firebase, cada uma adequada ao seu contexto:
+ 
+**Na API REST** (`DbReGraphik.cs`) — autenticação via Service Account com `FirebaseAdmin` SDK:
+```csharp
+// Inicializa o FirebaseApp com credenciais do servidor (uma única vez)
+if (FirebaseApp.DefaultInstance == null)
+{
+    FirebaseApp.Create(new AppOptions
+    {
+        Credential = GoogleCredential.FromFile(caminhoCompletoChave)
+    });
+}
+DbFirebase = new FirebaseClient(configuration["Firebase:RealtimeDatabaseUrl"]);
+```
+ 
+**No cliente WPF** (`FirebaseConfig.cs`) — acesso direto com URL pública (database rules controlam acesso):
+```csharp
+// Singleton — reutiliza a mesma instância em todos os services do cliente
+public static FirebaseClient Client =>
+    _client ??= new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
+```
+ 
+A separação existe porque a API precisa de autenticação privilegiada (Service Account) para operações administrativas, enquanto o cliente WPF acessa o Firebase diretamente apenas para o chat, onde a latência importa mais que a camada de autorização centralizada.
+ 
+---
 ---
 
 ### ICollectionView — Filtro no Estoque Reverso
