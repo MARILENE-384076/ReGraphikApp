@@ -172,6 +172,36 @@ O projeto segue rigorosamente o padrão **MVVM (Model-View-ViewModel)** em toda 
 └─────────────────────────────────────────────────────────┘
 ```
 
+## Dashboard — Indicadores e Gráficos em Tempo Real
+ 
+O Dashboard é a tela inicial após o login. Ele carrega dados direto da API e renderiza dois gráficos via **OxyPlot**:
+ 
+- **Gráfico de pizza** — distribuição dos resíduos por status, com fatias coloridas por estado (`#0d2a56` para "Aguardando CADRI", `#1649a2` para "Aguardando Triagem", etc.)
+- **Gráfico de barras horizontais** — peso total (kg) por tipo de resíduo, ordenado de forma crescente
+Além dos gráficos, o Dashboard exibe quatro cards de indicadores calculados em tempo real:
+ 
+| Indicador | Como é calculado |
+|---|---|
+| **Total de Resíduos** | Contagem total dos registros da API |
+| **Reaproveitados** | Contagem de resíduos com `Status == "Reaproveitado"` |
+| **Em Estoque** | Contagem de resíduos com `Status == "Em Estoque"` |
+| **Valor Estimado** | `Soma(Quantidade × R$ 5,50)` formatado como moeda |
+ 
+A tabela de **Últimos 5 Resíduos** exibe os mais recentes ordenados por `DataCadastro` decrescente, com IDs renumerados de 1 a 5 para exibição no card.
+ 
+A foto de perfil do usuário logado é carregada de `UsuarioSessaoService.Instancia.FotoCaminho` e reage a mudanças via evento `PropertyChanged` — sem necessidade de reiniciar a tela.
+ 
+```csharp
+// DashboardViewModel.cs — reatividade da foto de perfil
+UsuarioSessaoService.Instancia.PropertyChanged += (s, e) =>
+{
+    if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))
+        OnPropertyChanged(nameof(FotoPerfil));
+};
+```
+ 
+---
+
 ### Como funciona na prática
 
 1. **Usuário interage com a View** — clica num botão em `ResiduosControl.xaml`, que está vinculado a um `RelayCommand` via `Command="{Binding SalvarCommand}"`.
