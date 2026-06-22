@@ -1,4 +1,30 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Cores Sistema -->
+    <Color x:Key="AzulEscuroColor">#0d2a56</Color>
+    <Color x:Key="AzulMedioColor">#1649a2</Color>
+    <Color x:Key="AzulClaroColor">#3274ba</Color>
+    <Color x:Key="AzulMuitoClaroColor">#2f80ec</Color>
+    <Color x:Key="CinzaColor">#64748B</Color>
+
+    <!-- Cores ESG -->
+    <Color x:Key="VerdeEsgColor">#137333</Color>
+    <Color x:Key="VerdeFundoColor">#E6F4EA</Color>
+    <Color x:Key="LaranjaEsgColor">#D97706</Color>
+    <Color x:Key="RoxoEsgColor">#A855F7</Color>
+    <Color x:Key="RoxoFundoEsgColor">#F3E8FF</Color>
+    <Color x:Key="AzulEsgColor">#1A73E8</Color>
+    <Color x:Key="AzulFundoColor">#E8F0FE</Color>
     
+
+    <!-- Cores Padrão -->
+    <Color x:Key="TextoPrincipalColor">#0F172A</Color>
+
+    <SolidColorBrush x:Key="BrandGreen" Color="{StaticResource VerdeEsgColor}"/>
+    <SolidColorBrush x:Key="BrandGreenLight" Color="{StaticResource VerdeFundoColor}"/>
+
+    <SolidColorBrush x:Key="BrandBlue" Color="{StaticResource AzulEsgColor}"/>
+    <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextoPrincipalColor}"/>
+
 </ResourceDictionary>
