@@ -129,7 +129,7 @@ namespace ReGraphik.ViewModels
         }
 
         private string _status;
-        public string Status
+        public string? Status
         {
             get => _status;
             set { _status = value; OnPropertyChanged(); }
@@ -328,7 +328,12 @@ namespace ReGraphik.ViewModels
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var msgWindow = new MensagemWindow();
-                msgWindow.ShowDialog(); 
+
+                msgWindow.ShowInTaskbar = false;
+                msgWindow.Owner = Application.Current.MainWindow;
+                msgWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+                msgWindow.ShowDialog();
             });
 
             LimparCampos();
@@ -379,6 +384,7 @@ namespace ReGraphik.ViewModels
             Observacoes = string.Empty;
             NomeArquivo = "Nenhum arquivo selecionado";
             _caminhoArquivoSelecionado = string.Empty;
+            Status = null;
 
             LimparMensagens();
         }

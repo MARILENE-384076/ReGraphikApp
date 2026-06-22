@@ -147,6 +147,11 @@ namespace ReGraphik.ViewModels
             _chatWindow = new ChatPainelWindow();
             _chatWindow.DataContext = ChatViewModel;
 
+            _chatWindow.ShowInTaskbar = false;
+
+            // 2. Define a janela principal do sistema como dona do chat
+            _chatWindow.Owner = System.Windows.Application.Current.MainWindow;
+
             /// Ao abrir, força recarregamento das conversas para refletir
             /// mensagens novas recebidas enquanto o painel estava fechado
             _ = ChatViewModel.CarregarConversasPublicAsync();
@@ -179,25 +184,32 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private void ExecutarSair()
         {
-            var resultado = MessageBox.Show(
-                "Deseja voltar para a tela de login?",
-                "Confirmar Saída",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (resultado == MessageBoxResult.Yes)
+            /// Executa na Thread correta da interface visual
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                /// Para o timer e libera recursos do chat antes de sair
-                ChatViewModel.Dispose();
-                ChatViewModel.NovaMensagemRecebida -= OnNovaMensagemRecebida;
+                var confirmWindow = new ReGraphik.Views.SairMensagemWindow();
 
-                var loginWindow = new LoginWindow();
-                if (Application.Current != null)
-                    Application.Current.MainWindow = loginWindow;
+                /// Configurações para travar o pop-up sem criar abas extras na barra de ferramentas
+                confirmWindow.Owner = Application.Current.MainWindow;
+                confirmWindow.ShowInTaskbar = false;
 
-                loginWindow.Show();
-                _currentWindow?.Close();
-            }
+                /// Abre a janela e espera o usuário responder (Retorna true se clicar em Sair)
+                bool? resultado = confirmWindow.ShowDialog();
+
+                if (resultado == true)
+                {
+                    /// Para o timer e libera recursos do chat antes de sair
+                    ChatViewModel.Dispose();
+                    ChatViewModel.NovaMensagemRecebida -= OnNovaMensagemRecebida;
+
+                    var loginWindow = new LoginWindow();
+                    if (Application.Current != null)
+                        Application.Current.MainWindow = loginWindow;
+
+                    loginWindow.Show();
+                    _currentWindow?.Close();
+                }
+            });
         }
     }
 }
