@@ -7,7 +7,7 @@ namespace ApiRestReGraphik.Services
 {
     public class SugestaoService
     {
-        // Logger para registrar informações e erros relacionados ao serviço ReGraphik
+        /// Logger para registrar informações e erros relacionados ao serviço ReGraphik
         private readonly ILogger<SugestaoService> _logger;
         private readonly FirebaseClient _firebaseClient;
         private const string NodeName = "sugestoes";
@@ -33,35 +33,35 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém os dados do Firebase para a coleção de sugestões
+                /// Obtém os dados do Firebase para a coleção de sugestões
                 var sugestao = await _firebaseClient
                     .Child(NodeName)
                     .OnceAsync<Sugestao>();
 
-                // Mapeia os dados do Firebase para a lista de sugestões
+                /// Mapeia os dados do Firebase para a lista de sugestões
                 return sugestao.Select(r => r.Object).ToList();
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, "Falha de comunicação com o Firebase ao carregar dados do ReGraphik sugestões.");
                 throw;
             }
             catch (ArgumentException ex)
             {
-                // Captura erros de argumento que podem ocorrer se os dados do Firebase 
+                /// Captura erros de argumento que podem ocorrer se os dados do Firebase 
                 _logger.LogError(ex, "Erro de consistência de dados ao tentar agrupar sugestões por ID.");
                 throw new InvalidOperationException("Não foi possível processar a relação entre sugestões devido a dados inconsistentes.", ex);
             }
             catch (JsonException ex)
             {
-                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase
+                /// Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase
                 _logger.LogError(ex, "Erro de desserialização: Estrutura do nó de Sugestões é incompatível.");
                 throw new InvalidOperationException("Os dados armazenados no Firebase possuem um formato inválido.", ex);
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, "Erro crítico e não mapeado no serviço ReGraphik.");
                 throw;
             }
@@ -77,7 +77,7 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém a sugestão do Firebase usando o ID fornecido
+                /// Obtém a sugestão do Firebase usando o ID fornecido
                 var sugestao = await _firebaseClient
                      .Child(NodeName)
                      .Child(id)
@@ -87,19 +87,19 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, $"Erro de infraestrutura no Firebase ao obter a sugestão por ID: {id}");
                 throw;
             }
             catch (JsonException ex)
             {
-                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
+                /// Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
                 _logger.LogError(ex, $"Erro de desserialização. Os nós relacionados ao ID {id} possuem dados inválidos.");
                 throw new InvalidOperationException("Os dados obtidos do Firebase estão corrompidos ou em formato inválido.", ex);
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, $"Erro inesperado ao obter a sugestão por ID: {id}");
                 throw;
             }
@@ -118,10 +118,10 @@ namespace ApiRestReGraphik.Services
             {
                 if (string.IsNullOrEmpty(sugestao.Id))
                 {
-                    sugestao.Id = Guid.NewGuid().ToString(); // Garante que temos um ID único string
+                    sugestao.Id = Guid.NewGuid().ToString(); /// Garante que temos um ID único string
                 }
 
-                // Adiciona a sugestão ao Firebase usando o ID como chave
+                /// Adiciona a sugestão ao Firebase usando o ID como chave
                 await _firebaseClient
                     .Child(NodeName)
                     .Child(sugestao.Id)
@@ -129,13 +129,13 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, "Erro no Firebase ao tentar criar nova sugestão.");
                 throw;
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, "Erro inesperado ao adicionar a sugestão.");
                 throw;
             }
@@ -151,10 +151,10 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Garante que o ID da sugestão seja definido corretamente para a atualização
+                /// Garante que o ID da sugestão seja definido corretamente para a atualização
                 sugestao.Id = id;
 
-                // Atualiza a sugestão no Firebase usando o ID como chave
+                /// Atualiza a sugestão no Firebase usando o ID como chave
                 await _firebaseClient
                     .Child(NodeName)
                     .Child(id)
@@ -162,13 +162,13 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, $"Erro no Firebase ao tentar atualizar a sugestão ID: {id}");
                 throw;
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, $"Erro inesperado ao atualizar a sugestão ID: {id}");
                 throw;
             }
@@ -184,7 +184,7 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Exclui a sugestão do Firebase usando o ID fornecido
+                /// Exclui a sugestão do Firebase usando o ID fornecido
                 await _firebaseClient
                     .Child(NodeName)
                     .Child(id)
@@ -192,13 +192,13 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, $"Erro no Firebase ao tentar excluir a sugestão ID: {id}");
                 throw;
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, $"Erro inesperado ao excluir a sugestão ID: {id}");
                 throw;
             }
