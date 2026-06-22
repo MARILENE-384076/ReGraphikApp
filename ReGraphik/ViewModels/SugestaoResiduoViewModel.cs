@@ -123,8 +123,7 @@ namespace ReGraphik.ViewModels
             }
             catch (Exception ex)
             {
-                Mensagem = " Falha de conexão de rede.";
-                MessageBox.Show($"Não foi possível carregar os dados: {ex.Message}", "Erro de Sincronização", MessageBoxButton.OK, MessageBoxImage.Error);
+                Mensagem = "Falha de conexão de rede.";
             }
             finally
             {
