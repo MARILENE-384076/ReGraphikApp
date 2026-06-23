@@ -380,14 +380,11 @@
                                         </StackPanel.Style>
 
                                         <StackPanel Margin="0,0,0,24">
-                                            <TextBlock Text="Validação de Acesso" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Insira seu e-mail corporativo para iniciar o processo de cadastro." FontSize="13" Foreground="{DynamicResource CinzaColor}"/>
                                             <TextBlock Text="Criar Conta" FontSize="22" FontWeight="Bold"
                            Foreground="#1E293B" Margin="0,0,0,4"/>
                                             <TextBlock Text="Informe o e-mail vinculado ao convite que você recebeu do Administrador."
                            FontSize="13" Foreground="#64748B" TextWrapping="Wrap"/>
                                         </StackPanel>
-
                                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
                                         <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource InputStyle}" Margin="0,0,0,4"/>
@@ -414,7 +411,6 @@
                                             </Button.Style>
                                         </Button>
                                     </StackPanel>
-
                                     <!-- ══ ETAPAS 2 e 3 (após e-mail verificado) ══════════════════ -->
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
                                         <StackPanel.Style>
@@ -427,7 +423,6 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </StackPanel.Style>
-
                                         <!-- ── ETAPA 2: digitar token ────────────────────────────── -->
                                         <StackPanel>
                                             <StackPanel.Style>
@@ -440,9 +435,6 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </StackPanel.Style>
-
-                                            <TextBlock Text="Validação de Segurança" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,10"/>
-                                            <TextBlock Text="Um token de ativação foi gerado. Insira o código abaixo para prosseguir." TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,12"/>
                                             <StackPanel Margin="0,0,0,20">
                                                 <TextBlock Text="Token de Ativação" FontSize="22" FontWeight="Bold"
                                Foreground="#1E293B" Margin="0,0,0,4"/>
@@ -452,7 +444,6 @@
                         <Run Text=" enviou a você para liberar o cadastro."/>
                                                 </TextBlock>
                                             </StackPanel>
-
                                             <!-- Confirmação de que o e-mail foi encontrado -->
                                             <Border Background="#F0FFF4" CornerRadius="8"
                         BorderBrush="#86EFAC" BorderThickness="1"
@@ -469,9 +460,6 @@
                                                     </TextBlock>
                                                 </StackPanel>
                                             </Border>
-
-
-
                                             <Button Content="VALIDAR CÓDIGO"
                         Command="{Binding ValidarTokenCommand}"
                         Height="40">
@@ -487,7 +475,6 @@
                                                 </Button.Style>
                                             </Button>
                                         </StackPanel>
-
                                         <!-- ── ETAPA 3: formulário completo ─────────────────────── -->
                                         <StackPanel>
                                             <StackPanel.Style>
@@ -502,12 +489,6 @@
                                             </StackPanel.Style>
 
                                             <StackPanel Margin="0,0,0,16">
-                                                <TextBlock Text="Complete seu Cadastro" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                                <TextBlock Text="Token validado com sucesso! Defina seus dados finais de acesso." FontSize="13" Foreground="{DynamicResource CinzaColor}"/>
-                                            </StackPanel>
-
-                                            <TextBlock Text="E-mail Autorizado" Style="{StaticResource LabelStyle}" Foreground="{DynamicResource CinzaColor}"/>
-                                            <TextBox Text="{Binding Email, Mode=OneWay}" Style="{StaticResource InputStyle}" IsReadOnly="True" Background="#F1F5F9" Foreground="{DynamicResource CinzaColor}" Opacity="0.7" Focusable="False" Margin="0,0,0,10"/>
                                                 <TextBlock Text="Complete seu Cadastro" FontSize="22" FontWeight="Bold"
                                Foreground="#1E293B" Margin="0,0,0,4"/>
                                                 <TextBlock Text="Token validado. Defina seus dados de acesso ao sistema."
@@ -555,10 +536,6 @@
 
                                             <TextBlock Text="Senha" Style="{StaticResource LabelStyle}" Margin="0,6,0,0"/>
                                             <Grid x:Name="GridCamposSenhaCadastro" MinHeight="35" Margin="0,0,0,4">
-                                                <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="10,0,40,0" Height="40"/>
-                                                <TextBox x:Name="TxtSenhaVisivelCadastro" Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="10,0,40,0" Visibility="Collapsed" Height="40"/>
-                                                <Button x:Name="BtnRevelarSenhaCadastro" Command="{Binding RevelarSenhaCadastroCommand}" CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}" HorizontalAlignment="Right" Width="30" Height="30" Margin="0,0,6,0" Background="Transparent" BorderThickness="0">
-                                                    <iconPacks:PackIconMaterial Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                                 <PasswordBox x:Name="TxtSenhaCadastro"
                                  Style="{StaticResource PasswordStyle}"
                                  VerticalContentAlignment="Center"
@@ -604,7 +581,6 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </StackPanel.Style>
-
                                         <iconPacks:PackIconMaterial Kind="CheckCircle"
                                         Foreground="#16A34A"
                                         Width="64" Height="64"
@@ -628,3 +604,6 @@
         </Border>
     </Grid>
 </Window>
+
+                                        
+                   
