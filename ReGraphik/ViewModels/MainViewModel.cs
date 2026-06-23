@@ -92,6 +92,15 @@ namespace ReGraphik.ViewModels
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
             if (fotoSalva != null)
                 UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
+            
+            NavegarDashboardCommand = new RelayCommand(p => NavegarParaDashboard());
+            NavegarResiduosCommand = new RelayCommand(p => NavegarParaResiduos());
+            NavegarEstoqueCommand = new RelayCommand(p => NavegarParaEstoque());
+            NavegarMapaCommand = new RelayCommand(p => NavegarParaMapa());
+            NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
+            NavegarEsgCommand = new RelayCommand(p => NavegarParaEsg());
+            NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
+            SairCommand = new RelayCommand(p => ExecutarSair());
 
             _dashboardView = new DashboardControl(NomeUsuario);
             _residuosView = new ResiduosControl();
@@ -103,14 +112,7 @@ namespace ReGraphik.ViewModels
 
             _currentView = _dashboardView;
 
-            NavegarDashboardCommand = new RelayCommand(p => NavegarParaDashboard());
-            NavegarResiduosCommand = new RelayCommand(p => NavegarParaResiduos());
-            NavegarEstoqueCommand = new RelayCommand(p => NavegarParaEstoque());
-            NavegarMapaCommand = new RelayCommand(p => NavegarParaMapa());
-            NavegarRelatoriosCommand = new RelayCommand(p => NavegarParaRelatorios());
-            NavegarEsgCommand = new RelayCommand(p => NavegarParaEsg());
-            NavegarContaCommand = new RelayCommand(p => NavegarParaConta());
-            SairCommand = new RelayCommand(p => ExecutarSair());
+            
         }
 
         /// <summary>
@@ -121,7 +123,7 @@ namespace ReGraphik.ViewModels
         private void NavegarParaEstoque() => ExecutarNavegacao("Estoque", _estoqueView);
         private void NavegarParaMapa() => ExecutarNavegacao("Mapa", _mapaView);
         private void NavegarParaRelatorios() => ExecutarNavegacao("Relatorios", _relatoriosView);
-        private void NavegarParaEsg() => ExecutarNavegacao("ESG", _esgView);
+        private void NavegarParaEsg() => ExecutarNavegacao("Esg", _esgView);
         private void NavegarParaConta() => ExecutarNavegacao("Conta", _contaView);
 
         private void ExecutarNavegacao(string nomeBotao, object view)
