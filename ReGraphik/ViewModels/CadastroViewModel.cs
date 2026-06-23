@@ -15,65 +15,42 @@ namespace ReGraphik.ViewModels
 {
     public class CadastroViewModel : BaseViewModel
     {
-        /// <summary>
-        /// Instancia do serviço de autorização para lidar com a lógica de cadastro
-        /// </summary>
         private readonly IAutorizarService _autorizarService;
 
+        // serviço de convites direto no Firebase 
+        private readonly ConviteService _conviteService;
+
+        // campos 
         private string? _nome;
         private string? _cpf;
         private string? _email;
         private string? _login;
         private bool _ocupado;
         private bool _solicitacaoEnviada;
-
-        /// <summary>
-        /// Campo de mensagem de alerta
-        /// </summary>
-        private string _mensaNome;
-        private string _mensaCpf;
-        private string _mensaEmail;
-        private string _mensaLogin;
-        private string _mensaSenha;
-        private string _mensagemErroGeral;
-
-        /// <summary>
-        /// Segurança no cadastro
-        /// </summary>
-        private string _tokenDigitado;
         private bool _isTokenValido;
         private bool _ocupadoToken;
-        private string _mensagemErroToken;
-
-        private bool _exibirToken;
-
+        private string _tokenDigitado = string.Empty;
+        private string _mensaNome = string.Empty;
+        private string _mensaCpf = string.Empty;
+        private string _mensaEmail = string.Empty;
+        private string _mensaLogin = string.Empty;
+        private string _mensaSenha = string.Empty;
+        private string _mensagemErroGeral = string.Empty;
+        private string _mensagemErroToken = string.Empty;
         private bool _cadastroFinalizadoComSucesso;
+
+        // visibilidade das etapas
+        /// <summary>Etapa 1: campo de e-mail + botão "Solicitar Acesso".</summary>
         public bool ExibirSolicitacaoAcesso => !SolicitacaoEnviada;
+
+        /// <summary>Etapa 3: formulário completo de dados do usuário.</summary>
         public bool ExibirFormularioCompleto => IsTokenValido && !CadastroFinalizadoComSucesso;
 
-        public string Nome
-        {
-            get => _nome;
-            set { _nome = value; OnPropertyChanged(); }
-        }
-
-        public string CPF
-        {
-            get => _cpf;
-            set { _cpf = value; OnPropertyChanged(); }
-        }
-
-        public string Email
-        {
-            get => _email;
-            set { _email = value; OnPropertyChanged(); }
-        }
-
-        public string Login
-        {
-            get => _login;
-            set { _login = value; OnPropertyChanged(); }
-        }
+        // ── propriedades ─────────────────────────────────────────────────────
+        public string? Nome { get => _nome; set { _nome = value; OnPropertyChanged(); } }
+        public string? CPF { get => _cpf; set { _cpf = value; OnPropertyChanged(); } }
+        public string? Email { get => _email; set { _email = value; OnPropertyChanged(); } }
+        public string? Login { get => _login; set { _login = value; OnPropertyChanged(); } }
 
         public bool Ocupado
         {
@@ -81,89 +58,12 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Mensagens de Alertas
-        /// </summary>
-        public string MensaNome
-        {
-            get => _mensaNome;
-            set { _mensaNome = value; OnPropertyChanged(); }
-        }
-
-        public string MensaCpf
-        {
-            get => _mensaCpf;
-            set { _mensaCpf = value; OnPropertyChanged(); }
-        }
-
-        public string MensaEmail
-        {
-            get => _mensaEmail;
-            set { _mensaEmail = value; OnPropertyChanged(); }
-        }
-
-        public string MensaLogin
-        {
-            get => _mensaLogin;
-            set { _mensaLogin = value; OnPropertyChanged(); }
-        }
-
-        public string MensaSenha
-        {
-            get => _mensaSenha;
-            set { _mensaSenha = value; OnPropertyChanged(); }
-        }
-
-        public string MensagemErroGeral
-        {
-            get => _mensagemErroGeral;
-            set { _mensagemErroGeral = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Define se o token digitado foi validado com sucesso pela API.
-        /// </summary>
-        public bool IsTokenValido
-        {
-            get => _isTokenValido;
-            set
-            {
-                _isTokenValido = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ExibirFormularioCompleto));
-            }
-        }
-
-        /// <summary>
-        /// Token de segurança
-        /// </summary>
-        public string TokenDigitado
-        {
-            get => _tokenDigitado;
-            set { _tokenDigitado = value; OnPropertyChanged(nameof(TokenDigitado)); }
-        }
-
-        /// <summary>
-        /// Controla se o formulário deve ser liberado ou não
-        /// </summary>
         public bool OcupadoToken
         {
             get => _ocupadoToken;
             set { _ocupadoToken = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Exibe erro caso o token seja inválido
-        /// </summary>
-        public string MensagemErroToken
-        {
-            get => _mensagemErroToken;
-            set { _mensagemErroToken = value; OnPropertyChanged(nameof(MensagemErroToken)); }
-        }
-
-        /// <summary>
-        /// Solicita um token de acesso.
-        /// </summary>
         public bool SolicitacaoEnviada
         {
             get => _solicitacaoEnviada;
@@ -171,8 +71,18 @@ namespace ReGraphik.ViewModels
             {
                 _solicitacaoEnviada = value;
                 OnPropertyChanged();
-                // Dispara a atualização explícita de todas as regras de visibilidade
                 OnPropertyChanged(nameof(ExibirSolicitacaoAcesso));
+                OnPropertyChanged(nameof(ExibirFormularioCompleto));
+            }
+        }
+
+        public bool IsTokenValido
+        {
+            get => _isTokenValido;
+            set
+            {
+                _isTokenValido = value;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(ExibirFormularioCompleto));
             }
         }
@@ -188,68 +98,168 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        public bool ExibirToken
+        public string TokenDigitado
         {
-            get => _exibirToken;
-            set { _exibirToken = value; OnPropertyChanged(); }
+            get => _tokenDigitado;
+            set { _tokenDigitado = value; OnPropertyChanged(); }
         }
 
+        public string MensaNome { get => _mensaNome; set { _mensaNome = value; OnPropertyChanged(); } }
+        public string MensaCpf { get => _mensaCpf; set { _mensaCpf = value; OnPropertyChanged(); } }
+        public string MensaEmail { get => _mensaEmail; set { _mensaEmail = value; OnPropertyChanged(); } }
+        public string MensaLogin { get => _mensaLogin; set { _mensaLogin = value; OnPropertyChanged(); } }
+        public string MensaSenha { get => _mensaSenha; set { _mensaSenha = value; OnPropertyChanged(); } }
+        public string MensagemErroGeral { get => _mensagemErroGeral; set { _mensagemErroGeral = value; OnPropertyChanged(); } }
+        public string MensagemErroToken { get => _mensagemErroToken; set { _mensagemErroToken = value; OnPropertyChanged(); } }
+
+        // commands
         public ICommand SolicitarAcessoCommand { get; }
         public ICommand ValidarTokenCommand { get; }
         public ICommand FinalizarCadastroCommand { get; }
         public ICommand RevelarSenhaCadastroCommand { get; }
 
+        // construtor
         public CadastroViewModel(IAutorizarService? autorizarService = null)
         {
             _autorizarService = autorizarService ?? new AutorizarService();
+            _conviteService = new ConviteService();
 
-            // Vinculação dos comandos aos métodos internos
-            SolicitarAcessoCommand = new RelayCommand(async (_) => await SolicitarAcesso(), _ => !Ocupado);
-            ValidarTokenCommand = new RelayCommand(async (_) => await ValidarToken(), _ => !OcupadoToken);
-            FinalizarCadastroCommand = new RelayCommand(async (param) => await FinalizarCadastro(param), _ => !Ocupado);
-            RevelarSenhaCadastroCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
-
-            SolicitacaoEnviada = false;
-            IsTokenValido = false;
-            CadastroFinalizadoComSucesso = false;
-
-            MensagemErroToken = string.Empty;
-            TokenDigitado = string.Empty;
+            SolicitarAcessoCommand = new RelayCommand(async _ => await SolicitarAcessoAsync(), _ => !Ocupado);
+            ValidarTokenCommand = new RelayCommand(async _ => await ValidarTokenAsync(), _ => !OcupadoToken);
+            FinalizarCadastroCommand = new RelayCommand(async p => await FinalizarCadastroAsync(p), _ => !Ocupado);
+            RevelarSenhaCadastroCommand = new RelayCommand(p => AlternarVisibilidadeSenha(p));
         }
 
+        // ETAPA 1: verificar e-mail 
         /// <summary>
-        /// Método para cadastrar um novo usuário, que é chamado quando o comando de cadastro é acionado
+        /// Verifica APENAS se o e-mail informado possui um convite válido
+        /// pendente no Firebase. Não gera token — o Administrador já gerou.
+        /// Se houver convite válido, avança para a etapa 2 (digitação do token).
         /// </summary>
-        private async Task FinalizarCadastro(object parameter)
+        private async Task SolicitarAcessoAsync()
+        {
+            LimparMensagensErro();
+
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                MensaEmail = "O e-mail é obrigatório.";
+                return;
+            }
+
+            // Validação básica de formato
+            if (!Email.Contains('@') || !Email.Contains('.'))
+            {
+                MensaEmail = "Informe um endereço de e-mail válido.";
+                return;
+            }
+
+            try
+            {
+                Ocupado = true;
+
+                // Verifica no Firebase se existe pelo menos um convite
+                // para este e-mail que ainda não foi usado e não expirou.
+                bool temConvite = await _conviteService.ExisteConvitePendenteAsync(Email.Trim());
+
+                if (temConvite)
+                {
+                    // Avança para a etapa 2: digitar o token enviado pelo Administrador
+                    SolicitacaoEnviada = true;
+                    MensagemErroGeral = "E-mail localizado. Digite o token que o Administrador enviou a você.";
+                }
+                else
+                {
+                    // E-mail não tem convite — bloqueia sem dar informação útil a invasores
+                    MensaEmail = "Este e-mail não possui um convite de acesso válido. Entre em contato com o Administrador.";
+                }
+            }
+            catch
+            {
+                MensagemErroGeral = "Erro ao verificar acesso. Tente novamente.";
+            }
+            finally
+            {
+                Ocupado = false;
+            }
+        }
+
+        // ETAPA 2: validar token
+        /// <summary>
+        /// Valida o token digitado pelo usuário consultando o Firebase.
+        /// O token deve:
+        ///   • Existir no nó convites/
+        ///   • Pertencer ao e-mail informado na etapa 1
+        ///   • Estar dentro do prazo de validade (48h)
+        ///   • Não ter sido usado anteriormente
+        /// </summary>
+        private async Task ValidarTokenAsync()
+        {
+            MensagemErroToken = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(TokenDigitado))
+            {
+                MensagemErroToken = "Por favor, insira o token de ativação.";
+                return;
+            }
+
+            try
+            {
+                OcupadoToken = true;
+
+                bool valido = await _conviteService.ValidarTokenAsync(
+                    Email!.Trim(),
+                    TokenDigitado.Trim().ToUpper());
+
+                if (valido)
+                {
+                    IsTokenValido = true;
+                    MensagemErroToken = string.Empty;
+                    MensagemErroGeral = string.Empty;
+                }
+                else
+                {
+                    // Mensagem genérica — não revela o motivo específico da falha
+                    MensagemErroToken = "Token inválido, expirado ou já utilizado. Solicite um novo convite ao Administrador.";
+                }
+            }
+            catch
+            {
+                MensagemErroToken = "Falha na comunicação. Tente novamente.";
+            }
+            finally
+            {
+                OcupadoToken = false;
+            }
+        }
+
+        // ETAPA 3: finalizar cadastro
+        /// <summary>
+        /// Cria a conta do usuário na API após todas as validações passarem.
+        /// Ao finalizar, marca o token como usado no Firebase (uso único).
+        /// </summary>
+        private async Task FinalizarCadastroAsync(object parameter)
         {
             LimparMensagensErro();
             bool possuiErro = false;
-            string senhaCadastro = string.Empty;
+            string senha = string.Empty;
 
-            if (parameter is Grid gridCampos)
+            if (parameter is Grid grid)
             {
-                PasswordBox? passwordBox = null;
-                TextBox? textBoxVisivel = null;
-
-                foreach (var child in gridCampos.Children)
+                PasswordBox? pb = null;
+                TextBox? tb = null;
+                foreach (var child in grid.Children)
                 {
-                    if (child is PasswordBox pb) passwordBox = pb;
-                    else if (child is TextBox tb) textBoxVisivel = tb;
+                    if (child is PasswordBox p) pb = p;
+                    else if (child is TextBox t) tb = t;
                 }
-
-                if (passwordBox != null && textBoxVisivel != null)
-                {
-                    // Se o PasswordBox estiver visível, pega dele. Se não, pega do TextBox de texto aberto.
-                    senhaCadastro = passwordBox.Visibility == Visibility.Visible
-                        ? passwordBox.Password
-                        : textBoxVisivel.Text;
-                }
+                if (pb != null && tb != null)
+                    senha = pb.Visibility == Visibility.Visible ? pb.Password : tb.Text;
             }
 
-            // Validações de campos obrigatórios
             if (string.IsNullOrWhiteSpace(Nome)) { MensaNome = "O nome completo é obrigatório."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(Login)) { MensaLogin = "O login é obrigatório."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(senha)) { MensaSenha = "A senha é obrigatória."; possuiErro = true; }
 
-            // Validação de CPF: obrigatório e deve ser válido pelo algoritmo dos dígitos verificadores
             if (string.IsNullOrWhiteSpace(CPF))
             {
                 MensaCpf = "O CPF é obrigatório.";
@@ -261,35 +271,35 @@ namespace ReGraphik.ViewModels
                 possuiErro = true;
             }
 
-            if (string.IsNullOrWhiteSpace(Email)) { MensaEmail = "O e-mail é obrigatório."; possuiErro = true; }
-            if (string.IsNullOrWhiteSpace(Login)) { MensaLogin = "O campo login é obrigatório."; possuiErro = true; }
-            if (string.IsNullOrWhiteSpace(senhaCadastro)) { MensaSenha = "A senha é obrigatória."; possuiErro = true; }
-
             if (possuiErro) return;
 
             try
             {
                 Ocupado = true;
 
-                /// Formata o CPF no padrão 000.000.000-00 antes de enviar para a API
-                string cpfFormatado = ValidacaoCpfService.Formatar(CPF);
+                string cpfFormatado = ValidacaoCpfService.Formatar(CPF!);
 
-                /// Envia os dados definitivos e o token provisório para persistência na API
-                bool cadastrado = await _autorizarService.FinalizarCadastroAsync(Nome, cpfFormatado, Email, Login, senhaCadastro, TokenDigitado.Trim());
+                // Cria a conta na API com o e-mail já validado pelo convite
+                bool cadastrado = await _autorizarService.FinalizarCadastroAsync(
+                    Nome!, cpfFormatado, Email!, Login!, senha,
+                    TokenDigitado.Trim().ToUpper());
 
                 if (cadastrado)
                 {
+                    // Marca o token como usado — impede reuso imediato
+                    await _conviteService.MarcarComoUsadoAsync(TokenDigitado.Trim().ToUpper());
+
                     CadastroFinalizadoComSucesso = true;
-                    MensagemErroGeral = "Sua conta corporativa foi criada e ativada com sucesso!";
+                    MensagemErroGeral = "Conta criada com sucesso! Faça login para continuar.";
                 }
                 else
                 {
-                    MensagemErroGeral = "Erro ao finalizar o cadastro na API. Verifique os dados informados.";
+                    MensagemErroGeral = "Erro ao criar a conta. Verifique os dados e tente novamente.";
                 }
             }
-            catch (Exception)
+            catch
             {
-                MensagemErroGeral = "Erro ao conectar com a API.";
+                MensagemErroGeral = "Erro ao conectar com o servidor. Tente novamente.";
             }
             finally
             {
@@ -297,173 +307,44 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        /// <summary>
-        /// Envia apenas o E-mail corporativo do usuário para a fila de aprovação da API.
-        /// </summary>
-        /// <returns></returns>
-        private async Task SolicitarAcesso()
-        {
-            LimparMensagensErro();
-
-            if (string.IsNullOrWhiteSpace(Email))
-            {
-                MensaEmail = "O e-mail é obrigatório.";
-                return;
-            }
-
-            if (!Email.EndsWith("@regraphik.com.br", StringComparison.OrdinalIgnoreCase))
-            {
-                MensaEmail = "Somente e-mails corporativos da ReGraphik podem realizar cadastro.";
-                return;
-            }
-
-            try
-            {
-                Ocupado = true;
-                using (var client = new HttpClient())
-                {
-                    // Rota principal unificada do Passo 1 (Pública)
-                    string url = "https://webregraphik.runasp.net/api/Usuario";
-
-                    // Monta o objeto DTO contendo apenas o e-mail que a API espera
-                    var dadosSolicitacao = new { email = Email.Trim() };
-                    string jsonBody = JsonSerializer.Serialize(dadosSolicitacao);
-
-                    var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-                    var response = await client.PostAsync(url, content);
-                    string jsonResult = await response.Content.ReadAsStringAsync();
-
-                    var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Mapeia a mensagem vinda do servidor ("Solicitação processada com sucesso...")
-                        var resultado = JsonSerializer.Deserialize<RespostaToken>(jsonResult, opcoes);
-
-                        SolicitacaoEnviada = true;
-                        MensagemErroGeral = resultado?.Mensagem ?? "Solicitação enviada! Aguarde a liberação do seu token.";
-
-                        // Como estamos no Cenário B, o token NÃO vem na resposta do Usuário Comum.
-                        // O campo de Debug da tela só será preenchido quando o administrador gerar o token no Swagger/Painel.
-                        TokenDigitado = string.Empty;
-                        MensagemErroToken = "Aguardando liberação do administrador...";
-                        ExibirToken = true;
-                    }
-                    else
-                    {
-                        // Captura mensagens de validação vindas da API (Ex: "E-mail já está cadastrado")
-                        try
-                        {
-                            var erroApi = JsonSerializer.Deserialize<RespostaToken>(jsonResult, opcoes);
-                            MensagemErroGeral = erroApi?.Mensagem ?? "Erro ao processar requisição corporativa.";
-                        }
-                        catch
-                        {
-                            MensagemErroGeral = "E-mail já cadastrado ou domínio recusado.";
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MensagemErroGeral = ex.Message;
-            }
-            finally
-            {
-                Ocupado = false;
-            }
-        }
-
-        /// <summary>
-        /// Envia o token digitado pelo usuário para a API validar de forma assíncrona.
-        /// </summary>
-        private async Task ValidarToken()
-        {
-            MensagemErroToken = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(TokenDigitado))
-            {
-                MensagemErroToken = "Por favor, insira o token recebido.";
-                return;
-            }
-
-            try
-            {
-                OcupadoToken = true;
-                bool sucesso = await _autorizarService.ValidarTokenAsync(Email, TokenDigitado.Trim());
-
-                if (sucesso)
-                {
-                    // Ativa o ícone de Check com animação de sucesso no seu XAML
-                    IsTokenValido = true;
-                    LimparMensagensErro();
-                }
-                else
-                {
-                    MensagemErroToken = "Token incorreto ou tempo limite expirado.";
-                }
-            }
-            catch (Exception)
-            {
-                MensagemErroToken = "Falha na comunicação com o servidor de validação.";
-            }
-            finally
-            {
-                OcupadoToken = false;
-            }
-        }
-
+        // utilitários 
         private void AlternarVisibilidadeSenha(object parameter)
         {
-            // O parâmetro enviado pelo CommandParameter no XAML deve ser o Grid que envolve o PasswordBox e o TextBox
-            if (parameter is not Grid gridCampos) return;
+            if (parameter is not Grid grid) return;
 
-            PasswordBox passwordBox = null;
-            TextBox textBoxVisivel = null;
-            PackIconMaterial iconeOlho = null;
+            PasswordBox? pb = null;
+            TextBox? tb = null;
+            PackIconMaterial? icon = null;
 
-            foreach (var child in gridCampos.Children)
+            foreach (var child in grid.Children)
             {
-                if (child is PasswordBox pb) passwordBox = pb;
-                else if (child is TextBox tb) textBoxVisivel = tb;
-                else if (child is Button btn)
-                {
-                    if (btn.Content is PackIconMaterial icon)
-                        iconeOlho = icon;
-                    else if (btn.Template.FindName("IconeOlho", btn) is PackIconMaterial iconTemplate)
-                        iconeOlho = iconTemplate;
-                }
+                if (child is PasswordBox p) pb = p;
+                else if (child is TextBox t) tb = t;
+                else if (child is Button btn && btn.Content is PackIconMaterial ic) icon = ic;
             }
 
-            if (passwordBox == null || textBoxVisivel == null) return;
+            if (pb == null || tb == null) return;
 
-            if (passwordBox.Visibility == Visibility.Visible)
+            if (pb.Visibility == Visibility.Visible)
             {
-                textBoxVisivel.Text = passwordBox.Password;
-                passwordBox.Visibility = Visibility.Collapsed;
-                textBoxVisivel.Visibility = Visibility.Visible;
-
-                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.EyeOff;
+                tb.Text = pb.Password;
+                pb.Visibility = Visibility.Collapsed;
+                tb.Visibility = Visibility.Visible;
+                if (icon != null) icon.Kind = PackIconMaterialKind.EyeOff;
             }
             else
             {
-                passwordBox.Password = textBoxVisivel.Text;
-                textBoxVisivel.Visibility = Visibility.Collapsed;
-                passwordBox.Visibility = Visibility.Visible;
-
-                if (iconeOlho != null) iconeOlho.Kind = PackIconMaterialKind.Eye;
+                pb.Password = tb.Text;
+                tb.Visibility = Visibility.Collapsed;
+                pb.Visibility = Visibility.Visible;
+                if (icon != null) icon.Kind = PackIconMaterialKind.Eye;
             }
         }
 
         private void LimparMensagensErro()
         {
-            MensaNome = string.Empty;
-            MensaCpf = string.Empty;
-            MensaEmail = string.Empty;
-            MensaLogin = string.Empty;
-            MensaSenha = string.Empty;
-            MensagemErroGeral = string.Empty;
+            MensaNome = MensaCpf = MensaEmail = MensaLogin =
+            MensaSenha = MensagemErroGeral = MensagemErroToken = string.Empty;
         }
     }
 }

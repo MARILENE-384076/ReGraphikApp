@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ReGraphik.Views"
         mc:Ignorable="d"
         Title="Sugestões de Reaproveitamento" 
-        Height="440" Width="680"
+        Height="550" Width="900"
         Background="Transparent"
         AllowsTransparency="True"
         WindowStyle="None" 
@@ -68,21 +68,39 @@
                         <TextBlock Text="Ideias de Destinos Mapeadas no Sistema" FontWeight="Bold" Foreground="#1E40AF" FontSize="13"/>
                     </Border>
 
-                    <ListBox ItemsSource="{Binding SugestoesFiltradas}"
+                    <ListBox ItemsSource="{Binding SugestoesFiltradasView}"
                              DisplayMemberPath="DescricaoSugestao"
                              Background="White"
                              BorderBrush="#E2E8F0"
                              BorderThickness="1"
                              Padding="8"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             VirtualizingStackPanel.IsVirtualizing="True"
+                             VirtualizingStackPanel.VirtualizationMode="Recycling"
+                             ScrollViewer.CanContentScroll="True">
+
                         <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
+                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                                 <Setter Property="Padding" Value="12,10"/>
                                 <Setter Property="Margin" Value="0,3"/>
                                 <Setter Property="Background" Value="#F8FAFC"/>
                                 <Setter Property="BorderBrush" Value="#E2E8F0"/>
                                 <Setter Property="BorderThickness" Value="1"/>
-                                <Setter Property="Focusable" Value="False"/>
+                                <Setter Property="SnapsToDevicePixels" Value="True"/>
+
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F1F5F9"/>
+                                        <Setter Property="BorderBrush" Value="#CBD5E1"/>
+                                        <Setter Property="Cursor" Value="Hand"/>
+                                    </Trigger>
+
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#EFF6FF"/>
+                                        <Setter Property="BorderBrush" Value="#3B82F6"/>
+                                        <Setter Property="Foreground" Value="#1E40AF"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </ListBox.ItemContainerStyle>
                     </ListBox>

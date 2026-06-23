@@ -80,6 +80,7 @@
                                         <ComboBoxItem Content="ACM"/>
                                         <ComboBoxItem Content="MDF"/>
                                         <ComboBoxItem Content="Tecido"/>
+                                        <ComboBoxItem Content="Plástico"/>
                                         <ComboBoxItem Content="Outro"/>
                                     </ComboBox>
                                     <TextBlock Text="Selecione o tipo de material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
