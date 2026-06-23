@@ -15,7 +15,7 @@ namespace ReGraphik.Services
         }
 
         /// <summary>
-        /// Chamado pelo Administrador para gerar um convite
+        /// Chamado pelo Administrador para gerar convite
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
