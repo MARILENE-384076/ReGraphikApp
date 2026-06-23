@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ReGraphik.Views"
         mc:Ignorable="d"
         Title="Sugestões de Reaproveitamento" 
-        Height="440" Width="680"
+        Height="550" Width="900"
         Background="Transparent"
         AllowsTransparency="True"
         WindowStyle="None" 
