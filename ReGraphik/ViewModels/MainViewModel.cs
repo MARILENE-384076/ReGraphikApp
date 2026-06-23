@@ -107,8 +107,8 @@ namespace ReGraphik.ViewModels
             _estoqueView = new EstoqueReversoControl();
             _mapaView = new MapaControl();
             _relatoriosView = new RelatoriosControl();
-            _esgView = new EsgControl(usuario, irParaRelatorios);
             _contaView = new ContaControl(UsuarioLogado);
+            _esgView = new EsgControl(usuario, NavegarRelatoriosCommand);
 
             _currentView = _dashboardView;
 

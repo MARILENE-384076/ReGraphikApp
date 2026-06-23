@@ -413,7 +413,7 @@
                                     </Button.Effect>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="📊 " VerticalAlignment="Center" FontSize="14"/>
-                                        <TextBlock Text="Gerar Dados de Auditoria" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Gerar Relatório" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
