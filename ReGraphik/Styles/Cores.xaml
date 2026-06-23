@@ -2,29 +2,35 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Cores Sistema -->
-    <Color x:Key="AzulEscuroColor">#0d2a56</Color>
-    <Color x:Key="AzulMedioColor">#1649a2</Color>
-    <Color x:Key="AzulClaroColor">#3274ba</Color>
-    <Color x:Key="AzulMuitoClaroColor">#2f80ec</Color>
-    <Color x:Key="CinzaColor">#64748B</Color>
-
-    <!-- Cores ESG -->
-    <Color x:Key="VerdeEsgColor">#137333</Color>
-    <Color x:Key="VerdeFundoColor">#E6F4EA</Color>
-    <Color x:Key="LaranjaEsgColor">#D97706</Color>
-    <Color x:Key="RoxoEsgColor">#A855F7</Color>
-    <Color x:Key="RoxoFundoEsgColor">#F3E8FF</Color>
-    <Color x:Key="AzulEsgColor">#1A73E8</Color>
-    <Color x:Key="AzulFundoColor">#E8F0FE</Color>
+    <SolidColorBrush x:Key="AzulEscuroColor">#0d2a56</SolidColorBrush>
+    <SolidColorBrush x:Key="AzulMedioColor">#1649a2</SolidColorBrush>
+    <SolidColorBrush x:Key="AzulClaroColor">#3274ba</SolidColorBrush>
+    <SolidColorBrush x:Key="AzulMuitoClaroColor">#2f80ec</SolidColorBrush>
+    <SolidColorBrush x:Key="CinzaColor">#64748B</SolidColorBrush>
+    <SolidColorBrush x:Key="CinzaEscuroColor">#475569</SolidColorBrush>
+    <SolidColorBrush x:Key="VerdeMedioColor">#15803D</SolidColorBrush>
     
 
+    <!-- Cores ESG -->
+    <SolidColorBrush x:Key="VerdeEsgColor">#137333</SolidColorBrush>
+    <SolidColorBrush x:Key="VerdeFundoColor">#E6F4EA</SolidColorBrush>
+    <SolidColorBrush x:Key="LaranjaEsgColor">#D97706</SolidColorBrush>
+    <SolidColorBrush x:Key="RoxoEsgColor">#A855F7</SolidColorBrush>
+    <SolidColorBrush x:Key="RoxoFundoEsgColor">#F3E8FF</SolidColorBrush>
+    <SolidColorBrush x:Key="AzulEsgColor">#1A73E8</SolidColorBrush>
+    <SolidColorBrush x:Key="AzulFundoColor">#E8F0FE</SolidColorBrush>
+
+    <!-- Cores Alertas -->
+    <SolidColorBrush x:Key="VermelhoColor">#DC2626</SolidColorBrush>
+    <SolidColorBrush x:Key="VerdeColor">#16A34A</SolidColorBrush>
+    
     <!-- Cores Padrão -->
-    <Color x:Key="TextoPrincipalColor">#0F172A</Color>
+    <SolidColorBrush x:Key="TextoColor">#0F172A</SolidColorBrush>
+    <SolidColorBrush x:Key="TextoPadraoColor">#1E293B</SolidColorBrush>
+    <SolidColorBrush x:Key="TextoCinzaColor">#94A3B8</SolidColorBrush>
 
-    <SolidColorBrush x:Key="BrandGreen" Color="{StaticResource VerdeEsgColor}"/>
-    <SolidColorBrush x:Key="BrandGreenLight" Color="{StaticResource VerdeFundoColor}"/>
-
-    <SolidColorBrush x:Key="BrandBlue" Color="{StaticResource AzulEsgColor}"/>
-    <SolidColorBrush x:Key="TextPrimary" Color="{StaticResource TextoPrincipalColor}"/>
+    <!-- Cores Border -->
+    <SolidColorBrush x:Key="CinzaClaroColor">#CBD5E1</SolidColorBrush>
+    
 
 </ResourceDictionary>
