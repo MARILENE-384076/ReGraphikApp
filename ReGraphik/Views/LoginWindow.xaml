@@ -41,7 +41,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" 
-                        BorderBrush="#1649a2" 
+                        BorderBrush="{DynamicResource AzulMedioColor}" 
                         BorderThickness="1,1,0,1" 
                         CornerRadius="16,0,0,16"
                         ClipToBounds="True">
@@ -148,17 +148,17 @@
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
-                                        <iconPacks:PackIconMaterial Kind="Key" Foreground="#1649a2" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <iconPacks:PackIconMaterial Kind="Key" Foreground="{DynamicResource AzulMedioColor}" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         <TextBlock Text="Token de Cadastro Gerado" FontSize="15" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,0,0,16">
-                                        <TextBlock Text="Copie o token abaixo para validar o cadastro:" FontSize="12" Foreground="#64748B" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Copie o token abaixo para validar o cadastro:" FontSize="12" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,8"/>
                                         <TextBox Text="{Binding DataContext.TokenGeradoAlerta, ElementName=CadastroTab}" 
                                                  IsReadOnly="True" 
                                                  FontSize="18" 
                                                  FontWeight="Bold" 
-                                                 Foreground="#1649a2" 
+                                                 Foreground="{DynamicResource AzulMedioColor}" 
                                                  Background="#F1F5F9" 
                                                  BorderThickness="0" 
                                                  Padding="8,6" 
@@ -192,7 +192,7 @@
                                     <StackPanel Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                         <StackPanel Margin="0,0,0,24">
                                             <TextBlock Text="Faça Login" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Entre com suas credenciais para continuar." FontSize="13" Foreground="#64748B" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Entre com suas credenciais para continuar." FontSize="13" Foreground="{DynamicResource CinzaColor}" TextWrapping="Wrap"/>
                                         </StackPanel>
 
                                         <TextBlock Style="{StaticResource LabelStyle}">
@@ -275,7 +275,7 @@
                                                     Command="{Binding RevelarSenhaCommand}" 
                                                     CommandParameter="{Binding ElementName=GridCamposSenha}"
                                                     HorizontalAlignment="Right" Width="30" Height="30" Margin="0,0,6,0" Background="Transparent" BorderThickness="0">
-                                                <iconPacks:PackIconMaterial x:Name="IconeOlho" Kind="Eye" Foreground="#64748B" Width="16" Height="16"/>
+                                                <iconPacks:PackIconMaterial x:Name="IconeOlho" Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                             </Button>
                                         </Grid>
 
@@ -380,7 +380,7 @@
 
                                         <StackPanel Margin="0,0,0,24">
                                             <TextBlock Text="Validação de Acesso" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Insira seu e-mail corporativo para iniciar o processo de cadastro." FontSize="13" Foreground="#64748B"/>
+                                            <TextBlock Text="Insira seu e-mail corporativo para iniciar o processo de cadastro." FontSize="13" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
 
                                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
@@ -429,7 +429,7 @@
                                             </StackPanel.Style>
 
                                             <TextBlock Text="Validação de Segurança" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,10"/>
-                                            <TextBlock Text="Um token de ativação foi gerado. Insira o código abaixo para prosseguir." TextWrapping="Wrap" Foreground="#64748B" Margin="0,0,0,12"/>
+                                            <TextBlock Text="Um token de ativação foi gerado. Insira o código abaixo para prosseguir." TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,12"/>
 
                                             <TextBlock Text="{Binding MensagemErroGeral}" Foreground="#16A34A" FontSize="13" FontWeight="Medium" TextWrapping="Wrap" Margin="0,0,0,16" HorizontalAlignment="Left"/>
 
@@ -476,11 +476,11 @@
 
                                             <StackPanel Margin="0,0,0,16">
                                                 <TextBlock Text="Complete seu Cadastro" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                                <TextBlock Text="Token validado com sucesso! Defina seus dados finais de acesso." FontSize="13" Foreground="#64748B"/>
+                                                <TextBlock Text="Token validado com sucesso! Defina seus dados finais de acesso." FontSize="13" Foreground="{DynamicResource CinzaColor}"/>
                                             </StackPanel>
 
-                                            <TextBlock Text="E-mail Autorizado" Style="{StaticResource LabelStyle}" Foreground="#64748B"/>
-                                            <TextBox Text="{Binding Email, Mode=OneWay}" Style="{StaticResource InputStyle}" IsReadOnly="True" Background="#F1F5F9" Foreground="#64748B" Opacity="0.7" Focusable="False" Margin="0,0,0,10"/>
+                                            <TextBlock Text="E-mail Autorizado" Style="{StaticResource LabelStyle}" Foreground="{DynamicResource CinzaColor}"/>
+                                            <TextBox Text="{Binding Email, Mode=OneWay}" Style="{StaticResource InputStyle}" IsReadOnly="True" Background="#F1F5F9" Foreground="{DynamicResource CinzaColor}" Opacity="0.7" Focusable="False" Margin="0,0,0,10"/>
 
                                             <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
                                             <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputStyle}" Margin="0,0,0,4"/>
@@ -511,7 +511,7 @@
                                                 <PasswordBox x:Name="TxtSenhaCadastro" Style="{StaticResource PasswordStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="10,0,40,0" Height="40"/>
                                                 <TextBox x:Name="TxtSenhaVisivelCadastro" Style="{StaticResource InputStyle}" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Padding="10,0,40,0" Visibility="Collapsed" Height="40"/>
                                                 <Button x:Name="BtnRevelarSenhaCadastro" Command="{Binding RevelarSenhaCadastroCommand}" CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}" HorizontalAlignment="Right" Width="30" Height="30" Margin="0,0,6,0" Background="Transparent" BorderThickness="0">
-                                                    <iconPacks:PackIconMaterial Kind="Eye" Foreground="#64748B" Width="16" Height="16"/>
+                                                    <iconPacks:PackIconMaterial Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                                 </Button>
                                             </Grid>
                                             <TextBlock Style="{StaticResource LabelStyle}" Text="{Binding MensaSenha}" Margin="0,0,0,16" Foreground="DarkRed"/>

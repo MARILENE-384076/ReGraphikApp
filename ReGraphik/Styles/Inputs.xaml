@@ -31,7 +31,7 @@
     <Style x:Key="TabStyle" TargetType="TabItem">
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#64748B"/>
+        <Setter Property="Foreground" Value="{DynamicResource CinzaColor}"/>
         <Setter Property="Padding" Value="20,10"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -103,7 +103,7 @@
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Grid Background="Transparent" Margin="0,0,8,0">
-                                                <TextBlock Text="📅" FontSize="14" Foreground="#64748B" 
+                                                <TextBlock Text="📅" FontSize="14" Foreground="{DynamicResource CinzaColor}" 
                                                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </Grid>
                                         </ControlTemplate>

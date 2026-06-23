@@ -51,7 +51,7 @@
                               VerticalContentAlignment="Center"
                               Padding="10,0"/>
 
-                    <TextBlock Margin="2,6,0,0" FontSize="12" Foreground="#64748B">
+                    <TextBlock Margin="2,6,0,0" FontSize="12" Foreground="{DynamicResource CinzaColor}">
                         <Run Text="Especificação: "/>
                         <Run Text="{Binding ResiduoSelecionado.Especificacao, FallbackValue='Nenhum selecionado'}" FontWeight="Medium" Foreground="#334155"/>
                         <Run Text=" — Condição: "/>

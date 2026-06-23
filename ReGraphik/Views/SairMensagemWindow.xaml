@@ -64,7 +64,7 @@
 
                         <TextBlock Text="Você realmente deseja encerrar sua sessão atual e voltar para a tela de login?"
                                    FontSize="14" 
-                                   Foreground="#64748B" 
+                                   Foreground="{DynamicResource CinzaColor}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,6,0,0" 
                                    LineHeight="20"
@@ -83,7 +83,7 @@
                             Background="White" 
                             BorderBrush="#CBD5E1"
                             BorderThickness="1"
-                            Foreground="#64748B" 
+                            Foreground="{DynamicResource CinzaColor}" 
                             FontWeight="SemiBold" 
                             Cursor="Hand"
                             Click="BtnCancelar_Click"/>
@@ -93,7 +93,7 @@
                             Height="38" 
                             Width="100"
                             Style="{StaticResource RoundedButtonStyle}"
-                            Background="#1649a2" 
+                            Background="{DynamicResource AzulMedioColor}" 
                             Foreground="White" 
                             FontWeight="SemiBold" 
                             BorderThickness="0" 

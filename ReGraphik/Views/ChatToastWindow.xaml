@@ -55,7 +55,7 @@
             <!-- Ícone -->
             <Border Grid.Column="0"
                     Width="40" Height="40"
-                    Background="#1649a2"
+                    Background="{DynamicResource AzulMedioColor}"
                     CornerRadius="20"
                     Margin="0,0,12,0">
                 <iconPacks:PackIconMaterial Kind="MessageText"
@@ -74,7 +74,7 @@
                            TextTrimming="CharacterEllipsis"/>
                 <TextBlock x:Name="TxtPreview"
                            FontSize="12"
-                           Foreground="#64748B"
+                           Foreground="{DynamicResource CinzaColor}"
                            TextTrimming="CharacterEllipsis"
                            Margin="0,2,0,0"/>
             </StackPanel>

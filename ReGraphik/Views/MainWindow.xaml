@@ -38,8 +38,8 @@
         <Border>
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                    <GradientStop Color="#3274ba" Offset="0.0"/>
-                    <GradientStop Color="#1649a2" Offset="0.5"/>
+                    <GradientStop Color="{DynamicResource AzulClaroColor}" Offset="0.0"/>
+                    <GradientStop Color="{DynamicResource AzulMedioColor}" Offset="0.5"/>
                     <GradientStop Color="#1E40AF" Offset="1.0"/>
                 </LinearGradientBrush>
             </Border.Background>

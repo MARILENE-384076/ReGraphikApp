@@ -52,7 +52,7 @@
 
         
         <Style x:Key="BtnEnviarStyle" TargetType="Button">
-            <Setter Property="Background"      Value="#1649a2"/>
+            <Setter Property="Background"      Value="{DynamicResource AzulMedioColor}"/>
             <Setter Property="Foreground"      Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Width"           Value="40"/>
@@ -260,7 +260,7 @@
 
                                                     <Border Grid.Column="0"
                                                             Width="40" Height="40"
-                                                            Background="#1649a2" CornerRadius="20"
+                                                            Background="{DynamicResource AzulMedioColor}" CornerRadius="20"
                                                             HorizontalAlignment="Left">
                                                         <TextBlock Text="{Binding Iniciais}"
                                                                    Foreground="White" FontWeight="Bold"
@@ -275,7 +275,7 @@
                                                                    Foreground="#1E293B"
                                                                    TextTrimming="CharacterEllipsis"/>
                                                         <TextBlock Text="{Binding UltimaMensagem}"
-                                                                   FontSize="12" Foreground="#64748B"
+                                                                   FontSize="12" Foreground="{DynamicResource CinzaColor}"
                                                                    TextTrimming="CharacterEllipsis"/>
                                                     </StackPanel>
 
@@ -338,7 +338,7 @@
                                                                Converter={StaticResource AlinhamentoConv}}">
                                             
                                             <TextBlock Text="{Binding RemetenteNome}"
-                                                       FontSize="11" Foreground="#64748B"
+                                                       FontSize="11" Foreground="{DynamicResource CinzaColor}"
                                                        Margin="4,0,0,2">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
@@ -482,7 +482,7 @@
                                         <Button HorizontalAlignment="Right"
                                                 Style="{StaticResource BtnIconeStyle}"
                                                 Command="{Binding FecharNovaConversaCommand}">
-                                            <iconPacks:PackIconMaterial Kind="Close" Width="14" Height="14" Foreground="#64748B"/>
+                                            <iconPacks:PackIconMaterial Kind="Close" Width="14" Height="14" Foreground="{DynamicResource CinzaColor}"/>
                                         </Button>
                                     </Grid>
                                 </Border>
@@ -508,7 +508,7 @@
 
                                                         <Border Grid.Column="0"
                                                                 Width="36" Height="36"
-                                                                Background="#1649a2" CornerRadius="18">
+                                                                Background="{DynamicResource AzulMedioColor}" CornerRadius="18">
                                                             <TextBlock Text="{Binding Iniciais}"
                                                                        Foreground="White" FontWeight="Bold"
                                                                        FontSize="13"

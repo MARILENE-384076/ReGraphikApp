@@ -189,7 +189,7 @@
                             Command="{Binding LimparFiltrosCommand}"
                             Width="90" Height="38"
                             Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
-                            Foreground="#64748B" FontWeight="SemiBold" VerticalAlignment="Bottom">
+                            Foreground="{DynamicResource CinzaColor}" FontWeight="SemiBold" VerticalAlignment="Bottom">
                             <Button.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="6"/>
@@ -200,7 +200,7 @@
                         <Button Grid.Column="8" Content="Gerar Relatório"
                             Command="{Binding GerarRelatorioCommand}"
                             Width="140" Height="38"
-                            Background="#1649a2" BorderThickness="0"
+                            Background="{DynamicResource AzulMedioColor}" BorderThickness="0"
                             Foreground="White" FontWeight="SemiBold" VerticalAlignment="Bottom">
                             <Button.Resources>
                                 <Style TargetType="Border">
@@ -221,7 +221,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Background="#0d2a56" CornerRadius="12" Padding="20" Height="100" Margin="0,0,12,0">
+                <Border Grid.Column="0" Background="{DynamicResource AzulEscuroColor}" CornerRadius="12" Padding="20" Height="100" Margin="0,0,12,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
@@ -231,7 +231,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="1" Background="#1649a2" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
+                <Border Grid.Column="1" Background="{DynamicResource AzulMedioColor}" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
@@ -241,7 +241,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="2" Background="#3274ba" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
+                <Border Grid.Column="2" Background="{DynamicResource AzulClaroColor}" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
@@ -251,7 +251,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="3" Background="#2f80ec" CornerRadius="12" Padding="20" Height="100" Margin="12,0,0,0">
+                <Border Grid.Column="3" Background="{DynamicResource AzulMuitoClaroColor}" CornerRadius="12" Padding="20" Height="100" Margin="12,0,0,0">
                     <Border.Effect>
                         <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
                     </Border.Effect>
@@ -295,8 +295,8 @@
                                 IsEnabled="{Binding PodeExportar}"
                                 Width="130" Height="36"
                                 Background="White"
-                                BorderBrush="#1649a2" BorderThickness="1"
-                                Foreground="#1649a2" FontWeight="SemiBold">
+                                BorderBrush="{DynamicResource AzulMedioColor}" BorderThickness="1"
+                                Foreground="{DynamicResource AzulMedioColor}" FontWeight="SemiBold">
                                 <Button.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="6"/>
@@ -363,7 +363,7 @@
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="12,0,0,0"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
-                                        <Setter Property="Foreground" Value="#64748B"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource CinzaColor}"/>
                                         <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
@@ -421,7 +421,7 @@
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="VerticalAlignment" Value="Center"/>
-                                        <Setter Property="Foreground" Value="#64748B"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource CinzaColor}"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>

@@ -172,7 +172,7 @@
         <Grid Grid.Row="0" Margin="0,0,0,32">
             <StackPanel>
                 <TextBlock Text="Painel de Impacto e Diretrizes ESG" FontSize="26" FontWeight="Bold" Foreground="#0F172A"/>
-                <TextBlock Text="Monitore indicadores, gerencie a conformidade corporativa e acelere sua certificação ambiental." FontSize="13" Foreground="#64748B" Margin="0,6,0,0"/>
+                <TextBlock Text="Monitore indicadores, gerencie a conformidade corporativa e acelere sua certificação ambiental." FontSize="13" Foreground="{DynamicResource CinzaColor}" Margin="0,6,0,0"/>
             </StackPanel>
 
             <Button Style="{StaticResource ModernButtonStyle}" HorizontalAlignment="Right" Command="{Binding ExportarPdfCommand}" Height="42" Padding="20,0" Background="#1E40AF" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center">
@@ -217,7 +217,7 @@
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="Ambiental" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
-                                            <TextBlock Text="Impacto e Circularidade" FontSize="12" Foreground="#64748B"/>
+                                            <TextBlock Text="Impacto e Circularidade" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
                                     </StackPanel>
                                     <Border Background="#E6F4EA" CornerRadius="10" Padding="8,2" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -255,7 +255,7 @@
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="Social" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
-                                            <TextBlock Text="Cadeia Produtiva" FontSize="12" Foreground="#64748B"/>
+                                            <TextBlock Text="Cadeia Produtiva" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
                                     </StackPanel>
                                     <Border Background="#E8F0FE" CornerRadius="10" Padding="8,2" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -293,7 +293,7 @@
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="Governança" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
-                                            <TextBlock Text="Rastreabilidade" FontSize="12" Foreground="#64748B"/>
+                                            <TextBlock Text="Rastreabilidade" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
                                     </StackPanel>
                                     <Border Background="#F3E8FF" CornerRadius="10" Padding="8,2" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -335,7 +335,7 @@
                                 </Border>
                                 <StackPanel VerticalAlignment="Center" Margin="14,0,0,0">
                                     <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO" FontSize="18" FontWeight="Bold" Foreground="#0F172A"/>
-                                    <TextBlock Text="Caminho prático para homologação de sustentabilidade da sua empresa" FontSize="12" Foreground="#64748B"/>
+                                    <TextBlock Text="Caminho prático para homologação de sustentabilidade da sua empresa" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -354,7 +354,7 @@
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
                                         <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Gere o Relatório Comprobatório"/>
-                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Exporte o PDF consolidado de movimentações na aba de Relatórios."/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Exporte o PDF consolidado de movimentações na aba de Relatórios."/>
                                     </StackPanel>
                                 </Grid>
 
@@ -368,7 +368,7 @@
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
                                         <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Acesse o Portal do INMETRO"/>
-                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Identifique um Organismo de Certificação Ambiental (OCA) credenciado."/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Identifique um Organismo de Certificação Ambiental (OCA) credenciado."/>
                                     </StackPanel>
                                 </Grid>
 
@@ -382,7 +382,7 @@
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
                                         <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Auditoria Documental"/>
-                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Apresente os dados do sistema ReGraphik como prova de destino correto."/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Apresente os dados do sistema ReGraphik como prova de destino correto."/>
                                     </StackPanel>
                                 </Grid>
 
@@ -396,7 +396,7 @@
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
                                         <TextBlock FontWeight="SemiBold" Foreground="#D97706" FontSize="13" Text="Homologação e Certificado"/>
-                                        <TextBlock TextWrapping="Wrap" Foreground="#64748B" FontSize="12" Text="Sua empresa inserida formalmente no sistema nacional Certifiq."/>
+                                        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Sua empresa inserida formalmente no sistema nacional Certifiq."/>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
