@@ -52,14 +52,14 @@
                             Style="{StaticResource RoundedButtonStyle}"
                             Command="{Binding LimparFiltrosCommand}" Height="38" Width="100"
                             Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
-                            Foreground="#64748B" FontWeight="SemiBold" Cursor="Hand" 
+                            Foreground="{DynamicResource CinzaColor}" FontWeight="SemiBold" Cursor="Hand" 
                             Margin="0,0,10,0" />
 
                         <Button
                             Content="Filtrar"
                             Style="{StaticResource RoundedButtonStyle}"
                             Command="{Binding FiltrarCommand}" Height="38" Width="100"
-                            Background="#1649a2" Foreground="White" FontWeight="SemiBold" 
+                            Background="{DynamicResource AzulMedioColor}" Foreground="White" FontWeight="SemiBold" 
                             BorderThickness="0" Cursor="Hand" />
 
                     </StackPanel>
@@ -275,17 +275,17 @@
                                         <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,12">
                                             <StackPanel>
                                                 <Grid Margin="0,0,0,6">
-                                                    <TextBlock Text="Origem:" Foreground="#64748B" FontSize="12"/>
+                                                    <TextBlock Text="Origem:" Foreground="{DynamicResource CinzaColor}" FontSize="12"/>
                                                     <TextBlock Text="{Binding Origem}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
                                                 </Grid>
 
                                                 <Grid Margin="0,0,0,6">
-                                                    <TextBlock Text="Quantidade:" Foreground="#64748B" FontSize="12"/>
+                                                    <TextBlock Text="Quantidade:" Foreground="{DynamicResource CinzaColor}" FontSize="12"/>
                                                     <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="#1E293B" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
                                                 </Grid>
 
                                                 <Grid>
-                                                    <TextBlock Text="Condição:" Foreground="#64748B" FontSize="12"/>
+                                                    <TextBlock Text="Condição:" Foreground="{DynamicResource CinzaColor}" FontSize="12"/>
                                                     <TextBlock Text="{Binding Condicao}" Foreground="#334155" FontSize="12" FontWeight="Medium" HorizontalAlignment="Right" MaxWidth="150" TextTrimming="CharacterEllipsis"/>
                                                 </Grid>
                                             </StackPanel>
@@ -296,7 +296,7 @@
                                         <Grid Grid.Row="3">
                                             <StackPanel VerticalAlignment="Center">
                                                 <TextBlock Text="Cadastro" Foreground="#94A3B8" FontSize="10"/>
-                                                <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="#64748B" FontSize="12" FontWeight="Medium"/>
+                                                <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="{DynamicResource CinzaColor}" FontSize="12" FontWeight="Medium"/>
                                             </StackPanel>
 
                                             <Button Content="💡 Sugestões"

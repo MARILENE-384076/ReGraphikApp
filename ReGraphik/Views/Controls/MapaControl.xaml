@@ -31,18 +31,18 @@
 
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                     <TextBlock Text="Mapa de Pontos de Coleta" FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
-                    <TextBlock Text="Visualize os pontos de coleta de resíduos no mapa" FontSize="12" Foreground="#64748B" Margin="0,3,0,0"/>
+                    <TextBlock Text="Visualize os pontos de coleta de resíduos no mapa" FontSize="12" Foreground="{DynamicResource CinzaColor}" Margin="0,3,0,0"/>
                 </StackPanel>
 
                 <!-- Área de busca -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Buscar cidade:" FontSize="13" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBlock Text="Buscar cidade:" FontSize="13" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                     <Border Background="#F8FAFC" CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1">
                         <TextBox x:Name="TxtCidade" Text="{Binding Cidade, UpdateSourceTrigger=PropertyChanged}" Width="160" Height="36"
                              Background="Transparent" BorderThickness="0" Padding="10,0" FontSize="13" VerticalContentAlignment="Center"/>
                     </Border>
                     <Button Content="Buscar" Command="{Binding BuscarCommand}"
-                        Height="36" Width="80" Margin="8,0,0,0" Background="#1649a2" Foreground="White"
+                        Height="36" Width="80" Margin="8,0,0,0" Background="{DynamicResource AzulMedioColor}" Foreground="White"
                         BorderThickness="0" Cursor="Hand" FontSize="13">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
@@ -129,7 +129,7 @@
                                                        TextWrapping="Wrap"/>
                                                 <TextBlock Text="{Binding Cidade}" 
                                                        FontSize="11" 
-                                                       Foreground="#64748B" 
+                                                       Foreground="{DynamicResource CinzaColor}" 
                                                        Margin="0,3,0,0" 
                                                        TextWrapping="Wrap"/>
 

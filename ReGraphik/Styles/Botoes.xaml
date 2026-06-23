@@ -4,7 +4,7 @@
     <!-- Estilos de Botões -->
 
     <Style x:Key="BtnPrimaryStyle" TargetType="Button">
-        <Setter Property="Background" Value="#1649a2"/>
+        <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -32,9 +32,9 @@
 
     <Style x:Key="BtnSecondaryStyle" TargetType="Button">
         <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="#1649a2"/>
+        <Setter Property="Foreground" Value="{DynamicResource AzulMedioColor}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="BorderBrush" Value="#1649a2"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AzulMedioColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Height" Value="40"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -59,7 +59,7 @@
 
     <Style x:Key="BtnPrimario" TargetType="Button">
         <Setter Property="Height" Value="44"/>
-        <Setter Property="Background" Value="#1649a2"/>
+        <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="Bold"/>
@@ -73,7 +73,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#1649a2"/>
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource AzulMedioColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -171,7 +171,7 @@
 
     <Style x:Key="BtnTooltip" TargetType="ToolTip">
         <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="#1649a2"/>
+        <Setter Property="Foreground" Value="{DynamicResource AzulMedioColor}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="12,6"/>

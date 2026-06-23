@@ -597,7 +597,7 @@
                                 </Button>
 
                                 <Button x:Name="BtnSalvar" Command="{Binding SalvarResiduoCommand}" Content="Salvar Resíduo"
-                                Width="140" Height="40" Background="#1649a2" BorderThickness="0" 
+                                Width="140" Height="40" Background="{DynamicResource AzulMedioColor}" BorderThickness="0" 
                                 Foreground="White" FontWeight="SemiBold">
                                     <Button.Resources>
                                         <Style TargetType="Border">
