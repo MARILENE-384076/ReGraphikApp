@@ -1,6 +1,7 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
 using Newtonsoft.Json;
+using ReGraphik.Models;
 
 namespace ReGraphik.Services
 {
@@ -91,7 +92,11 @@ namespace ReGraphik.Services
                 .PutAsync(true);
         }
 
+        /// <summary>
         /// Gera token de 8 caracteres sem caracteres ambiguos (0,O,I,1)
+        /// </summary>
+        /// <param name="tamanho"></param>
+        /// <returns></returns>
         private static string GerarToken(int tamanho)
         {
             const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -100,13 +105,6 @@ namespace ReGraphik.Services
             for (int i = 0; i < tamanho; i++)
                 c[i] = chars[rng.Next(chars.Length)];
             return new string(c);
-        }
-
-        private class ConviteFirebase
-        {
-            [JsonProperty("email")] public string Email { get; set; } = "";
-            [JsonProperty("expira")] public string Expira { get; set; } = "";
-            [JsonProperty("usado")] public bool Usado { get; set; }
         }
     }
 }
