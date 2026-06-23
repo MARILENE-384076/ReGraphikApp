@@ -41,12 +41,12 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold" Foreground="#64748B" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center"/>
 
                         <Button Grid.Column="1" Command="{Binding AtualizarEstatisticasCommand}"
                               Background="Transparent" BorderThickness="0" Cursor="Hand"
                               ToolTip="Atualizar estatísticas" Width="28" Height="28">
-                            <TextBlock Text="↻" FontSize="18" Foreground="#64748B" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                            <TextBlock Text="↻" FontSize="18" Foreground="{DynamicResource CinzaColor}" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
                                 <TextBlock.RenderTransform>
                                     <RotateTransform Angle="0"/>
                                 </TextBlock.RenderTransform>
@@ -89,33 +89,33 @@
                         <!-- Card 1 -->
                         <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="16">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.03" Direction="270"/>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="Black" Opacity="0.03" Direction="270"/>
                             </Border.Effect>
                             <StackPanel>
-                                <TextBlock Text="Resíduos Cadastrados" FontSize="12" Foreground="#64748B" Margin="0,0,0,6" FontWeight="Medium"/>
-                                <TextBlock Text="{Binding TotalResiduos}" FontSize="24" FontWeight="Bold" Foreground="#1E293B"/>
+                                <TextBlock Text="Resíduos Cadastrados" FontSize="12" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,6" FontWeight="Medium"/>
+                                <TextBlock Text="{Binding TotalResiduos}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Card 2 -->
                         <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="16">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.03" Direction="270"/>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="Black" Opacity="0.03" Direction="270"/>
                             </Border.Effect>
                             <StackPanel>
-                                <TextBlock Text="Reaproveitados" FontSize="12" Foreground="#16A34A" Margin="0,0,0,6" FontWeight="Medium"/>
-                                <TextBlock Text="{Binding TotalReaproveitados}" FontSize="24" FontWeight="Bold" Foreground="#1649A2"/>
+                                <TextBlock Text="Reaproveitados" FontSize="12" Foreground="{DynamicResource VerdeColor}" Margin="0,0,0,6" FontWeight="Medium"/>
+                                <TextBlock Text="{Binding TotalReaproveitados}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource VerdeColor}"/>
                             </StackPanel>
                         </Border>
 
                         <!-- Card 3 -->
                         <Border Grid.Column="4" Background="White" CornerRadius="10" Padding="16">
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="#000000" Opacity="0.03" Direction="270"/>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="1" Color="Black" Opacity="0.03" Direction="270"/>
                             </Border.Effect>
                             <StackPanel>
-                                <TextBlock Text="Valor Economizado" FontSize="12" Foreground="#1649A2" Margin="0,0,0,6" FontWeight="Medium"/>
-                                <TextBlock Text="{Binding ValorEconomico}" FontSize="24" FontWeight="Bold" Foreground="#1649A2"/>
+                                <TextBlock Text="Valor Economizado" FontSize="12" Foreground="{DynamicResource AzulMedioColor}" Margin="0,0,0,6" FontWeight="Medium"/>
+                                <TextBlock Text="{Binding ValorEconomico}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AzulMedioColor}"/>
                             </StackPanel>
                         </Border>
                     </Grid>
@@ -124,11 +124,11 @@
                 <!-- Bloco do Formulário Principal -->
                 <Border Background="White" CornerRadius="12" Padding="24" Margin="0,0,0,24" Height="537">
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="15" ShadowDepth="1" Color="#000000" Opacity="0.04" Direction="270"/>
+                        <DropShadowEffect BlurRadius="15" ShadowDepth="1" Color="Black" Opacity="0.04" Direction="270"/>
                     </Border.Effect>
                     <StackPanel Margin="0,0,0,-17">
                         <!-- Informações Pessoais -->
-                        <TextBlock Text="INFORMAÇÕES PESSOAIS" FontSize="11" FontWeight="Bold" Foreground="#64748B" Margin="0,0,0,20"/>
+                        <TextBlock Text="INFORMAÇÕES PESSOAIS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,20"/>
 
                         <!-- Nome + Login -->
                         <Grid Margin="0,0,0,16">
@@ -159,8 +159,8 @@
 
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="CPF" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
-                                <TextBox Text="{Binding CPF}" Style="{StaticResource InputStyle}" IsReadOnly="True" Background="#F1F5F9" Foreground="#94A3B8" BorderBrush="#E2E8F0"/>
-                                <TextBlock Text="Não editável" FontSize="11" Foreground="#94A3B8" Margin="2,4,0,0"/>
+                                <TextBox Text="{Binding CPF}" Style="{StaticResource InputStyle}" IsReadOnly="True" Foreground="{DynamicResource TextoCinzaColor}"/>
+                                <TextBlock Text="Não editável" FontSize="11" Foreground="{DynamicResource TextoCinzaColor}" Margin="2,4,0,0"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2">
@@ -176,24 +176,24 @@
                                     </b:Interaction.Triggers>
                                 </TextBox>
                                 <StackPanel Orientation="Horizontal" Margin="2,4,0,0" Visibility="{Binding MensagemErroEmail, Converter={StaticResource StringToVisibilityConverter}}">
-                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="12" Height="12" Foreground="#DC2626" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                    <TextBlock Text="{Binding MensagemErroEmail}" Foreground="#DC2626" FontSize="11" VerticalAlignment="Center"/>
+                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="12" Height="12" Foreground="{DynamicResource VermelhoColor}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                    <TextBlock Text="{Binding MensagemErroEmail}" Foreground="{DynamicResource VermelhoColor}" FontSize="11" VerticalAlignment="Center"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
 
-                        <Separator Background="#F1F5F9" Margin="0,4,0,20"/>
+                        <Separator Background="White" Margin="0,4,0,20"/>
 
                         <!-- Segurança -->
                         <StackPanel Margin="0,0,0,24">
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
-                                <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold" Foreground="#64748B" VerticalAlignment="Center"/>
-                                <TextBlock Text=" — ALTERAR SENHA" FontSize="11" FontWeight="Bold" Foreground="#1649A2" VerticalAlignment="Center"/>
+                                <TextBlock Text="SEGURANÇA" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center"/>
+                                <TextBlock Text=" — ALTERAR SENHA" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource AzulMedioColor}" VerticalAlignment="Center"/>
                             </StackPanel>
 
                             <TextBlock Text="Nova Senha" Style="{StaticResource LabelStyle}" Margin="0,0,0,6"/>
                             <PasswordBox x:Name="TxtSenha" Style="{StaticResource PasswordStyle}" Margin="0,0,0,6"/>
-                            <TextBlock Text="Deixe em branco para manter a senha atual corporativa." FontSize="11" Foreground="#94A3B8" Margin="2,0,0,0"/>
+                            <TextBlock Text="Deixe em branco para manter a senha atual corporativa." FontSize="11" Foreground="{DynamicResource TextoCinzaColor}" Margin="2,0,0,0"/>
                         </StackPanel>
 
                         <!-- Cancelar e Salvar -->
@@ -205,8 +205,8 @@
                             </Grid.ColumnDefinitions>
 
                             <Button Grid.Column="0" Content="Cancelar" Height="40" HorizontalAlignment="Stretch"
-                                    Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
-                                    Foreground="#64748B" FontWeight="SemiBold" FontSize="13"
+                                    Background="White" BorderBrush="{DynamicResource CinzaClaroColor}" BorderThickness="1"
+                                    Foreground="{DynamicResource CinzaColor}" FontWeight="SemiBold" FontSize="13"
                                     Command="{Binding CancelarCommand}" Cursor="Hand">
                                 <Button.Resources>
                                     <Style TargetType="Border">
@@ -216,7 +216,7 @@
                             </Button>
 
                             <Button Grid.Column="2" Content="Salvar Alterações" Height="40" HorizontalAlignment="Stretch"
-                                    Background="#1649A2" BorderThickness="0"
+                                    Background="{DynamicResource AzulMedioColor}" BorderThickness="0"
                                     Foreground="White" FontWeight="SemiBold" FontSize="13"
                                     Command="{Binding SalvarCommand}"
                                     CommandParameter="{Binding ElementName=TxtSenha}" Cursor="Hand">
@@ -230,12 +230,12 @@
                         <!-- Inline Feedback Messages -->
                         <StackPanel HorizontalAlignment="Center" Margin="0,20,0,16">
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,4" Visibility="{Binding MensagemSucesso, Converter={StaticResource StringToVisibilityConverter}}">
-                                <iconPacks:PackIconMaterial Kind="CheckCircleOutline" Width="14" Height="14" Foreground="#16A34A" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                <TextBlock Text="{Binding MensagemSucesso}" Foreground="#16A34A" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Kind="CheckCircleOutline" Width="14" Height="14" Foreground="{DynamicResource VerdeColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding MensagemSucesso}" Foreground="{DynamicResource VerdeColor}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Visibility="{Binding MensagemErroGeral, Converter={StaticResource StringToVisibilityConverter}}">
-                                <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="14" Height="14" Foreground="#DC2626"/>
-                                <TextBlock Text="{Binding MensagemErroGeral}" Foreground="#DC2626" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="14" Height="14" Foreground="{DynamicResource VermelhoColor}"/>
+                                <TextBlock Text="{Binding MensagemErroGeral}" Foreground="{DynamicResource VermelhoColor}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -254,7 +254,7 @@
                     <StackPanel>
                         <!-- Círculo de Foto -->
                         <Grid Width="140" Height="140" HorizontalAlignment="Center" Margin="0,8,0,16">
-                            <Border CornerRadius="70" Background="#1649A2" Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border CornerRadius="70" Background="{DynamicResource AzulMedioColor}" Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <TextBlock Text="{Binding InicialNome}" FontSize="36" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <Border CornerRadius="70" ClipToBounds="True">
@@ -264,26 +264,26 @@
                             </Border>
                         </Grid>
 
-                        <TextBlock Text="{Binding Nome}" FontSize="16" FontWeight="Bold" Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,0,0,2" TextAlignment="Center" TextWrapping="Wrap"/>
-                        <TextBlock Text="{Binding LoginExibicao}" FontSize="13" Foreground="#64748B" HorizontalAlignment="Center" Margin="0,0,0,14"/>
+                        <TextBlock Text="{Binding Nome}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextoColor}" HorizontalAlignment="Center" Margin="0,0,0,2" TextAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding LoginExibicao}" FontSize="13" Foreground="{DynamicResource CinzaColor}" HorizontalAlignment="Center" Margin="0,0,0,14"/>
 
-                        <Border Background="#DCFCE7" CornerRadius="12" Padding="12,4" HorizontalAlignment="Center" Margin="0,0,0,18">
+                        <Border Background="{DynamicResource VerdeFundoColor}" CornerRadius="12" Padding="12,4" HorizontalAlignment="Center" Margin="0,0,0,18">
                             <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial Kind="Check" Width="12" Height="12" Foreground="#15803D" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                <TextBlock Text="Conta Ativa" FontSize="11" FontWeight="Bold" Foreground="#15803D" VerticalAlignment="Center"/>
+                                <iconPacks:PackIconMaterial Kind="Check" Width="12" Height="12" Foreground="{DynamicResource VerdeMedioColor}" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                <TextBlock Text="Conta Ativa" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource VerdeMedioColor}" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
 
                         <Button Command="{Binding SelecionarFotoCommand}" Height="34" Width="130"
-                                Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
-                                Foreground="#334155" FontWeight="Medium" FontSize="12" Cursor="Hand">
+                                Background="White" BorderBrush="{DynamicResource CinzaClaroColor}" BorderThickness="1"
+                                Foreground="{DynamicResource CinzaEscuroColor}" FontWeight="Medium" FontSize="12" Cursor="Hand">
                             <Button.Resources>
                                 <Style TargetType="Border">
                                     <Setter Property="CornerRadius" Value="6"/>
                                 </Style>
                             </Button.Resources>
                             <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial Kind="Camera" Width="12" Height="12" Foreground="#475569" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <iconPacks:PackIconMaterial Kind="Camera" Width="12" Height="12" Foreground="{DynamicResource CinzaEscuroColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
                                 <TextBlock Text="Mudar Foto" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
@@ -293,10 +293,10 @@
                 <!-- Área de Resumo da Conta -->
                 <Border Background="White" CornerRadius="12" Padding="24" Height="295">
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="15" ShadowDepth="1" Color="#000000" Opacity="0.04" Direction="270"/>
+                        <DropShadowEffect BlurRadius="15" ShadowDepth="1" Color="Black" Opacity="0.04" Direction="270"/>
                     </Border.Effect>
                     <StackPanel>
-                        <TextBlock Text="RESUMO DA CONTA" FontSize="11" FontWeight="Bold" Foreground="#64748B" Margin="0,0,0,20"/>
+                        <TextBlock Text="RESUMO DA CONTA" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,20"/>
 
                         <!-- Email -->
                         <Grid Margin="0,0,0,14">
@@ -304,10 +304,10 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <iconPacks:PackIconMaterial Grid.Column="0" Kind="EmailOutline" Width="16" Height="16" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <iconPacks:PackIconMaterial Grid.Column="0" Kind="EmailOutline" Width="16" Height="16" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="E-mail principal" FontSize="11" Foreground="#94A3B8"/>
-                                <TextBlock Text="{Binding EmailResumido}" FontSize="13" Foreground="#1E293B" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                <TextBlock Text="E-mail principal" FontSize="11" Foreground="{DynamicResource TextoCinzaColor}"/>
+                                <TextBlock Text="{Binding EmailResumido}" FontSize="13" Foreground="{DynamicResource TextoColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0"/>
                             </StackPanel>
                         </Grid>
 
@@ -319,10 +319,10 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <iconPacks:PackIconMaterial Grid.Column="0" Kind="AccountBadgeOutline" Width="16" Height="16" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <iconPacks:PackIconMaterial Grid.Column="0" Kind="AccountBadgeOutline" Width="16" Height="16" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="Nível de Acesso" FontSize="11" Foreground="#94A3B8"/>
-                                <TextBlock Text="{Binding Perfil}" FontSize="13" Foreground="#1E293B" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                <TextBlock Text="Nível de Acesso" FontSize="11" Foreground="{DynamicResource TextoCinzaColor}"/>
+                                <TextBlock Text="{Binding Perfil}" FontSize="13" Foreground="{DynamicResource TextoColor}" FontWeight="SemiBold" Margin="0,2,0,0"/>
                             </StackPanel>
                         </Grid>
 
@@ -335,13 +335,13 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <iconPacks:PackIconMaterial Grid.Column="0" Kind="LockCheckOutline" Width="16" Height="16" Foreground="#64748B" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <iconPacks:PackIconMaterial Grid.Column="0" Kind="LockCheckOutline" Width="16" Height="16" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="Segurança" FontSize="11" Foreground="#94A3B8"/>
-                                <TextBlock Text="Senha Definida" FontSize="13" Foreground="#1E293B" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                <TextBlock Text="Segurança" FontSize="11" Foreground="{DynamicResource TextoCinzaColor}"/>
+                                <TextBlock Text="Senha Definida" FontSize="13" Foreground="{DynamicResource TextoColor}" FontWeight="SemiBold" Margin="0,2,0,0"/>
                             </StackPanel>
-                            <Border Grid.Column="2" Background="#DCFCE7" CornerRadius="6" Padding="8,2" VerticalAlignment="Center">
-                                <TextBlock Text="OK" FontSize="10" FontWeight="Bold" Foreground="#15803D"/>
+                            <Border Grid.Column="2" Background="{DynamicResource VerdeFundoColor}" CornerRadius="6" Padding="8,2" VerticalAlignment="Center">
+                                <TextBlock Text="OK" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource VerdeMedioColor}"/>
                             </Border>
                         </Grid>
                     </StackPanel>
