@@ -14,7 +14,11 @@ namespace ReGraphik.Services
             _db = FirebaseConfig.Client;
         }
 
-        // Chamado pelo Administrador para gerar um convite
+        /// <summary>
+        /// Chamado pelo Administrador para gerar um convite
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<string> GerarConviteAsync(string email)
         {
             var token = GerarToken(8);
@@ -28,7 +32,11 @@ namespace ReGraphik.Services
             return token;
         }
 
-        // Etapa 1: verifica se o e-mail tem convite ativo
+        /// <summary>
+        /// Etapa 1: verifica se o e-mail tem convite ativo
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<bool> ExisteConvitePendenteAsync(string email)
         {
             try
@@ -43,7 +51,12 @@ namespace ReGraphik.Services
             catch { return false; }
         }
 
-        // Etapa 2: valida o token digitado pelo usuario
+        /// <summary>
+        /// Etapa 2: valida o token digitado pelo usuario
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task<bool> ValidarTokenAsync(string email, string token)
         {
             try
@@ -64,7 +77,11 @@ namespace ReGraphik.Services
             catch { return false; }
         }
 
-        // Etapa 3: marca token como usado apos o cadastro
+        /// <summary>
+        /// Etapa 3: marca token como usado apos o cadastro
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public async Task MarcarComoUsadoAsync(string token)
         {
             await _db
@@ -74,7 +91,7 @@ namespace ReGraphik.Services
                 .PutAsync(true);
         }
 
-        // Gera token de 8 caracteres sem caracteres ambiguos (0,O,I,1)
+        /// Gera token de 8 caracteres sem caracteres ambiguos (0,O,I,1)
         private static string GerarToken(int tamanho)
         {
             const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
