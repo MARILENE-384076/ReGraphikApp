@@ -40,7 +40,7 @@
                         HorizontalAlignment="Right" 
                         VerticalAlignment="Top"
                         Margin="0,-8,-8,0"
-                        Foreground="#94A3B8"
+                        Foreground="{DynamicResource TextoCinzaColor}"
                         Background="Transparent"
                         BorderThickness="0"
                         FontSize="14"
@@ -66,7 +66,7 @@
                             Margin="0,0,16,0">
 
                         <iconPacks:PackIconMaterial Kind="CheckCircleOutline"
-                                                    Foreground="#16A34A" 
+                                                    Foreground="{DynamicResource VerdeColor}" 
                                                     Width="28" 
                                                     Height="28"
                                                     HorizontalAlignment="Center"
@@ -79,7 +79,7 @@
                                    Text="Sucesso!" 
                                    FontSize="18" 
                                    FontWeight="Bold" 
-                                   Foreground="#1E293B" 
+                                   Foreground="{DynamicResource TextoPadraoColor}" 
                                    TextWrapping="Wrap"/>
 
                         <TextBlock x:Name="TxtMensagem" 

@@ -134,7 +134,7 @@
                                     Height="Auto"
                                     HorizontalAlignment="Center" 
                                     VerticalAlignment="Center"
-                                    BorderBrush="#CBD5E1"
+                                    BorderBrush="{DynamicResource CinzaClaroColor}"
                                     BorderThickness="1">
                                 <Border.Effect>
                                     <DropShadowEffect BlurRadius="15" Direction="270" ShadowDepth="3" Opacity="0.2"/>
@@ -149,7 +149,7 @@
 
                                     <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
                                         <iconPacks:PackIconMaterial Kind="Key" Foreground="{DynamicResource AzulMedioColor}" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                        <TextBlock Text="Token de Cadastro Gerado" FontSize="15" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Token de Cadastro Gerado" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" VerticalAlignment="Center"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,0,0,16">
@@ -179,7 +179,7 @@
 
                 <Border Grid.Column="1" 
                         Background="White" 
-                        BorderBrush="#CBD5E1" 
+                        BorderBrush="{DynamicResource CinzaClaroColor}" 
                         BorderThickness="0,1,1,1" 
                         CornerRadius="0,16,16,0" 
                         Padding="50,40">
@@ -191,7 +191,7 @@
                                 <Grid Margin="32,16,32,0">
                                     <StackPanel Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                         <StackPanel Margin="0,0,0,24">
-                                            <TextBlock Text="Faça Login" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Faça Login" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,4"/>
                                             <TextBlock Text="Entre com suas credenciais para continuar." FontSize="13" Foreground="{DynamicResource CinzaColor}" TextWrapping="Wrap"/>
                                         </StackPanel>
 
@@ -211,7 +211,7 @@
                                                                     Width="17" 
                                                                     Height="17" 
                                                                     Margin="10,0,0,0" 
-                                                                    Foreground="#94A3B8" 
+                                                                    Foreground="{DynamicResource TextoCinzaColor}" 
                                                                     HorizontalAlignment="Left" 
                                                                     VerticalAlignment="Center"
                                                                     IsHitTestVisible="False"/>
@@ -265,7 +265,7 @@
                                                                         Width="17" 
                                                                         Height="17" 
                                                                         Margin="10,0,0,0" 
-                                                                        Foreground="#94A3B8" 
+                                                                        Foreground="{DynamicResource TextoCinzaColor}" 
                                                                         HorizontalAlignment="Left" 
                                                                         VerticalAlignment="Center"
                                                                         IsHitTestVisible="False"/>
@@ -380,8 +380,8 @@
                                         </StackPanel.Style>
 
                                         <StackPanel Margin="0,0,0,24">
-                                            <TextBlock Text="Criar Conta" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                            <TextBlock Text="Informe o e-mail vinculado ao convite que você recebeu do Administrador." FontSize="13" Foreground="#64748B" TextWrapping="Wrap"/>
+                                            <TextBlock Text="Criar Conta" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,4"/>
+                                            <TextBlock Text="Informe o e-mail vinculado ao convite que você recebeu do Administrador." FontSize="13" Foreground="{DynamicResource CinzaColor}" TextWrapping="Wrap"/>
                                         </StackPanel>
                                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
                                         <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
@@ -440,9 +440,9 @@
                                                 <TextBlock Text="Token de Ativação" 
                                                            FontSize="22" 
                                                            FontWeight="Bold"
-                                                           Foreground="#1E293B" 
+                                                           Foreground="{DynamicResource TextoPadraoColor}" 
                                                            Margin="0,0,0,4"/>
-                                                <TextBlock FontSize="13" Foreground="#64748B" TextWrapping="Wrap">
+                                                <TextBlock FontSize="13" Foreground="{DynamicResource CinzaColor}" TextWrapping="Wrap">
                                                     <Run Text="Digite o token de ativação de 8 caracteres que o "/>
                                                     <Run Text="Administrador" FontWeight="SemiBold"/>
                                                     <Run Text=" enviou a você para liberar o cadastro."/>
@@ -457,7 +457,7 @@
                                                     Margin="0,0,0,20">
                                                 <StackPanel Orientation="Horizontal">
                                                     <iconPacks:PackIconMaterial Kind="CheckCircle"
-                                                    Foreground="#16A34A"
+                                                    Foreground="{DynamicResource VerdeColor}"
                                                     Width="16" Height="16"
                                                     VerticalAlignment="Center"
                                                     Margin="0,0,8,0"/>
@@ -496,16 +496,16 @@
                                             </StackPanel.Style>
 
                                             <StackPanel Margin="0,0,0,16">
-                                                <TextBlock Text="Complete seu Cadastro" FontSize="22" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,4"/>
-                                                <TextBlock Text="Token validado. Defina seus dados de acesso ao sistema." FontSize="13" Foreground="#64748B"/>
+                                                <TextBlock Text="Complete seu Cadastro" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,4"/>
+                                                <TextBlock Text="Token validado. Defina seus dados de acesso ao sistema." FontSize="13" Foreground="{DynamicResource CinzaColor}"/>
                                             </StackPanel>
                                             <!-- E-mail bloqueado (já validado) -->
-                                            <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}" Foreground="#94A3B8"/>
+                                            <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}" Foreground="{DynamicResource TextoCinzaColor}"/>
                                             <TextBox Text="{Binding Email, Mode=OneWay}"
                                                      Style="{StaticResource InputStyle}"
                                                      IsReadOnly="True"
                                                      Background="#F1F5F9"
-                                                     Foreground="#94A3B8"
+                                                     Foreground="{DynamicResource TextoCinzaColor}"
                                                      Focusable="False"
                                                      Margin="0,0,0,10"/>
 
@@ -560,7 +560,7 @@
                                                         Background="Transparent" 
                                                         BorderThickness="0">
                                                     <iconPacks:PackIconMaterial Kind="Eye" 
-                                                                                Foreground="#64748B"
+                                                                                Foreground="{DynamicResource CinzaColor}"
                                                                                 Width="16" Height="16"/>
                                                 </Button>
                                             </Grid>
@@ -597,18 +597,18 @@
                                             </Style>
                                         </StackPanel.Style>
                                         <iconPacks:PackIconMaterial Kind="CheckCircle"
-                                        Foreground="#16A34A"
+                                        Foreground="{DynamicResource VerdeColor}"
                                         Width="64" Height="64"
                                         HorizontalAlignment="Center"/>
                                         <TextBlock Text="Conta criada com sucesso!"
                                                    FontSize="22" 
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"
-                                                   Foreground="#1E293B" 
+                                                   Foreground="{DynamicResource TextoPadraoColor}" 
                                                    Margin="0,16,0,8"/>
                                         <TextBlock Text="Clique em &quot;Fazer Login&quot; para entrar no sistema."
                                                    FontSize="13" 
-                                                   Foreground="#64748B"
+                                                   Foreground="{DynamicResource CinzaColor}"
                                                    HorizontalAlignment="Center"/>
                                     </StackPanel>
 

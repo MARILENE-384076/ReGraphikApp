@@ -48,7 +48,7 @@
                             Margin="0,0,16,0">
 
                         <iconPacks:PackIconMaterial Kind="Logout"
-                                                    Foreground="#D97706" 
+                                                    Foreground="{DynamicResource LaranjaEsgColor}" 
                                                     Width="24" 
                                                     Height="24"
                                                     HorizontalAlignment="Center"
@@ -60,7 +60,7 @@
                         <TextBlock Text="Confirmar Saída" 
                                    FontSize="18" 
                                    FontWeight="Bold" 
-                                   Foreground="#1E293B"/>
+                                   Foreground="{DynamicResource TextoPadraoColor}"/>
 
                         <TextBlock Text="Você realmente deseja encerrar sua sessão atual e voltar para a tela de login?"
                                    FontSize="14" 
@@ -81,7 +81,7 @@
                             Margin="0,0,12,0"
                             Style="{StaticResource RoundedButtonStyle}"
                             Background="White" 
-                            BorderBrush="#CBD5E1"
+                            BorderBrush="{DynamicResource CinzaClaroColor}"
                             BorderThickness="1"
                             Foreground="{DynamicResource CinzaColor}" 
                             FontWeight="SemiBold" 

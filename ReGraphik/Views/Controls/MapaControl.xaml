@@ -30,7 +30,7 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                    <TextBlock Text="Mapa de Pontos de Coleta" FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
+                    <TextBlock Text="Mapa de Pontos de Coleta" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}"/>
                     <TextBlock Text="Visualize os pontos de coleta de resíduos no mapa" FontSize="12" Foreground="{DynamicResource CinzaColor}" Margin="0,3,0,0"/>
                 </StackPanel>
 
@@ -83,7 +83,7 @@
                     <Border Grid.Row="0" Background="#F8FAFC" CornerRadius="12,12,0,0" Padding="16,12" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📍" FontSize="16" VerticalAlignment="Center"/>
-                            <TextBlock Text="Pontos encontrados" FontSize="13" FontWeight="SemiBold" Foreground="#1E293B" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Pontos encontrados" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextoPadraoColor}" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             <Border Background="#DBEAFE" CornerRadius="10" Padding="8,2" Margin="8,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding PontosAtuais.Count, FallbackValue=0}" FontSize="11" FontWeight="Bold" Foreground="#2563EB"/>
                             </Border>
@@ -125,7 +125,7 @@
                                                 <TextBlock Text="{Binding NomePonto}" 
                                                        FontSize="13" 
                                                        FontWeight="SemiBold" 
-                                                       Foreground="#1E293B" 
+                                                       Foreground="{DynamicResource TextoPadraoColor}" 
                                                        TextWrapping="Wrap"/>
                                                 <TextBlock Text="{Binding Cidade}" 
                                                        FontSize="11" 
@@ -150,15 +150,15 @@
                         <Grid Background="White" Visibility="{Binding MostrarEstadoVazio, Converter={StaticResource BoolToVis}}">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <TextBlock Text="🔍" FontSize="36" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Busque uma cidade" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                                <TextBlock Text="para ver os pontos" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Busque uma cidade" FontSize="13" Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="para ver os pontos" FontSize="13" Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Grid>
 
                         <Grid Background="White" Visibility="{Binding IsCarregando, Converter={StaticResource BoolToVis}}">
                             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                 <TextBlock Text="⏳" FontSize="36" HorizontalAlignment="Center"/>
-                                <TextBlock Text="Buscando pontos..." FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                                <TextBlock Text="Buscando pontos..." FontSize="13" Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Center" Margin="0,8,0,0"/>
                             </StackPanel>
                         </Grid>
 
@@ -176,8 +176,8 @@
                     <Border x:Name="MapaPlaceholder" Background="White" CornerRadius="12" Visibility="{Binding MostrarEstadoVazio, Converter={StaticResource BoolToVis}}">
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="🗺" FontSize="64" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Mapa de Coleta" FontSize="18" FontWeight="Bold" Foreground="#1E293B" HorizontalAlignment="Center" Margin="0,12,0,0"/>
-                            <TextBlock Text="Digite uma cidade e clique em Buscar" FontSize="13" Foreground="#94A3B8" HorizontalAlignment="Center" Margin="0,6,0,0"/>
+                            <TextBlock Text="Mapa de Coleta" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" HorizontalAlignment="Center" Margin="0,12,0,0"/>
+                            <TextBlock Text="Digite uma cidade e clique em Buscar" FontSize="13" Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Center" Margin="0,6,0,0"/>
                         </StackPanel>
                     </Border>
                 </Grid>

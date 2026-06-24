@@ -102,7 +102,7 @@
         <Style x:Key="GripStyle" TargetType="ResizeGrip">
             <Setter Property="Width"      Value="14"/>
             <Setter Property="Height"     Value="14"/>
-            <Setter Property="Foreground" Value="#CBD5E1"/>
+            <Setter Property="Foreground" Value="{DynamicResource CinzaClaroColor}"/>
             <Setter Property="Cursor"     Value="SizeNWSE"/>
         </Style>
     </Window.Resources>
@@ -225,19 +225,19 @@
                                     </StackPanel.Style>
                                     <iconPacks:PackIconMaterial Kind="MessageOutline"
                                                                 Width="48" Height="48"
-                                                                Foreground="#CBD5E1"
+                                                                Foreground="{DynamicResource CinzaClaroColor}"
                                                                 HorizontalAlignment="Center"/>
                                     <TextBlock Text="Nenhuma conversa ainda"
-                                               Foreground="#94A3B8" FontSize="13"
+                                               Foreground="{DynamicResource TextoCinzaColor}" FontSize="13"
                                                HorizontalAlignment="Center" Margin="0,12,0,4"/>
                                     <TextBlock Text="Clique no lápis para iniciar"
-                                               Foreground="#CBD5E1" FontSize="12"
+                                               Foreground="{DynamicResource CinzaClaroColor}" FontSize="12"
                                                HorizontalAlignment="Center"/>
                                 </StackPanel>
 
                                
                                 <TextBlock Text="Carregando..."
-                                           Foreground="#94A3B8" FontSize="13"
+                                           Foreground="{DynamicResource TextoCinzaColor}" FontSize="13"
                                            HorizontalAlignment="Center" Margin="0,40,0,0"
                                            Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
 
@@ -272,7 +272,7 @@
                                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,4,0">
                                                         <TextBlock Text="{Binding UsuarioNome}"
                                                                    FontWeight="SemiBold" FontSize="14"
-                                                                   Foreground="#1E293B"
+                                                                   Foreground="{DynamicResource TextoPadraoColor}"
                                                                    TextTrimming="CharacterEllipsis"/>
                                                         <TextBlock Text="{Binding UltimaMensagem}"
                                                                    FontSize="12" Foreground="{DynamicResource CinzaColor}"
@@ -282,7 +282,7 @@
                                                     
                                                     <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                                         <TextBlock Text="{Binding HorarioFormatado}"
-                                                                   FontSize="11" Foreground="#94A3B8"
+                                                                   FontSize="11" Foreground="{DynamicResource TextoCinzaColor}"
                                                                    HorizontalAlignment="Right"/>
                                                         <Border Background="#EF4444" CornerRadius="10"
                                                                 Padding="5,1" MinWidth="20"
@@ -366,7 +366,7 @@
 
                                             
                                             <TextBlock Text="{Binding DataHora, Converter={StaticResource DataHoraConv}}"
-                                                       FontSize="10" Foreground="#94A3B8"
+                                                       FontSize="10" Foreground="{DynamicResource TextoCinzaColor}"
                                                        HorizontalAlignment="{Binding EhMinhaMensagem, Converter={StaticResource AlinhamentoConv}}"
                                                        Margin="4,2,4,0"/>
                                         </StackPanel>
@@ -411,7 +411,7 @@
                                                         <ControlTemplate TargetType="TextBox">
                                                             <Grid>
                                                                 <TextBlock Text="Digite uma mensagem..."
-                                                                           Foreground="#94A3B8" FontSize="13"
+                                                                           Foreground="{DynamicResource TextoCinzaColor}" FontSize="13"
                                                                            VerticalAlignment="Center"
                                                                            IsHitTestVisible="False">
                                                                     <TextBlock.Style>
@@ -478,7 +478,7 @@
                                     <Grid>
                                         <TextBlock Text="Nova Conversa"
                                                    FontWeight="SemiBold" FontSize="14"
-                                                   Foreground="#1E293B" VerticalAlignment="Center"/>
+                                                   Foreground="{DynamicResource TextoPadraoColor}" VerticalAlignment="Center"/>
                                         <Button HorizontalAlignment="Right"
                                                 Style="{StaticResource BtnIconeStyle}"
                                                 Command="{Binding FecharNovaConversaCommand}">
@@ -521,10 +521,10 @@
                                                                     Margin="10,0,0,0">
                                                             <TextBlock Text="{Binding Nome}"
                                                                        FontWeight="SemiBold" FontSize="13"
-                                                                       Foreground="#1E293B"
+                                                                       Foreground="{DynamicResource TextoPadraoColor}"
                                                                        TextTrimming="CharacterEllipsis"/>
                                                             <TextBlock Text="{Binding Email}"
-                                                                       FontSize="11" Foreground="#94A3B8"
+                                                                       FontSize="11" Foreground="{DynamicResource TextoCinzaColor}"
                                                                        TextTrimming="CharacterEllipsis"/>
                                                         </StackPanel>
                                                     </Grid>

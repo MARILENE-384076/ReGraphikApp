@@ -40,9 +40,9 @@
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="Gerenciamento de Usuários"
                                FontSize="22" FontWeight="Bold"
-                               Foreground="#1E293B"/>
+                               Foreground="{DynamicResource TextoPadraoColor}"/>
                     <TextBlock Text="Convide novos usuários e gerencie os acessos ao sistema."
-                               FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+                               FontSize="13" Foreground="{DynamicResource CinzaColor}" Margin="0,4,0,0"/>
                 </StackPanel>
 
                 <Button Grid.Column="1"
@@ -59,7 +59,7 @@
                     <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconMaterial Kind="Refresh"
                                                     Width="14" Height="14"
-                                                    Foreground="#64748B"
+                                                    Foreground="{DynamicResource CinzaColor}"
                                                     VerticalAlignment="Center"
                                                     Margin="0,0,6,0"/>
                         <TextBlock Text="Atualizar lista"
@@ -101,9 +101,9 @@
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock Text="Convidar Novo Usuário"
                                            FontSize="15" FontWeight="SemiBold"
-                                           Foreground="#1E293B"/>
+                                           Foreground="{DynamicResource TextoPadraoColor}"/>
                                 <TextBlock Text="Gere um token de acesso de 48h e envie ao usuário."
-                                           FontSize="12" Foreground="#64748B"/>
+                                           FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -126,7 +126,7 @@
                             <Button Grid.Column="2"
                                     Command="{Binding GerarConviteCommand}"
                                     Height="40" Padding="20,0"
-                                    Background="#1649a2"
+                                    Background="{DynamicResource AzulMedioColor}"
                                     BorderThickness="0"
                                     Foreground="White"
                                     FontWeight="SemiBold"
@@ -139,14 +139,14 @@
                                 </Button.Resources>
                                 <Button.Style>
                                     <Style TargetType="Button">
-                                        <Setter Property="Background" Value="#1649a2"/>
+                                        <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
                                         <Setter Property="Foreground" Value="White"/>
                                         <Setter Property="BorderThickness" Value="0"/>
                                         <Setter Property="Cursor" Value="Hand"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
                                                 <Setter Property="IsEnabled" Value="False"/>
-                                                <Setter Property="Background" Value="#94A3B8"/>
+                                                <Setter Property="Background" Value="{DynamicResource TextoCinzaColor}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -179,11 +179,11 @@
                                     Visibility="{Binding TemErro, Converter={StaticResource BoolVis}}">
                             <iconPacks:PackIconMaterial Kind="AlertCircleOutline"
                                                         Width="13" Height="13"
-                                                        Foreground="#DC2626"
+                                                        Foreground="{DynamicResource VermelhoColor}"
                                                         VerticalAlignment="Center"
                                                         Margin="0,0,6,0"/>
                             <TextBlock Text="{Binding MensagemErro}"
-                                       FontSize="12" Foreground="#DC2626"
+                                       FontSize="12" Foreground="{DynamicResource VermelhoColor}"
                                        VerticalAlignment="Center"
                                        TextWrapping="Wrap"/>
                         </StackPanel>
@@ -207,15 +207,15 @@
                                 <StackPanel HorizontalAlignment="Center">
                                     <iconPacks:PackIconMaterial Kind="KeyOutline"
                                                                 Width="32" Height="32"
-                                                                Foreground="#CBD5E1"
+                                                                Foreground="{DynamicResource CinzaClaroColor}"
                                                                 HorizontalAlignment="Center"
                                                                 Margin="0,0,0,10"/>
                                     <TextBlock Text="Token aparecerá aqui"
-                                               FontSize="13" Foreground="#94A3B8"
+                                               FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
                                                HorizontalAlignment="Center"
                                                TextAlignment="Center"/>
                                     <TextBlock Text="após gerar o convite"
-                                               FontSize="12" Foreground="#CBD5E1"
+                                               FontSize="12" Foreground="{DynamicResource CinzaClaroColor}"
                                                HorizontalAlignment="Center"
                                                TextAlignment="Center"
                                                Margin="0,2,0,0"/>
@@ -234,7 +234,7 @@
                                                 Margin="0,0,0,10">
                                         <iconPacks:PackIconMaterial Kind="CheckCircle"
                                                                     Width="14" Height="14"
-                                                                    Foreground="#16A34A"
+                                                                    Foreground="{DynamicResource VerdeColor}"
                                                                     VerticalAlignment="Center"
                                                                     Margin="0,0,6,0"/>
                                         <TextBlock Text="Token gerado!"
@@ -251,13 +251,13 @@
                                                 FontFamily="Courier New"
                                                 FontSize="22"
                                                 FontWeight="Bold"
-                                                Foreground="#1649a2"
+                                                Foreground="{DynamicResource AzulMedioColor}"
                                                 HorizontalAlignment="Center"
                                                 TextAlignment="Center"/>
                                     </Border>
 
                                     <TextBlock Text="Válido por 48 horas · Uso único"
-                                               FontSize="11" Foreground="#64748B"
+                                               FontSize="11" Foreground="{DynamicResource CinzaColor}"
                                                HorizontalAlignment="Center"
                                                Margin="0,0,0,12"/>
 
@@ -272,7 +272,7 @@
                                         <Button Grid.Column="0"
                                                 Command="{Binding CopiarTokenCommand}"
                                                 Height="34"
-                                                Background="#1649a2"
+                                                Background="{DynamicResource AzulMedioColor}"
                                                 BorderThickness="0"
                                                 Foreground="White"
                                                 FontSize="12"
@@ -307,7 +307,7 @@
                                             </Button.Resources>
                                             <iconPacks:PackIconMaterial Kind="Refresh"
                                                                         Width="14" Height="14"
-                                                                        Foreground="#64748B"/>
+                                                                        Foreground="{DynamicResource CinzaColor}"/>
                                         </Button>
                                     </Grid>
                                 </StackPanel>
@@ -315,7 +315,7 @@
 
                             <!-- Mensagem de sucesso -->
                             <TextBlock Text="{Binding Mensagem}"
-                                       FontSize="11" Foreground="#16A34A"
+                                       FontSize="11" Foreground="{DynamicResource VerdeColor}"
                                        TextWrapping="Wrap"
                                        TextAlignment="Center"
                                        Margin="0,8,0,0"
@@ -339,11 +339,11 @@
                 <StackPanel>
                     <TextBlock Text="USUÁRIOS CADASTRADOS"
                                FontSize="11" FontWeight="Bold"
-                               Foreground="#94A3B8" Margin="0,0,0,16"/>
+                               Foreground="{DynamicResource TextoCinzaColor}" Margin="0,0,0,16"/>
 
                     <!-- Loading -->
                     <TextBlock Text="Carregando usuários..."
-                               FontSize="13" Foreground="#94A3B8"
+                               FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
                                HorizontalAlignment="Center"
                                Margin="0,24"
                                Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
@@ -360,11 +360,11 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="NOME"        Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="#94A3B8"/>
-                        <TextBlock Grid.Column="1" Text="E-MAIL"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="#94A3B8"/>
-                        <TextBlock Grid.Column="2" Text="LOGIN"       Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="#94A3B8"/>
-                        <TextBlock Grid.Column="3" Text="PERFIL"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="#94A3B8"/>
-                        <TextBlock Grid.Column="4" Text="STATUS"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="#94A3B8"/>
+                        <TextBlock Grid.Column="0" Text="NOME"        Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                        <TextBlock Grid.Column="1" Text="E-MAIL"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                        <TextBlock Grid.Column="2" Text="LOGIN"       Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                        <TextBlock Grid.Column="3" Text="PERFIL"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                        <TextBlock Grid.Column="4" Text="STATUS"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
                     </Grid>
 
                     <Separator Background="#F1F5F9" Margin="0,0,0,8"/>
@@ -386,7 +386,7 @@
                                         <!-- Avatar + Nome -->
                                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                                             <Border Width="32" Height="32"
-                                                    Background="#1649a2"
+                                                    Background="{DynamicResource AzulMedioColor}"
                                                     CornerRadius="16"
                                                     Margin="0,0,10,0">
                                                 <TextBlock Text="{Binding Iniciais}"
@@ -397,20 +397,20 @@
                                             </Border>
                                             <TextBlock Text="{Binding Nome}"
                                                        FontSize="13" FontWeight="SemiBold"
-                                                       Foreground="#1E293B"
+                                                       Foreground="{DynamicResource TextoPadraoColor}"
                                                        VerticalAlignment="Center"
                                                        TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>
 
                                         <TextBlock Grid.Column="1"
                                                    Text="{Binding Email}"
-                                                   FontSize="13" Foreground="#64748B"
+                                                   FontSize="13" Foreground="{DynamicResource CinzaColor}"
                                                    VerticalAlignment="Center"
                                                    TextTrimming="CharacterEllipsis"/>
 
                                         <TextBlock Grid.Column="2"
                                                    Text="{Binding Login}"
-                                                   FontSize="13" Foreground="#64748B"
+                                                   FontSize="13" Foreground="{DynamicResource CinzaColor}"
                                                    VerticalAlignment="Center"/>
 
                                         <!-- Badge de perfil -->
@@ -430,10 +430,10 @@
                                             <TextBlock Text="{Binding Perfil}" FontSize="11" FontWeight="Bold">
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
-                                                        <Setter Property="Foreground" Value="#1D4ED8"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource AzulMedioColor}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Perfil}" Value="Administrador">
-                                                                <Setter Property="Foreground" Value="#D97706"/>
+                                                                <Setter Property="Foreground" Value="{DynamicResource LaranjaEsgColor}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -459,11 +459,11 @@
                                                 <TextBlock.Style>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Text"       Value="Ativo"/>
-                                                        <Setter Property="Foreground" Value="#16A34A"/>
+                                                        <Setter Property="Foreground" Value="{DynamicResource VerdeColor}"/>
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Ativo}" Value="False">
                                                                 <Setter Property="Text"       Value="Inativo"/>
-                                                                <Setter Property="Foreground" Value="#DC2626"/>
+                                                                <Setter Property="Foreground" Value="{DynamicResource VermelhoColor}"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>

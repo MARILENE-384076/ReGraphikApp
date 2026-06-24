@@ -38,12 +38,12 @@
 
             <StackPanel Grid.Row="0" Margin="0,0,0,16">
                 <TextBlock Text="💡 Diretório de Sugestões de Reaproveitamento"
-                           FontSize="20" FontWeight="Bold" Foreground="#1E293B"/>
+                           FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}"/>
             </StackPanel>
 
             <Grid Grid.Row="1" Margin="0,0,0,12">
                 <StackPanel>
-                    <TextBlock Text="Selecione o Resíduo Alvo:" FontSize="12" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,6"/>
+                    <TextBlock Text="Selecione o Resíduo Alvo:" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource CinzaEscuroColor}" Margin="0,0,0,6"/>
                     <ComboBox ItemsSource="{Binding ResiduosEstoque}" 
                               SelectedItem="{Binding ResiduoSelecionado}"
                               DisplayMemberPath="TipoResiduo" 
@@ -91,7 +91,7 @@
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="#F1F5F9"/>
-                                        <Setter Property="BorderBrush" Value="#CBD5E1"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource CinzaClaroColor}"/>
                                         <Setter Property="Cursor" Value="Hand"/>
                                     </Trigger>
 

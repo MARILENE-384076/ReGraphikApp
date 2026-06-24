@@ -61,7 +61,7 @@
                                    Visibility="{Binding FotoPerfil, Converter={StaticResource NullToVisibilityConverter}}"/>
 
                             <Ellipse Width="12" Height="12" 
-                                     Fill="#4BAC50" 
+                                     Fill="{DynamicResource VerdeColor}"
                                      Stroke="{DynamicResource AzulEscuroColor}" 
                                      StrokeThickness="1.5"
                                      HorizontalAlignment="Right" 
@@ -251,7 +251,7 @@
                                         <Setter Property="VerticalAlignment" Value="Center"/>
                                         <Setter Property="HorizontalAlignment" Value="Center"/>
                                         <Setter Property="TextAlignment" Value="Center"/>
-                                        <Setter Property="Foreground" Value="#1E293B"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource TextoPadraoColor}"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>

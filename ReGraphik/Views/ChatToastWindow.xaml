@@ -70,7 +70,7 @@
                 <TextBlock x:Name="TxtRemetente"
                            FontWeight="SemiBold"
                            FontSize="13"
-                           Foreground="#1E293B"
+                           Foreground="{DynamicResource TextoPadraoColor}"
                            TextTrimming="CharacterEllipsis"/>
                 <TextBlock x:Name="TxtPreview"
                            FontSize="12"
@@ -89,7 +89,7 @@
                     Click="BtnFechar_Click">
                 <iconPacks:PackIconMaterial Kind="Close"
                                             Width="12" Height="12"
-                                            Foreground="#94A3B8"/>
+                                            Foreground="{DynamicResource TextoCinzaColor}"/>
             </Button>
         </Grid>
     </Border>
