@@ -21,8 +21,8 @@
                             <Setter Property="Background" Value="#1340a0"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="#CBD5E1"/>
-                            <Setter Property="Foreground" Value="#94A3B8"/>
+                            <Setter Property="Background" Value="{DynamicResource CinzaClaroColor}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextoCinzaColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -208,7 +208,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#CBD5E1"/>
+                <Setter Property="Background" Value="{DynamicResource CinzaClaroColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

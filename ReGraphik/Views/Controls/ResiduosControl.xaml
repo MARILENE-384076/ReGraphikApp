@@ -27,7 +27,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Cadastro de Resíduos" FontSize="20" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,16"/>
+                <TextBlock Grid.Row="0" Text="Cadastro de Resíduos" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,16"/>
 
                 <Border Grid.Row="1" Background="White" CornerRadius="8" Padding="24">
                     <Border.Effect>
@@ -41,7 +41,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="Novo Resíduo" FontSize="16" FontWeight="Bold" Foreground="#1E293B" Margin="0,0,0,20"/>
+                        <TextBlock Grid.Row="0" Text="Novo Resíduo" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,20"/>
 
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -83,7 +83,7 @@
                                         <ComboBoxItem Content="Plástico"/>
                                         <ComboBoxItem Content="Outro"/>
                                     </ComboBox>
-                                    <TextBlock Text="Selecione o tipo de material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Selecione o tipo de material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -151,7 +151,7 @@
                                         <ComboBoxItem Content="Rígido (Espesso)"/>
                                         <ComboBoxItem Content="Outro"/>
                                     </ComboBox>
-                                    <TextBlock Text="Selecione a especificação do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Selecione a especificação do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -189,7 +189,7 @@
                                         <ComboBoxItem Content="Mostruário / Amostra Descartada"/>
                                         <ComboBoxItem Content="Outro"/>
                                     </ComboBox>
-                                    <TextBlock Text="Selecione a origem do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Selecione a origem do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -245,7 +245,7 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBox x:Name="TxtProjetoOrigem" Text="{Binding ProjetoOrigem, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                    <TextBlock Text="Ex: Ambev / Projeto Verão"  Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Ex: Ambev / Projeto Verão"  Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -286,7 +286,7 @@
                                             <ComboBoxItem Content="kg"/>
                                             <ComboBoxItem Content="un"/>
                                         </ComboBox>
-                                        <TextBlock Text="Ex:20" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Ex:20" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -363,7 +363,7 @@
                                             <ComboBoxItem Content="Danificado"/>
                                             <ComboBoxItem Content="Adesivo Ressecado / Sem Cola"/>
                                         </ComboBox>
-                                        <TextBlock Text="Selecione a condição" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Selecione a condição" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -392,7 +392,7 @@
                                             <ComboBoxItem Content="Disponível para Coleta"/>
                                             <ComboBoxItem Content="Liberado para Venda"/>
                                         </ComboBox>
-                                        <TextBlock Text="Selecione o status" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Selecione o status" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -421,7 +421,7 @@
                             <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">
                                 <Grid>
                                     <TextBox x:Name="TxtComprimento" Text="{Binding Comprimento, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                    <TextBlock Text="Comprimento do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="Comprimento do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -478,7 +478,7 @@
 
                                     <Grid Grid.Column="0">
                                         <TextBox x:Name="TxtLargura" Text="{Binding Largura, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                        <TextBlock Text="Largura do material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Largura do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -538,7 +538,7 @@
                                 <Grid>
                                     <TextBox x:Name="TxtObservacoes" Text="{Binding Observacoes, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}" Height="80" 
                                      AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Padding="8"/>
-                                    <TextBlock Text="Observação sobre o material" Foreground="#94A3B8" IsHitTestVisible="False" Margin="10,10,0,0" VerticalAlignment="Top">
+                                    <TextBlock Text="Observação sobre o material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,10,0,0" VerticalAlignment="Top">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -572,7 +572,7 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Command="{Binding SelecionarArquivoCommand}" Content="Escolher Arquivo"
-                                    Padding="12,0" Height="38" Background="#F1F5F9" BorderBrush="#CBD5E1" Foreground="#1E293B"/>
+                                    Padding="12,0" Height="38" Background="#F1F5F9" BorderBrush="{DynamicResource CinzaClaroColor}" Foreground="{DynamicResource TextoPadraoColor}"/>
                                     <TextBox Grid.Column="1" Text="{Binding NomeArquivo}" Style="{StaticResource InputControlStyle}" 
                                      IsReadOnly="True" Margin="0,0,0,0" Background="White"/>
                                 </Grid>
@@ -587,8 +587,8 @@
                             <!-- Área de Botões de Limpar e Salvar -->
                             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                 <Button Command="{Binding LimparCommand}" Content="Limpar"
-                                Width="100" Height="40" Background="#F1F5F9" BorderBrush="#CBD5E1" 
-                                Foreground="#1E293B" FontWeight="SemiBold" Margin="0,0,12,0">
+                                Width="100" Height="40" Background="#F1F5F9" BorderBrush="{DynamicResource CinzaClaroColor}" 
+                                Foreground="{DynamicResource TextoPadraoColor}" FontWeight="SemiBold" Margin="0,0,12,0">
                                     <Button.Resources>
                                         <Style TargetType="Border">
                                             <Setter Property="CornerRadius" Value="6"/>

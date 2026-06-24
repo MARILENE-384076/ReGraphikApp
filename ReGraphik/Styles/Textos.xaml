@@ -20,18 +20,18 @@
     <Style x:Key="InputStyle" TargetType="TextBox">
         <Setter Property="Height" Value="42"/>
         <Setter Property="Background" Value="#F1F5F9"/>
-        <Setter Property="BorderBrush" Value="#CBD5E1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource CinzaClaroColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="12,4"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="Foreground" Value="#1E293B"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextoPadraoColor}"/>
     </Style>
 
     <Style x:Key="LabelStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#475569"/>
+        <Setter Property="Foreground" Value="{DynamicResource CinzaEscuroColor}"/>
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
 

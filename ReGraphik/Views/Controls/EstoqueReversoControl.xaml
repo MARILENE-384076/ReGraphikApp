@@ -44,7 +44,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
-           Foreground="#1E293B" Margin="0,0,0,14"/>
+           Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,14"/>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,14">
                         <Button
@@ -82,7 +82,7 @@
                               ItemsSource="{Binding ListaTipos}"
                               SelectedItem="{Binding FiltroTipo, Mode=TwoWay}"/>
 
-                                <TextBlock Text="Selecione o tipo..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Selecione o tipo..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -107,7 +107,7 @@
                               ItemsSource="{Binding ListaOrigens}"
                               SelectedItem="{Binding FiltroOrigem, Mode=TwoWay}"/>
 
-                                <TextBlock Text="Selecione a origem..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Selecione a origem..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -132,7 +132,7 @@
                               ItemsSource="{Binding ListaStatus}"
                               SelectedItem="{Binding FiltroStatus, Mode=TwoWay}"/>
 
-                                <TextBlock Text="Selecione o status..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Selecione o status..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -165,7 +165,7 @@
                                       ItemsSource="{Binding ListaPeriodos}"
                                       SelectedItem="{Binding FiltroPeriodo, Mode=TwoWay}"/>
 
-                                        <TextBlock Text="Filtrar por data..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="Filtrar por data..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -268,7 +268,7 @@
                                    Text="{Binding TipoResiduo}" 
                                    FontSize="16" 
                                    FontWeight="Bold" 
-                                   Foreground="#1E293B" 
+                                   Foreground="{DynamicResource TextoPadraoColor}" 
                                    TextWrapping="Wrap" 
                                    Margin="0,0,0,12" MinHeight="22"/>
 
@@ -281,7 +281,7 @@
 
                                                 <Grid Margin="0,0,0,6">
                                                     <TextBlock Text="Quantidade:" Foreground="{DynamicResource CinzaColor}" FontSize="12"/>
-                                                    <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="#1E293B" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                    <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="{DynamicResource TextoPadraoColor}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
                                                 </Grid>
 
                                                 <Grid>
@@ -295,7 +295,7 @@
 
                                         <Grid Grid.Row="3">
                                             <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="Cadastro" Foreground="#94A3B8" FontSize="10"/>
+                                                <TextBlock Text="Cadastro" Foreground="{DynamicResource TextoCinzaColor}" FontSize="10"/>
                                                 <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="{DynamicResource CinzaColor}" FontSize="12" FontWeight="Medium"/>
                                             </StackPanel>
 

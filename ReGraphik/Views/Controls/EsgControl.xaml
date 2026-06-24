@@ -28,7 +28,7 @@
                 </Setter>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect ShadowDepth="4" BlurRadius="16" Opacity="0.03" Color="#0F172A"/>
+                        <DropShadowEffect ShadowDepth="4" BlurRadius="16" Opacity="0.03" Color="{DynamicResource TextoColor}"/>
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
@@ -171,7 +171,7 @@
         <!-- Header Refinado -->
         <Grid Grid.Row="0" Margin="0,0,0,32">
             <StackPanel>
-                <TextBlock Text="Painel de Impacto e Diretrizes ESG" FontSize="26" FontWeight="Bold" Foreground="#0F172A"/>
+                <TextBlock Text="Painel de Impacto e Diretrizes ESG" FontSize="26" FontWeight="Bold" Foreground="{DynamicResource TextoColor}"/>
                 <TextBlock Text="Monitore indicadores, gerencie a conformidade corporativa e acelere sua certificação ambiental." FontSize="13" Foreground="{DynamicResource CinzaColor}" Margin="0,6,0,0"/>
             </StackPanel>
 
@@ -212,16 +212,16 @@
 
                                 <Grid Grid.Row="0" Margin="0,0,0,16">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                        <Border Background="#E6F4EA" CornerRadius="8" Width="38" Height="38" Margin="0,0,12,0">
-                                            <TextBlock Text="E" FontSize="18" FontWeight="Bold" Foreground="#137333" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border Background="{DynamicResource VerdeFundoColor}" CornerRadius="8" Width="38" Height="38" Margin="0,0,12,0">
+                                            <TextBlock Text="E" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource VerdeEsgColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="Ambiental" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                                            <TextBlock Text="Ambiental" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextoColor}"/>
                                             <TextBlock Text="Impacto e Circularidade" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
                                     </StackPanel>
-                                    <Border Background="#E6F4EA" CornerRadius="10" Padding="8,2" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                        <TextBlock Text="• Ativo" FontSize="10" FontWeight="SemiBold" Foreground="#137333"/>
+                                    <Border Background="{DynamicResource VerdeFundoColor}" CornerRadius="10" Padding="8,2" Height="20" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                        <TextBlock Text="• Ativo" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource VerdeEsgColor}"/>
                                     </Border>
                                 </Grid>
 
@@ -254,7 +254,7 @@
                                             <TextBlock Text="S" FontSize="18" FontWeight="Bold" Foreground="#1A73E8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="Social" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                                            <TextBlock Text="Social" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextoColor}"/>
                                             <TextBlock Text="Cadeia Produtiva" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -292,7 +292,7 @@
                                             <TextBlock Text="G" FontSize="18" FontWeight="Bold" Foreground="#6B21A8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
-                                            <TextBlock Text="Governança" FontSize="16" FontWeight="Bold" Foreground="#0F172A"/>
+                                            <TextBlock Text="Governança" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextoColor}"/>
                                             <TextBlock Text="Rastreabilidade" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                         </StackPanel>
                                     </StackPanel>
@@ -311,7 +311,7 @@
                             </Grid>
                         </Border>
                         <!-- Glow Line Superior -->
-                        <Border Height="4" Background="#A855F7" VerticalAlignment="Top" CornerRadius="16,16,0,0"/>
+                        <Border Height="4" Background="{DynamicResource RoxoEsgColor}" VerticalAlignment="Top" CornerRadius="16,16,0,0"/>
                     </Grid>
                 </Grid>
 
@@ -334,12 +334,12 @@
                                     <TextBlock Text="🏅" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
                                 <StackPanel VerticalAlignment="Center" Margin="14,0,0,0">
-                                    <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO" FontSize="18" FontWeight="Bold" Foreground="#0F172A"/>
+                                    <TextBlock Text="Certificação Ambiental ISO 14001 via INMETRO" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextoColor}"/>
                                     <TextBlock Text="Caminho prático para homologação de sustentabilidade da sua empresa" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                 </StackPanel>
                             </StackPanel>
 
-                            <TextBlock TextWrapping="Wrap" Foreground="#475569" FontSize="13" LineHeight="22" Margin="0,0,0,24"
+                            <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaEscuroColor}" FontSize="13" LineHeight="22" Margin="0,0,0,24"
                                        Text="O ReGraphik automatiza sua base documental. Os relatórios gerados servem como evidência de auditoria para acelerar o processo junto aos órgãos certificadores."/>
 
                             <!-- Timeline Interna Estilo Web -->
@@ -350,10 +350,10 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Grid.Column="0" Background="#F1F5F9" CornerRadius="18" Width="28" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <TextBlock Text="1" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                                        <TextBlock Text="1" FontWeight="Bold" Foreground="{DynamicResource CinzaEscuroColor}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
-                                        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Gere o Relatório Comprobatório"/>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource TextoPadraoColor}" FontSize="13" Text="Gere o Relatório Comprobatório"/>
                                         <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Exporte o PDF consolidado de movimentações na aba de Relatórios."/>
                                     </StackPanel>
                                 </Grid>
@@ -364,10 +364,10 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Grid.Column="0" Background="#F1F5F9" CornerRadius="18" Width="28" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <TextBlock Text="2" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                                        <TextBlock Text="2" FontWeight="Bold" Foreground="{DynamicResource CinzaEscuroColor}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
-                                        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Acesse o Portal do INMETRO"/>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource TextoPadraoColor}" FontSize="13" Text="Acesse o Portal do INMETRO"/>
                                         <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Identifique um Organismo de Certificação Ambiental (OCA) credenciado."/>
                                     </StackPanel>
                                 </Grid>
@@ -378,10 +378,10 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Border Grid.Column="0" Background="#F1F5F9" CornerRadius="18" Width="28" Height="28" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <TextBlock Text="3" FontWeight="Bold" Foreground="#475569" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                                        <TextBlock Text="3" FontWeight="Bold" Foreground="{DynamicResource CinzaEscuroColor}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
-                                        <TextBlock FontWeight="SemiBold" Foreground="#1E293B" FontSize="13" Text="Auditoria Documental"/>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource TextoPadraoColor}" FontSize="13" Text="Auditoria Documental"/>
                                         <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Apresente os dados do sistema ReGraphik como prova de destino correto."/>
                                     </StackPanel>
                                 </Grid>
@@ -395,7 +395,7 @@
                                         <TextBlock Text="✨" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
                                     </Border>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0">
-                                        <TextBlock FontWeight="SemiBold" Foreground="#D97706" FontSize="13" Text="Homologação e Certificado"/>
+                                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource LaranjaEsgColor}" FontSize="13" Text="Homologação e Certificado"/>
                                         <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource CinzaColor}" FontSize="12" Text="Sua empresa inserida formalmente no sistema nacional Certifiq."/>
                                     </StackPanel>
                                 </Grid>
@@ -405,9 +405,9 @@
                         <!-- Ações Laterais Dinâmicas -->
                         <Grid Grid.Column="2" VerticalAlignment="Top">
                             <StackPanel>
-                                <TextBlock Text="Ações Disponíveis" FontWeight="Bold" Foreground="#0F172A" FontSize="13" Margin="0,0,0,14"/>
+                                <TextBlock Text="Ações Disponíveis" FontWeight="Bold" Foreground="{DynamicResource TextoColor}" FontSize="13" Margin="0,0,0,14"/>
 
-                                <Button Style="{StaticResource ModernButtonStyle}" Command="{Binding IrParaRelatoriosCommand}" Height="42" Background="#D97706" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,24">
+                                <Button Style="{StaticResource ModernButtonStyle}" Command="{Binding IrParaRelatoriosCommand}" Height="42" Background="{DynamicResource LaranjaEsgColor}" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,24">
                                     <Button.Effect>
                                         <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.15" Color="#D97706"/>
                                     </Button.Effect>
@@ -419,7 +419,7 @@
 
                                 <Border Background="#F8FAFC" CornerRadius="12" Padding="18" BorderThickness="1" BorderBrush="#E2E8F0">
                                     <StackPanel>
-                                        <TextBlock Text="Atalhos do INMETRO" FontWeight="SemiBold" Foreground="#475569" FontSize="12" Margin="0,0,14,12"/>
+                                        <TextBlock Text="Atalhos do INMETRO" FontWeight="SemiBold" Foreground="{DynamicResource CinzaEscuroColor}" FontSize="12" Margin="0,0,14,12"/>
 
                                         <Button Style="{StaticResource LinkButtonStyle}" Tag="https://www.gov.br/inmetro/pt-br" Click="AbrirLink_Click" 
                                                 Content="🌐 Portal Oficial gov.br/inmetro"/>

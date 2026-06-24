@@ -33,7 +33,7 @@
             <TextBlock Grid.Row="0"
                    Text="Relatórios"
                    FontSize="20" FontWeight="Bold"
-                   Foreground="#1E293B"
+                   Foreground="{DynamicResource TextoPadraoColor}"
                    Margin="0,0,0,16"/>
 
             <!-- Painel de Filtros -->
@@ -49,7 +49,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Text="Filtros" FontSize="15" FontWeight="Bold"
-                           Foreground="#1E293B" Margin="0,0,0,14"/>
+                           Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,14"/>
 
                     <!-- Tipo, Origem, Status -->
                     <Grid Grid.Row="1" Margin="0,0,0,14">
@@ -79,7 +79,7 @@
                                     <ComboBoxItem Content="Outro"/>
                                 </ComboBox>
 
-                                <TextBlock Text="Selecione o tipo..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Selecione o tipo..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -108,7 +108,7 @@
                                     <ComboBoxItem Content="Sobra de Impressão"/>
                                 </ComboBox>
 
-                                <TextBlock Text="Selecione a origem..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Selecione a origem..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -138,7 +138,7 @@
                                     <ComboBoxItem Content="Processado"/>
                                 </ComboBox>
 
-                                <TextBlock Text="Selecione o status..." Foreground="#94A3B8" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Selecione o status..." Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="12,0,0,0" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -188,7 +188,7 @@
                         <Button Grid.Column="6" Content="Limpar"
                             Command="{Binding LimparFiltrosCommand}"
                             Width="90" Height="38"
-                            Background="White" BorderBrush="#CBD5E1" BorderThickness="1"
+                            Background="White" BorderBrush="{DynamicResource CinzaClaroColor}" BorderThickness="1"
                             Foreground="{DynamicResource CinzaColor}" FontWeight="SemiBold" VerticalAlignment="Bottom">
                             <Button.Resources>
                                 <Style TargetType="Border">
@@ -278,7 +278,7 @@
                     <Grid Grid.Row="0" Margin="0,0,0,16">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="Resultado do Relatório"
-                                   FontSize="16" FontWeight="Bold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                                   FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" VerticalAlignment="Center"/>
                             <Border Background="#EFF6FF" CornerRadius="10" Padding="8,3" Margin="10,0,0,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding TotalRegistros, StringFormat={}{0} registro(s)}"
                                        FontSize="12" FontWeight="SemiBold" Foreground="#1E40AF"/>
@@ -288,7 +288,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                             <TextBlock Text="{Binding MensagemStatus}"
                                    VerticalAlignment="Center" FontSize="12"
-                                   Foreground="#94A3B8" Margin="0,0,12,0"/>
+                                   Foreground="{DynamicResource TextoCinzaColor}" Margin="0,0,12,0"/>
 
                             <Button Content="⬇ Exportar PDF"
                                 Command="{Binding ExportarPdfCommand}"
@@ -374,7 +374,7 @@
                                     <Style TargetType="TextBlock">
                                         <Setter Property="VerticalAlignment" Value="Center"/>
                                         <Setter Property="FontWeight" Value="Medium"/>
-                                        <Setter Property="Foreground" Value="#1E293B"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource TextoPadraoColor}"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
@@ -403,7 +403,7 @@
                                         <Setter Property="VerticalAlignment" Value="Center"/>
                                         <Setter Property="HorizontalAlignment" Value="Center"/>
                                         <Setter Property="TextAlignment" Value="Center"/>
-                                        <Setter Property="Foreground" Value="#1E293B"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource TextoPadraoColor}"/>
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
