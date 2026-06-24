@@ -265,6 +265,76 @@
                 <StackPanel Grid.Row="2" Margin="8,0,8,12">
                     <TextBlock Text="CONFIGURAÇÕES" FontSize="11" FontWeight="SemiBold" Foreground="#a9bcd2" Margin="20,16,20,8"/>
 
+                    <!-- Gerenciar Usuários -->
+                    <Button x:Name="BtnGerenciarUsuarios"
+                    Command="{Binding NavegarGerenciarUsuariosCommand}"
+                    Tag="GerenciarUsuarios"
+                    Cursor="Hand">
+
+
+                        <Button.Style>
+
+                            <Style TargetType="Button"
+                            BasedOn="{StaticResource NavBtn}">
+
+                                <Style.Triggers>
+
+                                    <DataTrigger Binding="{Binding BtnAtivo}"
+                             Value="GerenciarUsuarios">
+
+                                        <Setter Property="Background"
+                            Value="#022654"/>
+
+                                        <Setter Property="Foreground"
+                            Value="White"/>
+
+                                    </DataTrigger>
+
+
+                                </Style.Triggers>
+
+                            </Style>
+
+                        </Button.Style>
+
+
+
+                        <Button.ToolTip>
+
+                            <ToolTip Style="{StaticResource BtnTooltip}"
+                         BorderThickness="0"
+                         HasDropShadow="True">
+
+                                <TextBlock Text="Gerenciamento de usuários do sistema"
+                       FontWeight="SemiBold"
+                       FontSize="12"
+                       Margin="4,2"/>
+
+                            </ToolTip>
+
+                        </Button.ToolTip>
+
+
+
+                        <StackPanel Orientation="Horizontal">
+
+
+                            <iconPacks:PackIconMaterial
+                            Kind="AccountGroup"
+                            Width="20"
+                            Height="20"
+                            Margin="0,0,8,0"/>
+
+
+                            <TextBlock Text="Gerenciar Usuários"
+                   FontWeight="Bold"/>
+
+
+                        </StackPanel>
+
+
+                    </Button>
+
                     <!-- Minha Conta -->
                     <Button x:Name="BtnConta"
                             Command="{Binding NavegarContaCommand}" Tag="Conta"
