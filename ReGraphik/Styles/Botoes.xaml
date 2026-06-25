@@ -185,7 +185,7 @@
                         CornerRadius="6" 
                         Padding="{TemplateBinding Padding}">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.15" Color="#000"/>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.15" Color="Black"/>
                         </Border.Effect>
 
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>

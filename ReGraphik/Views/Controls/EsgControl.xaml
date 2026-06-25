@@ -28,7 +28,7 @@
                 </Setter>
                 <Setter Property="Effect">
                     <Setter.Value>
-                        <DropShadowEffect ShadowDepth="4" BlurRadius="16" Opacity="0.03" Color="{DynamicResource TextoColor}"/>
+                        <DropShadowEffect ShadowDepth="4" BlurRadius="16" Opacity="0.03" Color="Black"/>
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>

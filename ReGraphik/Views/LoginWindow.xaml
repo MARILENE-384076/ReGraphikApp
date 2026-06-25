@@ -31,7 +31,7 @@
     <Grid Background="#E2E8F0">
         <Border Margin="40,30,40,30" CornerRadius="16" Background="White" ClipToBounds="True">
             <Border.Effect>
-                <DropShadowEffect ShadowDepth="0" BlurRadius="24" Opacity="0.15" Color="#000"/>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="24" Opacity="0.15" Color="Black"/>
             </Border.Effect>
 
             <Grid>
