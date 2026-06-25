@@ -9,6 +9,7 @@ namespace ReGraphik.Models
         [JsonProperty("id")]
         public string Id { get; set; }
 
+        [JsonPropertyName("name")]
         [JsonProperty("name")]
         public string Nome { get; set; }
 
@@ -20,6 +21,7 @@ namespace ReGraphik.Models
         [JsonProperty("email")]
         public string Email { get; set; }
 
+        [JsonPropertyName("login")]
         [JsonProperty("login")]
         public string Login { get; set; }
 
@@ -31,6 +33,7 @@ namespace ReGraphik.Models
         [JsonProperty("perfil")]
         public string Perfil { get; set; }
 
+        [JsonPropertyName("data_cadastro")]
         [JsonProperty("data_cadastro")]
         public DateTime DataCadastro { get; set; }
 
@@ -42,6 +45,7 @@ namespace ReGraphik.Models
         [JsonProperty("ativo")]
         public bool Ativo { get; set; }
 
+        [JsonPropertyName("token_validacao")]
         [JsonProperty("token_validacao")]
         public string? TokenValidacao { get; set; }
 

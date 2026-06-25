@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ReGraphik.Services
 {
@@ -32,13 +33,25 @@ namespace ReGraphik.Services
         {
             var payload = new Dictionary<string, object>
             {
-                { "name", nome }, { "cpf", cpf }, { "email", email }, { "login", login }, { "senha", senha }, { "perfil", "Administrador" }
-        };
+                { "name", nome },
+                { "cpf", cpf },
+                { "email", email },
+                { "login", login },
+                { "senha", senha },
+                { "perfil", "Administrador" }
+            };
 
-            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+            var content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json");
 
-            // Passamos o token via query param para a API revalidar por segurança
-            var response = await _httpClient.PostAsync($"usuario/finalizar-cadastro?token={token}", content);
+            var response = await _httpClient.PostAsync(
+                $"usuario/finalizar-cadastro?token={token}",
+                content);
+
+            var resposta = await response.Content.ReadAsStringAsync();
+
             return response.IsSuccessStatusCode;
         }
 

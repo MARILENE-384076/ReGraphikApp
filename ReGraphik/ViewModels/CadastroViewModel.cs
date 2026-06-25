@@ -17,10 +17,14 @@ namespace ReGraphik.ViewModels
     {
         private readonly IAutorizarService _autorizarService;
 
-        // serviço de convites direto no Firebase 
+        /// <summary>
+        /// Serviço de convites direto no Firebase 
+        /// </summary>
         private readonly ConviteService _conviteService;
 
-        // campos 
+        /// <summary>
+        /// Campos 
+        /// </summary>
         private string? _nome;
         private string? _cpf;
         private string? _email;
@@ -39,16 +43,45 @@ namespace ReGraphik.ViewModels
         private string _mensagemErroToken = string.Empty;
         private bool _cadastroFinalizadoComSucesso;
 
-        // visibilidade das etapas
-        /// <summary>Etapa 1: campo de e-mail + botão "Solicitar Acesso".</summary>
+        /// <summary>
+        /// Visibilidade das etapas + botão "Solicitar Acesso"
+        /// </summary> 
         public bool ExibirSolicitacaoAcesso => !SolicitacaoEnviada;
 
-        /// <summary>Etapa 3: formulário completo de dados do usuário.</summary>
+        /// <summary>
+        /// Formulário completo de dados do usuário.
+        /// </summary>
         public bool ExibirFormularioCompleto => IsTokenValido && !CadastroFinalizadoComSucesso;
 
-        // ── propriedades ─────────────────────────────────────────────────────
         public string? Nome { get => _nome; set { _nome = value; OnPropertyChanged(); } }
-        public string? CPF { get => _cpf; set { _cpf = value; OnPropertyChanged(); } }
+        public string? CPF { 
+            get => _cpf;   
+            set {
+                if (_cpf == value) return;
+
+                /// Remove tudo o que não for número
+                string apenasNumeros = value != null
+                    ? System.Text.RegularExpressions.Regex.Replace(value, @"[^\d]", "")
+                    : string.Empty;
+
+                /// Limita a 11 dígitos para não quebrar a formatação
+                if (apenasNumeros.Length > 11)
+                    apenasNumeros = apenasNumeros.Substring(0, 11);
+
+                /// Aplica a máscara dinamicamente baseado na quantidade de números
+                string cpfFormatado = apenasNumeros;
+
+                if (apenasNumeros.Length > 3 && apenasNumeros.Length <= 6)
+                    cpfFormatado = $"{apenasNumeros.Substring(0, 3)}.{apenasNumeros.Substring(3)}";
+                else if (apenasNumeros.Length > 6 && apenasNumeros.Length <= 9)
+                    cpfFormatado = $"{apenasNumeros.Substring(0, 3)}.{apenasNumeros.Substring(3, 3)}.{apenasNumeros.Substring(6)}";
+                else if (apenasNumeros.Length > 9)
+                    cpfFormatado = $"{apenasNumeros.Substring(0, 3)}.{apenasNumeros.Substring(3, 3)}.{apenasNumeros.Substring(6, 3)}-{apenasNumeros.Substring(9)}";
+
+                _cpf = cpfFormatado;
+                OnPropertyChanged();
+            } 
+        }
         public string? Email { get => _email; set { _email = value; OnPropertyChanged(); } }
         public string? Login { get => _login; set { _login = value; OnPropertyChanged(); } }
 
@@ -83,6 +116,7 @@ namespace ReGraphik.ViewModels
             {
                 _isTokenValido = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SolicitacaoEnviada));
                 OnPropertyChanged(nameof(ExibirFormularioCompleto));
             }
         }
@@ -112,13 +146,18 @@ namespace ReGraphik.ViewModels
         public string MensagemErroGeral { get => _mensagemErroGeral; set { _mensagemErroGeral = value; OnPropertyChanged(); } }
         public string MensagemErroToken { get => _mensagemErroToken; set { _mensagemErroToken = value; OnPropertyChanged(); } }
 
-        // commands
+        /// <summary>
+        /// commands
+        /// </summary>
         public ICommand SolicitarAcessoCommand { get; }
         public ICommand ValidarTokenCommand { get; }
         public ICommand FinalizarCadastroCommand { get; }
         public ICommand RevelarSenhaCadastroCommand { get; }
 
-        // construtor
+        /// <summary>
+        /// construtor
+        /// </summary>
+        /// <param name="autorizarService"></param>
         public CadastroViewModel(IAutorizarService? autorizarService = null)
         {
             _autorizarService = autorizarService ?? new AutorizarService();
@@ -130,7 +169,7 @@ namespace ReGraphik.ViewModels
             RevelarSenhaCadastroCommand = new RelayCommand(p => AlternarVisibilidadeSenha(p));
         }
 
-        // ETAPA 1: verificar e-mail 
+        /// ETAPA 1: verificar e-mail 
         /// <summary>
         /// Verifica APENAS se o e-mail informado possui um convite válido
         /// pendente no Firebase. Não gera token — o Administrador já gerou.
@@ -157,19 +196,19 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = true;
 
-                // Verifica no Firebase se existe pelo menos um convite
-                // para este e-mail que ainda não foi usado e não expirou.
+                /// Verifica no Firebase se existe pelo menos um convite
+                /// para este e-mail que ainda não foi usado e não expirou.
                 bool temConvite = await _conviteService.ExisteConvitePendenteAsync(Email.Trim());
 
                 if (temConvite)
                 {
-                    // Avança para a etapa 2: digitar o token enviado pelo Administrador
+                    /// Avança para a etapa 2: digitar o token enviado pelo Administrador
                     SolicitacaoEnviada = true;
                     MensagemErroGeral = "E-mail localizado. Digite o token que o Administrador enviou a você.";
                 }
                 else
                 {
-                    // E-mail não tem convite — bloqueia sem dar informação útil a invasores
+                    /// E-mail não tem convite — bloqueia sem dar informação útil a invasores
                     MensaEmail = "Este e-mail não possui um convite de acesso válido. Entre em contato com o Administrador.";
                 }
             }
@@ -183,7 +222,7 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ETAPA 2: validar token
+        /// ETAPA 2: validar token
         /// <summary>
         /// Valida o token digitado pelo usuário consultando o Firebase.
         /// O token deve:
@@ -218,7 +257,6 @@ namespace ReGraphik.ViewModels
                 }
                 else
                 {
-                    // Mensagem genérica — não revela o motivo específico da falha
                     MensagemErroToken = "Token inválido, expirado ou já utilizado. Solicite um novo convite ao Administrador.";
                 }
             }
@@ -232,7 +270,7 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ETAPA 3: finalizar cadastro
+        /// ETAPA 3: finalizar cadastro
         /// <summary>
         /// Cria a conta do usuário na API após todas as validações passarem.
         /// Ao finalizar, marca o token como usado no Firebase (uso único).
@@ -265,10 +303,17 @@ namespace ReGraphik.ViewModels
                 MensaCpf = "O CPF é obrigatório.";
                 possuiErro = true;
             }
-            else if (!ValidacaoCpfService.Validar(CPF))
+            else
             {
-                MensaCpf = "CPF inválido. Verifique os dígitos informados.";
-                possuiErro = true;
+                /// Cria uma variável limpa, apenas com números
+                string cpfLimpo = System.Text.RegularExpressions.Regex.Replace(CPF, @"[^\d]", "");
+
+                /// Passa o CPF SEM pontos e SEM hífen para o validador
+                if (!ValidacaoCpfService.Validar(cpfLimpo))
+                {
+                    MensaCpf = "CPF inválido. Verifique os dígitos informados.";
+                    possuiErro = true;
+                }
             }
 
             if (possuiErro) return;
@@ -279,14 +324,14 @@ namespace ReGraphik.ViewModels
 
                 string cpfFormatado = ValidacaoCpfService.Formatar(CPF!);
 
-                // Cria a conta na API com o e-mail já validado pelo convite
+                /// Cria a conta na API com o e-mail já validado pelo convite
                 bool cadastrado = await _autorizarService.FinalizarCadastroAsync(
                     Nome!, cpfFormatado, Email!, Login!, senha,
                     TokenDigitado.Trim().ToUpper());
 
                 if (cadastrado)
                 {
-                    // Marca o token como usado — impede reuso imediato
+                    /// Marca o token como usado — impede reuso imediato
                     await _conviteService.MarcarComoUsadoAsync(TokenDigitado.Trim().ToUpper());
 
                     CadastroFinalizadoComSucesso = true;
@@ -307,7 +352,10 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // utilitários 
+        /// <summary>
+        ///  Muda visibilidade da senha
+        /// </summary>
+        /// <param name="parameter"></param>
         private void AlternarVisibilidadeSenha(object parameter)
         {
             if (parameter is not Grid grid) return;

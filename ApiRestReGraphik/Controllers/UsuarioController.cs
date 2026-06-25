@@ -186,120 +186,6 @@ namespace ApiRestReGraphik.Controllers
         }
 
         /// <summary>
-        /// POST api/Usuario/autorizar-token - Aprova o e-mail da fila e gera o token.
-        /// </summary>
-        /// 
-        /// <remarks>Responsável por validar o token de usuário no ReGraphik.
-        /// 
-        /// Requisitos de validação:
-        /// - Email: Deve ser uma string representando o email do usuário, seguindo um formato de email válido. (ex: "joão@regraphik.com.br")
-        /// - Token: Deve ser uma string representando o token do usuário. (ex: "263456")
-        /// 
-        /// Observação: Retorna um status 201 Created com os dados do usuário criado, um status 400 Bad Request se a requisição for inválida ou
-        /// um status 500 Internal Server Error em caso de falha.
-        /// </remarks>
-        /// 
-        /// <param name="email">Objeto do tipo Usuario a ser criado.</param>
-        /// 
-        /// <response code="201">Token criado com sucesso.</response>
-        /// <response code="400">Requisição inválida, token com dados incorretos.</response>
-        /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        [HttpPost("autorizar-token")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult AutorizarToken([FromQuery] string email)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(email))
-                    return BadRequest("O e-mail é obrigatório para autorização.");
-
-                string tokenGerado = new Random().Next(100000, 999999).ToString();
-
-                _tokensAutorizados[email] = tokenGerado;
-
-                _logger.LogInformation($"[ADMIN AUTORIZOU] Administrador liberou o acesso. Token {tokenGerado} gerado para {email}");
-
-                return Ok(new
-                {
-                    mensagem = $"Cadastro pré-autorizado com sucesso para {email}.",
-                    token = tokenGerado
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao autorizar token para o e-mail {email}.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erro interno ao gerar autorização.");
-            }
-        }
-
-        /// <summary>
-        /// POST api/Usuario/validar-token - WPF valida se o token bate com o e-mail.
-        /// </summary>
-        /// 
-        /// <remarks>Responsável por validar o token de usuário no ReGraphik.
-        /// 
-        /// Requisitos de validação:
-        /// - Id: Deve ser um guid gerado automaticamente pelo sistema. (ex: "0d95265b-2757-424e-8ea9-445e8fd2a422")
-        /// - Email: Deve ser uma string representando o email do usuário, seguindo um formato de email válido. (ex: "joão@regraphik.com.br")
-        /// - Token: Deve ser uma string representando o token do usuário. (ex: "263456")
-        /// 
-        /// Observação: Retorna um status 201 Created com os dados do usuário criado, um status 400 Bad Request se a requisição for inválida ou
-        /// um status 500 Internal Server Error em caso de falha.
-        /// </remarks>
-        /// 
-        /// <param name="model">Objeto do tipo Usuario a ser criado.</param>
-        /// 
-        /// <response code="201">Token criado com sucesso.</response>
-        /// <response code="400">Requisição inválida, token com dados incorretos.</response>
-        /// <response code="500">Ocorreu um erro ao processar a solicitação.</response>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        [HttpPost("validar-token")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ValidarToken([FromBody] RequisicaoToken model)
-        {
-            try
-            {
-                ///  Validação básica de entrada
-                if (model == null || string.IsNullOrWhiteSpace(model.Email) || string.IsNullOrWhiteSpace(model.Token))
-                {
-                    return BadRequest(new { mensagem = "Dados de validação incompletos." });
-                }
-
-                /// Busca o token ativo para aquele e-mail no dicionário de memória
-                if (!_tokensAutorizados.TryGetValue(model.Email, out var tokenCorreto))
-                {
-                    return BadRequest(new { mensagem = "Nenhum token ativo foi encontrado para este e-mail ou ele já expirou." });
-                }
-
-                /// Compara se o token digitado está correto
-                if (tokenCorreto != model.Token)
-                {
-                    return BadRequest(new { mensagem = "Token inválido. Verifique o código digitado." });
-                }
-
-                _tokensAutorizados.Remove(model.Email);
-
-                _logger.LogInformation($"[VALIDADO & QUEIMADO] Token utilizado com sucesso por {model.Email}. Código inutilizado.");
-
-                return Ok(new { mensagem = "Token validado com sucesso! Prossiga com o cadastro." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao validar token para o e-mail: {model?.Email}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a validação do token.");
-            }
-        }
-
-        /// <summary>
         /// POST api/Usuario/finalizar-cadastro - Após validar o token, salva o usuário definitivo no banco.
         /// </summary>
         /// 
@@ -333,12 +219,6 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> FinalizarCadastro([FromBody] UsuarioDto dto, [FromQuery] string token)
         {
-            /// Dupla checagem de segurança para garantir que o token ainda é válido
-            if (!_tokensAutorizados.TryGetValue(dto.Email, out var tokenCorreto) || tokenCorreto != token)
-            {
-                return BadRequest("Sessão de cadastro inválida ou token expirado.");
-            }
-
             try
             {
                 var novoUsuario = new Usuario

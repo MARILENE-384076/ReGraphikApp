@@ -11,31 +11,53 @@
         /// </summary>
         public static bool Validar(string? cpf)
         {
-            if (string.IsNullOrWhiteSpace(cpf)) return false;
+            if (string.IsNullOrWhiteSpace(cpf))
+                return false;
 
-            var digits = System.Text.RegularExpressions.Regex.Replace(cpf, @"\D", "");
+            /// Remove pontos, traços e espaços, deixando apenas os números
+            string cpfLimpo = System.Text.RegularExpressions.Regex.Replace(cpf, @"[^\d]", "");
 
-            if (digits.Length != 11) return false;
+            /// O CPF deve conter exatamente 11 dígitos numéricos
+            if (cpfLimpo.Length != 11)
+                return false;
 
-            if (new string(digits[0], 11) == digits) return false;
+            // Ignora CPFs com todos os dígitos iguais (ex: 111.111.111-11)
+            if (new string(cpfLimpo[0], 11) == cpfLimpo)
+                return false;
 
+            /// Cálculo do primeiro dígito verificador
+            int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            string tempCpf = cpfLimpo.Substring(0, 9);
             int soma = 0;
+
             for (int i = 0; i < 9; i++)
-                soma += int.Parse(digits[i].ToString()) * (10 - i);
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
 
             int resto = soma % 11;
-            int primeiroDigito = resto < 2 ? 0 : 11 - resto;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
 
-            if (primeiroDigito != int.Parse(digits[9].ToString())) return false;
+            string digito = resto.ToString();
+            tempCpf = tempCpf + digito;
 
+            /// Cálculo do segundo dígito verificador
+            int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
             soma = 0;
             for (int i = 0; i < 10; i++)
-                soma += int.Parse(digits[i].ToString()) * (11 - i);
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
 
             resto = soma % 11;
-            int segundoDigito = resto < 2 ? 0 : 11 - resto;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
 
-            return segundoDigito == int.Parse(digits[10].ToString());
+            digito = digito + resto.ToString();
+
+            /// Verifica se os dois últimos dígitos calculados batem com os do CPF digitado
+            return cpfLimpo.EndsWith(digito);
         }
 
         /// <summary>
@@ -43,11 +65,10 @@
         /// </summary>
         public static string Formatar(string? cpf)
         {
-            if (string.IsNullOrWhiteSpace(cpf)) return string.Empty;
-            var d = System.Text.RegularExpressions.Regex.Replace(cpf, @"\D", "");
-            return d.Length == 11
-                ? $"{d[..3]}.{d[3..6]}.{d[6..9]}-{d[9..11]}"
-                : cpf;
+            string apenasNumeros = System.Text.RegularExpressions.Regex.Replace(cpf, @"[^\d]", "");
+            if (apenasNumeros.Length != 11) return cpf;
+
+            return Convert.ToUInt64(apenasNumeros).ToString(@"000\.000\.000\-00");
         }
     }
 }
