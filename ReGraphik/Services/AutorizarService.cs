@@ -29,7 +29,7 @@ namespace ReGraphik.Services
         /// Envia os dados iniciais do usuário para o servidor realizar o pré-cadastro e gerar o token.
         /// </summary>
         /// <summary>
-        public async Task<bool> FinalizarCadastroAsync(string nome, string cpf, string email, string login, string senha, string token)
+        public async Task<bool> FinalizarCadastroAsync(string nome, string cpf, string email, string login, string senha, string token, string perfil)
         {
             var payload = new Dictionary<string, object>
             {
@@ -38,7 +38,7 @@ namespace ReGraphik.Services
                 { "email", email },
                 { "login", login },
                 { "senha", senha },
-                { "perfil", "Administrador" }
+                { "perfil", perfil }
             };
 
             var content = new StringContent(

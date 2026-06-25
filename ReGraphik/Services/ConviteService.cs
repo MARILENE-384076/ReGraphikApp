@@ -20,7 +20,7 @@ namespace ReGraphik.Services
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<string> GerarConviteAsync(string email)
+        public async Task<string> GerarConviteAsync(string email, string perfil)
         {
             var token = GerarToken(8);
             var convite = new
@@ -57,8 +57,9 @@ namespace ReGraphik.Services
         /// </summary>
         /// <param name="email"></param>
         /// <param name="token"></param>
+        /// <param name="perfil"></param>
         /// <returns></returns>
-        public async Task<bool> ValidarTokenAsync(string email, string token)
+        public async Task<string?> ValidarTokenAsync(string email, string token)
         {
             try
             {
@@ -67,15 +68,19 @@ namespace ReGraphik.Services
                     .Child(token.Trim().ToUpper())
                     .OnceSingleAsync<ConviteFirebase>();
 
-                if (resultado == null) return false;
-                if (resultado.Usado) return false;
-                if (DateTime.UtcNow > DateTime.Parse(resultado.Expira)) return false;
+                if (resultado == null) return null;
+                if (resultado.Usado) return null;
+                if (DateTime.UtcNow > DateTime.Parse(resultado.Expira)) return null;
                 if (!string.Equals(resultado.Email, email.Trim(),
-                    StringComparison.OrdinalIgnoreCase)) return false;
+                    StringComparison.OrdinalIgnoreCase)) return null;
 
-                return true;
+                /// Retorna o perfil salvo no Firabse
+                return !string.IsNullOrWhiteSpace(resultado.Perfil) ? resultado.Perfil : "User";
             }
-            catch { return false; }
+            catch 
+            { 
+                return null; 
+            }
         }
 
         /// <summary>

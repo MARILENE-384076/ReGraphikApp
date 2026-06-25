@@ -8,7 +8,7 @@ namespace ReGraphik.Services.Interface
 
         Task<bool> FinalizarCadastroAsync(
             string nome, string cpf, string email,
-            string login, string senha, string token);
+            string login, string senha, string token, string perfil);
 
         Task<Usuario?> LoginAsync(string login, string senha);
 

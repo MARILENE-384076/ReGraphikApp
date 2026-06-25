@@ -14,9 +14,14 @@ namespace ReGraphik.Models
     {
         [JsonProperty("email")] 
         public string Email { get; set; } = "";
+
         [JsonProperty("expira")]
         public string Expira { get; set; } = "";
+
         [JsonProperty("usado")] 
         public bool Usado { get; set; }
+
+        [JsonProperty("perfil")]
+        public string Perfil { get; set; } = "";
     }
 }

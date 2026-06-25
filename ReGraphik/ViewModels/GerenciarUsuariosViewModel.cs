@@ -32,6 +32,17 @@ namespace ReGraphik.ViewModels
             set { _emailConvite = value; OnPropertyChanged(); }
         }
 
+        private string _perfilSelecionado = "Usuário"; // Valor padrão
+        public string PerfilSelecionado
+        {
+            get => _perfilSelecionado;
+            set
+            {
+                _perfilSelecionado = value;
+                OnPropertyChanged(nameof(PerfilSelecionado)); // Ou SetProperty se usar CommunityToolkit
+            }
+        }
+
         // ── token gerado (exibido após gerar convite) ─────────────────────
         private string _tokenGerado = string.Empty;
         public string TokenGerado
@@ -149,7 +160,9 @@ namespace ReGraphik.ViewModels
             {
                 GerandoConvite = true;
 
-                string token = await _conviteService.GerarConviteAsync(EmailConvite.Trim());
+                string perfilUsuario = PerfilSelecionado == "Administrador" ? "Admin" : "User";
+
+                string token = await _conviteService.GerarConviteAsync(EmailConvite.Trim(), perfilUsuario);
                 TokenGerado = token;
 
                 Mensagem = $"Convite gerado com sucesso para {EmailConvite}. " +
