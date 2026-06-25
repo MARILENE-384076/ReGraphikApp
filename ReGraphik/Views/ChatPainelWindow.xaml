@@ -121,7 +121,7 @@
                 BorderBrush="#E2E8F0"
                 BorderThickness="1">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Color="#000000" Opacity="0.12"/>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="4" Color="Black" Opacity="0.12"/>
             </Border.Effect>
 
             <Grid>
@@ -356,7 +356,7 @@
                                             <Border Background="{Binding EhMinhaMensagem, Converter={StaticResource CorFundoConv}}"
                                                     CornerRadius="12" Padding="10,8">
                                                 <Border.Effect>
-                                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Color="#000" Opacity="0.06"/>
+                                                    <DropShadowEffect BlurRadius="4" ShadowDepth="1" Color="Black" Opacity="0.06"/>
                                                 </Border.Effect>
                                                 <TextBlock Text="{Binding Texto}"
                                                            Foreground="{Binding EhMinhaMensagem, Converter={StaticResource CorTextoConv}}"

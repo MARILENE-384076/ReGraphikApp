@@ -35,7 +35,7 @@
 
             <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20">
                 <Border.Effect>
-                    <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="#000"/>
+                    <DropShadowEffect ShadowDepth="2" BlurRadius="12" Opacity="0.04" Color="Black"/>
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -225,7 +225,7 @@
                     <DataTemplate>
                         <Border Background="White" Width="370" CornerRadius="12" Margin="0,0,16,16">
                             <Border.Effect>
-                                <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.05" Color="#000"/>
+                                <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.05" Color="Black"/>
                             </Border.Effect>
 
                             <Grid>

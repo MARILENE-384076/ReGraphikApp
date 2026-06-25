@@ -24,7 +24,7 @@
 
     <Border Background="#F8FAFC" CornerRadius="16" Margin="10">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.25" Color="#000000"/>
+            <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.25" Color="Black"/>
         </Border.Effect>
 
         <Grid Margin="24">

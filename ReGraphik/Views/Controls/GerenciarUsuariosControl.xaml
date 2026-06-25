@@ -76,7 +76,7 @@
                     Padding="28,24">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="12" ShadowDepth="1"
-                                      Color="#000" Opacity="0.05" Direction="270"/>
+                                      Color="Black" Opacity="0.05" Direction="270"/>
                 </Border.Effect>
 
                 <Grid>
@@ -333,7 +333,7 @@
                     Padding="28,24">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="12" ShadowDepth="1"
-                                      Color="#000" Opacity="0.05" Direction="270"/>
+                                      Color="Black" Opacity="0.05" Direction="270"/>
                 </Border.Effect>
 
                 <StackPanel>

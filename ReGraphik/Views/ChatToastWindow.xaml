@@ -42,7 +42,7 @@
             MouseLeftButtonDown="Toast_Click">
         <Border.Effect>
             <DropShadowEffect BlurRadius="16" ShadowDepth="4"
-                              Color="#000000" Opacity="0.14"/>
+                              Color="Black" Opacity="0.14"/>
         </Border.Effect>
 
         <Grid Margin="14,10">

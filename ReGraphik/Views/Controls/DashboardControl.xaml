@@ -42,7 +42,7 @@
                         <Grid Width="50" Height="50">
                             <Border CornerRadius="25" BorderBrush="#E2E8F0" BorderThickness="1" Background="{DynamicResource AzulEscuroColor}">
                                 <Border.Effect>
-                                    <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                                    <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                                 </Border.Effect>
                             </Border>
 
@@ -98,7 +98,7 @@
 
                 <Border Grid.Column="0" Background="{DynamicResource AzulEscuroColor}" CornerRadius="12" Padding="20" Height="100" Margin="0,0,12,0">
                     <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding ResiduosDb}" FontSize="18" FontWeight="Bold" Foreground="White"/>
@@ -108,7 +108,7 @@
 
                 <Border Grid.Column="1" Background="{DynamicResource AzulMedioColor}" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
                     <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Reaproveitar}" FontSize="18" FontWeight="Bold" Foreground="White"/>
@@ -118,7 +118,7 @@
 
                 <Border Grid.Column="2" Background="{DynamicResource AzulClaroColor}" CornerRadius="12" Padding="20" Height="100" Margin="12,0,12,0">
                     <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Estoque}" FontSize="18" FontWeight="Bold" Foreground="White"/>
@@ -128,7 +128,7 @@
 
                 <Border Grid.Column="3" Background="{DynamicResource AzulMuitoClaroColor}" CornerRadius="12" Padding="20" Height="100" Margin="12,0,0,0">
                     <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                     </Border.Effect>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="{Binding Total}" FontSize="18" FontWeight="Bold" Foreground="White"/>
@@ -145,7 +145,7 @@
 
                 <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" Height="300" Margin="0,0,12,0">
                     <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                     </Border.Effect>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -159,7 +159,7 @@
 
                 <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="20" Height="300" Margin="12,0,0,0">
                     <Border.Effect>
-                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                        <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                     </Border.Effect>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -174,7 +174,7 @@
 
             <Border Grid.Row="4" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,16" MinHeight="300">
                 <Border.Effect>
-                    <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="#000"/>
+                    <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.08" Color="Black"/>
                 </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
