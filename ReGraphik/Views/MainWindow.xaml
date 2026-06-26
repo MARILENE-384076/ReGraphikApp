@@ -25,7 +25,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:NaoLidasVisibilidadeConverter x:Key="NaoLidasVisConv"/>
             <converters:BadgeNotificacaoConverter x:Key="BadgeConv"/>
-            <BooleanToVisibilityConverter x:Key="BoolVis"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolVis"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -267,77 +267,50 @@
 
                     <!-- Gerenciar Usuários -->
                     <Button x:Name="BtnGerenciarUsuarios"
-                    Command="{Binding NavegarGerenciarUsuariosCommand}"
-                    Tag="GerenciarUsuarios"
-                    Cursor="Hand">
-
-
+                            Command="{Binding NavegarGerenciarUsuariosCommand}"
+                            Tag="GerenciarUsuario"
+                            Cursor="Hand"
+                            Visibility="{Binding IsAdmin, Converter={StaticResource BoolVis}}">
                         <Button.Style>
-
-                            <Style TargetType="Button"
-                            BasedOn="{StaticResource NavBtn}">
-
+                            <Style TargetType="Button" BasedOn="{StaticResource NavBtn}">
                                 <Style.Triggers>
-
-                                    <DataTrigger Binding="{Binding BtnAtivo}"
-                             Value="GerenciarUsuarios">
-
-                                        <Setter Property="Background"
-                            Value="#022654"/>
-
-                                        <Setter Property="Foreground"
-                            Value="White"/>
-
+                                    <DataTrigger Binding="{Binding BtnAtivo}" Value="GerenciarUsuarios">
+                                        <Setter Property="Background" Value="#022654"/>
+                                        <Setter Property="Foreground" Value="White"/>
                                     </DataTrigger>
-
-
                                 </Style.Triggers>
-
                             </Style>
-
                         </Button.Style>
 
 
-
                         <Button.ToolTip>
-
                             <ToolTip Style="{StaticResource BtnTooltip}"
-                         BorderThickness="0"
-                         HasDropShadow="True">
-
+                                     BorderThickness="0"
+                                     HasDropShadow="True">
                                 <TextBlock Text="Gerenciamento de usuários do sistema"
-                       FontWeight="SemiBold"
-                       FontSize="12"
-                       Margin="4,2"/>
-
+                                           FontWeight="SemiBold"
+                                           FontSize="12"
+                                           Margin="4,2"/>
                             </ToolTip>
 
                         </Button.ToolTip>
-
-
-
                         <StackPanel Orientation="Horizontal">
-
-
                             <iconPacks:PackIconMaterial
-                            Kind="AccountGroup"
-                            Width="20"
-                            Height="20"
-                            Margin="0,0,8,0"/>
+                                        Kind="AccountGroup"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="0,0,8,0"/>
 
 
-                            <TextBlock Text="Gerenciar Usuários"
-                   FontWeight="Bold"/>
-
-
+                            <TextBlock Text="Gerenciar Usuário"
+                                       FontWeight="Bold"/>
                         </StackPanel>
-
-
                     </Button>
 
                     <!-- Minha Conta -->
                     <Button x:Name="BtnConta"
-                            Command="{Binding NavegarContaCommand}" Tag="Conta"
+                            Command="{Binding NavegarContaCommand}" 
+                            Tag="Conta"
                             Cursor="Hand">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource NavBtn}">
