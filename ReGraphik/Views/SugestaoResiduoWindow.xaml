@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ReGraphik.Views"
         mc:Ignorable="d"
         Title="Sugestões de Reaproveitamento" 
-        Height="550" Width="900"
+        Height="580" Width="920"
         Background="Transparent"
         AllowsTransparency="True"
         WindowStyle="None" 
@@ -22,12 +22,12 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Border Background="#F8FAFC" CornerRadius="16" Margin="10">
+    <Border Background="#F8FAFC" CornerRadius="16" Margin="12">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.25" Color="Black"/>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="3" Opacity="0.15" Color="#0F172A"/>
         </Border.Effect>
 
-        <Grid Margin="24">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -36,40 +36,122 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                <TextBlock Text="💡 Diretório de Sugestões de Reaproveitamento"
-                           FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}"/>
-            </StackPanel>
+            <Grid Grid.Row="0" Margin="24,20,24,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <Grid Grid.Row="1" Margin="0,0,0,12">
-                <StackPanel>
-                    <TextBlock Text="Selecione o Resíduo Alvo:" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource CinzaEscuroColor}" Margin="0,0,0,6"/>
-                    <ComboBox ItemsSource="{Binding ResiduosEstoque}" 
-                              SelectedItem="{Binding ResiduoSelecionado}"
-                              DisplayMemberPath="TipoResiduo" 
-                              Height="38"
-                              VerticalContentAlignment="Center"
-                              Padding="10,0"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#EFF6FF" 
+                            CornerRadius="12" 
+                            Width="44" 
+                            Height="44" 
+                            Margin="0,0,16,0"
+                            VerticalAlignment="Center">
 
-                    <TextBlock Margin="2,6,0,0" FontSize="12" Foreground="{DynamicResource CinzaColor}">
-                        <Run Text="Especificação: "/>
-                        <Run Text="{Binding ResiduoSelecionado.Especificacao, FallbackValue='Nenhum selecionado'}" FontWeight="Medium" Foreground="#334155"/>
-                        <Run Text=" — Condição: "/>
-                        <Run Text="{Binding ResiduoSelecionado.Condicao, FallbackValue='-'}" Foreground="#334155"/>
-                    </TextBlock>
+                        <Path Data="M12,2A7,7 0 0,0 5,9C5,11.39 6.19,13.5 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.5 19,11.39 19,
+                              9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" 
+                              Fill="#3B82F6" 
+                              Width="22" 
+                              Height="22" 
+                              Stretch="Uniform"
+                              HorizontalAlignment="Center" 
+                              VerticalAlignment="Center"/>
+
+                    </Border>
+
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Diretório de Sugestões" 
+                                   FontFamily="Segoe UI, Arial"
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   Foreground="#0F172A"/>
+                        <TextBlock Text="Ideias de reaproveitamento inteligente para os seus resíduos em estoque." 
+                                   FontFamily="Segoe UI, Arial"
+                                   FontSize="13" 
+                                   Foreground="#475569" 
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
                 </StackPanel>
+
+                <Button Grid.Column="1" Content="✕" Width="32" Height="32" Click="BtnFechar_Click"
+                        Background="Transparent" BorderThickness="0" Foreground="#64748B" FontWeight="Bold" FontSize="14" VerticalAlignment="Top">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#E2E8F0"/>
+                                    <Setter Property="Foreground" Value="#0F172A"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
 
-            <TextBlock Grid.Row="2" Text="{Binding Mensagem}" FontSize="12" Foreground="#1E40AF" Margin="2,0,0,8" FontWeight="Medium"/>
+            <Border Grid.Row="1" Background="White" Margin="24,8,24,12" Padding="16" CornerRadius="12" BorderBrush="#E2E8F0" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
 
-            <Grid Grid.Row="3" Margin="0,4,0,16">
+                    <!-- Tipo de Material para sugestão -->
+                    <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                        <TextBlock Text="Selecione o Resíduo Alvo" FontSize="12" FontWeight="SemiBold" Foreground="#334155" Margin="0,0,0,6"/>
+                        <ComboBox ItemsSource="{Binding ResiduosEstoque}" 
+                                  SelectedItem="{Binding ResiduoSelecionado}"
+                                  DisplayMemberPath="TipoResiduo" 
+                                  Height="40"
+                                  VerticalContentAlignment="Center"
+                                  Padding="12,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="8,0,0,0">
+                        <TextBlock Text="Especificações do Item Selecionado" FontSize="11" FontWeight="Bold" Foreground="#94A3B8"  Margin="0,0,0,6"/>
+
+                        <WrapPanel Orientation="Horizontal">
+                            <Border Background="#F1F5F9" CornerRadius="6" Padding="10,6" Margin="0,0,8,4">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Tipo: " FontSize="12" Foreground="#64748B"/>
+                                    <TextBlock Text="{Binding ResiduoSelecionado.Especificacao, FallbackValue='Nenhum selecionado'}" FontSize="12" FontWeight="SemiBold" Foreground="#334155"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#F1F5F9" CornerRadius="6" Padding="10,6" Margin="0,0,0,4">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Condição: " FontSize="12" Foreground="#64748B"/>
+                                    <TextBlock Text="{Binding ResiduoSelecionado.Condicao, FallbackValue='-'}" FontSize="12" FontWeight="SemiBold" Foreground="#334155"/>
+                                </StackPanel>
+                            </Border>
+                        </WrapPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TextBlock Grid.Row="2" Text="{Binding Mensagem}" FontSize="12" Foreground="#2563EB" Margin="26,0,26,8" FontWeight="Medium"/>
+
+            <!-- Lista de Sugestões -->
+            <Grid Grid.Row="3" Margin="24,4,24,16">
                 <DockPanel>
-                    <Border DockPanel.Dock="Top" Background="#EFF6FF" CornerRadius="6,6,0,0" Padding="12,10" BorderBrush="#E2E8F0" BorderThickness="1,1,1,0">
-                        <TextBlock Text="Ideias de Destinos Mapeadas no Sistema" FontWeight="Bold" Foreground="#1E40AF" FontSize="13"/>
+                    <Border DockPanel.Dock="Top" Background="#F1F5F9" CornerRadius="10,10,0,0" Padding="16,12" BorderBrush="#E2E8F0" BorderThickness="1,1,1,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Background="#3B82F6" Width="4" Height="14" CornerRadius="2" Margin="0,0,8,0"/>
+                            <TextBlock Text="Destinos e Ideias Mapeadas no Sistema" FontWeight="SemiBold" Foreground="#1E293B" FontSize="13"/>
+                        </StackPanel>
                     </Border>
 
                     <ListBox ItemsSource="{Binding SugestoesFiltradasView}"
-                             DisplayMemberPath="DescricaoSugestao"
                              Background="White"
                              BorderBrush="#E2E8F0"
                              BorderThickness="1"
@@ -79,22 +161,47 @@
                              VirtualizingStackPanel.VirtualizationMode="Recycling"
                              ScrollViewer.CanContentScroll="True">
 
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="4,2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="➜" Foreground="#3B82F6" FontSize="12" Margin="4,0,12,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding DescricaoSugestao}" FontSize="13" Foreground="#334155" TextWrapping="Wrap"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
                         <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                <Setter Property="Padding" Value="12,10"/>
-                                <Setter Property="Margin" Value="0,3"/>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="12"/>
+                                <Setter Property="Margin" Value="0,0,0,6"/>
                                 <Setter Property="Background" Value="#F8FAFC"/>
                                 <Setter Property="BorderBrush" Value="#E2E8F0"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="SnapsToDevicePixels" Value="True"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                                    CornerRadius="8" 
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
 
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Background" Value="#F1F5F9"/>
-                                        <Setter Property="BorderBrush" Value="{DynamicResource CinzaClaroColor}"/>
+                                        <Setter Property="BorderBrush" Value="#CBD5E1"/>
                                         <Setter Property="Cursor" Value="Hand"/>
                                     </Trigger>
-
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter Property="Background" Value="#EFF6FF"/>
                                         <Setter Property="BorderBrush" Value="#3B82F6"/>
@@ -107,13 +214,14 @@
                 </DockPanel>
             </Grid>
 
-            <Grid Grid.Row="4" Margin="0,4,0,0">
+            <!-- Botão -->
+            <Grid Grid.Row="4" Margin="24,0,24,24">
                 <Button Content="Voltar para o Estoque"
                         Style="{StaticResource BtnSecondaryStyle}"
                         Click="BtnFechar_Click"
-                        Height="38" 
-                        Width="200"
-                        HorizontalAlignment="Center"/>
+                        Height="40" 
+                        Width="220"
+                        HorizontalAlignment="Right"/>
             </Grid>
         </Grid>
     </Border>
