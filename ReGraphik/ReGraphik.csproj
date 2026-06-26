@@ -22,6 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 		<PackageReference Include="FirebaseDatabase.Net" Version="4.2.0" />
 		<PackageReference Include="Imgur.API" Version="5.0.0" />
 		<PackageReference Include="MahApps.Metro.IconPacks.Material" Version="6.2.1" />

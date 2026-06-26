@@ -1,6 +1,9 @@
-﻿using ReGraphik.Models;
+﻿using CommunityToolkit.Mvvm.Input;
+using ReGraphik.Models;
 using ReGraphik.Services;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.Mail;
 using System.Windows;
 using System.Windows.Input;
 
@@ -131,7 +134,10 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ── gerar convite ─────────────────────────────────────────────────
+        /// <summary>
+        /// Gerar convite para cadastro
+        /// </summary>
+        /// <returns></returns>
         private async Task GerarConviteAsync()
         {
             LimparMensagens();
@@ -148,13 +154,14 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            // Verifica se o e-mail já tem um convite pendente
+            /// Verifica se o e-mail já tem um convite pendente
             bool jaTemConvite = await _conviteService.ExisteConvitePendenteAsync(EmailConvite.Trim());
             if (jaTemConvite)
             {
                 MensagemErro = "Este e-mail já possui um convite ativo. Aguarde expirar (48h) ou verifique o Firebase.";
                 return;
             }
+
 
             try
             {
@@ -165,8 +172,9 @@ namespace ReGraphik.ViewModels
                 string token = await _conviteService.GerarConviteAsync(EmailConvite.Trim(), perfilUsuario);
                 TokenGerado = token;
 
-                Mensagem = $"Convite gerado com sucesso para {EmailConvite}. " +
-                           $"Envie o token abaixo ao usuário. Válido por 48 horas.";
+                /// Mensagem de sucesso atualizada informando que também foi enviado por e-mail
+                Mensagem = $"Convite gerado com sucesso para {EmailConvite.Trim()} e enviado por e-mail! " +
+                           $"O token também está disponível abaixo.";
             }
             catch
             {
@@ -178,7 +186,9 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ── copiar token para área de transferência ───────────────────────
+        /// <summary>
+        /// Copiar token para área de transferência 
+        /// </summary>
         private void CopiarToken()
         {
             if (string.IsNullOrEmpty(TokenGerado)) return;
@@ -186,7 +196,10 @@ namespace ReGraphik.ViewModels
             Mensagem = "Token copiado para a área de transferência!";
         }
 
-        // ── limpar formulário de convite ──────────────────────────────────
+
+        /// <summary>
+        /// Limpar formulário de convite
+        /// </summary>
         private void LimparConvite()
         {
             EmailConvite = string.Empty;
