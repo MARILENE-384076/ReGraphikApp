@@ -20,8 +20,6 @@ namespace ReGraphik.ViewModels
             get => _nomeUsuario;
             set { _nomeUsuario = value; OnPropertyChanged(); }
         }
-
-        private BitmapImage? _fotoPerfil;
         public BitmapImage? FotoPerfil
         {
             get
@@ -45,6 +43,14 @@ namespace ReGraphik.ViewModels
                 }
             }
         }
+
+        private string _perfil;
+        public string Perfil
+        {
+            get => _perfil;
+            set { _perfil = value; OnPropertyChanged(); }
+        }
+
 
         private int _residuosDb;
         public int ResiduosDb
@@ -100,26 +106,36 @@ namespace ReGraphik.ViewModels
 
         public ICommand AtualizarDadosCommand { get; set; }
 
-        public DashboardViewModel(string nomeUsuario)
+        public DashboardViewModel(Usuario usuarioLogado)
         {
-            GraficoPizzaModel = new PlotModel();
-            GraficoBarrasModel = new PlotModel();
-            NomeUsuario = nomeUsuario;
+            /// Inicialização única e fixa dos Models de Gráfico
+            GraficoPizzaModel = new PlotModel { Background = OxyColors.Transparent, PlotAreaBorderThickness = new OxyThickness(0), Padding = new OxyThickness(30) };
+            GraficoBarrasModel = new PlotModel { Background = OxyColors.Transparent, PlotAreaBorderThickness = new OxyThickness(0) };
+
+            /// Extrai os dados diretamente do objeto de Usuário vindo da API/Sessão
+            NomeUsuario = usuarioLogado.Nome;
+
+            /// Tratamento visual para o perfil (ex: se vier "Admin" vira "Administrador")
+            Perfil = usuarioLogado.Perfil == "Admin" || usuarioLogado.Perfil == "Administrador"
+                ? "Administrador"
+                : "Usuário";
 
             AtualizarDadosCommand = new RelayCommand(async () => await CarregarDadosDaApiAsync());
 
-            
-            UsuarioSessaoService.Instancia.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))
-                    OnPropertyChanged(nameof(FotoPerfil));
-            };
+            /// Vinculando evento de sessão de forma segura
+            UsuarioSessaoService.Instancia.PropertyChanged += OnUsuarioSessaoPropertyChanged;
 
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(
                 new System.Windows.DependencyObject()))
             {
                 _ = CarregarDadosDaApiAsync();
             }
+        }
+
+        private void OnUsuarioSessaoPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))
+                OnPropertyChanged(nameof(FotoPerfil));
         }
 
         private async Task CarregarDadosDaApiAsync()
@@ -138,7 +154,6 @@ namespace ReGraphik.ViewModels
                     string total = valorCalculado.ToString("C2");
 
                     var ultimoscinco = todosResiduos.OrderByDescending(r => r.DataCadastro).Take(5).ToList();
-
                     var ultimosComIdNumerico = ultimoscinco.Select((residuo, index) => new Residuo
                     {
                         Id = (index + 1).ToString(),
@@ -155,16 +170,8 @@ namespace ReGraphik.ViewModels
                         DimensoesLm = residuo.DimensoesLm,
                         Observacao = residuo.Observacao,
                         Anexo = residuo.Anexo
-                    });
+                    }).ToList();
 
-                    var ultimosResiduos = new ObservableCollection<Residuo>(ultimosComIdNumerico);
-
-                    var pizzaModel = new PlotModel
-                    {
-                        Background = OxyColors.Transparent,
-                        PlotAreaBorderThickness = new OxyThickness(0),
-                        Padding = new OxyThickness(30)
-                    };
 
                     var pieSeries = new PieSeries
                     {
@@ -199,9 +206,6 @@ namespace ReGraphik.ViewModels
                         pieSeries.Slices.Add(new PieSlice(statusLabel, grupo.Count()));
                         coresPaleta.Add(corFatia);
                     }
-
-                    pizzaModel.DefaultColors = coresPaleta;
-                    pizzaModel.Series.Add(pieSeries);
 
                     var barrasModel = new PlotModel
                     {
@@ -258,22 +262,29 @@ namespace ReGraphik.ViewModels
                         IsPanEnabled = false
                     };
 
-                    barrasModel.Axes.Add(categoryAxis);
-                    barrasModel.Axes.Add(valueAxis);
-                    barrasModel.Series.Add(barSeries);
-
-                    pizzaModel.InvalidatePlot(true);
-                    barrasModel.InvalidatePlot(true);
-
                     App.Current.Dispatcher.Invoke(() =>
                     {
+                        /// Atualiza as propriedades vinculadas à tela
                         ResiduosDb = totalResiduos;
                         Reaproveitar = totalReaproveitar;
                         Estoque = totalEstoque;
                         Total = total;
-                        UltimosResiduos = ultimosResiduos;
-                        GraficoPizzaModel = pizzaModel;
-                        GraficoBarrasModel = barrasModel;
+                        UltimosResiduos = new ObservableCollection<Residuo>(ultimosComIdNumerico);
+
+                        /// Limpa e atualiza os modelos de gráficos existentes (Garante animação e estabilidade de renderização)
+                        GraficoPizzaModel.Series.Clear();
+                        GraficoPizzaModel.DefaultColors = coresPaleta;
+                        GraficoPizzaModel.Series.Add(pieSeries);
+
+                        GraficoBarrasModel.Series.Clear();
+                        GraficoBarrasModel.Axes.Clear();
+                        GraficoBarrasModel.Axes.Add(categoryAxis);
+                        GraficoBarrasModel.Axes.Add(valueAxis);
+                        GraficoBarrasModel.Series.Add(barSeries);
+
+                        /// Força a atualização visual na tela
+                        GraficoPizzaModel.InvalidatePlot(true);
+                        GraficoBarrasModel.InvalidatePlot(true);
                     });
                 }
                 else
@@ -285,6 +296,15 @@ namespace ReGraphik.ViewModels
             {
                 System.Windows.MessageBox.Show($"Falha de conexão: {ex.Message}", "Erro de Código");
             }
+
+        }
+
+        /// <summary>
+        /// Implementação do padrão Dispose para desvincular do Singleton global
+        /// </summary>
+        public void Dispose()
+        {
+            UsuarioSessaoService.Instancia.PropertyChanged -= OnUsuarioSessaoPropertyChanged;
         }
     }
 }

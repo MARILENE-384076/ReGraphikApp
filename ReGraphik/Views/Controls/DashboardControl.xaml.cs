@@ -1,4 +1,5 @@
-﻿using ReGraphik.ViewModels;
+﻿using ReGraphik.Models;
+using ReGraphik.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +22,10 @@ namespace ReGraphik.Views.Controls
     /// </summary>
     public partial class DashboardControl : UserControl
     {
-        public DashboardControl(string nomeUsuario = "Usuário")
+        public DashboardControl(Usuario usuarioLogado)
         {
             InitializeComponent();
-            DataContext = new DashboardViewModel(nomeUsuario);
+            DataContext = new DashboardViewModel(usuarioLogado);
         }
     }
 }

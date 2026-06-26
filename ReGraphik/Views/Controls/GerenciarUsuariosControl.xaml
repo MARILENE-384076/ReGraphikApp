@@ -30,7 +30,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- ══ CABEÇALHO ════════════════════════════════════════════════ -->
+            <!-- CABEÇALHO -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -69,7 +69,7 @@
                 </Button>
             </Grid>
 
-            <!-- ══ CARD: CONVIDAR NOVO USUÁRIO ══════════════════════════════ -->
+            <!-- CONVIDAR NOVO USUÁRIO -->
             <Border Grid.Row="2"
                     Background="White"
                     CornerRadius="12"
@@ -108,35 +108,48 @@
                         </StackPanel>
 
                         <!-- Campo e-mail -->
-                        <TextBlock Text="E-mail do novo usuário"
-                                   Style="{StaticResource LabelStyle}"
-                                   Margin="0,0,0,6"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="16"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Column="0"
-                                     Text="{Binding EmailConvite, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{StaticResource InputStyle}"
-                                     Height="40"/>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="E-mail do novo usuário"
+                                           Style="{StaticResource LabelStyle}"
+                                           Margin="0,0,0,6"/>
+                                <TextBox Text="{Binding EmailConvite, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource InputStyle}"
+                                         Height="40"/>
+                            </StackPanel>
 
-                            <Button Grid.Column="2"
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Perfil de acesso"
+                                           Style="{StaticResource LabelStyle}"
+                                           Margin="0,0,0,6"/>
+                                <ComboBox SelectedValuePath="Content"
+                                          SelectedValue="{Binding PerfilSelecionado, UpdateSourceTrigger=PropertyChanged}"
+                                          Height="40"
+                                          VerticalContentAlignment="Center"
+                                          Padding="10,0">
+                                    <ComboBoxItem Content="Usuário" IsSelected="True"/>
+                                    <ComboBoxItem Content="Administrador"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Button Grid.Column="4"
                                     Command="{Binding GerarConviteCommand}"
                                     Height="40" Padding="20,0"
+                                    VerticalAlignment="Bottom"
                                     Background="{DynamicResource AzulMedioColor}"
                                     BorderThickness="0"
                                     Foreground="White"
                                     FontWeight="SemiBold"
                                     FontSize="13"
                                     Cursor="Hand">
-                                <Button.Resources>
-                                    <Style TargetType="Border">
-                                        <Setter Property="CornerRadius" Value="8"/>
-                                    </Style>
-                                </Button.Resources>
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
@@ -153,10 +166,10 @@
                                 </Button.Style>
                                 <StackPanel Orientation="Horizontal">
                                     <iconPacks:PackIconMaterial Kind="KeyPlus"
-                                                                Width="14" Height="14"
-                                                                Foreground="White"
-                                                                VerticalAlignment="Center"
-                                                                Margin="0,0,8,0"/>
+                                        Width="14" Height="14"
+                                        Foreground="White"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,8,0"/>
                                     <TextBlock VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -326,7 +339,7 @@
                 </Grid>
             </Border>
 
-            <!-- ══ CARD: LISTA DE USUÁRIOS ═══════════════════════════════════ -->
+            <!-- LISTA DE USUÁRIOS -->
             <Border Grid.Row="4"
                     Background="White"
                     CornerRadius="12"

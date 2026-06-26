@@ -66,8 +66,6 @@ namespace ReGraphik.ViewModels
             }
         }
 
-
-
         private readonly DashboardControl _dashboardView;
         private readonly ResiduosControl _residuosView;
         private readonly EstoqueReversoControl _estoqueView;
@@ -116,11 +114,11 @@ namespace ReGraphik.ViewModels
 
             NomeUsuario = usuario.Nome ?? "Usuário";
 
+            /// Verifica a forma de perfil logado
+            bool ehAdministrador = string.Equals(usuario.Perfil, "Administrador", StringComparison.OrdinalIgnoreCase) ||
+                                   string.Equals(usuario.Perfil, "Admin", StringComparison.OrdinalIgnoreCase);
 
-
-            /*
-             * CHAT
-             */
+            /// CHAT
 
             ChatViewModel = new ChatViewModel(usuario);
 
@@ -129,21 +127,14 @@ namespace ReGraphik.ViewModels
             ChatCommand = new RelayCommand(ChatConversar);
 
 
-
-            /*
-             * FOTO USUÁRIO
-             */
+            /// FOTO USUÁRIO
 
             var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
 
             if (fotoSalva != null)
                 UsuarioSessaoService.Instancia.FotoCaminho = fotoSalva;
 
-
-
-            /*
-             * NAVEGAÇÃO
-             */
+            /// NAVEGAÇÃO 
 
             NavegarDashboardCommand =
                 new RelayCommand(p => NavegarParaDashboard());
@@ -174,10 +165,7 @@ namespace ReGraphik.ViewModels
 
 
 
-            /*
-             * GERENCIAMENTO DE USUÁRIOS
-             * Disponível apenas para Administrador
-             */
+            /// GERENCIAMENTO DE USUÁRIOS - Disponível apenas para Administrador 
 
             NavegarGerenciarUsuariosCommand =
                 new RelayCommand(
@@ -190,15 +178,10 @@ namespace ReGraphik.ViewModels
             SairCommand =
                 new RelayCommand(p => ExecutarSair());
 
-
-
-
-            /*
-             * Views
-             */
+            /// Views
 
             _dashboardView =
-                new DashboardControl(NomeUsuario);
+                new DashboardControl(usuario);
 
 
             _residuosView =
@@ -226,9 +209,7 @@ namespace ReGraphik.ViewModels
 
 
 
-            /*
-             * Cria gerenciamento somente se administrador
-             */
+            /// Cria gerenciamento somente se administrador 
 
             if (usuario.Perfil == "Administrador")
             {
@@ -236,15 +217,9 @@ namespace ReGraphik.ViewModels
                     new GerenciarUsuariosControl();
             }
 
-
-
             CurrentView = _dashboardView;
 
         }
-
-
-
-
 
         #region Navegação
 
@@ -308,10 +283,6 @@ namespace ReGraphik.ViewModels
             }
         }
 
-
-
-
-
         private void ExecutarNavegacao(
             string nomeBotao,
             object view)
@@ -323,13 +294,7 @@ namespace ReGraphik.ViewModels
 
         }
 
-
         #endregion
-
-
-
-
-
 
         #region Chat
 
@@ -415,12 +380,6 @@ namespace ReGraphik.ViewModels
 
         #endregion
 
-
-
-
-
-
-
         #region Logout
 
 
@@ -492,7 +451,6 @@ namespace ReGraphik.ViewModels
 
 
         #endregion
-
 
     }
 }

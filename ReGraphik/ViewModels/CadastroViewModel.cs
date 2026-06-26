@@ -43,6 +43,8 @@ namespace ReGraphik.ViewModels
         private string _mensagemErroToken = string.Empty;
         private bool _cadastroFinalizadoComSucesso;
 
+        private string _perfilDoToken = "User";
+
         /// <summary>
         /// Visibilidade das etapas + botão "Solicitar Acesso"
         /// </summary> 
@@ -185,7 +187,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-            // Validação básica de formato
+            /// Validação básica de formato de e-mail
             if (!Email.Contains('@') || !Email.Contains('.'))
             {
                 MensaEmail = "Informe um endereço de e-mail válido.";
@@ -245,12 +247,13 @@ namespace ReGraphik.ViewModels
             {
                 OcupadoToken = true;
 
-                bool valido = await _conviteService.ValidarTokenAsync(
+                string? perfilObtido = await _conviteService.ValidarTokenAsync(
                     Email!.Trim(),
                     TokenDigitado.Trim().ToUpper());
 
-                if (valido)
+                if (!string.IsNullOrEmpty(perfilObtido))
                 {
+                    _perfilDoToken = perfilObtido;
                     IsTokenValido = true;
                     MensagemErroToken = string.Empty;
                     MensagemErroGeral = string.Empty;
@@ -327,7 +330,7 @@ namespace ReGraphik.ViewModels
                 /// Cria a conta na API com o e-mail já validado pelo convite
                 bool cadastrado = await _autorizarService.FinalizarCadastroAsync(
                     Nome!, cpfFormatado, Email!, Login!, senha,
-                    TokenDigitado.Trim().ToUpper());
+                    TokenDigitado.Trim().ToUpper(), _perfilDoToken);
 
                 if (cadastrado)
                 {
