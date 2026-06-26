@@ -76,7 +76,7 @@
 
                             <!-- Campos do Usuário -->
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <TextBlock Text="Administrador" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
+                                <TextBlock Text="{Binding Perfil}" FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                 <TextBlock Text=" • " FontSize="12" Foreground="{DynamicResource TextoCinzaColor}" Margin="4,0"/>
                                 <TextBlock Text="Online" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource VerdeColor}"/>
                             </StackPanel>
