@@ -5,8 +5,7 @@ using System.Text.Json.Serialization;
 namespace ApiRestReGraphik.Models
 {
     /// <summary>
-    /// Classe que representa a estrutura de dados para uma sugestão de resíduo, contendo propriedades como o ID do cadastro de resíduo associado,
-    /// o ID da sugestão associada e a data de aplicação da sugestão.
+    /// Classe que representa a estrutura de dados para uma sugestão de resíduo.
     /// </summary>  
     public class SugestaoResiduo
     {
