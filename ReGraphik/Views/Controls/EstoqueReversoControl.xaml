@@ -293,20 +293,55 @@
 
                                         <Border Grid.Row="2" Height="1" Background="#F1F5F9" Margin="0,0,0,12"/>
 
-                                        <Grid Grid.Row="3">
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="Cadastro" Foreground="{DynamicResource TextoCinzaColor}" FontSize="10"/>
-                                                <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" Foreground="{DynamicResource CinzaColor}" FontSize="12" FontWeight="Medium"/>
+                                        <!-- Botão de sugestão -->
+                                        <Grid Grid.Row="3" Margin="0,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="CADASTRO" 
+                                                           FontFamily="Segoe UI"
+                                                           FontSize="10" 
+                                                           FontWeight="Bold"
+                                                           Foreground="#94A3B8"/>
+                                                <TextBlock Text="{Binding DataCadastro, StringFormat=\{0:dd/MM/yyyy\}}" 
+                                                           FontFamily="Segoe UI"
+                                                           FontSize="13" 
+                                                           FontWeight="SemiBold" 
+                                                           Foreground="#334155" 
+                                                           Margin="0,2,0,0"/>
                                             </StackPanel>
 
-                                            <Button Content="💡 Sugestões"
-                                    Style="{StaticResource RoundedButtonStyle}"
-                                    Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding}"
-                                    Height="32" Padding="12,0" HorizontalAlignment="Right"
-                                    Background="White" BorderBrush="#2563EB" BorderThickness="1"
-                                    Foreground="#2563EB" FontSize="12" FontWeight="Medium"
-                                    Cursor="Hand" />
+                                            <Button Grid.Column="1"
+                                                    Style="{StaticResource RoundedButtonStyle}"
+                                                    Command="{Binding DataContext.SugestaoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Height="34" 
+                                                    Padding="14,0" 
+                                                    HorizontalAlignment="Right"
+                                                    Background="#EFF6FF" 
+                                                    BorderBrush="#3B82F6" 
+                                                    BorderThickness="1"
+                                                    Foreground="#1D4ED8" 
+                                                    FontSize="12" 
+                                                    FontWeight="SemiBold"
+                                                    Cursor="Hand">
+
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Path Data="M12,2A7,7 0 0,0 5,9C5,11.39 6.19,13.5 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14
+                                                          .74C17.81,13.5 19,11.39 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z" 
+                                                          Fill="#3B82F6" 
+                                                          Width="14" 
+                                                          Height="14" 
+                                                          Stretch="Uniform" 
+                                                          Margin="0,0,8,0"
+                                                          VerticalAlignment="Center"/>
+
+                                                    <TextBlock Text="Sugestões" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                 </Border>
