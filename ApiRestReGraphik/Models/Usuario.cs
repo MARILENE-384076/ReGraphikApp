@@ -3,7 +3,7 @@
 namespace ApiRestReGraphik.Models
 {
     /// <summary>
-    /// Classe que representa a estrutura de dados para um usuário, contendo propriedades como nome, CPF, email, login, senha, perfil e data de cadastro.
+    /// Classe que representa a estrutura de dados para um usuário.
     /// </summary>
     public class Usuario
     {
@@ -38,7 +38,5 @@ namespace ApiRestReGraphik.Models
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }
 
-        [JsonPropertyName("token_validacao")]
-        public string? TokenValidacao { get; set; }
     }
 }

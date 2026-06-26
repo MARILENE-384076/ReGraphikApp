@@ -3,7 +3,7 @@
 namespace ApiRestReGraphik.Models
 {
     /// <summary>
-    /// Classe que representa a estrutura de dados para uma sugestão, contendo propriedades como tipo de resíduo aceito e descrição da sugestão.
+    /// Classe que representa a estrutura de dados para uma sugestão.
     /// </summary>
     public class Sugestao
     {

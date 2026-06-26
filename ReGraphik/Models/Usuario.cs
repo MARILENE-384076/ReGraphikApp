@@ -45,10 +45,6 @@ namespace ReGraphik.Models
         [JsonProperty("ativo")]
         public bool Ativo { get; set; }
 
-        [JsonPropertyName("token_validacao")]
-        [JsonProperty("token_validacao")]
-        public string? TokenValidacao { get; set; }
-
         /// <summary>
         /// Iniciais do nome para exibição no avatar quando não há foto.
         /// Retorna as iniciais das duas primeiras palavras do nome (ex: "Bruno Maia" → "BM").

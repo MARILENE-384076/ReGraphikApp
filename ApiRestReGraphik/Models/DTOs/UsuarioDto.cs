@@ -2,6 +2,9 @@
 
 namespace ApiRestReGraphik.Models.DTOs
 {
+    /// <summary>
+    /// Classe DTO que representa a estrutura de dados para um usuário.
+    /// </summary>
     public class UsuarioDto
     {
         [JsonPropertyName("name")]
