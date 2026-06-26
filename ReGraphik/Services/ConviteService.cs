@@ -111,5 +111,30 @@ namespace ReGraphik.Services
                 c[i] = chars[rng.Next(chars.Length)];
             return new string(c);
         }
+
+        /// <summary>
+        /// Recupera o token ativo no Firebase atrelado a um e-mail.
+        /// </summary>
+        public async Task<string?> ObterTokenPorEmailAsync(string email)
+        {
+            try
+            {
+                // 1. Busca todos os convites do nó do Firebase
+                var todos = await _db.Child(NodeConvites).OnceAsync<ConviteFirebase>();
+
+                // 2. Procura o primeiro registro que pertença ao e-mail, que não esteja usado e não esteja expirado
+                var conviteValido = todos.FirstOrDefault(item =>
+                    string.Equals(item.Object.Email, email.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    !item.Object.Usado &&
+                    DateTime.UtcNow <= DateTime.Parse(item.Object.Expira));
+
+                // 3. Como a chave do nó (Key) é o token criado, retornamos item.Key
+                return conviteValido?.Key;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
