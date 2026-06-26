@@ -20,6 +20,11 @@ namespace ReGraphik.ViewModels
         private string _btnAtivo = "Dashboard";
 
         /// <summary>
+        /// Propriedade para controlar a visibilidade na UI
+        /// </summary>
+        public bool IsAdmin { get; set; }
+
+        /// <summary>
         /// Mantém a instância única do painel de chat para reutilização
         /// </summary>
         private ChatPainelWindow? _chatWindow;
@@ -210,11 +215,14 @@ namespace ReGraphik.ViewModels
 
 
             /// Cria gerenciamento somente se administrador 
-
             if (usuario.Perfil == "Administrador")
             {
-                _gerenciarUsuariosView =
-                    new GerenciarUsuariosControl();
+                _gerenciarUsuariosView = new GerenciarUsuariosControl();
+                IsAdmin = true;
+            }
+            else
+            {
+                IsAdmin = false;
             }
 
             CurrentView = _dashboardView;
