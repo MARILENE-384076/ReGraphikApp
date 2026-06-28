@@ -116,6 +116,9 @@ namespace ReGraphik.ViewModels
 
             _currentWindow = window;
 
+            // Assina o evento de sessão expirada para realizar logout automático por inatividade
+            UsuarioSessaoService.Instancia.SessaoExpirada += OnSessaoExpirada;
+
 
             NomeUsuario = usuario.Nome ?? "Usuário";
 
@@ -300,6 +303,9 @@ namespace ReGraphik.ViewModels
 
             CurrentView = view;
 
+            // Reinicia o timer de inatividade a cada troca de tela
+            UsuarioSessaoService.Instancia.ResetarTimer();
+
         }
 
         #endregion
@@ -390,71 +396,58 @@ namespace ReGraphik.ViewModels
 
         #region Logout
 
+        /// <summary>
+        /// Chamado pelo <see cref="UsuarioSessaoService"/> quando o timer de inatividade expira.
+        /// Exibe um aviso ao usuário e redireciona para a tela de login.
+        /// </summary>
+        private void OnSessaoExpirada()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show(
+                    "Sua sessão expirou por inatividade. Faça login novamente.",
+                    "Sessão Encerrada",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                RealizarLogout();
+            });
+        }
+
+        /// <summary>
+        /// Encerra a sessão do usuário: libera recursos, cancela eventos e retorna à tela de login.
+        /// </summary>
+        private void RealizarLogout()
+        {
+            UsuarioSessaoService.Instancia.SessaoExpirada -= OnSessaoExpirada;
+            UsuarioSessaoService.Instancia.EncerrarSessao();
+
+            ChatViewModel.Dispose();
+            ChatViewModel.NovaMensagemRecebida -= OnNovaMensagemRecebida;
+
+            var loginWindow = new LoginWindow();
+            Application.Current.MainWindow = loginWindow;
+            loginWindow.Show();
+            _currentWindow.Close();
+        }
 
         private void ExecutarSair()
         {
-
-
             Application.Current.Dispatcher.Invoke(() =>
             {
+                var confirmWindow = new SairMensagemWindow
+                {
+                    Owner = Application.Current.MainWindow,
+                    ShowInTaskbar = false
+                };
 
-
-                var confirmWindow =
-                    new SairMensagemWindow();
-
-
-
-                confirmWindow.Owner =
-                    Application.Current.MainWindow;
-
-
-
-                confirmWindow.ShowInTaskbar =
-                    false;
-
-
-
-                bool? resultado =
-                    confirmWindow.ShowDialog();
-
-
-
+                bool? resultado = confirmWindow.ShowDialog();
 
                 if (resultado == true)
                 {
-
-
-                    ChatViewModel.Dispose();
-
-
-                    ChatViewModel.NovaMensagemRecebida -=
-                        OnNovaMensagemRecebida;
-
-
-
-
-                    var loginWindow =
-                        new LoginWindow();
-
-
-
-                    Application.Current.MainWindow =
-                        loginWindow;
-
-
-
-                    loginWindow.Show();
-
-
-
-                    _currentWindow.Close();
-
+                    RealizarLogout();
                 }
-
-
             });
-
-
         }
 
 
