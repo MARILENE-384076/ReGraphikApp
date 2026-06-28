@@ -102,6 +102,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 var result = await _usuarioService.ObterPorId(id);
@@ -278,6 +281,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Put(string id, [FromBody] Usuario usuario)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 if (usuario == null || id != usuario.Id)
@@ -331,6 +337,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(string id)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 var existing = await _usuarioService.ObterPorId(id);

@@ -107,6 +107,10 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
+            // Valida o ID antes de usar como chave de nó no Firebase (previne path traversal)
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 var result = await _residuoService.ObterPorId(id);
@@ -169,25 +173,26 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Post([FromBody] Residuo residuo)
         {
+            if (residuo == null)
+                return BadRequest("Resíduo inválido.");
+
+            // Valida campos de texto contra injeção de conteúdo malicioso
+            var erros = InputSanitizationService.ValidarResiduo(residuo);
+            if (erros.Any())
+                return BadRequest(new { mensagem = "Dados inválidos.", erros });
+
+            // Sanitiza campos de texto livre
+            residuo.TipoResiduo  = InputSanitizationService.SanitizarTexto(residuo.TipoResiduo);
+            residuo.Origem       = InputSanitizationService.SanitizarTexto(residuo.Origem);
+            residuo.Especificacao= InputSanitizationService.SanitizarTexto(residuo.Especificacao);
+            residuo.Observacao   = InputSanitizationService.SanitizarTexto(residuo.Observacao, 2000);
+
             try
             {
-                var usuarioIdLogado = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-                /// Se o WPF já enviou um IdUsuario preenchido de forma válida, mantemos ele
-                if (!string.IsNullOrEmpty(usuarioIdLogado))
-                {
-                    residuo.IdUsuario = usuarioIdLogado;
-                }
-                else
-                {
-                    /// Caso contrário, para fins de teste, atribuímos um IdUsuario fixo (substitua pelo ID do usuário real conforme necessário)
-                    residuo.IdUsuario = "0d95265b-2757-424e-8ea9-445e8fd2a422";
-                }
-
-                if (residuo == null)
-                {
-                    return BadRequest("Resíduo inválido.");
-                }
+                // O IdUsuario é enviado pelo cliente WPF via UsuarioSessaoService.
+                // Se vier vazio (ex: teste direto via Swagger), rejeita a requisição.
+                if (string.IsNullOrWhiteSpace(residuo.IdUsuario))
+                    return BadRequest("O campo 'id_usuario' é obrigatório.");
 
                 await _residuoService.Criar(residuo);
 
@@ -231,6 +236,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Put(string id, [FromBody] Residuo residuo)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 if (residuo == null || id != residuo.Id)
@@ -288,6 +296,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(string id)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 var existing = await _residuoService.ObterPorId(id);
