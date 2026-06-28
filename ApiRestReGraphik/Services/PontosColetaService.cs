@@ -10,16 +10,19 @@ namespace ApiRestReGraphik.Services
     {
         private readonly FirebaseClient _firebaseClient;
         private readonly ILogger<PontosColetaService> _logger;
+        private readonly IConfiguration _configuration;
         private const string NodeName = "pontos_coleta";
 
         /// <summary>
         /// Construtor da classe PontosColetaService, responsável por inicializar o cliente do Firebase e o logger para a classe,
         /// permitindo a comunicação com o Realtime Database do Firebase e o registro de logs para monitoramento e depuração.
         /// </summary>
-        /// <param name="logger"></param>
+        /// <param name="logger">Logger para registrar informações e erros.</param>
+        /// <param name="configuration">Configurações da aplicação, incluindo credenciais do Firebase e valores padrão de sincronização.</param>
         public PontosColetaService(ILogger<PontosColetaService> logger, IConfiguration configuration)
         {
-            _logger = logger;
+            _logger        = logger;
+            _configuration = configuration;
 
             var dbUrl = configuration["Firebase:RealtimeDatabaseUrl"];
             var credentialsFileName = configuration["Firebase:CredentialFilePath"] ?? "ReGraphikFirebaseKey.json";
@@ -254,11 +257,11 @@ namespace ApiRestReGraphik.Services
 
                     var novoPonto = new PontosColeta
                     {
-                        NomePonto = nome,
-                        Cidade = cidade,
-                        Estado = "BR",
-                        CEP = "—",
-                        ResiduosAceitos = "Reciclável",
+                        NomePonto     = nome,
+                        Cidade        = cidade,
+                        Estado          = _configuration["Sincronizacao:EstadoPadrao"] ?? "BR",
+                        CEP             = _configuration["Sincronizacao:CepPadrao"]    ?? "—",
+                        ResiduosAceitos = _configuration["Sincronizacao:ResiduosAceitos"] ?? "Reciclável",
                         Lat = lat,
                         Lng = lng
                     };
