@@ -387,6 +387,44 @@ ReGraphikApp/
 ```
 
 ---
+# Requisitos do Sistema — ReGraphikApp
+
+## Requisitos Funcionais
+
+| # | Requisito Funcional |
+|---|---|
+| RF01 | Autenticação de usuários com login e senha |
+| RF02 | Fluxo de cadastro em dois passos com token enviado por e-mail |
+| RF03 | Recuperação de senha |
+| RF04 | Cadastro de resíduos com tipo, quantidade, condição, dimensões, origem, projeto e foto |
+| RF05 | Listagem de resíduos com filtros por tipo, status, origem e período |
+| RF06 | Atualização de status de resíduos (Disponível, Reservado, Descartado, etc.) |
+| RF07 | Sugestão de reaproveitamento de resíduos por tipo |
+| RF08 | Localização de pontos de coleta por cidade via Google Maps |
+| RF09 | Exibição de pontos de coleta em mapa interativo |
+| RF10 | Chat em tempo real entre usuários |
+| RF11 | Dashboard com indicadores e gráficos (total, reaproveitados, em estoque, valor estimado) |
+| RF12 | Geração e exportação de relatórios em PDF |
+| RF13 | Módulo ESG com exportação de documento de indicadores ambientais |
+| RF14 | Gerenciamento de perfil com foto via upload (Imgur) |
+| RF15 | Validação de CPF no cadastro |
+
+---
+
+## Requisitos Não Funcionais
+
+| # | Requisito Não Funcional | Descrição |
+|---|---|---|
+| RNF01 | Plataforma | O sistema executa somente em Windows 10/11 (WPF exige Windows) |
+| RNF02 | Padrão arquitetural | Adota MVVM estrito — nenhuma lógica de negócio no code-behind das Views |
+| RNF03 | Segurança | Cadastro restrito a e-mails do domínio `@regraphik.com.br` |
+| RNF04 | Segurança | Credenciais do Firebase e Google Maps não devem ser versionadas no repositório |
+| RNF05 | Desempenho | O chat se comunica diretamente com o Firebase (sem passar pela API) para garantir baixa latência |
+| RNF06 | Desempenho | Filtros do estoque reverso operam em memória via `ICollectionView`, sem recarregar dados da API |
+| RNF07 | Tempo real | A tela de Estoque Reverso atualiza automaticamente via Firebase Streaming (`.AsObservable<T>()`) |
+| RNF08 | Disponibilidade | A API está hospedada em produção (`webregraphik.runasp.net`); no plano gratuito pode haver warm-up na primeira requisição após inatividade |
+| RNF09 | Manutenibilidade | Todas as configurações sensíveis são centralizadas em `appsettings.json` |
+| RNF10 | Usabilidade | Interface visual padronizada com estilos globais (`Botoes.xaml`, `Cores.xaml`, `Inputs.xaml`, `Textos.xaml`) |
 
 ## API REST — Referência Completa de Endpoints
 
