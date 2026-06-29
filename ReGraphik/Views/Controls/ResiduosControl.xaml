@@ -65,24 +65,9 @@
                                     <Run Text="*" Foreground="Red" FontWeight="Bold"/>
                                 </TextBlock>
                                 <Grid>
-                                    <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding TipoMaterial, Mode=TwoWay}">
-                                        <ComboBoxItem Content="Papel Offset"/>
-                                        <ComboBoxItem Content="Papel Couché"/>
-                                        <ComboBoxItem Content="Papel Kraft"/>
-                                        <ComboBoxItem Content="Papelão"/>
-                                        <ComboBoxItem Content="Papel Reciclado"/>
-                                        <ComboBoxItem Content="Papel Supremo"/>
-                                        <ComboBoxItem Content="Adesivo Vinil"/>
-                                        <ComboBoxItem Content="Lona"/>
-                                        <ComboBoxItem Content="PVC"/>
-                                        <ComboBoxItem Content="Acrílico"/>
-                                        <ComboBoxItem Content="Placa PS"/>
-                                        <ComboBoxItem Content="ACM"/>
-                                        <ComboBoxItem Content="MDF"/>
-                                        <ComboBoxItem Content="Tecido"/>
-                                        <ComboBoxItem Content="Plástico"/>
-                                        <ComboBoxItem Content="Outro"/>
-                                    </ComboBox>
+                                    <ComboBox x:Name="CboTipoMaterial" Style="{StaticResource InputControlStyle}"
+                                              ItemsSource="{Binding TiposMaterial}"
+                                              SelectedValue="{Binding TipoMaterial, Mode=TwoWay}"/>
                                     <TextBlock Text="Selecione o tipo de material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -134,23 +119,9 @@
                             <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,16">
                                 <TextBlock Text="Especificação" Style="{StaticResource FieldLabelStyle}"/>
                                 <Grid>
-                                    <ComboBox x:Name="CboEspecificacao" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Especificacao, Mode=TwoWay}">
-                                        <ComboBoxItem Content="Padrão / Comum"/>
-                                        <ComboBoxItem Content="Brilhoso / Brilho"/>
-                                        <ComboBoxItem Content="Fosco"/>
-                                        <ComboBoxItem Content="Acetinado / Semi-brilho"/>
-                                        <ComboBoxItem Content="Soft Touch (Aveludado)"/>
-                                        <ComboBoxItem Content="Metalizado / Perolado"/>
-                                        <ComboBoxItem Content="Texturizado"/>
-                                        <ComboBoxItem Content="Transparente"/>
-                                        <ComboBoxItem Content="Translúcido / Leitoso"/>
-                                        <ComboBoxItem Content="Opaco / Blockout"/>
-                                        <ComboBoxItem Content="Gramatura Baixa"/>
-                                        <ComboBoxItem Content="Gramatura Média"/>
-                                        <ComboBoxItem Content="Gramatura Alta"/>
-                                        <ComboBoxItem Content="Rígido (Espesso)"/>
-                                        <ComboBoxItem Content="Outro"/>
-                                    </ComboBox>
+                                    <ComboBox x:Name="CboEspecificacao" Style="{StaticResource InputControlStyle}"
+                                              ItemsSource="{Binding Especificacoes}"
+                                              SelectedValue="{Binding Especificacao, Mode=TwoWay}"/>
                                     <TextBlock Text="Selecione a especificação do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -176,19 +147,9 @@
                                     <Run Text="*" Foreground="Red" FontWeight="Bold"/>
                                 </TextBlock>
                                 <Grid>
-                                    <ComboBox x:Name="CboOrigem" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Origem, Mode=TwoWay}">
-                                        <ComboBoxItem Content="Restos de Corte"/>
-                                        <ComboBoxItem Content="Apara de Guilhotina / Refile"/>
-                                        <ComboBoxItem Content="Retalho de Chapa / Substrato"/>
-                                        <ComboBoxItem Content="Sobra de Impressão"/>
-                                        <ComboBoxItem Content="Sobra de Bobina / Final de Rolo"/>
-                                        <ComboBoxItem Content="Setup / Ajuste de Máquina"/>
-                                        <ComboBoxItem Content="Erro de Impressão / Defeito"/>
-                                        <ComboBoxItem Content="Erro de Acabamento / Montagem"/>
-                                        <ComboBoxItem Content="Sobra de Estoque / Vencido"/>
-                                        <ComboBoxItem Content="Mostruário / Amostra Descartada"/>
-                                        <ComboBoxItem Content="Outro"/>
-                                    </ComboBox>
+                                    <ComboBox x:Name="CboOrigem" Style="{StaticResource InputControlStyle}"
+                                              ItemsSource="{Binding Origens}"
+                                              SelectedValue="{Binding Origem, Mode=TwoWay}"/>
                                     <TextBlock Text="Selecione a origem do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -282,10 +243,9 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBox x:Name="TxtQuantidade" Text="{Binding Quantidade, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                        <ComboBox Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}" SelectedIndex="0" BorderThickness="0,1,1,1">
-                                            <ComboBoxItem Content="kg"/>
-                                            <ComboBoxItem Content="un"/>
-                                        </ComboBox>
+                                        <ComboBox Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}" BorderThickness="0,1,1,1"
+                                                  ItemsSource="{Binding UnidadesMedida}"
+                                                  SelectedValue="{Binding UnidadeMedida, Mode=TwoWay}"/>
                                         <TextBlock Text="Ex:20" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -354,15 +314,9 @@
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Condição" Style="{StaticResource FieldLabelStyle}"/>
                                     <Grid>
-                                        <ComboBox x:Name="CboCondicao" Style="{StaticResource InputControlStyle}" SelectedValuePath="Content" SelectedValue="{Binding Condicao, Mode=TwoWay}">
-                                            <ComboBoxItem Content="Intacto / Novo (Sobra)"/>
-                                            <ComboBoxItem Content="Ótima"/>
-                                            <ComboBoxItem Content="Regular / Usado"/>
-                                            <ComboBoxItem Content="Avarias Superficiais (Riscos/Manchas)"/>
-                                            <ComboBoxItem Content="Amassado / Vincado"/>
-                                            <ComboBoxItem Content="Danificado"/>
-                                            <ComboBoxItem Content="Adesivo Ressecado / Sem Cola"/>
-                                        </ComboBox>
+                                        <ComboBox x:Name="CboCondicao" Style="{StaticResource InputControlStyle}"
+                                                  ItemsSource="{Binding Condicoes}"
+                                                  SelectedValue="{Binding Condicao, Mode=TwoWay}"/>
                                         <TextBlock Text="Selecione a condição" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -385,13 +339,9 @@
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Status" Style="{StaticResource FieldLabelStyle}"/>
                                     <Grid>
-                                        <ComboBox x:Name="CboStatus" SelectedValuePath="Content" Style="{StaticResource InputControlStyle}" SelectedValue="{Binding Status, Mode=TwoWay}">
-                                            <ComboBoxItem Content="Aguardando CADRI"/>
-                                            <ComboBoxItem Content="Aguardando Triagem"/>
-                                            <ComboBoxItem Content="Disponível"/>
-                                            <ComboBoxItem Content="Disponível para Coleta"/>
-                                            <ComboBoxItem Content="Liberado para Venda"/>
-                                        </ComboBox>
+                                        <ComboBox x:Name="CboStatus" Style="{StaticResource InputControlStyle}"
+                                                  ItemsSource="{Binding StatusOpcoes}"
+                                                  SelectedValue="{Binding Status, Mode=TwoWay}"/>
                                         <TextBlock Text="Selecione o status" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -496,10 +446,8 @@
                                     </Grid>
 
                                     <ComboBox x:Name="CboUnidadeMedida" Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}"
-                                              SelectedValuePath="Content" SelectedValue="{Binding UnidadeMedida, Mode=TwoWay, FallbackValue=cm}">
-                                        <ComboBoxItem Content="cm"/>
-                                        <ComboBoxItem Content="m"/>
-                                    </ComboBox>
+                                              ItemsSource="{Binding UnidadesMedida}"
+                                              SelectedValue="{Binding UnidadeMedida, Mode=TwoWay, FallbackValue=cm}"/>
                                 </Grid>
                                 <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
                                     <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 

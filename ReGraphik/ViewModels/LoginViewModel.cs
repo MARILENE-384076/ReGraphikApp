@@ -153,6 +153,8 @@ namespace ReGraphik.ViewModels
                     return;
                 }
 
+                // Inicia a sessão: armazena o usuário logado e dispara o timer de inatividade
+                UsuarioSessaoService.Instancia.IniciarSessao(usuario);
                 UsuarioSessaoService.Instancia.FotoCaminho = usuario.FotoPerfil;
 
                 // Abre a tela principal caso o login seja bem-sucedido

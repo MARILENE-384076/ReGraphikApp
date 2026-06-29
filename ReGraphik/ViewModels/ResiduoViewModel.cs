@@ -1,85 +1,76 @@
-﻿using ControlzEx.Standard;
-using Firebase.Database;
+﻿using Firebase.Database;
 using Firebase.Database.Query;
-using MahApps.Metro.SimpleChildWindow;
 using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace ReGraphik.ViewModels
 {
     /// <summary>
-    /// ViewModel responsável por gerenciar a lógica de cadastro de resíduos na aplicação. Ele interage com a interface de usuário 
-    /// (ResiduoView) para obter os dados do resíduo, validar as informações e enviar os dados para a API através de uma requisição HTTP POST.
+    /// ViewModel responsável pela tela de cadastro de resíduos.
+    /// Gerencia validação de campos, seleção de arquivo, envio ao Firebase
+    /// e carregamento dinâmico dos ComboBoxes a partir do <see cref="AppSettings"/>.
     /// </summary>
     public class ResiduoViewModel : BaseViewModel
     {
-        /// <summary>
-        /// Instância do HttpClient, que é usada para realizar as requisições HTTP para a API. Ele é configurado com a URL base da API para facilitar as chamadas aos endpoints.
-        /// </summary>
-        private readonly HttpClient _httpClient;
-
-        
+        // ─── Infraestrutura ────────────────────────────────────────────────────────
         private string _caminhoArquivoSelecionado = string.Empty;
 
-        // Opções de serialização reutilizadas para evitar overhead de JIT e reflexão em chamadas repetidas
-        private static readonly JsonSerializerOptions _jsonOptions = new()
-        {
-            PropertyNamingPolicy = null,
-            PropertyNameCaseInsensitive = true
-        };
+        // ─── Listas para ComboBoxes (carregadas do appsettings.json) ─────────────
 
-        /// <summary>
-        /// Propriedades para armazenar as credenciais de login e mensagens de erro, caso seja necessário autenticar o usuário antes de realizar o cadastro do resíduo.
-        /// </summary>
-        private string _mensaTipoMaterial;
-        private string _mensaOrigem;
-        private string _mensaData;
-        private string _mensaQuantidade;
-        private string _mensaComprimento;
-        private string _mensaLargura;
-        private string _mensagemErroGeral;
+        /// <summary>Tipos de material disponíveis no formulário.</summary>
+        public ObservableCollection<string> TiposMaterial { get; }
 
-        /// <summary>
-        /// Propriedades que representam os campos do formulário de cadastro de resíduos, como tipo de material, 
-        /// especificação, origem, projeto de origem, quantidade, data, condição, dimensões e observações.
-        /// </summary>
-        private string _tipoMaterial;
+        /// <summary>Especificações técnicas disponíveis no formulário.</summary>
+        public ObservableCollection<string> Especificacoes { get; }
+
+        /// <summary>Origens possíveis do resíduo no formulário.</summary>
+        public ObservableCollection<string> Origens { get; }
+
+        /// <summary>Condições físicas do material disponíveis no formulário.</summary>
+        public ObservableCollection<string> Condicoes { get; }
+
+        /// <summary>Status possíveis para o resíduo no formulário.</summary>
+        public ObservableCollection<string> StatusOpcoes { get; }
+
+        /// <summary>Unidades de medida disponíveis para o campo Quantidade.</summary>
+        public ObservableCollection<string> UnidadesMedida { get; }
+
+        // ─── Campos do formulário ─────────────────────────────────────────────────
+
+        private string? _tipoMaterial;
+        /// <summary>Tipo de material selecionado pelo usuário.</summary>
         public string? TipoMaterial
         {
             get => _tipoMaterial;
             set { _tipoMaterial = value; OnPropertyChanged(); }
         }
 
-        private string _especificacao;
+        private string _especificacao = string.Empty;
+        /// <summary>Especificação técnica do material.</summary>
         public string Especificacao
         {
             get => _especificacao;
             set { _especificacao = value; OnPropertyChanged(); }
         }
 
-        private string _origem;
+        private string? _origem;
+        /// <summary>Origem do resíduo dentro do processo produtivo.</summary>
         public string? Origem
         {
             get => _origem;
             set { _origem = value; OnPropertyChanged(); }
         }
 
-        private string _projetoOrigem;
+        private string _projetoOrigem = string.Empty;
+        /// <summary>Nome do projeto de onde o resíduo originou.</summary>
         public string ProjetoOrigem
         {
             get => _projetoOrigem;
@@ -87,20 +78,31 @@ namespace ReGraphik.ViewModels
         }
 
         private double _quantidade;
+        /// <summary>Quantidade numérica do resíduo.</summary>
         public double Quantidade
         {
             get => _quantidade;
             set { _quantidade = value; OnPropertyChanged(); }
         }
 
+        private string _unidadeMedida = "kg";
+        /// <summary>Unidade de medida da quantidade (ex: kg, g, ton).</summary>
+        public string UnidadeMedida
+        {
+            get => _unidadeMedida;
+            set { _unidadeMedida = value; OnPropertyChanged(); }
+        }
+
         private DateTime _data = DateTime.Now;
+        /// <summary>Data de cadastro do resíduo.</summary>
         public DateTime Data
         {
             get => _data;
             set { _data = value; OnPropertyChanged(); }
         }
 
-        private string _condicao;
+        private string? _condicao;
+        /// <summary>Condição física do material.</summary>
         public string? Condicao
         {
             get => _condicao;
@@ -108,6 +110,7 @@ namespace ReGraphik.ViewModels
         }
 
         private double _comprimento;
+        /// <summary>Comprimento do resíduo em centímetros.</summary>
         public double Comprimento
         {
             get => _comprimento;
@@ -115,20 +118,23 @@ namespace ReGraphik.ViewModels
         }
 
         private double _largura;
+        /// <summary>Largura do resíduo em centímetros.</summary>
         public double Largura
         {
             get => _largura;
             set { _largura = value; OnPropertyChanged(); }
         }
 
-        private string _observacoes;
+        private string _observacoes = string.Empty;
+        /// <summary>Observações adicionais sobre o resíduo.</summary>
         public string Observacoes
         {
             get => _observacoes;
             set { _observacoes = value; OnPropertyChanged(); }
         }
 
-        private string _status;
+        private string? _status;
+        /// <summary>Status atual do resíduo.</summary>
         public string? Status
         {
             get => _status;
@@ -136,93 +142,98 @@ namespace ReGraphik.ViewModels
         }
 
         private string _nomeArquivo = "Nenhum arquivo selecionado";
+        /// <summary>Nome amigável do arquivo de imagem selecionado.</summary>
         public string NomeArquivo
         {
             get => _nomeArquivo;
             set { _nomeArquivo = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Propriedades para armazenar mensagens de erro específicas para cada campo do formulário, 
-        /// que podem ser usadas para fornecer feedback ao usuário sobre validações ou erros de entrada.
-        /// </summary>
+        // ─── Mensagens de validação ───────────────────────────────────────────────
+
+        private string _mensaTipoMaterial = string.Empty;
         public string MensaTipoMaterial
         {
             get => _mensaTipoMaterial;
             set { _mensaTipoMaterial = value; OnPropertyChanged(); }
         }
 
+        private string _mensaOrigem = string.Empty;
         public string MensaOrigem
         {
             get => _mensaOrigem;
             set { _mensaOrigem = value; OnPropertyChanged(); }
         }
 
+        private string _mensaQuantidade = string.Empty;
         public string MensaQuantidade
         {
             get => _mensaQuantidade;
             set { _mensaQuantidade = value; OnPropertyChanged(); }
         }
 
+        private string _mensaComprimento = string.Empty;
         public string MensaComprimento
         {
             get => _mensaComprimento;
             set { _mensaComprimento = value; OnPropertyChanged(); }
         }
 
+        private string _mensaLargura = string.Empty;
         public string MensaLargura
         {
             get => _mensaLargura;
             set { _mensaLargura = value; OnPropertyChanged(); }
         }
 
+        private string _mensagemErroGeral = string.Empty;
         public string MensagemErroGeral
         {
             get => _mensagemErroGeral;
             set { _mensagemErroGeral = value; OnPropertyChanged(); }
         }
 
-        private string _mensagemAlerta;
+        private string _mensagemAlerta = string.Empty;
         public string MensagemAlerta
         {
             get => _mensagemAlerta;
             set { _mensagemAlerta = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Comandos que são vinculados aos botões na interface de usuário para executar ações como salvar o resíduo, 
-        /// limpar os campos do formulário e selecionar um arquivo para anexar.
-        /// </summary>
+        // ─── Comandos ─────────────────────────────────────────────────────────────
+
         public ICommand SalvarResiduoCommand { get; }
         public ICommand LimparCommand { get; }
+        public ICommand SelecionarArquivoCommand { get; }
 
-        public ICommand SelecionarArquivoCommand {  get; }
-
-        public ICommand FecharDialogCommand {  get; }
+        // ─── Construtor ───────────────────────────────────────────────────────────
 
         /// <summary>
-        /// Construtor da classe ResiduoViewModel, onde o HttpClient é configurado com a URL base da API e os comandos são inicializados.
+        /// Inicializa o ViewModel: carrega as listas dos ComboBoxes do appsettings.json
+        /// e registra os comandos.
         /// </summary>
         public ResiduoViewModel()
         {
-            /// Configura o HttpClient com a URL base da API
-            _httpClient = new HttpClient
-            {
-                BaseAddress = new Uri("https://webregraphik.runasp.net/"),
-                Timeout = TimeSpan.FromSeconds(60)
-            };
+            // Carrega listas dos ComboBoxes do arquivo de configuração — sem hard-code
+            var dropdowns = AppSettings.Dropdowns;
+            TiposMaterial  = new ObservableCollection<string>(dropdowns.TiposMaterial);
+            Especificacoes = new ObservableCollection<string>(dropdowns.Especificacoes);
+            Origens        = new ObservableCollection<string>(dropdowns.Origens);
+            Condicoes      = new ObservableCollection<string>(dropdowns.Condicoes);
+            StatusOpcoes   = new ObservableCollection<string>(dropdowns.Status);
+            UnidadesMedida = new ObservableCollection<string>(dropdowns.UnidadesMedida);
 
-            /// Inicializa os comandos com as ações correspondentes
-            SalvarResiduoCommand = new RelayCommand(async () => await SalvarResiduoAsync());
+            SalvarResiduoCommand     = new RelayCommand(async () => await SalvarResiduoAsync());
             SelecionarArquivoCommand = new RelayCommand(async () => await SelecionarArquivoAsync());
-            LimparCommand = new RelayCommand(LimparCampos);
+            LimparCommand            = new RelayCommand(LimparCampos);
         }
 
+        // ─── Lógica de salvamento ─────────────────────────────────────────────────
+
         /// <summary>
-        /// Método assíncrono responsável por validar os dados do formulário, criar um objeto Residuo com as informações fornecidas 
-        /// pelo usuário e enviar uma requisição HTTP POST para a API para salvar o resíduo. 
+        /// Valida os campos obrigatórios e persiste o resíduo no Firebase Realtime Database.
+        /// O ID do usuário logado é obtido via <see cref="UsuarioSessaoService"/>.
         /// </summary>
-        /// <returns></returns>
         private async Task SalvarResiduoAsync()
         {
             try
@@ -244,66 +255,68 @@ namespace ReGraphik.ViewModels
 
                 if (Quantidade <= 0)
                 {
-                    MensaQuantidade = "A Quantidade é obrigatória!";
+                    MensaQuantidade = "A Quantidade deve ser maior que zero!";
                     possuiErro = true;
                 }
 
                 if (Largura <= 0)
                 {
-                    MensaLargura= "A Largura é obrigatória!";
+                    MensaLargura = "A Largura deve ser maior que zero!";
                     possuiErro = true;
                 }
 
                 if (Comprimento <= 0)
                 {
-                    MensaComprimento = "O Comprimento é obrigatório!";
+                    MensaComprimento = "O Comprimento deve ser maior que zero!";
                     possuiErro = true;
                 }
 
-                /// Caso o sistema tenha erro, para a execução!
-                if (possuiErro)
-                {
-                    return;
-                }
+                if (possuiErro) return;
 
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 string base64Payload = string.Empty;
 
-                if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
+                if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) &&
+                    File.Exists(_caminhoArquivoSelecionado))
                 {
-                    /// Leitura assíncrona por streams evita alocar buffers síncronos imensos no heap comum
-                    byte[] fileBytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
+                    byte[] fileBytes = await File.ReadAllBytesAsync(
+                        _caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
                     base64Payload = Convert.ToBase64String(fileBytes);
                 }
 
-                /// Cria o objeto Residuo com os dados do formulário
+                // ID do usuário obtido da sessão — nunca um placeholder hard-coded
+                string? idUsuario = UsuarioSessaoService.Instancia.IdUsuarioLogado;
+
+                if (string.IsNullOrEmpty(idUsuario))
+                {
+                    MensagemErroGeral = "Sessão expirada. Faça login novamente.";
+                    return;
+                }
+
                 var novoResiduo = new Residuo
                 {
-                    Id = Guid.NewGuid().ToString(),
-
-                    /// O Id do usuário logado deve ser obtido a partir do contexto de autenticação da aplicação,
-                    IdUsuario = "Id_Do_Usuario_Logado",
-
-                    TipoResiduo = TipoMaterial,
-                    Especificacao = Especificacao, 
-                    Origem = Origem,
-                    Projeto = ProjetoOrigem,
-                    Quantidade = Quantidade,
-                    DataCadastro = Data,
-                    Condicao = Condicao,
-                    DimensoesCm = Comprimento,
-                    DimensoesLm = Largura,
-                    Observacao = Observacoes,
-                    Anexo = base64Payload,
-                    Status = Status
+                    Id            = Guid.NewGuid().ToString(),
+                    IdUsuario     = idUsuario,
+                    TipoResiduo   = TipoMaterial!,
+                    Especificacao = Especificacao,
+                    Origem        = Origem!,
+                    Projeto       = ProjetoOrigem,
+                    Quantidade    = Quantidade,
+                    UnidadeMedida = UnidadeMedida,
+                    DataCadastro  = Data,
+                    Condicao      = Condicao ?? string.Empty,
+                    DimensoesCm   = Comprimento,
+                    DimensoesLm   = Largura,
+                    Observacao    = Observacoes,
+                    Anexo         = base64Payload,
+                    Status        = Status ?? string.Empty
                 };
 
                 try
                 {
-                    /// Inicializa o cliente do Realtime Database
-                    var firebase = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
+                    // URL do Firebase lida do AppSettings — sem hard-code
+                    var firebase = new FirebaseClient(AppSettings.FirebaseDatabaseUrl);
 
-                    /// Salva o objeto na tabela/nó "residuos" usando o Id como chave
                     await firebase
                         .Child("residuos")
                         .Child(novoResiduo.Id)
@@ -313,95 +326,95 @@ namespace ReGraphik.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MensagemErroGeral = "Erro ao salvar os dados no Realtime Database.";
+                    MensagemErroGeral = $"Erro ao salvar os dados no banco: {ex.Message}";
                 }
             }
             catch (Exception ex)
             {
-                MensagemErroGeral = "Erro ao salvar os dados no Realtime Database.";
+                MensagemErroGeral = $"Erro inesperado: {ex.Message}";
             }
         }
 
+        // ─── Helpers ──────────────────────────────────────────────────────────────
+
+        /// <summary>Exibe a janela de confirmação de sucesso e limpa o formulário.</summary>
         private void MostrarMensagemSucesso()
         {
-            /// O Dispatcher joga a execução de volta para a Thread correta (STA)
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var msgWindow = new MensagemWindow();
-
-                msgWindow.ShowInTaskbar = false;
-                msgWindow.Owner = Application.Current.MainWindow;
-                msgWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
+                var msgWindow = new MensagemWindow
+                {
+                    ShowInTaskbar = false,
+                    Owner = Application.Current.MainWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
                 msgWindow.ShowDialog();
             });
 
             LimparCampos();
         }
 
-
-        /// <summary>
-        /// Método para abrir um diálogo de seleção de arquivos, permitindo que o usuário escolha um arquivo de imagem ou vídeo para anexar ao resíduo.
-        /// </summary>
+        /// <summary>Abre o diálogo de seleção de imagem. Rejeita arquivos maiores que 2 MB.</summary>
         private async Task SelecionarArquivoAsync()
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
                 Filter = "Imagens|*.jpg;*.jpeg;*.png;",
-                Title = "Selecione um arquivo para anexar"
+                Title  = "Selecione um arquivo para anexar"
             };
 
             if (openFileDialog.ShowDialog() == true)
             {
                 var fileInfo = new FileInfo(openFileDialog.FileName);
 
-                /// Reduzido para 2MB para evitar estouros de string JSON HTTP clássicos
                 if (fileInfo.Length > 2 * 1024 * 1024)
                 {
-                    MessageBox.Show("Arquivos maiores que 2MB não são suportados para envio direto via JSON.", "Arquivo muito grande", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(
+                        "Arquivos maiores que 2 MB não são suportados para envio direto via JSON.",
+                        "Arquivo muito grande",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     return;
                 }
 
                 NomeArquivo = openFileDialog.SafeFileName;
                 _caminhoArquivoSelecionado = openFileDialog.FileName;
             }
+
+            await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Método para limpar os campos do formulário após o cadastro de um resíduo ou quando o usuário desejar reiniciar o preenchimento.
-        /// </summary>
+        /// <summary>Redefine todos os campos do formulário para os valores iniciais.</summary>
         private void LimparCampos()
         {
-            TipoMaterial = null;
-            Especificacao = string.Empty;
-            Origem = null;
-            ProjetoOrigem = string.Empty;
-            Quantidade = 0;
-            Data = DateTime.Now;
-            Condicao = null;
-            Comprimento = 0;
-            Largura = 0;
-            Observacoes = string.Empty;
-            NomeArquivo = "Nenhum arquivo selecionado";
+            TipoMaterial   = null;
+            Especificacao  = string.Empty;
+            Origem         = null;
+            ProjetoOrigem  = string.Empty;
+            Quantidade     = 0;
+            UnidadeMedida  = "kg";
+            Data           = DateTime.Now;
+            Condicao       = null;
+            Comprimento    = 0;
+            Largura        = 0;
+            Observacoes    = string.Empty;
+            Status         = null;
+            NomeArquivo    = "Nenhum arquivo selecionado";
             _caminhoArquivoSelecionado = string.Empty;
-            Status = null;
 
             LimparMensagens();
         }
 
-        /// <summary>
-        /// Método para limpar das mensagens dos campos do formulário.
-        /// </summary>
+        /// <summary>Limpa todas as mensagens de validação e erro do formulário.</summary>
         private void LimparMensagens()
         {
             MensaTipoMaterial = string.Empty;
-            MensaOrigem = string.Empty;
-            MensaQuantidade = string.Empty;
-            MensaComprimento = string.Empty;
-            MensaLargura = string.Empty;
+            MensaOrigem       = string.Empty;
+            MensaQuantidade   = string.Empty;
+            MensaComprimento  = string.Empty;
+            MensaLargura      = string.Empty;
             MensagemErroGeral = string.Empty;
+            MensagemAlerta    = string.Empty;
         }
-
     }
 }
-
