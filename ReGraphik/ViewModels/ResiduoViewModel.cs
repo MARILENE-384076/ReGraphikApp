@@ -284,19 +284,10 @@ namespace ReGraphik.ViewModels
                     base64Payload = Convert.ToBase64String(fileBytes);
                 }
 
-                // ID do usuário obtido da sessão — nunca um placeholder hard-coded
-                string? idUsuario = UsuarioSessaoService.Instancia.IdUsuarioLogado;
-
-                if (string.IsNullOrEmpty(idUsuario))
-                {
-                    MensagemErroGeral = "Sessão expirada. Faça login novamente.";
-                    return;
-                }
-
                 var novoResiduo = new Residuo
                 {
                     Id            = Guid.NewGuid().ToString(),
-                    IdUsuario     = idUsuario,
+                    //IdUsuario     = idUsuario,
                     TipoResiduo   = TipoMaterial!,
                     Especificacao = Especificacao,
                     Origem        = Origem!,

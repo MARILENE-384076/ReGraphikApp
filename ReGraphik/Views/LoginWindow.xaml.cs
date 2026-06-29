@@ -1,4 +1,5 @@
 ﻿
+using ReGraphik.Services;
 using ReGraphik.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,20 @@ namespace ReGraphik.Views
         public LoginWindow()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
+
+            /// Unifica o contexto. A sua LoginViewModel deve ser a dona da tela.
+            var loginVM = new LoginViewModel();
+            DataContext = loginVM;
+
+            /// Se a aba de cadastro realmente precisar de uma VM separada, 
+            /// injete a referência do Login nela para compartilharem a mesma sessão!
             CadastroTab.DataContext = new CadastroViewModel();
+
+            /// Evita que o timer de 15 minutos expire na sua cara enquanto você está 
+            /// digitando os dados do formulário nesta janela!
+            this.PreviewKeyDown += (s, e) => UsuarioSessaoService.Instancia.ResetarTimer();
+            this.PreviewMouseDown += (s, e) => UsuarioSessaoService.Instancia.ResetarTimer();
         }
-        
+
     }
 }

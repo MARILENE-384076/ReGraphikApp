@@ -4,11 +4,10 @@ using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 
 namespace ReGraphik.Services
-{
-    /// <summary>
-    /// Serviço singleton que mantém o estado do usuário logado durante a sessão,
-    /// incluindo foto de perfil, dados do usuário e controle de logout automático por inatividade.
-    /// </summary>
+{/// <summary>
+ /// Serviço singleton que mantém o estado do usuário logado durante a sessão,
+ /// incluindo foto de perfil, dados do usuário e controle de logout automático por inatividade.
+ /// </summary>
     public class UsuarioSessaoService : INotifyPropertyChanged
     {
         // ─── Singleton ───────────────────────────────────────────────────────────────
@@ -20,7 +19,6 @@ namespace ReGraphik.Services
         // ─── Constante de inatividade ─────────────────────────────────────────────
         /// <summary>
         /// Tempo máximo de inatividade antes do logout automático (em minutos).
-        /// Ajuste conforme necessidade do projeto.
         /// </summary>
         private const int MinutosInatividade = 15;
 
@@ -46,7 +44,13 @@ namespace ReGraphik.Services
         public Usuario? UsuarioLogado
         {
             get => _usuarioLogado;
-            set { _usuarioLogado = value; OnPropertyChanged(); }
+            set
+            {
+                _usuarioLogado = value;
+                OnPropertyChanged();
+                // CRÍTICO: Avisa a UI e as ViewModels que o atalho do ID também mudou!
+                OnPropertyChanged(nameof(IdUsuarioLogado));
+            }
         }
 
         /// <summary>
@@ -57,8 +61,8 @@ namespace ReGraphik.Services
 
         // ─── Evento de logout por inatividade ────────────────────────────────────
         /// <summary>
-        /// Disparado quando o sistema detecta inatividade superior a <see cref="MinutosInatividade"/> minutos.
-        /// Assine este evento no MainViewModel para executar o fluxo de saída.
+        /// Disparado quando o sistema detecta inatividade superior ou quando uma expiração é forçada.
+        /// Assine este evento no MainViewModel para executar o fluxo de saída da janela.
         /// </summary>
         public event Action? SessaoExpirada;
 
@@ -79,17 +83,30 @@ namespace ReGraphik.Services
         /// </summary>
         public void IniciarSessao(Usuario usuario)
         {
+            /// 1. Força a parada total do timer anterior para não carregar lixo em memória
+            _timerInatividade.Stop();
+
+            /// 2. Define o usuário
             UsuarioLogado = usuario;
+
+            /// 3. Inicia o timer do zero absoluto
             ResetarTimer();
         }
 
         /// <summary>
-        /// Reinicia o contador de inatividade. Deve ser chamado a cada interação relevante do usuário
-        /// (clique de menu, abertura de tela, etc.) para evitar logout acidental.
+        /// Reinicia o contador de inatividade. Deve ser chamado a cada interação relevante do usuário.
         /// </summary>
         public void ResetarTimer()
         {
+            /// No WPF, para garantir o reset real do intervalo de um DispatcherTimer,
+            /// o método mais seguro é desativar e reativar a propriedade 'IsEnabled'
             _timerInatividade.Stop();
+            _timerInatividade.IsEnabled = false;
+
+            /// Define o intervalo novamente para garantir que ele conte os 15 minutos cheios a partir de AGORA
+            _timerInatividade.Interval = TimeSpan.FromMinutes(MinutosInatividade);
+
+            _timerInatividade.IsEnabled = true;
             _timerInatividade.Start();
         }
 
@@ -104,6 +121,16 @@ namespace ReGraphik.Services
             FotoCaminho = null;
         }
 
+        /// <summary>
+        /// Força o encerramento imediato da sessão de forma programática.
+        /// Útil se uma requisição de API falhar por Token expirado ou nulo fora do tempo do Timer.
+        /// </summary>
+        public void ForçarExpiracaoSessao()
+        {
+            EncerrarSessao();
+            SessaoExpirada?.Invoke();
+        }
+
         // ─── Callback interno ─────────────────────────────────────────────────────
 
         /// <summary>
@@ -112,8 +139,7 @@ namespace ReGraphik.Services
         /// </summary>
         private void OnInatividade(object? sender, EventArgs e)
         {
-            EncerrarSessao();
-            SessaoExpirada?.Invoke();
+            ForçarExpiracaoSessao();
         }
 
         // ─── INotifyPropertyChanged ───────────────────────────────────────────────
