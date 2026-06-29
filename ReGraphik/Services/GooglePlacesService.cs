@@ -75,9 +75,7 @@ namespace ReGraphik.Services
                                 CEP = "00000-000",
                                 ResiduosAceitos = material,
                                 Lat = 0.0,
-                                Lng = 0.0,
-                                Telefone = "", /// Mantido vazio por segurança na Model
-                                Site = ""      /// Mantido vazio por segurança na Model
+                                Lng = 0.0
                             };
 
                             /// Isola a leitura de coordenadas geográficas
