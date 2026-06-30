@@ -1528,8 +1528,8 @@ O cliente WPF aponta para esse endereço por padrão. Não é necessário rodar 
 | [Autenticação](https://brunomaia.mintlify.app/authentication) | Fluxo completo de cadastro e login |
 | [Erros da API](https://brunomaia.mintlify.app/api/errors) | Referência de códigos HTTP e como resolver |
 | [MiniMundo e Demanda](./Modelagem/MiniMundo%20Demanda.pdf) | Contexto do negócio e descrição do problema |
-| [Modelo Conceitual](./Modelagem/Modelagem/ModeloConceitual_ReGraphik.brM3) | Diagrama entidade-relacionamento conceitual |
-| [Modelo Lógico](./Modelagem/Modelagem/ModeloLógico_ReGraphik.brM3) | Estrutura lógica do banco de dados |
+| [Modelo Conceitual](./Modelagem/ModeloConceitual_ReGraphik.brM3) | Diagrama entidade-relacionamento conceitual |
+| [Modelo Lógico](./Modelagem/ModeloLógico_ReGraphik.brM3) | Estrutura lógica do banco de dados |
 | [Documentação do Banco](./Banco%20de%20Dados/Documenta%C3%A7%C3%A3o%20Cria%C3%A7%C3%A3o%20Modelagem.pdf) | Documentação de criação e modelagem |
 | [Apresentação Técnica (PPTX)](./ReGraphik_MVVM_APIRest.pptx) | Slides explicando MVVM e a arquitetura da API |
 | [TCC — Documentação IntegraSENAI](./ReGraphik_IntegraSenai_Documentacao_TCC_01.pdf) | Documento oficial do TCC |
