@@ -1283,11 +1283,11 @@ Projeto desenvolvido por alunos do curso técnico do **SENAI**:
 
 | Nome | GitHub |
 |---|---|
-| Lucas Aquino Guedes | — |
+| Lucas Aquino Guedes | [@Lucascode13](https://github.com/Lucascode13) |
 | Bruno Maia Santos | [@BrunoMaiaSenai](https://github.com/BrunoMaiaSenai) |
-| Otavio Henrique Barbosa Soares | — |
-| Luna Beatriz Alves | — |
-| Kaio Alves Gonzaga Silva | — |
+| Otavio Henrique Barbosa Soares | [@OtavioHub97](https://github.com/OtavioHub97) |
+| Luna Beatriz Alves | [@LunnaBe](https://github.com/LunnaBe) |
+| Kaio Alves Gonzaga Silva | [@kaioss99](https://github.com/kaioss99) |
 
 ---
 
