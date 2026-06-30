@@ -26,6 +26,7 @@
 - [Nossa Solução — Os Três Pilares](#nossa-solução--os-três-pilares)
 - [Demonstração — Telas e Funcionalidades](#demonstração--telas-e-funcionalidades)
 - [Arquitetura do Sistema](#arquitetura-do-sistema)
+- [Modelagem de Banco de Dados](#modelagem-de-banco-de-dados)
 - [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
 - [Padrão MVVM em Detalhe](#padrão-mvvm-em-detalhe)
 - [Stack Tecnológica](#stack-tecnológica)
@@ -144,6 +145,184 @@ Integração com a **Google Maps Places API** para encontrar, em tempo real, pon
 ```
 
 O cliente WPF também se comunica **diretamente** com o Firebase para o módulo de **Chat em Tempo Real**, sem passar pela API REST — garantindo baixa latência nas mensagens.
+
+---
+
+## Modelagem de Banco de Dados
+
+### Modelo Conceitual:
+Com foco em entender as **regras de negócio** e o que o sistema precisa armazenar, sem se preocupar com tecnologias, marcas de banco de dados ou detalhes técnicos, é uma representação mais abstrata e amigável. 
+
+#### API:
+
+<img width="1267" height="890" alt="image" src="https://github.com/user-attachments/assets/72e9036d-5e98-4cb3-a641-6a7255befd72" />
+
+#### WPF:
+
+<img width="1271" height="728" alt="image" src="https://github.com/user-attachments/assets/e0152717-4ee5-43ef-8d11-8074daf17094" />
+
+#### Entidades:
+### Usuário (`Usuario`)
+Armazena as informações das pessoas cadastradas no sistema.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do usuário. |
+| **Nome** | `VARCHAR` | Nome completo. |
+| **CPF** | `VARCHAR` | Documento de Identificação. |
+| **Email** | `VARCHAR` | Endereço de correio eletrónico. |
+| **Login** | `VARCHAR` | Nome de utilizador para acesso. |
+| **Senha** | `VARCHAR` | Palavra-passe criptografada. |
+| **Perfil** | `VARCHAR` | Tipo de utilizador (ex: Administrador, Cidadão). |
+| **DataCadastro** | `DATE` | Data em que a conta foi criada. |
+| **FotoPerfil** | `VARCHAR` | Caminho ou URL da imagem de perfil. |
+| **Ativo** | `BOOLEAN` | Status da conta: Ativa/Inativa. |
+| **fk_Residuo_Id** | `VARCHAR` | Chave estrangeira no modelo lógico enviado. |
+| **fk_Conversa_UsuarioId** | `VARCHAR` | Apenas no modelo WPF. |
+| **fk_Mensagem_Id** | `VARCHAR` | Apenas no modelo WPF. |
+
+---
+
+### Resíduo (`Residuo`)
+Contém os detalhes técnicos e de negócio sobre o material a ser descartado ou reciclado.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do Resíduo. |
+| **TipoResiduo** | `VARCHAR` | Categoria do Resíduo (ex: Plástico, Vidro, Óleo). |
+| **Origem** | `VARCHAR` | De onde veio (ex: Doméstica, Industrial). |
+| **Especificacao** | `VARCHAR` | Detalhes adicionais do material. |
+| **Projeto** | `VARCHAR` | Se está associado a algum projeto específico. |
+| **Quantidade** | `INTEGER` | Número de itens ou volume. |
+| **DataCadastro** | `DATE` | Data de registo do Resíduo. |
+| **Condicao** | `VARCHAR` | Estado de conservação do Resíduo. |
+| **DimensoesCm** | `DOUBLE` | Dimensões em centímetros. |
+| **DimensoesLm** | `DOUBLE` | Volume ou dimensões em outra unidade métrica. |
+| **Observacao** | `VARCHAR` | Notas ou observações gerais. |
+| **Anexo** | `VARCHAR` | Caminho para ficheiros ou fotos anexadas do Resíduo. |
+| **Status** | `VARCHAR` | Ex: Pendente, Recolhido, Descartado. |
+| **fk_SugestaoResiduo_Id** | `VARCHAR` | Ligação com a sugestão gerada para este Resíduo. |
+
+---
+
+### Pontos de Coleta (`PontosColeta`)
+Locais físicos preparados para receber os descartes.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do ponto de recolha. |
+| **NomePonto** | `VARCHAR` | Nome do local ou estabelecimento. |
+| **Cidade** | `VARCHAR` | Cidade onde se localiza. |
+| **Estado** | `VARCHAR` | Distrito / Estado. |
+| **CEP** | `VARCHAR` | Código postal. |
+| **ResiduoAceitos** | `VARCHAR` | Lista ou descrição dos tipos de Resíduos que o ponto aceita. |
+| **Lat** | `DOUBLE` | Coordenada de Latitude para o mapa. |
+| **Lng** | `DOUBLE` | Coordenada de Longitude para o mapa. |
+
+---
+
+### Aceita
+Tabela associativa que une os Resíduos aos Pontos de Coleta (Relação N:M).
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **fk_PontosColeta_Id** | `VARCHAR` | Chave estrangeira que aponta para o Ponto de Coleta. |
+| **fk_Residuo_Id** | `VARCHAR` | Chave estrangeira que aponta para o Resíduo. |
+
+---
+
+### Sugestão do Resíduo (`SugestaoResiduo`)
+Entidade intermédia que vincula o descarte à base de dados de sugestões do sistema.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do registo de sugestão. |
+| **Sugestao** | `VARCHAR` | Texto sugerido. |
+| **DataAplicacao** | `DATE` | Data em que a sugestão foi aplicada ou gerada. |
+
+---
+
+### Sugestão (`Sugestao`)
+Base de dados de ideias de reutilização ou diretrizes de descarte ecológico.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único da sugestão master. |
+| **TipoResiduoAceito** | `VARCHAR` | Para qual tipo de Resíduo esta sugestão serve. |
+| **DescricaoSugestao** | `VARCHAR` | O texto explicativo da sugestão (ex: "Transforme garrafas pet em vasos"). |
+| **fk_SugestaoResiduo_Id** | `VARCHAR` | Chave estrangeira de ligação. |
+
+---
+
+## Entidades Exclusivas
+
+### LoginRequest
+Uma estrutura temporária ou de suporte, usada geralmente para operações de autenticação na API.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Login** | `VARCHAR` | Utilizador enviado na requisição. |
+| **Senha** | `VARCHAR` | Palavra-passe enviada na requisição. |
+
+### Conversa (`Conversa`)
+Gerencia o cabeçalho de uma sessão de chat entre utilizadores.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **UsuarioId** | `VARCHAR` | Id do utilizador dono da sessão de conversa. |
+| **UsuarioNome** | `VARCHAR` | Nome do utilizador com quem se conversa. |
+| **UltimaMensagem** | `VARCHAR` | Espelho do texto da última mensagem para exibição na lista. |
+| **UltimaDataHora** | `DATE` | Momento do último envio. |
+| **MensagensNaoLidas** | `INTEGER` | Contador de mensagens. |
+| **fk_Mensagem_Id** | `VARCHAR` | Ligação com as mensagens da conversa. |
+
+### Mensagem (`Mensagem`)
+Histórico de todas as interações de texto enviadas no chat.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único da mensagem. |
+| **Texto** | `VARCHAR` | O conteúdo escrito da mensagem. |
+| **DataHora** | `DATE` | Data e hora exata do envio. |
+| **Lida** | `BOOLEAN` | Flag para saber se o destinatário já abriu a mensagem. |
+| **DestinatarioId** | `VARCHAR` | Id de quem vai receber. |
+| **RemetenteId** | `VARCHAR` | Id de quem enviou. |
+| **RemetenteNome** | `VARCHAR` | Nome de quem enviou. |
+
+### Convite Firebase (`ConviteFirebase`)
+Controle de acessos, convites externos ou tokens geridos via Firebase.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Email** | `VARCHAR` | Email do convidado. |
+| **Expira** | `VARCHAR` | Data ou regras de expiração do convite. |
+| **Usado** | `BOOLEAN` | Se o convite já foi resgatado ou não. |
+| **Perfil** | `VARCHAR` | Qual o nível de acesso que o convidado terá. |
+  
+### Modelo Lógico:
+O modelo lógico pega as Ideias do modelo conceitual e as transforma no formato de Tabelas relacionais. Que após isso definimos como os dados vão se organizar estruturalmente, mas ainda sem escolher qual programa de banco de dados (como MySQL ou PostgreSQL) vamos usar. 
+
+#### API:
+
+<img width="1296" height="893" alt="image" src="https://github.com/user-attachments/assets/b132ff64-43ce-42b9-9ec2-fbcb8a01693f" />
+
+#### WPF: 
+
+<img width="1322" height="671" alt="image" src="https://github.com/user-attachments/assets/2f48b3a9-d3a9-4bb0-8083-094337b2e36a" />
+
+### Modelo Físico:
+É a fase em que transformamos o modelo lógico na estrutura prática do banco de dados. Embora esse processo geralmente envolve **SGBDs (Sistema Gerenciador de Banco de Dados)** tradicionais (como MySQL ou PostgreSQL), o nosso sistema foi implementado utilizando **Firebase**
+
+#### API:
+
+<img width="702" height="977" alt="image" src="https://github.com/user-attachments/assets/ea949345-d84b-4987-89d7-dbbde99f9b38" />
+<img width="705" height="476" alt="image" src="https://github.com/user-attachments/assets/2010a9de-001c-48f3-8b53-5d09de63577a" />
+
+#### WPF:
+
+<img width="678" height="1007" alt="image" src="https://github.com/user-attachments/assets/6b296e88-c81e-4cb1-998d-45efab616189" />
+<img width="678" height="992" alt="image" src="https://github.com/user-attachments/assets/64f44859-ac4b-484a-af7e-0cc2c33b7761" />
+<img width="682" height="61" alt="image" src="https://github.com/user-attachments/assets/85367556-648b-4c8d-8e26-0529f577c811" />
 
 ---
 
