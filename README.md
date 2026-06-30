@@ -26,6 +26,7 @@
 - [Nossa Solução — Os Três Pilares](#nossa-solução--os-três-pilares)
 - [Demonstração — Telas e Funcionalidades](#demonstração--telas-e-funcionalidades)
 - [Arquitetura do Sistema](#arquitetura-do-sistema)
+- [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
 - [Padrão MVVM em Detalhe](#padrão-mvvm-em-detalhe)
 - [Stack Tecnológica](#stack-tecnológica)
 - [Pacotes e Dependências](#pacotes-e-dependências)
@@ -143,6 +144,86 @@ Integração com a **Google Maps Places API** para encontrar, em tempo real, pon
 ```
 
 O cliente WPF também se comunica **diretamente** com o Firebase para o módulo de **Chat em Tempo Real**, sem passar pela API REST — garantindo baixa latência nas mensagens.
+
+---
+
+## Diagrama de Caso de Uso
+
+Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
+
+### Diagrama de Login e Cadastro:
+Controla a segurança e as portas de entrada do sistema. Ele valida o acesso de quem já tem conta (Login) e gerencia um sistema fechado de novos registros, onde um Administrador precisa gerar um token por e-mail para permitir que um novo Usuário se cadastre. 
+
+**Figura 1** - Diagrama de caso de uso do sistema de login e cadastro do sistema ReGraphik.
+
+<img width="975" height="825" alt="image" src="https://github.com/user-attachments/assets/43457a1a-b0ed-4f0f-8057-a418e958efb1" />
+
+### Diagrama de Login e Cadastro:
+Funciona como o mapa do menu principal. Ele lista todos os módulos do sistema que o usuário comum pode acessar a partir da tela inicial (Dashboard, Cadastro, Estoque, Mapa, Relatórios, ESG, Conta e Chat). Caso seja um Administrador a tela de Gerenciamento de Usuário pode ser usada.
+
+**Figura 1** - Diagrama de caso de uso geral do sistema ReGraphik, com um administrador logado.
+
+<img width="873" height="927" alt="image" src="https://github.com/user-attachments/assets/4ce6f6c5-78fa-4e78-9dfa-8cdd7f87a274" />
+
+**Figura 2** - Diagrama de caso de uso geral do sistema ReGraphik, com um usuário logado.
+
+<img width="897" height="852" alt="image" src="https://github.com/user-attachments/assets/945e3f89-930f-4571-87e1-e1774be34269" />
+
+### Diagrama da Dashboard:
+Carrega a tela de indicadores visuais do usuário. Ele processa gráficos de pizza e de barras, monta a tabela de históricos recentes e calcula blocos com métricas financeiras e de volume reciclado. 
+
+**Figura 1** - Diagrama de caso de uso da tela de dashboard do sistema ReGraphik.
+
+<img width="842" height="932" alt="image" src="https://github.com/user-attachments/assets/355fe1f0-a565-481f-9e41-cc0c56bc260d" />
+
+### Diagrama de Cadastro de Resíduo:
+Gerencia o formulário de entrada de novos descartes. Ele exige que o usuário preencha dados como tipo, peso, origem e dimensões do material, valida essas informações e as salva no banco de dados. 
+
+**Figura 1** - Diagrama de caso de uso da tela de cadastro de resíduos do sistema ReGraphik.
+
+<img width="978" height="840" alt="image" src="https://github.com/user-attachments/assets/190812f1-1693-4de7-8cf6-dabd72f09627" />
+
+### Diagrama de Estoque Reverso:
+Exibe e organiza os materiais já cadastrados. Ele permite que o usuário filtre seus resíduos por atributos (como tipo e período) e exibe sugestões inteligentes do sistema sobre como reaproveitar cada material. 
+
+**Figura 1** - Diagrama de caso de uso da tela de estoque reverso do sistema ReGraphik.
+
+<img width="1033" height="906" alt="image" src="https://github.com/user-attachments/assets/a7f76237-2fea-4d8f-a841-301be3d046f9" />
+
+### Diagrama de Mapa de Pontos de Coleta:
+Localiza pontos físicos de descarte. Ele abre um mapa interativo na tela, permite que o usuário digite o nome de uma cidade e mostra os postos de coleta autorizados na região. 
+
+**Figura 1** - Diagrama de caso de uso do Mapa de pontos de coleta do sistema ReGraphik.
+
+<img width="1387" height="830" alt="image" src="https://github.com/user-attachments/assets/e8f59547-9f05-4fdf-91a7-a5ed5d67d3cd" />
+
+### Diagrama de Relatórios:
+Consolida históricos para auditoria. Ele exige que o usuário defina filtros detalhados (como datas, tipo de material e status) para cruzar os dados, gerar um relatório consolidado e exportá-lo em formato PDF. 
+
+**Figura 1** - Diagrama de caso de uso da tela de relatórios do sistema ReGraphik.
+
+<img width="1287" height="902" alt="image" src="https://github.com/user-attachments/assets/38227de9-bb69-47de-98cf-52e0a3efe5ca" />
+
+### Diagrama de Certificação ESG:
+Mede e comprova o impacto ecológico. Ele mostra ao usuário os indicadores de sustentabilidade alcançados e permite a geração e exportação de um relatório comprobatório para auditorias ambientais. 
+
+**Figura 1** - Diagrama de caso de uso da tela de certificação ESG do sistema ReGraphik.
+
+<img width="1565" height="837" alt="image" src="https://github.com/user-attachments/assets/68676dac-c05c-448f-9693-175bf2460ecc" />
+
+### Diagrama de Conta do Usuário:
+Faz a gestão do perfil. Ele exibe os dados cadastrais do próprio usuário logado e abre caminhos para que ele execute ações de segurança ou personalização, como alterar a senha ou mudar a foto de perfil. 
+
+**Figura 1** - Diagrama de caso de uso da tela de informações do usuário do sistema ReGraphik.
+
+<img width="1317" height="788" alt="image" src="https://github.com/user-attachments/assets/e83730a6-8dbe-48e4-bc29-0db49c099bbc" />
+
+### Diagrama de Chat:
+Intermedia a comunicação interna do app. Ele permite abrir uma lista de contatos, selecionar um usuário específico e trocar mensagens de texto para combinar detalhes de coletas ou doações. 
+
+**Figura 1** - Diagrama de caso de uso do chat entre usuários do sistema.
+
+<img width="1373" height="746" alt="image" src="https://github.com/user-attachments/assets/c7131115-4ae5-4fa0-81f5-e8de372e1523" />
 
 ---
 
