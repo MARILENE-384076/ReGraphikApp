@@ -159,7 +159,7 @@ Com foco em entender as **regras de negócio** e o que o sistema precisa armazen
 
 #### WPF:
 
-<img width="1271" height="728" alt="image" src="https://github.com/user-attachments/assets/e0152717-4ee5-43ef-8d11-8074daf17094" />
+<img width="1267" height="723" alt="image" src="https://github.com/user-attachments/assets/d674b50d-76f6-46cb-a509-222627ddf27e" />
 
 #### Entidades:
 ### Usuário (`Usuario`)
