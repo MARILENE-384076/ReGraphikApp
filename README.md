@@ -1508,6 +1508,9 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 **Tela Principal**
 <img width="919" height="471" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/59708027-2967-41e9-a4d5-71c7c668d65a" />
 
+**Dashboard**
+<img width="1457" height="1272" alt="TelaDashboard" src="https://github.com/user-attachments/assets/90e20b78-7f3f-461e-8a26-5e738ccbedb3" />
+
 **Cadastro de Residuos**
 <img width="1457" height="1272" alt="TelaCadastroResiduos" src="https://github.com/user-attachments/assets/bfdcb282-c836-4109-94f8-6269714a7d9b" />
 
@@ -1528,8 +1531,6 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 
 **Minha Conta**
 <img width="721" height="462" alt="TelaMinhaConta" src="https://github.com/user-attachments/assets/c8baf2df-4039-4fa1-99d0-67adabc7c6ab" />
-
-
 
 ---
 
