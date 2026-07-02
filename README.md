@@ -1505,6 +1505,9 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 **Criar Conta**
 <img width="907" height="451" alt="TelaCriaConta" src="https://github.com/user-attachments/assets/2092612b-c997-42b7-8762-90f01cc8a8ad" />
 
+**Tela Principal**
+<img width="919" height="471" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/59708027-2967-41e9-a4d5-71c7c668d65a" />
+
 
 
 
