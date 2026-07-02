@@ -1517,6 +1517,9 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 **Mapa**
 <img width="773" height="467" alt="TelaMapa" src="https://github.com/user-attachments/assets/e6601e2b-1de7-4ba3-8497-33ca61d639db" />
 
+**Relátorios**
+<img width="755" height="426" alt="TelaRelatorio" src="https://github.com/user-attachments/assets/fef53513-e4d4-4a45-9c2e-515c164cd05a" />
+
 
 
 ---
