@@ -1526,6 +1526,9 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 **Gerenciar Usuários**
 <img width="741" height="434" alt="GerenciarUsuarios" src="https://github.com/user-attachments/assets/2a7b11b6-91bd-4457-88c6-3d92cf6c0a72" />
 
+**Minha Conta**
+<img width="721" height="462" alt="TelaMinhaConta" src="https://github.com/user-attachments/assets/c8baf2df-4039-4fa1-99d0-67adabc7c6ab" />
+
 
 
 ---
