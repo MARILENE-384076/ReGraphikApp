@@ -1511,6 +1511,9 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 **Cadastro de Residuos**
 <img width="1457" height="1272" alt="TelaCadastroResiduos" src="https://github.com/user-attachments/assets/bfdcb282-c836-4109-94f8-6269714a7d9b" />
 
+**Estoque Reverso**
+<img width="1458" height="1426" alt="TelaEstoqueReverso" src="https://github.com/user-attachments/assets/1f629f91-f175-47af-87b1-d75992dda3b0" />
+
 
 
 ---
