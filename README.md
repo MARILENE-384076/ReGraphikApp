@@ -1520,6 +1520,8 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 **Relátorios**
 <img width="755" height="426" alt="TelaRelatorio" src="https://github.com/user-attachments/assets/fef53513-e4d4-4a45-9c2e-515c164cd05a" />
 
+**ESG / Certificação**
+<img width="739" height="456" alt="TelaESG" src="https://github.com/user-attachments/assets/9f673cd0-fd1c-4209-874d-44984e9b1792" />
 
 
 ---
