@@ -1496,6 +1496,13 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 3. Verifique se a API está em execução
 4. Pressione `F5` (ou `Run`) para iniciar o cliente
 
+
+---
+### Telas do Sistema
+**Login**
+<img width="909" height="453" alt="Telalogin" src="https://github.com/user-attachments/assets/701b315e-2e8a-47fa-8d2c-a5e2f151e5c0" />
+
+
 ---
 
 ### Observações de ambiente
