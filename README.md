@@ -448,7 +448,7 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="1777" height="606" alt="image" src="https://github.com/user-attachments/assets/5e0a8b34-bc8b-4a2a-af6c-40c002e6e79e" />
+<img width="1880" height="685" alt="image" src="https://github.com/user-attachments/assets/d0df307c-4bc4-437e-9b8c-1fd6ecda78dd" />
 
 ### Diagrama de Relatórios:
 
