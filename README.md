@@ -339,7 +339,7 @@ Controla a segurança e as portas de entrada do sistema. Ele valida o acesso de 
 
 <img width="975" height="825" alt="image" src="https://github.com/user-attachments/assets/43457a1a-b0ed-4f0f-8057-a418e958efb1" />
 
-### Diagrama de Login e Cadastro:
+### Diagrama do Sistema:
 Funciona como o mapa do menu principal. Ele lista todos os módulos do sistema que o usuário comum pode acessar a partir da tela inicial (Dashboard, Cadastro, Estoque, Mapa, Relatórios, ESG, Conta e Chat). Caso seja um Administrador a tela de Gerenciamento de Usuário pode ser usada.
 
 **Figura 1** - Diagrama de caso de uso geral do sistema ReGraphik, com um administrador logado.
@@ -412,12 +412,19 @@ Intermedia a comunicação interna do app. Ele permite abrir uma lista de contat
 
 Serve essencialmente para mapear o passo a passo visual de um processo.
 
-### Diagrama de Login e Cadastro:
+### Diagrama de Login:
 
 **Figura 1** - Diagrama de fluxo do sistema de login e cadastro do sistema ReGraphik.
 
+<img width="1671" height="411" alt="Captura de tela 2026-07-02 201118" src="https://github.com/user-attachments/assets/c44db327-d77c-4c42-85eb-7ad469426831" />
 
-### Diagrama de Login e Cadastro:
+### Diagrama de Cadastro:
+
+**Figura 1** - Diagrama de fluxo do sistema de cadastro do sistema ReGraphik.
+
+<img width="1710" height="875" alt="Captura de tela 2026-07-02 201040" src="https://github.com/user-attachments/assets/ef25294d-18fd-4847-9dff-1fff9f322d97" />
+
+### Diagrama do Sistema:
 
 **Figura 1** - Diagrama de fluxo geral do sistema ReGraphik, com um administrador logado.
 
@@ -441,6 +448,7 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo do Mapa de pontos de coleta do sistema ReGraphik.
 
+<img width="1777" height="606" alt="image" src="https://github.com/user-attachments/assets/5e0a8b34-bc8b-4a2a-af6c-40c002e6e79e" />
 
 ### Diagrama de Relatórios:
 
@@ -468,12 +476,15 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
 
-### Diagrama de Login e Cadastro:
+### Diagrama de Login:
 
-**Figura 1** - Diagrama de sequência do sistema de login e cadastro do sistema ReGraphik.
+**Figura 1** - Diagrama de sequência do sistema de login do sistema ReGraphik.
 
+### Diagrama de Cadastro:
 
-### Diagrama de Login e Cadastro:
+**Figura 1** - Diagrama de sequência do sistema de cadastro do sistema ReGraphik.
+
+### Diagrama do Sistema:
 
 **Figura 1** - Diagrama de sequência geral do sistema ReGraphik, com um administrador logado.
 
