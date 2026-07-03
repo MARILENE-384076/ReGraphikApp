@@ -1607,7 +1607,67 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 3. Verifique se a API está em execução
 4. Pressione `F5` (ou `Run`) para iniciar o cliente
 
+
 ---
+
+### Telas do Sistema
+
+**Login**
+
+<img width="909" height="453" alt="Telalogin" src="https://github.com/user-attachments/assets/701b315e-2e8a-47fa-8d2c-a5e2f151e5c0" />
+
+
+**Criar Conta**
+
+<img width="907" height="451" alt="TelaCriaConta" src="https://github.com/user-attachments/assets/2092612b-c997-42b7-8762-90f01cc8a8ad" />
+
+
+**Tela Principal**
+
+<img width="919" height="471" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/59708027-2967-41e9-a4d5-71c7c668d65a" />
+
+
+**Dashboard**
+
+<img width="1457" height="1272" alt="TelaDashboard" src="https://github.com/user-attachments/assets/90e20b78-7f3f-461e-8a26-5e738ccbedb3" />
+
+
+**Cadastro de Residuos**
+
+<img width="1457" height="1272" alt="TelaCadastroResiduos" src="https://github.com/user-attachments/assets/bfdcb282-c836-4109-94f8-6269714a7d9b" />
+
+**Estoque Reverso**
+
+<img width="1458" height="1426" alt="TelaEstoqueReverso" src="https://github.com/user-attachments/assets/1f629f91-f175-47af-87b1-d75992dda3b0" />
+
+
+**Mapa**
+
+<img width="773" height="467" alt="TelaMapa" src="https://github.com/user-attachments/assets/e6601e2b-1de7-4ba3-8497-33ca61d639db" />
+
+
+**Relátorios**
+
+<img width="755" height="426" alt="TelaRelatorio" src="https://github.com/user-attachments/assets/fef53513-e4d4-4a45-9c2e-515c164cd05a" />
+
+
+**ESG / Certificação**
+
+<img width="739" height="456" alt="TelaESG" src="https://github.com/user-attachments/assets/9f673cd0-fd1c-4209-874d-44984e9b1792" />
+
+
+**Gerenciar Usuários**
+
+<img width="741" height="434" alt="GerenciarUsuarios" src="https://github.com/user-attachments/assets/2a7b11b6-91bd-4457-88c6-3d92cf6c0a72" />
+
+
+**Minha Conta**
+
+<img width="721" height="462" alt="TelaMinhaConta" src="https://github.com/user-attachments/assets/c8baf2df-4039-4fa1-99d0-67adabc7c6ab" />
+
+
+---
+
 
 ### Observações de ambiente
 
