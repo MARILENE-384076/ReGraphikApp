@@ -28,6 +28,8 @@
 - [Arquitetura do Sistema](#arquitetura-do-sistema)
 - [Modelagem de Banco de Dados](#modelagem-de-banco-de-dados)
 - [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
+- [Diagrama de Fluxo](#diagrama-de-fluxo)
+- [Diagrama de Sequência](#diagrama-de-sequência)
 - [Padrão MVVM em Detalhe](#padrão-mvvm-em-detalhe)
 - [Stack Tecnológica](#stack-tecnológica)
 - [Pacotes e Dependências](#pacotes-e-dependências)
@@ -403,6 +405,115 @@ Intermedia a comunicação interna do app. Ele permite abrir uma lista de contat
 **Figura 1** - Diagrama de caso de uso do chat entre usuários do sistema.
 
 <img width="1373" height="746" alt="image" src="https://github.com/user-attachments/assets/c7131115-4ae5-4fa0-81f5-e8de372e1523" />
+
+---
+
+## Diagrama de Fluxo
+
+Serve essencialmente para mapear o passo a passo visual de um processo.
+
+### Diagrama de Login e Cadastro:
+
+**Figura 1** - Diagrama de fluxo do sistema de login e cadastro do sistema ReGraphik.
+
+
+### Diagrama de Login e Cadastro:
+
+**Figura 1** - Diagrama de fluxo geral do sistema ReGraphik, com um administrador logado.
+
+
+### Diagrama da Dashboard:
+
+**Figura 1** - Diagrama de fluxo da tela de dashboard do sistema ReGraphik.
+
+
+### Diagrama de Cadastro de Resíduo:
+
+**Figura 1** - Diagrama de fluxo da tela de cadastro de resíduos do sistema ReGraphik.
+
+
+### Diagrama de Estoque Reverso:
+
+**Figura 1** - Diagrama de fluxo da tela de estoque reverso do sistema ReGraphik.
+
+
+### Diagrama de Mapa de Pontos de Coleta:
+
+**Figura 1** - Diagrama de fluxo do Mapa de pontos de coleta do sistema ReGraphik.
+
+
+### Diagrama de Relatórios:
+
+**Figura 1** - Diagrama de fluxo da tela de relatórios do sistema ReGraphik.
+
+
+### Diagrama de Certificação ESG:
+
+**Figura 1** - Diagrama de fluxo da tela de certificação ESG do sistema ReGraphik.
+
+
+### Diagrama de Conta do Usuário:
+
+**Figura 1** - Diagrama de fluxo da tela de informações do usuário do sistema ReGraphik.
+
+
+### Diagrama de Chat:
+
+**Figura 1** - Diagrama de fluxo do chat entre usuários do sistema.
+
+
+---
+
+## Diagrama de Sequência
+
+Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
+
+### Diagrama de Login e Cadastro:
+
+**Figura 1** - Diagrama de sequência do sistema de login e cadastro do sistema ReGraphik.
+
+
+### Diagrama de Login e Cadastro:
+
+**Figura 1** - Diagrama de sequência geral do sistema ReGraphik, com um administrador logado.
+
+### Diagrama da Dashboard:
+
+**Figura 1** - Diagrama de sequência da tela de dashboard do sistema ReGraphik.
+
+
+### Diagrama de Cadastro de Resíduo:
+
+**Figura 1** - Diagrama de sequência da tela de cadastro de resíduos do sistema ReGraphik.
+
+### Diagrama de Estoque Reverso:
+
+**Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
+
+
+### Diagrama de Mapa de Pontos de Coleta:
+
+**Figura 1** - Diagrama de sequência do Mapa de pontos de coleta do sistema ReGraphik.
+
+
+### Diagrama de Relatórios:
+
+**Figura 1** - Diagrama de sequência da tela de relatórios do sistema ReGraphik.
+
+
+### Diagrama de Certificação ESG:
+
+**Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
+
+### Diagrama de Conta do Usuário:
+
+**Figura 1** - Diagrama de sequência da tela de informações do usuário do sistema ReGraphik.
+
+
+### Diagrama de Chat:
+
+**Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
+
 
 ---
 
