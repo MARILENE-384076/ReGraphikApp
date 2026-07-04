@@ -5,12 +5,14 @@ using QuestPDF.Infrastructure;
 using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
+using ReGraphik.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
@@ -209,7 +211,7 @@ namespace ReGraphik.ViewModels
         {
             if (ResiduosFiltrados == null || ResiduosFiltrados.Count == 0)
             {
-                System.Windows.MessageBox.Show("Nenhum dado para exportar. Gere o relatório primeiro.", "Aviso");
+                MensagemPdfWindow.Exibir("Aviso", "Nenhum dado para exportar. Gere o relatório primeiro.", MensagemPdfWindow.TipoMensagem.Erro);
                 return;
             }
 
@@ -357,18 +359,28 @@ namespace ReGraphik.ViewModels
                     });
                 }).GeneratePdf(caminho);
 
-                var result = System.Windows.MessageBox.Show(
-                    $"PDF gerado com sucesso!\n\n{caminho}\n\nDeseja abrir o arquivo?",
-                    "Exportação concluída",
-                    System.Windows.MessageBoxButton.YesNo,
-                    System.Windows.MessageBoxImage.Information);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    bool? abrir = MensagemPdfWindow.Exibir(
+                        "Exportação Concluída",
+                        $"Relatório em PDF gerado com sucesso!\n\nSalvo em: {caminho}\n\nDeseja abrir o arquivo agora?",
+                        MensagemPdfWindow.TipoMensagem.Confirmacao);
 
-                if (result == System.Windows.MessageBoxResult.Yes)
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(caminho) { UseShellExecute = true });
+                    if (abrir == true)
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(caminho) { UseShellExecute = true });
+                    }
+                });
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Erro ao gerar PDF: {ex.Message}", "Erro");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemPdfWindow.Exibir(
+                        "Erro na Exportação",
+                        $"Erro ao gerar o PDF institucional: {ex.Message}",
+                        MensagemPdfWindow.TipoMensagem.Erro);
+                });
             }
         }
 
