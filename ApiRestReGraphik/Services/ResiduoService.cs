@@ -36,24 +36,13 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                /// Obtém todos os resíduos do Firebase
-                var residuosFirebase = await _firebaseClient.Child(NodeName).OnceAsync<Residuo>();
+                /// Obtém os dados do Firebase para a coleção de resíduos
+                var residuo = await _firebaseClient
+                    .Child(NodeName)
+                    .OnceAsync<Residuo>();
 
-                /// Mapeia os resíduos obtidos do Firebase para a lista de resíduos, garantindo que o ID seja definido corretamente
-                var listaResiduos = residuosFirebase
-                    .Select(r =>
-                    {
-                        var residuo = r.Object;
-                        if (residuo != null && string.IsNullOrEmpty(residuo.Id))
-                        {
-                            residuo.Id = r.Key;
-                        }
-                        return residuo;
-                    })
-                    .Where(r => r != null)
-                    .ToList();
-
-                return listaResiduos;
+                /// Mapeia os dados do Firebase para a lista de resíduos
+                return residuo.Select(r => r.Object).ToList();
             }
             catch (FirebaseException ex)
             {
