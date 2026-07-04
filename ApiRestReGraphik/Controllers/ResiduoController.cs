@@ -333,13 +333,13 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha ao excluir resíduo com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados do resíduo com ID {id}.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
                 _logger.LogError(ex, $"Erro ao excluir dados do Residuo com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }

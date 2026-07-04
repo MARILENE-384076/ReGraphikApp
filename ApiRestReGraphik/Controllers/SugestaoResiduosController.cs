@@ -313,7 +313,7 @@ namespace ApiRestReGraphik.Controllers
         {
             return new SugestaoResiduoDto
             {
-                SugestaoTexto = sugestao.SugestaoTexto, // Mapeia o campo do texto original
+                SugestaoTexto = sugestao.SugestaoTexto, 
                 DataAplicacao = sugestao.DataAplicacao
             };
         }
