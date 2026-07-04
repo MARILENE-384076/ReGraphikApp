@@ -47,23 +47,29 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
+                /// Obtém a lista de resíduos
                 var residuos = await _residuoService.Listar();
                 var result = residuos.Select(r => MapearParaDto(r));
                 return Ok(result);
             }
+            /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
             catch (ArgumentException ex)
             {
-                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida ao listar os resíduos");
                 return BadRequest("Requisição inválida ao listar os resíduos");
             }
+            /// Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Falha ao listar os resíduos");
+                return StatusCode(StatusCodes.Status404NotFound, "Não foi possível listar os resíduos.");
+            }
+            /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
             catch (Exception ex)
             {
-                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, "Falha ao listar os resíduos");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
-
         }
 
         /// <summary>
@@ -180,7 +186,6 @@ namespace ApiRestReGraphik.Controllers
 
             var novoResiduo = new Residuo
             {
-                Id = Guid.NewGuid().ToString(),
                 TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo),
                 Origem = InputSanitizationService.SanitizarTexto(dto.Origem),
                 Especificacao = InputSanitizationService.SanitizarTexto(dto.Especificacao),

@@ -150,7 +150,7 @@ namespace ReGraphik.ViewModels
                 // Filtro geométrico em memória: seleciona registros contidos estritamente nos limites da tela atual
                 var visiveisNoMapa = todosPontos.Where(p =>
                     p.Lat >= southWestLat && p.Lat <= northEastLat &&
-                    p.Lng >= southWestLng && p.Lng <= northEastLng).ToList();
+                    p.Long >= southWestLng && p.Long <= northEastLng).ToList();
 
                 // Garante que as mutações na coleção Observable ocorram estritamente na Thread principal de UI
                 Application.Current.Dispatcher.Invoke(() =>
@@ -300,7 +300,7 @@ namespace ReGraphik.ViewModels
                 if (i > 0) marcadoresJs.Append(",");
 
                 string latitude = p.Lat != 0 ? p.Lat.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-23.55052";
-                string longitude = p.Lng != 0 ? p.Lng.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-46.633308";
+                string longitude = p.Long != 0 ? p.Long.ToString(System.Globalization.CultureInfo.InvariantCulture) : "-46.633308";
 
                 marcadoresJs.Append($@"{{
                     ""idx"": {i},

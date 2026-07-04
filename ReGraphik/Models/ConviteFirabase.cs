@@ -17,9 +17,12 @@ namespace ReGraphik.Models
         [JsonProperty("email")]
         public string Email { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Data de expiração do convite.
+        /// </summary>
         [JsonPropertyName("expira")]
         [JsonProperty("expira")]
-        public string Expira { get; set; } = string.Empty;
+        public DateTime Expira { get; set; }
 
         [JsonPropertyName("usado")]
         [JsonProperty("usado")]
@@ -28,5 +31,12 @@ namespace ReGraphik.Models
         [JsonPropertyName("perfil")]
         [JsonProperty("perfil")]
         public string Perfil { get; set; } = string.Empty;
+
+        /// <summary>
+        ///  Validação de data expirada
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        [Newtonsoft.Json.JsonIgnore]
+        public bool IsValido => !Usado && Expira > DateTime.Now;
     }
 }

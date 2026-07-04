@@ -180,7 +180,7 @@ namespace ReGraphik.ViewModels
                 ResiduosFiltrados = new ObservableCollection<Residuo>(lista);
                 TotalRegistros = lista.Count;
                 TotalResiduos = lista.Count;
-                PesoTotal = Math.Round(lista.Sum(r => r.Quantidade), 2);
+                PesoTotal = lista.Sum(r => r.Quantidade);
                 Reaproveitados = lista.Count(r => r.Status == "Reaproveitado");
                 ValorEconomico = (lista.Sum(r => r.Quantidade * 5.50)).ToString("C2");
                 PodeExportar = lista.Count > 0;

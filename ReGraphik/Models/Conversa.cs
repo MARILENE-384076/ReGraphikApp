@@ -45,10 +45,14 @@ namespace ReGraphik.Models
             get
             {
                 var diff = DateTime.Now - UltimaDataHora;
-                if (diff.TotalMinutes < 1) return "agora";
-                if (diff.TotalHours < 1) return $"{(int)diff.TotalMinutes}min";
-                if (diff.TotalDays < 1) return UltimaDataHora.ToString("HH:mm");
-                return UltimaDataHora.ToString("dd/MM");
+
+                return diff switch
+                {
+                    { TotalMinutes: < 1 } => "agora",
+                    { TotalHours: < 1 } => $"{(int)diff.TotalMinutes}min",
+                    { TotalDays: < 1 } => UltimaDataHora.ToString("HH:mm"),
+                    _ => UltimaDataHora.ToString("dd/MM")
+                };
             }
         }
 
@@ -62,11 +66,14 @@ namespace ReGraphik.Models
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(UsuarioNome)) return "?";
+                if (string.IsNullOrWhiteSpace(UsuarioNome))
+                    return "?";
 
                 var partes = UsuarioNome.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
                 if (partes.Length >= 2)
                     return $"{partes[0][0]}{partes[^1][0]}".ToUpper();
+
                 return UsuarioNome.Length >= 2
                     ? UsuarioNome[..2].ToUpper()
                     : UsuarioNome.ToUpper();

@@ -36,31 +36,42 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                /// Obtém os dados do Firebase para a coleção de resíduos
-                var residuo = await _firebaseClient
+                var residuosFirebase = await _firebaseClient
                     .Child(NodeName)
                     .OnceAsync<Residuo>();
 
-                /// Mapeia os dados do Firebase para a lista de resíduos
-                return residuo.Select(r => r.Object).ToList();
+                /// Mapeia os dados do Firebase para a lista de resíduos, garantindo que o ID seja definido corretamente
+                return residuosFirebase.Select(r =>
+                {
+                    var model = r.Object;
+                    if (model != null)
+                    {
+                        model.Id = r.Key;
+                    }
+                    return model;
+                }).Where(m => m != null).ToList()!;
             }
+            /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
             catch (FirebaseException ex)
             {
-                /// Ajustado log para focar exclusivamente em Resíduos
                 _logger.LogError(ex, "Falha de comunicação com o Firebase ao carregar dados de Resíduos.");
                 throw;
             }
+            /// Captura erros de consistência de dados que podem ocorrer se os dados armazenados no Firebase
+            /// estiverem em um formato inesperado ou corrompido
             catch (ArgumentException ex)
             {
                 _logger.LogError(ex, "Erro de consistência de dados ao tentar mapear resíduos.");
                 throw new InvalidOperationException("Não foi possível processar a lista de resíduos devido a dados inconsistentes.", ex);
             }
+            /// Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase
+            /// estiverem em um formato inesperado ou corrompido
             catch (JsonException ex)
             {
-                /// Ajustado log para focar exclusivamente em Resíduos
                 _logger.LogError(ex, "Erro de desserialização: Estrutura do nó de Resíduos é incompatível.");
                 throw new InvalidOperationException("Os dados armazenados no Firebase possuem um formato inválido.", ex);
             }
+            /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro crítico e não mapeado no serviço de Resíduos.");

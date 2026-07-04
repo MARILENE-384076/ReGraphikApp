@@ -257,23 +257,32 @@ namespace ReGraphik.ViewModels
                     base64Payload = Convert.ToBase64String(fileBytes);
                 }
 
-                /// Cria um novo objeto Residuo com os dados do formulário.
+                /// Converte os valores de comprimento e largura para double?, tratando casos onde os campos podem estar vazios ou nulos.
+                double? comprimentoNullable = string.IsNullOrWhiteSpace(Comprimento.ToString())
+                    ? null
+                    : Convert.ToDouble(Comprimento);
+
+                double? larguraNullable = string.IsNullOrWhiteSpace(Largura.ToString())
+                    ? null
+                    : Convert.ToDouble(Largura);
+
+                /// Cria um novo objeto Residuo com os dados do formulário, garantindo que campos opcionais sejam tratados corretamente.
                 var novoResiduo = new Residuo
                 {
                     Id = Guid.NewGuid().ToString(),
                     TipoResiduo = TipoMaterial!,
-                    Especificacao = Especificacao,
+                    Especificacao = Especificacao ?? string.Empty,
                     Origem = Origem!,
-                    Projeto = ProjetoOrigem,
-                    Quantidade = Quantidade,
-                    UnidadeMedida = UnidadeMedida,
+                    Projeto = ProjetoOrigem ?? string.Empty,
+                    Quantidade = Convert.ToInt32(Quantidade), 
                     DataCadastro = Data,
                     Condicao = Condicao ?? string.Empty,
-                    DimensoesCm = Comprimento,
-                    DimensoesLm = Largura,
-                    Observacao = Observacoes,
+                    DimensoesCm = comprimentoNullable,
+                    DimensoesLm = larguraNullable,
+                    Observacao = Observacoes ?? string.Empty,
                     Anexo = base64Payload,
-                    Status = Status ?? string.Empty
+                    Status = Status ?? string.Empty,
+                    FkSugestaoResiduoId = null 
                 };
 
                 try
