@@ -26,6 +26,10 @@
 - [Nossa Solução — Os Três Pilares](#nossa-solução--os-três-pilares)
 - [Demonstração — Telas e Funcionalidades](#demonstração--telas-e-funcionalidades)
 - [Arquitetura do Sistema](#arquitetura-do-sistema)
+- [Modelagem de Banco de Dados](#modelagem-de-banco-de-dados)
+- [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
+- [Diagrama de Fluxo](#diagrama-de-fluxo)
+- [Diagrama de Sequência](#diagrama-de-sequência)
 - [Padrão MVVM em Detalhe](#padrão-mvvm-em-detalhe)
 - [Stack Tecnológica](#stack-tecnológica)
 - [Pacotes e Dependências](#pacotes-e-dependências)
@@ -143,6 +147,384 @@ Integração com a **Google Maps Places API** para encontrar, em tempo real, pon
 ```
 
 O cliente WPF também se comunica **diretamente** com o Firebase para o módulo de **Chat em Tempo Real**, sem passar pela API REST — garantindo baixa latência nas mensagens.
+
+---
+
+## Modelagem de Banco de Dados
+
+### Modelo Conceitual:
+Com foco em entender as **regras de negócio** e o que o sistema precisa armazenar, sem se preocupar com tecnologias, marcas de banco de dados ou detalhes técnicos, é uma representação mais abstrata e amigável. 
+
+#### API:
+
+<img width="1267" height="890" alt="image" src="https://github.com/user-attachments/assets/72e9036d-5e98-4cb3-a641-6a7255befd72" />
+
+#### WPF:
+
+<img width="1267" height="723" alt="image" src="https://github.com/user-attachments/assets/d674b50d-76f6-46cb-a509-222627ddf27e" />
+
+#### Entidades:
+### Usuário (`Usuario`)
+Armazena as informações das pessoas cadastradas no sistema.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do usuário. |
+| **Nome** | `VARCHAR` | Nome completo. |
+| **CPF** | `VARCHAR` | Documento de Identificação. |
+| **Email** | `VARCHAR` | Endereço de correio eletrónico. |
+| **Login** | `VARCHAR` | Nome de utilizador para acesso. |
+| **Senha** | `VARCHAR` | Palavra-passe criptografada. |
+| **Perfil** | `VARCHAR` | Tipo de utilizador (ex: Administrador, Cidadão). |
+| **DataCadastro** | `DATE` | Data em que a conta foi criada. |
+| **FotoPerfil** | `VARCHAR` | Caminho ou URL da imagem de perfil. |
+| **Ativo** | `BOOLEAN` | Status da conta: Ativa/Inativa. |
+| **fk_Residuo_Id** | `VARCHAR` | Chave estrangeira no modelo lógico enviado. |
+| **fk_Conversa_UsuarioId** | `VARCHAR` | Apenas no modelo WPF. |
+| **fk_Mensagem_Id** | `VARCHAR` | Apenas no modelo WPF. |
+
+---
+
+### Resíduo (`Residuo`)
+Contém os detalhes técnicos e de negócio sobre o material a ser descartado ou reciclado.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do Resíduo. |
+| **TipoResiduo** | `VARCHAR` | Categoria do Resíduo (ex: Plástico, Vidro, Óleo). |
+| **Origem** | `VARCHAR` | De onde veio (ex: Doméstica, Industrial). |
+| **Especificacao** | `VARCHAR` | Detalhes adicionais do material. |
+| **Projeto** | `VARCHAR` | Se está associado a algum projeto específico. |
+| **Quantidade** | `INTEGER` | Número de itens ou volume. |
+| **DataCadastro** | `DATE` | Data de registo do Resíduo. |
+| **Condicao** | `VARCHAR` | Estado de conservação do Resíduo. |
+| **DimensoesCm** | `DOUBLE` | Dimensões em centímetros. |
+| **DimensoesLm** | `DOUBLE` | Volume ou dimensões em outra unidade métrica. |
+| **Observacao** | `VARCHAR` | Notas ou observações gerais. |
+| **Anexo** | `VARCHAR` | Caminho para ficheiros ou fotos anexadas do Resíduo. |
+| **Status** | `VARCHAR` | Ex: Pendente, Recolhido, Descartado. |
+| **fk_SugestaoResiduo_Id** | `VARCHAR` | Ligação com a sugestão gerada para este Resíduo. |
+
+---
+
+### Pontos de Coleta (`PontosColeta`)
+Locais físicos preparados para receber os descartes.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do ponto de recolha. |
+| **NomePonto** | `VARCHAR` | Nome do local ou estabelecimento. |
+| **Cidade** | `VARCHAR` | Cidade onde se localiza. |
+| **Estado** | `VARCHAR` | Distrito / Estado. |
+| **CEP** | `VARCHAR` | Código postal. |
+| **ResiduoAceitos** | `VARCHAR` | Lista ou descrição dos tipos de Resíduos que o ponto aceita. |
+| **Lat** | `DOUBLE` | Coordenada de Latitude para o mapa. |
+| **Lng** | `DOUBLE` | Coordenada de Longitude para o mapa. |
+
+---
+
+### Aceita
+Tabela associativa que une os Resíduos aos Pontos de Coleta (Relação N:M).
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **fk_PontosColeta_Id** | `VARCHAR` | Chave estrangeira que aponta para o Ponto de Coleta. |
+| **fk_Residuo_Id** | `VARCHAR` | Chave estrangeira que aponta para o Resíduo. |
+
+---
+
+### Sugestão do Resíduo (`SugestaoResiduo`)
+Entidade intermédia que vincula o descarte à base de dados de sugestões do sistema.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único do registo de sugestão. |
+| **Sugestao** | `VARCHAR` | Texto sugerido. |
+| **DataAplicacao** | `DATE` | Data em que a sugestão foi aplicada ou gerada. |
+
+---
+
+### Sugestão (`Sugestao`)
+Base de dados de ideias de reutilização ou diretrizes de descarte ecológico.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único da sugestão master. |
+| **TipoResiduoAceito** | `VARCHAR` | Para qual tipo de Resíduo esta sugestão serve. |
+| **DescricaoSugestao** | `VARCHAR` | O texto explicativo da sugestão (ex: "Transforme garrafas pet em vasos"). |
+| **fk_SugestaoResiduo_Id** | `VARCHAR` | Chave estrangeira de ligação. |
+
+---
+
+## Entidades Exclusivas
+
+### LoginRequest
+Uma estrutura temporária ou de suporte, usada geralmente para operações de autenticação na API.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Login** | `VARCHAR` | Utilizador enviado na requisição. |
+| **Senha** | `VARCHAR` | Palavra-passe enviada na requisição. |
+
+### Conversa (`Conversa`)
+Gerencia o cabeçalho de uma sessão de chat entre utilizadores.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **UsuarioId** | `VARCHAR` | Id do utilizador dono da sessão de conversa. |
+| **UsuarioNome** | `VARCHAR` | Nome do utilizador com quem se conversa. |
+| **UltimaMensagem** | `VARCHAR` | Espelho do texto da última mensagem para exibição na lista. |
+| **UltimaDataHora** | `DATE` | Momento do último envio. |
+| **MensagensNaoLidas** | `INTEGER` | Contador de mensagens. |
+| **fk_Mensagem_Id** | `VARCHAR` | Ligação com as mensagens da conversa. |
+
+### Mensagem (`Mensagem`)
+Histórico de todas as interações de texto enviadas no chat.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Id** | `VARCHAR` | Identificador único da mensagem. |
+| **Texto** | `VARCHAR` | O conteúdo escrito da mensagem. |
+| **DataHora** | `DATE` | Data e hora exata do envio. |
+| **Lida** | `BOOLEAN` | Flag para saber se o destinatário já abriu a mensagem. |
+| **DestinatarioId** | `VARCHAR` | Id de quem vai receber. |
+| **RemetenteId** | `VARCHAR` | Id de quem enviou. |
+| **RemetenteNome** | `VARCHAR` | Nome de quem enviou. |
+
+### Convite Firebase (`ConviteFirebase`)
+Controle de acessos, convites externos ou tokens geridos via Firebase.
+
+| Atributo | Tipo | Descrição |
+| :--- | :--- | :--- |
+| **Email** | `VARCHAR` | Email do convidado. |
+| **Expira** | `VARCHAR` | Data ou regras de expiração do convite. |
+| **Usado** | `BOOLEAN` | Se o convite já foi resgatado ou não. |
+| **Perfil** | `VARCHAR` | Qual o nível de acesso que o convidado terá. |
+  
+### Modelo Lógico:
+O modelo lógico pega as Ideias do modelo conceitual e as transforma no formato de Tabelas relacionais. Que após isso definimos como os dados vão se organizar estruturalmente, mas ainda sem escolher qual programa de banco de dados (como MySQL ou PostgreSQL) vamos usar. 
+
+#### API:
+
+<img width="1296" height="893" alt="image" src="https://github.com/user-attachments/assets/b132ff64-43ce-42b9-9ec2-fbcb8a01693f" />
+
+#### WPF: 
+
+<img width="1322" height="671" alt="image" src="https://github.com/user-attachments/assets/2f48b3a9-d3a9-4bb0-8083-094337b2e36a" />
+
+### Modelo Físico:
+É a fase em que transformamos o modelo lógico na estrutura prática do banco de dados. Embora esse processo geralmente envolve **SGBDs (Sistema Gerenciador de Banco de Dados)** tradicionais (como MySQL ou PostgreSQL), o nosso sistema foi implementado utilizando **Firebase**
+
+#### API:
+
+<img width="702" height="977" alt="image" src="https://github.com/user-attachments/assets/ea949345-d84b-4987-89d7-dbbde99f9b38" />
+<img width="705" height="476" alt="image" src="https://github.com/user-attachments/assets/2010a9de-001c-48f3-8b53-5d09de63577a" />
+
+#### WPF:
+
+<img width="678" height="1007" alt="image" src="https://github.com/user-attachments/assets/6b296e88-c81e-4cb1-998d-45efab616189" />
+<img width="678" height="992" alt="image" src="https://github.com/user-attachments/assets/64f44859-ac4b-484a-af7e-0cc2c33b7761" />
+<img width="682" height="61" alt="image" src="https://github.com/user-attachments/assets/85367556-648b-4c8d-8e26-0529f577c811" />
+
+---
+
+## Diagrama de Caso de Uso
+
+Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
+
+### Diagrama de Login e Cadastro:
+Controla a segurança e as portas de entrada do sistema. Ele valida o acesso de quem já tem conta (Login) e gerencia um sistema fechado de novos registros, onde um Administrador precisa gerar um token por e-mail para permitir que um novo Usuário se cadastre. 
+
+**Figura 1** - Diagrama de caso de uso do sistema de login e cadastro do sistema ReGraphik.
+
+<img width="975" height="825" alt="image" src="https://github.com/user-attachments/assets/43457a1a-b0ed-4f0f-8057-a418e958efb1" />
+
+### Diagrama do Sistema:
+Funciona como o mapa do menu principal. Ele lista todos os módulos do sistema que o usuário comum pode acessar a partir da tela inicial (Dashboard, Cadastro, Estoque, Mapa, Relatórios, ESG, Conta e Chat). Caso seja um Administrador a tela de Gerenciamento de Usuário pode ser usada.
+
+**Figura 1** - Diagrama de caso de uso geral do sistema ReGraphik, com um administrador logado.
+
+<img width="873" height="927" alt="image" src="https://github.com/user-attachments/assets/4ce6f6c5-78fa-4e78-9dfa-8cdd7f87a274" />
+
+**Figura 2** - Diagrama de caso de uso geral do sistema ReGraphik, com um usuário logado.
+
+<img width="897" height="852" alt="image" src="https://github.com/user-attachments/assets/945e3f89-930f-4571-87e1-e1774be34269" />
+
+### Diagrama da Dashboard:
+Carrega a tela de indicadores visuais do usuário. Ele processa gráficos de pizza e de barras, monta a tabela de históricos recentes e calcula blocos com métricas financeiras e de volume reciclado. 
+
+**Figura 1** - Diagrama de caso de uso da tela de dashboard do sistema ReGraphik.
+
+<img width="842" height="932" alt="image" src="https://github.com/user-attachments/assets/355fe1f0-a565-481f-9e41-cc0c56bc260d" />
+
+### Diagrama de Cadastro de Resíduo:
+Gerencia o formulário de entrada de novos descartes. Ele exige que o usuário preencha dados como tipo, peso, origem e dimensões do material, valida essas informações e as salva no banco de dados. 
+
+**Figura 1** - Diagrama de caso de uso da tela de cadastro de resíduos do sistema ReGraphik.
+
+<img width="978" height="840" alt="image" src="https://github.com/user-attachments/assets/190812f1-1693-4de7-8cf6-dabd72f09627" />
+
+### Diagrama de Estoque Reverso:
+Exibe e organiza os materiais já cadastrados. Ele permite que o usuário filtre seus resíduos por atributos (como tipo e período) e exibe sugestões inteligentes do sistema sobre como reaproveitar cada material. 
+
+**Figura 1** - Diagrama de caso de uso da tela de estoque reverso do sistema ReGraphik.
+
+<img width="1033" height="906" alt="image" src="https://github.com/user-attachments/assets/a7f76237-2fea-4d8f-a841-301be3d046f9" />
+
+### Diagrama de Mapa de Pontos de Coleta:
+Localiza pontos físicos de descarte. Ele abre um mapa interativo na tela, permite que o usuário digite o nome de uma cidade e mostra os postos de coleta autorizados na região. 
+
+**Figura 1** - Diagrama de caso de uso do Mapa de pontos de coleta do sistema ReGraphik.
+
+<img width="1387" height="830" alt="image" src="https://github.com/user-attachments/assets/e8f59547-9f05-4fdf-91a7-a5ed5d67d3cd" />
+
+### Diagrama de Relatórios:
+Consolida históricos para auditoria. Ele exige que o usuário defina filtros detalhados (como datas, tipo de material e status) para cruzar os dados, gerar um relatório consolidado e exportá-lo em formato PDF. 
+
+**Figura 1** - Diagrama de caso de uso da tela de relatórios do sistema ReGraphik.
+
+<img width="1287" height="902" alt="image" src="https://github.com/user-attachments/assets/38227de9-bb69-47de-98cf-52e0a3efe5ca" />
+
+### Diagrama de Certificação ESG:
+Mede e comprova o impacto ecológico. Ele mostra ao usuário os indicadores de sustentabilidade alcançados e permite a geração e exportação de um relatório comprobatório para auditorias ambientais. 
+
+**Figura 1** - Diagrama de caso de uso da tela de certificação ESG do sistema ReGraphik.
+
+<img width="1565" height="837" alt="image" src="https://github.com/user-attachments/assets/68676dac-c05c-448f-9693-175bf2460ecc" />
+
+### Diagrama de Conta do Usuário:
+Faz a gestão do perfil. Ele exibe os dados cadastrais do próprio usuário logado e abre caminhos para que ele execute ações de segurança ou personalização, como alterar a senha ou mudar a foto de perfil. 
+
+**Figura 1** - Diagrama de caso de uso da tela de informações do usuário do sistema ReGraphik.
+
+<img width="1317" height="788" alt="image" src="https://github.com/user-attachments/assets/e83730a6-8dbe-48e4-bc29-0db49c099bbc" />
+
+### Diagrama de Chat:
+Intermedia a comunicação interna do app. Ele permite abrir uma lista de contatos, selecionar um usuário específico e trocar mensagens de texto para combinar detalhes de coletas ou doações. 
+
+**Figura 1** - Diagrama de caso de uso do chat entre usuários do sistema.
+
+<img width="1373" height="746" alt="image" src="https://github.com/user-attachments/assets/c7131115-4ae5-4fa0-81f5-e8de372e1523" />
+
+---
+
+## Diagrama de Fluxo
+
+Serve essencialmente para mapear o passo a passo visual de um processo.
+
+### Diagrama de Login:
+
+**Figura 1** - Diagrama de fluxo do sistema de login e cadastro do sistema ReGraphik.
+
+<img width="1671" height="411" alt="Captura de tela 2026-07-02 201118" src="https://github.com/user-attachments/assets/c44db327-d77c-4c42-85eb-7ad469426831" />
+
+### Diagrama de Cadastro:
+
+**Figura 1** - Diagrama de fluxo do sistema de cadastro do sistema ReGraphik.
+
+<img width="1710" height="875" alt="Captura de tela 2026-07-02 201040" src="https://github.com/user-attachments/assets/ef25294d-18fd-4847-9dff-1fff9f322d97" />
+
+### Diagrama do Sistema:
+
+**Figura 1** - Diagrama de fluxo geral do sistema ReGraphik, com um administrador logado.
+
+
+### Diagrama da Dashboard:
+
+**Figura 1** - Diagrama de fluxo da tela de dashboard do sistema ReGraphik.
+
+
+### Diagrama de Cadastro de Resíduo:
+
+**Figura 1** - Diagrama de fluxo da tela de cadastro de resíduos do sistema ReGraphik.
+
+
+### Diagrama de Estoque Reverso:
+
+**Figura 1** - Diagrama de fluxo da tela de estoque reverso do sistema ReGraphik.
+
+
+### Diagrama de Mapa de Pontos de Coleta:
+
+**Figura 1** - Diagrama de fluxo do Mapa de pontos de coleta do sistema ReGraphik.
+
+<img width="1880" height="685" alt="image" src="https://github.com/user-attachments/assets/d0df307c-4bc4-437e-9b8c-1fd6ecda78dd" />
+
+### Diagrama de Relatórios:
+
+**Figura 1** - Diagrama de fluxo da tela de relatórios do sistema ReGraphik.
+
+
+### Diagrama de Certificação ESG:
+
+**Figura 1** - Diagrama de fluxo da tela de certificação ESG do sistema ReGraphik.
+
+
+### Diagrama de Conta do Usuário:
+
+**Figura 1** - Diagrama de fluxo da tela de informações do usuário do sistema ReGraphik.
+
+
+### Diagrama de Chat:
+
+**Figura 1** - Diagrama de fluxo do chat entre usuários do sistema.
+
+
+---
+
+## Diagrama de Sequência
+
+Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
+
+### Diagrama de Login:
+
+**Figura 1** - Diagrama de sequência do sistema de login do sistema ReGraphik.
+
+### Diagrama de Cadastro:
+
+**Figura 1** - Diagrama de sequência do sistema de cadastro do sistema ReGraphik.
+
+### Diagrama do Sistema:
+
+**Figura 1** - Diagrama de sequência geral do sistema ReGraphik, com um administrador logado.
+
+### Diagrama da Dashboard:
+
+**Figura 1** - Diagrama de sequência da tela de dashboard do sistema ReGraphik.
+
+
+### Diagrama de Cadastro de Resíduo:
+
+**Figura 1** - Diagrama de sequência da tela de cadastro de resíduos do sistema ReGraphik.
+
+### Diagrama de Estoque Reverso:
+
+**Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
+
+
+### Diagrama de Mapa de Pontos de Coleta:
+
+**Figura 1** - Diagrama de sequência do Mapa de pontos de coleta do sistema ReGraphik.
+
+
+### Diagrama de Relatórios:
+
+**Figura 1** - Diagrama de sequência da tela de relatórios do sistema ReGraphik.
+
+
+### Diagrama de Certificação ESG:
+
+**Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
+
+### Diagrama de Conta do Usuário:
+
+**Figura 1** - Diagrama de sequência da tela de informações do usuário do sistema ReGraphik.
+
+
+### Diagrama de Chat:
+
+**Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
+
 
 ---
 
@@ -1236,7 +1618,67 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 3. Verifique se a API está em execução
 4. Pressione `F5` (ou `Run`) para iniciar o cliente
 
+
 ---
+
+### Telas do Sistema
+
+**Login**
+
+<img width="909" height="453" alt="Telalogin" src="https://github.com/user-attachments/assets/701b315e-2e8a-47fa-8d2c-a5e2f151e5c0" />
+
+
+**Criar Conta**
+
+<img width="907" height="451" alt="TelaCriaConta" src="https://github.com/user-attachments/assets/2092612b-c997-42b7-8762-90f01cc8a8ad" />
+
+
+**Tela Principal**
+
+<img width="919" height="471" alt="TelaPrincipal" src="https://github.com/user-attachments/assets/59708027-2967-41e9-a4d5-71c7c668d65a" />
+
+
+**Dashboard**
+
+<img width="1457" height="1272" alt="TelaDashboard" src="https://github.com/user-attachments/assets/90e20b78-7f3f-461e-8a26-5e738ccbedb3" />
+
+
+**Cadastro de Residuos**
+
+<img width="1457" height="1272" alt="TelaCadastroResiduos" src="https://github.com/user-attachments/assets/bfdcb282-c836-4109-94f8-6269714a7d9b" />
+
+**Estoque Reverso**
+
+<img width="1458" height="1426" alt="TelaEstoqueReverso" src="https://github.com/user-attachments/assets/1f629f91-f175-47af-87b1-d75992dda3b0" />
+
+
+**Mapa**
+
+<img width="773" height="467" alt="TelaMapa" src="https://github.com/user-attachments/assets/e6601e2b-1de7-4ba3-8497-33ca61d639db" />
+
+
+**Relátorios**
+
+<img width="755" height="426" alt="TelaRelatorio" src="https://github.com/user-attachments/assets/fef53513-e4d4-4a45-9c2e-515c164cd05a" />
+
+
+**ESG / Certificação**
+
+<img width="739" height="456" alt="TelaESG" src="https://github.com/user-attachments/assets/9f673cd0-fd1c-4209-874d-44984e9b1792" />
+
+
+**Gerenciar Usuários**
+
+<img width="741" height="434" alt="GerenciarUsuarios" src="https://github.com/user-attachments/assets/2a7b11b6-91bd-4457-88c6-3d92cf6c0a72" />
+
+
+**Minha Conta**
+
+<img width="721" height="462" alt="TelaMinhaConta" src="https://github.com/user-attachments/assets/c8baf2df-4039-4fa1-99d0-67adabc7c6ab" />
+
+
+---
+
 
 ### Observações de ambiente
 
@@ -1268,9 +1710,8 @@ O cliente WPF aponta para esse endereço por padrão. Não é necessário rodar 
 | [Autenticação](https://brunomaia.mintlify.app/authentication) | Fluxo completo de cadastro e login |
 | [Erros da API](https://brunomaia.mintlify.app/api/errors) | Referência de códigos HTTP e como resolver |
 | [MiniMundo e Demanda](./Modelagem/MiniMundo%20Demanda.pdf) | Contexto do negócio e descrição do problema |
-| [Modelo Conceitual](./Modelagem/Modelo%20Conceitual.pdf) | Diagrama entidade-relacionamento conceitual |
-| [Modelo Lógico](./Modelagem/Modelo%20L%C3%B3gico.pdf) | Estrutura lógica do banco de dados |
-| [Modelo Físico](./Modelagem/Modelo%20F%C3%ADsico.pdf) | Script e estrutura física do banco |
+| [Modelo Conceitual](./Modelagem/ModeloConceitual_ReGraphik.brM3) | Diagrama entidade-relacionamento conceitual |
+| [Modelo Lógico](./Modelagem/ModeloLógico_ReGraphik.brM3) | Estrutura lógica do banco de dados |
 | [Documentação do Banco](./Banco%20de%20Dados/Documenta%C3%A7%C3%A3o%20Cria%C3%A7%C3%A3o%20Modelagem.pdf) | Documentação de criação e modelagem |
 | [Apresentação Técnica (PPTX)](./ReGraphik_MVVM_APIRest.pptx) | Slides explicando MVVM e a arquitetura da API |
 | [TCC — Documentação IntegraSENAI](./ReGraphik_IntegraSenai_Documentacao_TCC_01.pdf) | Documento oficial do TCC |
@@ -1283,11 +1724,11 @@ Projeto desenvolvido por alunos do curso técnico do **SENAI**:
 
 | Nome | GitHub |
 |---|---|
-| Lucas Aquino Guedes | — |
+| Lucas Aquino Guedes | [@Lucascode13](https://github.com/Lucascode13) |
 | Bruno Maia Santos | [@BrunoMaiaSenai](https://github.com/BrunoMaiaSenai) |
-| Otavio Henrique Barbosa Soares | — |
-| Luna Beatriz Alves | — |
-| Kaio Alves Gonzaga Silva | — |
+| Otavio Henrique Barbosa Soares | [@OtavioHub97](https://github.com/OtavioHub97) |
+| Luna Beatriz Alves | [@LunnaBe](https://github.com/LunnaBe) |
+| Kaio Alves Gonzaga Silva | [@kaioss99](https://github.com/kaioss99) |
 
 ---
 
