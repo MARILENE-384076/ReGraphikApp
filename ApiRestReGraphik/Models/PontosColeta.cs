@@ -21,7 +21,7 @@ namespace ApiRestReGraphik.Models
         public string Estado { get; set; } = string.Empty;
 
         [JsonPropertyName("cep")]
-        public string CEP { get; set; } = string.Empty;
+        public string Cep { get; set; } = string.Empty;
 
         [JsonPropertyName("residuos_aceitos")]
         public string ResiduosAceitos { get; set; } = string.Empty;

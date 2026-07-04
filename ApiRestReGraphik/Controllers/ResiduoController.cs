@@ -1,4 +1,5 @@
 ﻿using ApiRestReGraphik.Models;
+using ApiRestReGraphik.Models.DTOs;
 using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,18 +47,19 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
-                var result = await _residuoService.Listar();
+                var residuos = await _residuoService.Listar();
+                var result = residuos.Select(r => MapearParaDto(r));
                 return Ok(result);
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida ao listar os resíduos");
                 return BadRequest("Requisição inválida ao listar os resíduos");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, "Falha ao listar os resíduos");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
@@ -107,7 +109,6 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
-            // Valida o ID antes de usar como chave de nó no Firebase (previne path traversal)
             if (!InputSanitizationService.IdEhSeguro(id))
                 return BadRequest("ID inválido ou com caracteres não permitidos.");
 
@@ -118,17 +119,18 @@ namespace ApiRestReGraphik.Controllers
                 {
                     return NotFound($"Resíduo com ID {id} não encontrado.");
                 }
-                return Ok(result);
+
+                return Ok(MapearParaDto(result));
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha ao obter resíduo com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados do resíduo com ID {id}.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro genérica
                 _logger.LogError(ex, $"Erro ao obter dados do Residuo com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Não foi possível obter os dados do resíduo com ID {id}.");
             }
@@ -171,32 +173,39 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] Residuo residuo)
+        public async Task<IActionResult> Post([FromBody] ResiduoDto dto)
         {
-            if (residuo == null)
+            if (dto == null)
                 return BadRequest("Resíduo inválido.");
 
-            // Valida campos de texto contra injeção de conteúdo malicioso
-            var erros = InputSanitizationService.ValidarResiduo(residuo);
+            var novoResiduo = new Residuo
+            {
+                Id = Guid.NewGuid().ToString(),
+                TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo),
+                Origem = InputSanitizationService.SanitizarTexto(dto.Origem),
+                Especificacao = InputSanitizationService.SanitizarTexto(dto.Especificacao),
+                Projeto = dto.Projeto,
+                Quantidade = dto.Quantidade,
+                DataCadastro = dto.DataCadastro == default ? DateTime.UtcNow : dto.DataCadastro,
+                Condicao = dto.Condicao,
+                DimensoesCm = dto.DimensoesCm,
+                DimensoesLm = dto.DimensoesLm,
+                Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
+                Anexo = dto.Anexo,
+                Status = dto.Status,
+                FkSugestaoResiduoId = dto.FkSugestaoResiduoId
+            };
+
+            var erros = InputSanitizationService.ValidarResiduo(novoResiduo);
             if (erros.Any())
                 return BadRequest(new { mensagem = "Dados inválidos.", erros });
 
-            // Sanitiza campos de texto livre
-            residuo.TipoResiduo  = InputSanitizationService.SanitizarTexto(residuo.TipoResiduo);
-            residuo.Origem       = InputSanitizationService.SanitizarTexto(residuo.Origem);
-            residuo.Especificacao= InputSanitizationService.SanitizarTexto(residuo.Especificacao);
-            residuo.Observacao   = InputSanitizationService.SanitizarTexto(residuo.Observacao, 2000);
-
             try
             {
-                // O IdUsuario é enviado pelo cliente WPF via UsuarioSessaoService.
-                // Se vier vazio (ex: teste direto via Swagger), rejeita a requisição.
-                if (string.IsNullOrWhiteSpace(residuo.IdUsuario))
-                    return BadRequest("O campo 'id_usuario' é obrigatório.");
+                await _residuoService.Criar(novoResiduo);
 
-                await _residuoService.Criar(residuo);
-
-                return CreatedAtAction(nameof(GetById), new { id = residuo.Id }, residuo);
+                var dtoRetorno = MapearParaDto(novoResiduo);
+                return CreatedAtAction(nameof(GetById), new { id = novoResiduo.Id }, dtoRetorno);
             }
             catch (ArgumentException ex)
             {
@@ -234,17 +243,15 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] Residuo residuo)
+        public async Task<IActionResult> Put(string id, [FromBody] ResiduoDto dto)
         {
             if (!InputSanitizationService.IdEhSeguro(id))
                 return BadRequest("ID inválido ou com caracteres não permitidos.");
 
             try
             {
-                if (residuo == null || id != residuo.Id)
-                {
-                    return BadRequest($"ID do resíduo inválido.");
-                }
+                if (dto == null)
+                    return BadRequest("Dados de atualização inválidos.");
 
                 var existing = await _residuoService.ObterPorId(id);
                 if (existing == null)
@@ -252,24 +259,38 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Resíduo com ID {id} não encontrado.");
                 }
 
-                await _residuoService.Atualizar(id, residuo);
+                /// Atualiza os campos do resíduo existente com os valores fornecidos no DTO, aplicando sanitização de entrada
+                existing.TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo);
+                existing.Origem = InputSanitizationService.SanitizarTexto(dto.Origem);
+                existing.Especificacao = InputSanitizationService.SanitizarTexto(dto.Especificacao);
+                existing.Projeto = dto.Projeto;
+                existing.Quantidade = dto.Quantidade;
+                existing.Condicao = dto.Condicao;
+                existing.DimensoesCm = dto.DimensoesCm;
+                existing.DimensoesLm = dto.DimensoesLm;
+                existing.Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000);
+                existing.Anexo = dto.Anexo;
+                existing.Status = dto.Status;
+                existing.FkSugestaoResiduoId = dto.FkSugestaoResiduoId;
+
+                await _residuoService.Atualizar(id, existing);
                 return Ok($"Resíduo com ID {id} atualizado com sucesso.");
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, $"Requisição inválida processada para atualizar resíduo com ID {id}.");
                 return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
+                /// Loga o erro de requisição HTTP e retorna um status 404 Not Found com a mensagem de erro
                 _logger.LogError(ex, $"Falha ao atualizar residuo com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados do residuo com ID {id}.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao atualizar dados do Residuo com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
@@ -323,5 +344,26 @@ namespace ApiRestReGraphik.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
+
+        /// <summary>
+        /// Mapeador atualizado para a nova estrutura de ResiduoDto
+        /// </summary>
+        private static ResiduoDto MapearParaDto(Residuo residuo) => new ResiduoDto
+        {
+            TipoResiduo = residuo.TipoResiduo,
+            Origem = residuo.Origem,
+            Especificacao = residuo.Especificacao,
+            Projeto = residuo.Projeto,
+            Quantidade = residuo.Quantidade,
+            DataCadastro = residuo.DataCadastro,
+            Condicao = residuo.Condicao,
+            DimensoesCm = residuo.DimensoesCm,
+            DimensoesLm = residuo.DimensoesLm,
+            Observacao = residuo.Observacao,
+            Anexo = residuo.Anexo,
+            Status = residuo.Status,
+            FkSugestaoResiduoId = residuo.FkSugestaoResiduoId,
+            SugestaoResiduo = residuo.SugestaoResiduo
+        };
     }
 }
