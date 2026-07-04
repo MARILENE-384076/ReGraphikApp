@@ -1,4 +1,5 @@
 ﻿using ApiRestReGraphik.Models;
+using ApiRestReGraphik.Models.DTOs;
 using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,8 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
-                var result = await _sugestaoService.Listar();
+                var sugestoes = await _sugestaoService.Listar();
+                var result = sugestoes.Select(s => MapearParaDto(s));
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -96,6 +98,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 var result = await _sugestaoService.ObterPorId(id);
@@ -146,28 +151,33 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] SugestaoResiduo sugestao)
+        public async Task<IActionResult> Post([FromBody] SugestaoResiduoDto dto)
         {
             try
             {
-                if (sugestao == null)
+                if (dto == null)
                 {
                     return BadRequest("Sugestão de resíduos inválida.");
                 }
 
-                if (string.IsNullOrEmpty(sugestao.IdCadastroResiduo) || string.IsNullOrEmpty(sugestao.IdSugestao))
+                if (string.IsNullOrWhiteSpace(dto.SugestaoTexto))
                 {
-                    return BadRequest("Os campos 'id_cadastro_residuo' e 'id_sugestao' são obrigatórios.");
+                    return BadRequest("O campo 'sugestao' é obrigatório.");
                 }
 
-                if (!sugestao.DataAplicacao.HasValue)
+                var novaSugestao = new SugestaoResiduo
                 {
-                    sugestao.DataAplicacao = DateTime.UtcNow;
-                }
+                    Id = Guid.NewGuid().ToString(),
+                    SugestaoTexto = dto.SugestaoTexto,
+                    DataAplicacao = dto.DataAplicacao ?? DateTime.UtcNow
+                };
 
-                await _sugestaoService.Criar(sugestao);
+                // CORREÇÃO: Efetivamente salva no banco de dados
+                await _sugestaoService.Criar(novaSugestao);
 
-                return CreatedAtAction(nameof(GetById), new { id = sugestao.Id }, sugestao);
+                // CORREÇÃO: Retorna o status 201 Created com a rota de consulta
+                var dtoRetorno = MapearParaDto(novaSugestao);
+                return CreatedAtAction(nameof(GetById), new { id = novaSugestao.Id }, dtoRetorno);
             }
             catch (ArgumentException ex)
             {
@@ -205,13 +215,16 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] SugestaoResiduo sugestao)
+        public async Task<IActionResult> Put(string id, [FromBody] SugestaoResiduoDto dto)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
-                if (sugestao == null || id != sugestao.Id)
+                if (dto == null)
                 {
-                    return BadRequest($"ID da sugestão inválido.");
+                    return BadRequest($"Dados de atualização inválidos.");
                 }
 
                 var existing = await _sugestaoService.ObterPorId(id);
@@ -220,7 +233,11 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Sugestão de resíduos com ID {id} não encontrada.");
                 }
 
-                await _sugestaoService.Atualizar(id, sugestao);
+                // Atualiza mantendo o ID original protegido
+                existing.SugestaoTexto = dto.SugestaoTexto;
+                if (dto.DataAplicacao.HasValue) existing.DataAplicacao = dto.DataAplicacao;
+
+                await _sugestaoService.Atualizar(id, existing);
                 return Ok($"Sugestão de resíduos com ID {id} atualizada com sucesso.");
             }
             catch (ArgumentException ex)
@@ -287,6 +304,18 @@ namespace ApiRestReGraphik.Controllers
                 _logger.LogError(ex, $"Erro ao excluir dados da sugestão de resíduos com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
+        }
+
+        /// <summary>
+        /// Helper privado para converter a entidade de banco para o modelo limpo da DTO.
+        /// </summary>
+        private static SugestaoResiduoDto MapearParaDto(SugestaoResiduo sugestao)
+        {
+            return new SugestaoResiduoDto
+            {
+                SugestaoTexto = sugestao.SugestaoTexto, // Mapeia o campo do texto original
+                DataAplicacao = sugestao.DataAplicacao
+            };
         }
     }
 }

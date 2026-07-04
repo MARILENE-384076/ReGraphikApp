@@ -20,377 +20,375 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <Grid Margin="32">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="24"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- CABEÇALHO -->
-            <Grid Grid.Row="0">
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Gerenciamento de Usuários"
+                           FontSize="22" FontWeight="Bold"
+                           Foreground="{DynamicResource TextoPadraoColor}"/>
+                <TextBlock Text="Convide novos usuários e gerencie os acessos ao sistema."
+                           FontSize="13" Foreground="{DynamicResource CinzaColor}" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Command="{Binding CarregarUsuariosCommand}"
+                    Height="36" Padding="16,0"
+                    Background="White"
+                    BorderBrush="#E2E8F0" BorderThickness="1"
+                    Cursor="Hand">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Style.Setters>
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style.Setters>
+                    </Style>
+                </Button.Resources>
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial Kind="Refresh"
+                                                Width="14" Height="14"
+                                                Foreground="{DynamicResource CinzaColor}"
+                                                VerticalAlignment="Center"
+                                                Margin="0,0,6,0"/>
+                    <TextBlock Text="Atualizar lista"
+                               FontSize="13" Foreground="#374151"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <Border Grid.Row="2"
+                Background="White"
+                CornerRadius="12"
+                Padding="28,24">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="12" ShadowDepth="1"
+                                  Color="Black" Opacity="0.05" Direction="270"/>
+            </Border.Effect>
+
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="32"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Cabeçalho da tabela -->
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Gerenciamento de Usuários"
-                               FontSize="22" FontWeight="Bold"
-                               Foreground="{DynamicResource TextoPadraoColor}"/>
-                    <TextBlock Text="Convide novos usuários e gerencie os acessos ao sistema."
-                               FontSize="13" Foreground="{DynamicResource CinzaColor}" Margin="0,4,0,0"/>
-                </StackPanel>
-
-                <Button Grid.Column="1"
-                        Command="{Binding CarregarUsuariosCommand}"
-                        Height="36" Padding="16,0"
-                        Background="White"
-                        BorderBrush="#E2E8F0" BorderThickness="1"
-                        Cursor="Hand">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="8"/>
-                        </Style>
-                    </Button.Resources>
-                    <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="Refresh"
-                                                    Width="14" Height="14"
-                                                    Foreground="{DynamicResource CinzaColor}"
-                                                    VerticalAlignment="Center"
-                                                    Margin="0,0,6,0"/>
-                        <TextBlock Text="Atualizar lista"
-                                   FontSize="13" Foreground="#374151"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-
-            <!-- CONVIDAR NOVO USUÁRIO -->
-            <Border Grid.Row="2"
-                    Background="White"
-                    CornerRadius="12"
-                    Padding="28,24">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="12" ShadowDepth="1"
-                                      Color="Black" Opacity="0.05" Direction="270"/>
-                </Border.Effect>
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="32"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Lado esquerdo: formulário de convite -->
-                    <StackPanel Grid.Column="0">
-
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <Border Background="#EFF6FF" CornerRadius="8"
-                                    Width="36" Height="36" Margin="0,0,12,0">
-                                <iconPacks:PackIconMaterial Kind="EmailPlusOutline"
-                                                            Width="18" Height="18"
-                                                            Foreground="#1D4ED8"
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Convidar Novo Usuário"
-                                           FontSize="15" FontWeight="SemiBold"
-                                           Foreground="{DynamicResource TextoPadraoColor}"/>
-                                <TextBlock Text="Gere um token de acesso de 48h e envie ao usuário."
-                                           FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <!-- Campo e-mail -->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="16"/>
-                                <ColumnDefinition Width="1.5*"/>
-                                <ColumnDefinition Width="16"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="E-mail do novo usuário"
-                                           Style="{StaticResource LabelStyle}"
-                                           Margin="0,0,0,6"/>
-                                <TextBox Text="{Binding EmailConvite, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputStyle}"
-                                         Height="40"/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Perfil de acesso"
-                                           Style="{StaticResource LabelStyle}"
-                                           Margin="0,0,0,6"/>
-                                <ComboBox SelectedValuePath="Content"
-                                          SelectedValue="{Binding PerfilSelecionado, UpdateSourceTrigger=PropertyChanged}"
-                                          Height="40"
-                                          VerticalContentAlignment="Center"
-                                          Padding="10,0">
-                                    <ComboBoxItem Content="Usuário" IsSelected="True"/>
-                                    <ComboBoxItem Content="Administrador"/>
-                                </ComboBox>
-                            </StackPanel>
-
-                            <Button Grid.Column="4"
-                                    Command="{Binding GerarConviteCommand}"
-                                    Height="40" Padding="20,0"
-                                    VerticalAlignment="Bottom"
-                                    Background="{DynamicResource AzulMedioColor}"
-                                    BorderThickness="0"
-                                    Foreground="White"
-                                    FontWeight="SemiBold"
-                                    FontSize="13"
-                                    Cursor="Hand">
-                                <Button.Style>
-                                    <Style TargetType="Button">
-                                        <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="BorderThickness" Value="0"/>
-                                        <Setter Property="Cursor" Value="Hand"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                                <Setter Property="Background" Value="{DynamicResource TextoCinzaColor}"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconMaterial Kind="KeyPlus"
-                                        Width="14" Height="14"
-                                        Foreground="White"
-                                        VerticalAlignment="Center"
-                                        Margin="0,0,8,0"/>
-                                    <TextBlock VerticalAlignment="Center">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="Gerar Token"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
-                                                        <Setter Property="Text" Value="Gerando..."/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Button>
-                        </Grid>
-
-                        <!-- Mensagem de erro -->
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="0,8,0,0"
-                                    Visibility="{Binding TemErro, Converter={StaticResource BoolVis}}">
-                            <iconPacks:PackIconMaterial Kind="AlertCircleOutline"
-                                                        Width="13" Height="13"
-                                                        Foreground="{DynamicResource VermelhoColor}"
-                                                        VerticalAlignment="Center"
-                                                        Margin="0,0,6,0"/>
-                            <TextBlock Text="{Binding MensagemErro}"
-                                       FontSize="12" Foreground="{DynamicResource VermelhoColor}"
-                                       VerticalAlignment="Center"
-                                       TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <Border Background="#EFF6FF" CornerRadius="8"
+                                Width="36" Height="36" Margin="0,0,12,0">
+                            <iconPacks:PackIconMaterial Kind="EmailPlusOutline"
+                                                        Width="18" Height="18"
+                                                        Foreground="#1D4ED8"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Convidar Novo Usuário"
+                                       FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextoPadraoColor}"/>
+                            <TextBlock Text="Gere um token de acesso de 48h e envie ao usuário."
+                                       FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                         </StackPanel>
                     </StackPanel>
 
-                    <!-- Separador vertical -->
-                    <Border Grid.Column="1" Width="1"
-                            Background="#E2E8F0"
-                            VerticalAlignment="Stretch"
-                            Margin="0,8"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Lado direito: token gerado -->
-                    <StackPanel Grid.Column="2" Width="260" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="E-mail do novo usuário"
+                                       Style="{StaticResource LabelStyle}"
+                                       Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding EmailConvite, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource InputStyle}"
+                                     Height="40"/>
+                        </StackPanel>
 
-                        <!-- Estado: aguardando (sem token) -->
-                        <StackPanel>
-                            <StackPanel.Style>
-                                <Style TargetType="StackPanel">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Perfil de acesso"
+                                       Style="{StaticResource LabelStyle}"
+                                       Margin="0,0,0,6"/>
+                            <ComboBox SelectedValuePath="Content"
+                                     SelectedValue="{Binding PerfilSelecionado, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="40"
+                                     VerticalContentAlignment="Center"
+                                     Padding="10,0">
+                                <ComboBoxItem Content="Usuário" IsSelected="True"/>
+                                <ComboBoxItem Content="Administrador"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <Button Grid.Column="4"
+                                Command="{Binding GerarConviteCommand}"
+                                Height="40" Padding="20,0"
+                                VerticalAlignment="Bottom"
+                                Background="{DynamicResource AzulMedioColor}"
+                                BorderThickness="0"
+                                Foreground="White"
+                                FontWeight="SemiBold"
+                                FontSize="13"
+                                Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding TokenGeradoVisivel}" Value="False">
-                                            <Setter Property="Visibility" Value="Visible"/>
+                                        <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="Background" Value="{DynamicResource TextoCinzaColor}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </StackPanel.Style>
-                            <Border Background="#F8FAFC" CornerRadius="10"
-                                    Padding="20,24" BorderBrush="#E2E8F0" BorderThickness="1">
-                                <StackPanel HorizontalAlignment="Center">
-                                    <iconPacks:PackIconMaterial Kind="KeyOutline"
-                                                                Width="32" Height="32"
-                                                                Foreground="{DynamicResource CinzaClaroColor}"
-                                                                HorizontalAlignment="Center"
-                                                                Margin="0,0,0,10"/>
-                                    <TextBlock Text="Token aparecerá aqui"
-                                               FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
-                                               HorizontalAlignment="Center"
-                                               TextAlignment="Center"/>
-                                    <TextBlock Text="após gerar o convite"
-                                               FontSize="12" Foreground="{DynamicResource CinzaClaroColor}"
-                                               HorizontalAlignment="Center"
-                                               TextAlignment="Center"
-                                               Margin="0,2,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Estado: token gerado -->
-                        <StackPanel Visibility="{Binding TokenGeradoVisivel,
-                                                 Converter={StaticResource BoolVis}}">
-                            <Border Background="#F0FFF4" CornerRadius="10"
-                                    Padding="20,16" BorderBrush="#86EFAC" BorderThickness="1">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal"
-                                                HorizontalAlignment="Center"
-                                                Margin="0,0,0,10">
-                                        <iconPacks:PackIconMaterial Kind="CheckCircle"
-                                                                    Width="14" Height="14"
-                                                                    Foreground="{DynamicResource VerdeColor}"
-                                                                    VerticalAlignment="Center"
-                                                                    Margin="0,0,6,0"/>
-                                        <TextBlock Text="Token gerado!"
-                                                   FontSize="13" FontWeight="SemiBold"
-                                                   Foreground="#15803D"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-
-                                    <!-- Token em destaque -->
-                                    <Border Background="White" CornerRadius="8"
-                                            Padding="12,10" Margin="0,0,0,12"
-                                            BorderBrush="#86EFAC" BorderThickness="1">
-                                        <TextBlock Text="{Binding TokenGerado}"
-                                                FontFamily="Courier New"
-                                                FontSize="22"
-                                                FontWeight="Bold"
-                                                Foreground="{DynamicResource AzulMedioColor}"
-                                                HorizontalAlignment="Center"
-                                                TextAlignment="Center"/>
-                                    </Border>
-
-                                    <TextBlock Text="Válido por 48 horas · Uso único"
-                                               FontSize="11" Foreground="{DynamicResource CinzaColor}"
-                                               HorizontalAlignment="Center"
-                                               Margin="0,0,0,12"/>
-
-                                    <!-- Botões copiar e limpar -->
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="8"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Button Grid.Column="0"
-                                                Command="{Binding CopiarTokenCommand}"
-                                                Height="34"
-                                                Background="{DynamicResource AzulMedioColor}"
-                                                BorderThickness="0"
-                                                Foreground="White"
-                                                FontSize="12"
-                                                FontWeight="SemiBold"
-                                                Cursor="Hand">
-                                            <Button.Resources>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="CornerRadius" Value="6"/>
-                                                </Style>
-                                            </Button.Resources>
-                                            <StackPanel Orientation="Horizontal">
-                                                <iconPacks:PackIconMaterial Kind="ContentCopy"
-                                                                            Width="12" Height="12"
-                                                                            Foreground="White"
-                                                                            VerticalAlignment="Center"
-                                                                            Margin="0,0,6,0"/>
-                                                <TextBlock Text="Copiar" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Button>
-
-                                        <Button Grid.Column="2"
-                                                Command="{Binding LimparConviteCommand}"
-                                                Height="34" Width="34"
-                                                Background="White"
-                                                BorderBrush="#E2E8F0" BorderThickness="1"
-                                                Cursor="Hand"
-                                                ToolTip="Gerar novo convite">
-                                            <Button.Resources>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="CornerRadius" Value="6"/>
-                                                </Style>
-                                            </Button.Resources>
-                                            <iconPacks:PackIconMaterial Kind="Refresh"
-                                                                        Width="14" Height="14"
-                                                                        Foreground="{DynamicResource CinzaColor}"/>
-                                        </Button>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Mensagem de sucesso -->
-                            <TextBlock Text="{Binding Mensagem}"
-                                       FontSize="11" Foreground="{DynamicResource VerdeColor}"
-                                       TextWrapping="Wrap"
-                                       TextAlignment="Center"
-                                       Margin="0,8,0,0"
-                                       Visibility="{Binding TemMensagem,
-                                                    Converter={StaticResource BoolVis}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
-            <!-- LISTA DE USUÁRIOS -->
-            <Border Grid.Row="4"
-                    Background="White"
-                    CornerRadius="12"
-                    Padding="28,24">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="12" ShadowDepth="1"
-                                      Color="Black" Opacity="0.05" Direction="270"/>
-                </Border.Effect>
-
-                <StackPanel>
-                    <TextBlock Text="USUÁRIOS CADASTRADOS"
-                               FontSize="11" FontWeight="Bold"
-                               Foreground="{DynamicResource TextoCinzaColor}" Margin="0,0,0,16"/>
-
-                    <!-- Loading -->
-                    <TextBlock Text="Carregando usuários..."
-                               FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
-                               HorizontalAlignment="Center"
-                               Margin="0,24"
-                               Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
-
-                    <!-- Cabeçalho da tabela -->
-                    <Grid Margin="0,0,0,8"
-                          Visibility="{Binding Carregando,
-                                       Converter={StaticResource BoolVis},
-                                       ConverterParameter=Inverse}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="1.5*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="NOME"        Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
-                        <TextBlock Grid.Column="1" Text="E-MAIL"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
-                        <TextBlock Grid.Column="2" Text="LOGIN"       Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
-                        <TextBlock Grid.Column="3" Text="PERFIL"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
-                        <TextBlock Grid.Column="4" Text="STATUS"      Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                            </Button.Style>
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="KeyPlus"
+                                                            Width="14" Height="14"
+                                                            Foreground="White"
+                                                            VerticalAlignment="Center"
+                                                            Margin="0,0,8,0"/>
+                                <TextBlock VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="Gerar Token"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
+                                                    <Setter Property="Text" Value="Gerando..."/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </Button>
                     </Grid>
 
-                    <Separator Background="#F1F5F9" Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Horizontal"
+                                Margin="0,8,0,0"
+                                Visibility="{Binding TemErro, Converter={StaticResource BoolVis}}">
+                        <iconPacks:PackIconMaterial Kind="AlertCircleOutline"
+                                                    Width="13" Height="13"
+                                                    Foreground="{DynamicResource VermelhoColor}"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,0,6,0"/>
+                        <TextBlock Text="{Binding MensagemErro}"
+                                   FontSize="12" Foreground="{DynamicResource VermelhoColor}"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </StackPanel>
 
-                    <!-- Linhas de usuários -->
+                <Border Grid.Column="1" Width="1"
+                        Background="#E2E8F0"
+                        VerticalAlignment="Stretch"
+                        Margin="0,8"/>
+
+                <StackPanel Grid.Column="2" Width="260" VerticalAlignment="Center">
+                    <StackPanel>
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding TokenGeradoVisivel}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Border Background="#F8FAFC" CornerRadius="10"
+                                Padding="20,24" BorderBrush="#E2E8F0" BorderThickness="1">
+                            <StackPanel HorizontalAlignment="Center">
+                                <iconPacks:PackIconMaterial Kind="KeyOutline"
+                                                            Width="32" Height="32"
+                                                            Foreground="{DynamicResource CinzaClaroColor}"
+                                                            HorizontalAlignment="Center"
+                                                            Margin="0,0,0,10"/>
+                                <TextBlock Text="Token aparecerá aqui"
+                                           FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"/>
+                                <TextBlock Text="após gerar o convite"
+                                           FontSize="12" Foreground="{DynamicResource CinzaClaroColor}"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"
+                                           Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Token Gerado -->
+                    <StackPanel Visibility="{Binding TokenGeradoVisivel, Converter={StaticResource BoolVis}}">
+                        <Border Background="#F0FFF4" CornerRadius="10"
+                                Padding="20,16" BorderBrush="#86EFAC" BorderThickness="1">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                    <iconPacks:PackIconMaterial Kind="CheckCircle"
+                                                                Width="14" Height="14"
+                                                                Foreground="{DynamicResource VerdeColor}"
+                                                                VerticalAlignment="Center"
+                                                                Margin="0,0,6,0"/>
+                                    <TextBlock Text="Token gerado!"
+                                               FontSize="13" FontWeight="SemiBold"
+                                               Foreground="#15803D"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Border Background="White" CornerRadius="8"
+                                        Padding="12,10" Margin="0,0,0,12"
+                                        BorderBrush="#86EFAC" BorderThickness="1">
+                                    <TextBlock Text="{Binding TokenGerado}"
+                                               FontFamily="Courier New"
+                                               FontSize="22"
+                                               FontWeight="Bold"
+                                               Foreground="{DynamicResource AzulMedioColor}"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Text="Válido por 48 horas · Uso único"
+                                           FontSize="11" Foreground="{DynamicResource CinzaColor}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,12"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Grid.Column="0"
+                                            Command="{Binding CopiarTokenCommand}"
+                                            Height="34"
+                                            Background="{DynamicResource AzulMedioColor}"
+                                            BorderThickness="0"
+                                            Foreground="White"
+                                            FontSize="12"
+                                            FontWeight="SemiBold"
+                                            Cursor="Hand">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="6"/>
+                                            </Style>
+                                        </Button.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial Kind="ContentCopy"
+                                                                        Width="12" Height="12"
+                                                                        Foreground="White"
+                                                                        VerticalAlignment="Center"
+                                                                        Margin="0,0,6,0"/>
+                                            <TextBlock Text="Copiar" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button Grid.Column="2"
+                                            Command="{Binding LimparConviteCommand}"
+                                            Height="34" Width="34"
+                                            Background="White"
+                                            BorderBrush="#E2E8F0" BorderThickness="1"
+                                            Cursor="Hand"
+                                            ToolTip="Gerar novo convite">
+                                        <Button.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="6"/>
+                                            </Style>
+                                        </Button.Resources>
+                                        <iconPacks:PackIconMaterial Kind="Refresh"
+                                                                    Width="14" Height="14"
+                                                                    Foreground="{DynamicResource CinzaColor}"/>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Mensagem de sucesso -->
+                        <TextBlock Text="{Binding Mensagem}"
+                                   FontSize="11" Foreground="{DynamicResource VerdeColor}"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center"
+                                   Margin="0,8,0,0"
+                                   Visibility="{Binding TemMensagem, Converter={StaticResource BoolVis}}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="4"
+                Background="White"
+                CornerRadius="12"
+                Padding="28,24">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="12" ShadowDepth="1"
+                                  Color="Black" Opacity="0.05" Direction="270"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="USUÁRIOS CADASTRADOS"
+                           FontSize="11" FontWeight="Bold"
+                           Foreground="{DynamicResource TextoCinzaColor}" Margin="0,0,0,16"/>
+
+                <TextBlock Grid.Row="1" Text="Carregando usuários..."
+                           FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
+                           HorizontalAlignment="Center"
+                           Margin="0,24"
+                           Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
+
+                <!-- Cabeçalho da tabela -->
+                <Grid Grid.Row="1" Margin="0,0,0,8">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Carregando}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="NOME"   Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                    <TextBlock Grid.Column="1" Text="E-MAIL" Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                    <TextBlock Grid.Column="2" Text="LOGIN"  Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                    <TextBlock Grid.Column="3" Text="PERFIL" Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                    <TextBlock Grid.Column="4" Text="STATUS" Style="{StaticResource LabelStyle}" FontWeight="Bold" Foreground="{DynamicResource TextoCinzaColor}"/>
+                </Grid>
+
+                <Separator Grid.Row="2" Background="#F1F5F9" Margin="0,0,0,8"/>
+
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Usuarios}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -398,6 +396,7 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 
+                        <!-- Item Template -->
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Padding="0,10" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1">
@@ -410,7 +409,6 @@
                                             <ColumnDefinition Width="1*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Avatar + Nome -->
                                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                                             <Border Width="32" Height="32"
                                                     Background="{DynamicResource AzulMedioColor}"
@@ -440,7 +438,6 @@
                                                    FontSize="13" Foreground="{DynamicResource CinzaColor}"
                                                    VerticalAlignment="Center"/>
 
-                                        <!-- Badge de perfil -->
                                         <Border Grid.Column="3" CornerRadius="6"
                                                 Padding="8,3" HorizontalAlignment="Left"
                                                 VerticalAlignment="Center">
@@ -468,7 +465,7 @@
                                             </TextBlock>
                                         </Border>
 
-                                        <!-- Badge ativo/inativo -->
+                                        <!-- Ativo/Inativo -->
                                         <Border Grid.Column="4" CornerRadius="6"
                                                 Padding="8,3" HorizontalAlignment="Left"
                                                 VerticalAlignment="Center">
@@ -502,9 +499,8 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-
-                </StackPanel>
-            </Border>
-        </Grid>
-    </ScrollViewer>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

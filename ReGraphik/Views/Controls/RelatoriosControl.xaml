@@ -197,7 +197,7 @@
                             </Button.Resources>
                         </Button>
 
-                        <Button Grid.Column="8" Content="Gerar Relatório"
+                        <Button Grid.Column="8" Content="Verificar Relatório"
                             Command="{Binding GerarRelatorioCommand}"
                             Width="140" Height="38"
                             Background="{DynamicResource AzulMedioColor}" BorderThickness="0"

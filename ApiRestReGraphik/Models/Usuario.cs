@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApiRestReGraphik.Models
 {
@@ -11,7 +13,7 @@ namespace ApiRestReGraphik.Models
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
-        [JsonPropertyName("name")]
+        [JsonPropertyName("nome")]
         public string Nome { get; set; }
 
         [JsonPropertyName("cpf")]
@@ -38,5 +40,16 @@ namespace ApiRestReGraphik.Models
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }
 
+        /// <summary>
+        /// Chave estrangeira para o resíduo associado ao usuário.
+        /// </summary>
+        [JsonPropertyName("fk_residuo_id")]
+        [ForeignKey("Residuo")]
+        public string? FkResiduoId { get; set; }
+
+        [JsonIgnore]
+        [ValidateNever]
+        public virtual Residuo? Residuo { get; set; }
     }
 }
+

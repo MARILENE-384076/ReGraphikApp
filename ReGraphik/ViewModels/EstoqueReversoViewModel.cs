@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq; 
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -29,9 +30,6 @@ namespace ReGraphik.ViewModels
         /// </summary>
         public ICollectionView ResiduosFiltrados { get; }
 
-        /// <summary>
-        /// Propriedades de filtro 
-        /// </summary>
         private string _filtroTipo = string.Empty;
         public string FiltroTipo
         {
@@ -61,7 +59,7 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Listas para os ComboBoxes populadas dinamicamente do banco
+        /// Listas de opções para os filtros de Tipo, Origem e Status. Inicializadas com valores padrão "Todos" ou "Todas".
         /// </summary>
         public ObservableCollection<string> ListaTipos { get; } = new() { "Todos" };
         public ObservableCollection<string> ListaOrigens { get; } = new() { "Todas" };
@@ -76,13 +74,16 @@ namespace ReGraphik.ViewModels
         };
 
         /// <summary>
-        /// Comandos 
+        /// Comandos para ações de filtragem, limpeza de filtros, abertura de sugestões e exportação de dados.
         /// </summary>
         public ICommand FiltrarCommand { get; }
         public ICommand LimparFiltrosCommand { get; }
         public ICommand SugestaoCommand { get; }
         public ICommand ExportarCommand { get; }
 
+        /// <summary>
+        /// Inicializa uma nova instância do ViewModel, configurando a coleção filtrada e os comandos.
+        /// </summary>
         public EstoqueReversoViewModel()
         {
             ResiduosFiltrados = CollectionViewSource.GetDefaultView(_todosResiduos);
@@ -90,6 +91,7 @@ namespace ReGraphik.ViewModels
 
             SugestaoCommand = new RelayCommand((param) => AbrirSugestoes(param as Residuo));
 
+            /// Comando de exportação de dados internos (simulado)
             ExportarCommand = new RelayCommand(() => ExportarDadosInternos());
             FiltrarCommand = new RelayCommand(() => ResiduosFiltrados.Refresh());
             LimparFiltrosCommand = new RelayCommand(() =>
@@ -101,12 +103,15 @@ namespace ReGraphik.ViewModels
                 ResiduosFiltrados.Refresh();
             });
 
+            /// Carrega os resíduos do Firebase Realtime Database de forma assíncrona
             _ = CarregarEstoqueDoBancoAsync();
         }
 
         /// <summary>
-        /// Predicado do CollectionView — combina todos os filtros ativos com lógica AND.
+        /// Aplica os filtros definidos pelo usuário sobre cada item da coleção de resíduos.
         /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private bool AplicarFiltro(object item)
         {
             if (item is not Residuo r) return false;
@@ -139,70 +144,79 @@ namespace ReGraphik.ViewModels
             return true;
         }
 
+        /// <summary>
+        /// Simula a exportação de dados internos, exibindo uma mensagem de aviso ao usuário.
+        /// </summary>
         private void ExportarDadosInternos()
         {
-            MessageBox.Show("Comando de exportação acionado internamente!", "Aviso",
-                MessageBoxButton.OK, MessageBoxImage.Information);
+            
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MensagemWindow.Exibir("Aviso", "Comando de exportação acionado internamente!", MensagemWindow.TipoMensagem.Aviso);
+            });
         }
 
         /// <summary>
-        /// O método recebe o objeto Residuo específico da linha selecionada
+        /// Abre a janela de sugestões para o resíduo selecionado. Se o resíduo for nulo, exibe uma mensagem de aviso.
         /// </summary>
         /// <param name="residuo"></param>
         private void AbrirSugestoes(Residuo? residuo)
         {
             if (residuo == null)
             {
-                MessageBox.Show("Não foi possível identificar o resíduo selecionado.", "Aviso",
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Aviso", "Não foi possível identificar o resíduo selecionado.", MensagemWindow.TipoMensagem.Aviso);
+                });
                 return;
             }
 
-            /// Cria a janela moldura 
             var tela = new SugestaoResiduoWindow(residuo);
             tela.Owner = Application.Current.MainWindow;
-
             tela.ShowDialog();
         }
 
         /// <summary>
-        /// Busca resíduos na API e popula os ComboBoxes com valores reais e distintos do banco.
+        /// Carrega os resíduos do Firebase Realtime
         /// </summary>
+        /// <returns></returns>
         public async Task CarregarEstoqueDoBancoAsync()
         {
             try
             {
+                /// Inicializa o cliente do Firebase com a URL do Realtime Database
                 var firebase = new FirebaseClient("https://regraphikfirebase-default-rtdb.firebaseio.com/");
 
+                /// Observa as alterações na coleção de resíduos no Firebase e atualiza a coleção local de forma thread-safe
                 firebase
                 .Child("residuos")
                 .AsObservable<Residuo>()
                 .Subscribe(subsecao =>
                 {
+                    /// Atualiza a coleção de resíduos na thread da interface do usuário para evitar problemas de threading
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+                        /// Obtém o objeto de resíduo do evento do Firebase. Se for nulo, retorna sem fazer nada.
                         var residuoDoFirebase = subsecao.Object;
                         if (residuoDoFirebase == null) return;
 
-                        /// Garante que o ID interno bata com a chave do nó se necessário
                         if (string.IsNullOrEmpty(residuoDoFirebase.Id))
                         {
                             residuoDoFirebase.Id = subsecao.Key;
                         }
 
+                        /// Trata os eventos de inserção/atualização e exclusão, atualizando a coleção local e as listas de filtros conforme necessário
                         if (subsecao.EventType == Firebase.Database.Streaming.FirebaseEventType.InsertOrUpdate)
                         {
-                            /// Remove uma versão antiga caso seja uma edição para não duplicar no grid
                             var itemExistente = _todosResiduos.FirstOrDefault(r => r.Id == residuoDoFirebase.Id);
                             if (itemExistente != null)
                             {
                                 _todosResiduos.Remove(itemExistente);
                             }
 
-                            /// Adiciona o novo resíduo na lista
                             _todosResiduos.Add(residuoDoFirebase);
 
-                            /// Popula os ComboBoxes de filtros dinamicamente usando a variável certa
                             if (!string.IsNullOrWhiteSpace(residuoDoFirebase.TipoResiduo) && !ListaTipos.Contains(residuoDoFirebase.TipoResiduo))
                                 ListaTipos.Add(residuoDoFirebase.TipoResiduo);
 
@@ -213,6 +227,7 @@ namespace ReGraphik.ViewModels
                                 ListaStatus.Add(residuoDoFirebase.Status);
                         }
 
+                        /// Trata o evento de exclusão, removendo o item da coleção local se ele existir
                         else if (subsecao.EventType == Firebase.Database.Streaming.FirebaseEventType.Delete)
                         {
                             var itemExistente = _todosResiduos.FirstOrDefault(r => r.Id == subsecao.Key);
@@ -222,14 +237,20 @@ namespace ReGraphik.ViewModels
                             }
                         }
 
-                        /// Força o DataGrid a se reorganizar aplicando os filtros ativos
                         ResiduosFiltrados.Refresh();
                     });
                 });
             }
             catch (Exception ex)
             {
+                /// Loga o erro no console de depuração para análise posterior
                 System.Diagnostics.Debug.WriteLine($"Erro ao carregar estoque: {ex.Message}");
+
+                /// Exibe uma mensagem de erro ao usuário na thread da interface do usuário
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Não foi possível buscar os dados de estoque: {ex.Message}", MensagemWindow.TipoMensagem.Erro);
+                });
             }
         }
     }

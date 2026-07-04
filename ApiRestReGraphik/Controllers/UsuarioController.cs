@@ -48,7 +48,8 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
-                var result = await _usuarioService.Listar();
+                var usuarios = await _usuarioService.Listar();
+                var result = usuarios.Select(u => MapearParaDto(u));
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -107,10 +108,11 @@ namespace ApiRestReGraphik.Controllers
 
             try
             {
-                var result = await _usuarioService.ObterPorId(id);
-                if (result == null)
+                var usuario = await _usuarioService.ObterPorId(id);
+                if (usuario == null)
                     return NotFound($"Usuário com ID {id} não encontrado.");
-                return Ok(result);
+
+                return Ok(MapearParaDto(usuario));
             }
             catch (HttpRequestException ex)
             {
@@ -176,7 +178,7 @@ namespace ApiRestReGraphik.Controllers
 
                 var novoUsuario = new Usuario
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString(), 
                     Nome = dto.Nome,
                     CPF = dto.CPF,
                     Email = dto.Email,
@@ -184,14 +186,17 @@ namespace ApiRestReGraphik.Controllers
                     Senha = dto.Senha,
                     Perfil = string.IsNullOrWhiteSpace(dto.Perfil) ? "User" : dto.Perfil,
                     DataCadastro = DateTime.UtcNow,
-                    Ativo = true /// Já nasce liberado para usar o sistema
+                    FotoPerfil = dto.FotoPerfil,
+                    Ativo = true,
+                    FkResiduoId = dto.FkResiduoId
                 };
 
                 await _usuarioService.Criar(novoUsuario);
 
-                _logger.LogInformation($"[CADASTRO DIRETO] Usuário {dto.Email} criado com sucesso.");
+                var dtoRetorno = MapearParaDto(novoUsuario);
 
-                return CreatedAtAction(nameof(GetById), new { id = novoUsuario.Id }, novoUsuario);
+                /// Retorna o ID gerado na resposta para o usuário saber qual foi
+                return CreatedAtAction(nameof(GetById), new { id = novoUsuario.Id }, dtoRetorno);
             }
             catch (HttpRequestException ex)
             {
@@ -279,21 +284,33 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] Usuario usuario)
+        public async Task<IActionResult> Put(string id, [FromBody] UsuarioDto dto)
         {
             if (!InputSanitizationService.IdEhSeguro(id))
                 return BadRequest("ID inválido ou com caracteres não permitidos.");
 
             try
             {
-                if (usuario == null || id != usuario.Id)
-                    return BadRequest($"ID do usuário inválido.");
+                if (dto == null)
+                    return BadRequest($"Dados do usuário inválidos.");
 
+                /// Buscamos o usuário existente pelo ID da URL
                 var existing = await _usuarioService.ObterPorId(id);
                 if (existing == null)
                     return NotFound($"Usuário com ID {id} não encontrado.");
 
-                await _usuarioService.Atualizar(id, usuario);
+                /// Atualizamos os campos, mas o ID original (existing.Id) NUNCA é tocado!
+                existing.Nome = dto.Nome;
+                existing.CPF = dto.CPF;
+                existing.Email = dto.Email;
+                existing.Login = dto.Login;
+                if (!string.IsNullOrWhiteSpace(dto.Senha)) existing.Senha = dto.Senha;
+                existing.Perfil = dto.Perfil;
+                existing.FotoPerfil = dto.FotoPerfil;
+                existing.Ativo = dto.Ativo;
+                existing.FkResiduoId = dto.FkResiduoId;
+
+                await _usuarioService.Atualizar(id, existing);
                 return Ok($"Usuário com ID {id} atualizado com sucesso.");
             }
             catch (ArgumentException ex)
@@ -361,6 +378,27 @@ namespace ApiRestReGraphik.Controllers
                 _logger.LogError(ex, $"Erro ao excluir dados do usuário com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
+        }
+
+        /// <summary>
+        /// Método auxiliar para transformar o Model de domínio em UsuarioDto de resposta.
+        /// </summary>
+        private static UsuarioDto MapearParaDto(Usuario usuario)
+        {
+            return new UsuarioDto
+            {
+                Nome = usuario.Nome,
+                CPF = usuario.CPF,
+                Email = usuario.Email,
+                Login = usuario.Login,
+                Senha = usuario.Senha, // Mapeado caso precise no fluxo interno da sua arquitetura
+                Perfil = usuario.Perfil,
+                DataCadastro = usuario.DataCadastro,
+                FotoPerfil = usuario.FotoPerfil,
+                Ativo = usuario.Ativo,
+                FkResiduoId = usuario.FkResiduoId,
+                Residuo = usuario.Residuo
+            };
         }
     }
 }

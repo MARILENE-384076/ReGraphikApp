@@ -1,4 +1,5 @@
 ﻿using ApiRestReGraphik.Models;
+using ApiRestReGraphik.Models.DTOs;
 using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -54,24 +55,25 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
-                var result = await _pontosColetaService.Listar();
+                var pontos = await _pontosColetaService.Listar();
+                var result = pontos.Select(p => MapearParaDto(p));
                 return Ok(result);
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 502 Bad Gateway com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 502 Bad Gateway com uma mensagem de erro
                 _logger.LogError(ex, "Falha na comunicação com a API externa do Google Maps.");
                 return StatusCode(StatusCodes.Status502BadGateway, "Não foi possível obter os dados da API externa.");
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida processada pelo serviço.");
                 return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, "Erro ao obter dados dos Pontos de Coleta.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
@@ -102,7 +104,7 @@ namespace ApiRestReGraphik.Controllers
 
             try
             {
-                // Monta a URL da API do Google Maps usando o nome da cidade e a chave de API do appsettings.json
+                /// Monta a URL da API do Google Maps usando o nome da cidade e a chave de API do appsettings.json
                 var apiKey = _configuration["GoogleMaps:ApiKey"];
                 if (string.IsNullOrEmpty(apiKey))
                 {
@@ -114,7 +116,7 @@ namespace ApiRestReGraphik.Controllers
                     return StatusCode(500, "Erro de infraestrutura: HttpClient não injetado.");
                 }
 
-                // Chama o serviço para sincronizar os dados da cidade com o Google Maps e obter o total de pontos salvos e ignorados por duplicidade
+                /// Chama o serviço para sincronizar os dados da cidade com o Google Maps e obter o total de pontos salvos e ignorados por duplicidade
                 var (salvo, ignorado) = await _pontosColetaService.SincronizarComGoogleMapsAsync(cidade, apiKey, _httpClient);
 
                 return Ok(new
@@ -126,13 +128,13 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida processada pelo serviço.");
                 return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, "Erro ao sincronizar dados.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }   
@@ -184,13 +186,13 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha na comunicação com a API externa ao obter ponto de coleta com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível obter os dados do ponto de coleta com ID {id} devido a um erro de comunicação com a API externa.");
             }
             catch (Exception ex)    
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao obter dados do Ponto de Coleta com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao processar a solicitação do ponto de coleta");
             }
@@ -227,28 +229,41 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] PontosColeta pontoColeta)
+        public async Task<IActionResult> Post([FromBody] PontosColetaDto dto)
         {
             try
             {
-                if (pontoColeta == null)
+                if (dto == null)
                 {
                     return BadRequest("Ponto de coleta inválido.");
                 }
 
-                await _pontosColetaService.Criar(pontoColeta);
+                var novoPonto = new PontosColeta
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    NomePonto = dto.NomePonto,
+                    Cidade = dto.Cidade,
+                    Estado = dto.Estado,
+                    Cep = dto.Cep,
+                    ResiduosAceitos = dto.ResiduosAceitos,
+                    Lat = dto.Lat,
+                    Long = dto.Long
+                };
 
-                return CreatedAtAction(nameof(GetById), new { id = pontoColeta.Id }, pontoColeta);
+                await _pontosColetaService.Criar(novoPonto);
+
+                var dtoRetorno = MapearParaDto(novoPonto);
+                return CreatedAtAction(nameof(GetById), new { id = novoPonto.Id }, dtoRetorno);
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, "Requisição inválida processada para criar ponto de coleta.");
                 return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao criar dados do Ponto de Coleta.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
@@ -276,13 +291,13 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] PontosColeta pontoColeta)
+        public async Task<IActionResult> Put(string id, [FromBody] PontosColetaDto dto)
         {
             try
             {
-                if (pontoColeta == null || id != pontoColeta.Id)
+                if (dto == null)
                 {
-                    return BadRequest($"ID do ponto de coleta inválido.");
+                    return BadRequest($"Dados de atualização inválidos.");
                 }
 
                 var existing = await _pontosColetaService.ObterPorId(id);
@@ -291,24 +306,33 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Ponto de coleta com ID {id} não encontrado.");
                 }
 
-                await _pontosColetaService.Atualizar(id, pontoColeta);
+                /// Atualiza as propriedades do objeto existente com as do DTO
+                existing.NomePonto = dto.NomePonto;
+                existing.Cidade = dto.Cidade;
+                existing.Estado = dto.Estado;
+                existing.Cep = dto.Cep;
+                existing.ResiduosAceitos = dto.ResiduosAceitos;
+                existing.Lat = dto.Lat;
+                existing.Long = dto.Long;
+
+                await _pontosColetaService.Atualizar(id, existing);
                 return Ok($"Ponto de coleta com ID {id} atualizado com sucesso.");
             }
             catch (ArgumentException ex)
             {
-                // Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
+                /// Loga o erro de argumento inválido e retorna um status 400 Bad Request com a mensagem de erro
                 _logger.LogWarning(ex, $"Requisição inválida processada para atualizar ponto de coleta com ID {id}.");
                 return BadRequest("Requisição inválida processada pelo serviço.");
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha na comunicação com a API externa ao atualizar ponto de coleta com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível atualizar os dados do ponto de coleta com ID {id} devido a um erro de comunicação com a API externa.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao atualizar dados do Ponto de Coleta com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao processar a atualização do ponto de coleta");
             }
@@ -348,16 +372,33 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (HttpRequestException ex)
             {
-                // Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
+                /// Loga o erro de comunicação com a API externa e retorna um status 404 Not Found com uma mensagem de erro
                 _logger.LogError(ex, $"Falha na comunicação com a API externa ao excluir ponto de coleta com ID {id}.");
                 return StatusCode(StatusCodes.Status404NotFound, $"Não foi possível excluir os dados do ponto de coleta com ID {id} devido a um erro de comunicação com a API externa.");
             }
             catch (Exception ex)
             {
-                // Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, $"Erro ao excluir dados do Ponto de Coleta com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Erro ao processar a exclusão do ponto de coleta");
             }
+        }
+
+        /// <summary>
+        /// Método privado para mapear o modelo de banco PontosColeta para a resposta limpa PontosColetaDto
+        /// </summary>
+        private static PontosColetaDto MapearParaDto(PontosColeta ponto)
+        {
+            return new PontosColetaDto
+            {
+                NomePonto = ponto.NomePonto,
+                Cidade = ponto.Cidade,
+                Estado = ponto.Estado,
+                Cep = ponto.Cep,
+                ResiduosAceitos = ponto.ResiduosAceitos,
+                Lat = ponto.Lat,
+                Long = ponto.Long
+            };
         }
     }
 }

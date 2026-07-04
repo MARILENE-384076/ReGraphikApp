@@ -7,8 +7,9 @@ namespace ApiRestReGraphik.Models.DTOs
     /// </summary>
     public class PontosColetaDto
     {
+
         [JsonPropertyName("nome_ponto")]
-        public string NomePonto { get; set; } = "Sem Nome";
+        public string NomePonto { get; set; } = string.Empty;
 
         [JsonPropertyName("cidade")]
         public string Cidade { get; set; } = string.Empty;
@@ -17,15 +18,15 @@ namespace ApiRestReGraphik.Models.DTOs
         public string Estado { get; set; } = string.Empty;
 
         [JsonPropertyName("cep")]
-        public string CEP { get; set; } = string.Empty;
+        public string Cep { get; set; } = string.Empty;
 
         [JsonPropertyName("residuos_aceitos")]
         public string ResiduosAceitos { get; set; } = string.Empty;
 
         [JsonPropertyName("latitude")]
-        public double Lat { get; set; } = 0.0;
+        public double Lat { get; set; }
 
         [JsonPropertyName("longitude")]
-        public double Lng { get; set; } = 0.0;
+        public double Long { get; set; }
     }
 }

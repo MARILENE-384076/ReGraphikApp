@@ -1,4 +1,5 @@
 ﻿using ApiRestReGraphik.Models;
+using ApiRestReGraphik.Models.DTOs;
 using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,8 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
-                var result = await _sugestaoService.Listar();
+                var sugestoes = await _sugestaoService.Listar();
+                var result = sugestoes.Select(s => MapearParaDto(s));
                 return Ok(result);
             }
             catch (ArgumentException ex)
@@ -59,8 +61,6 @@ namespace ApiRestReGraphik.Controllers
                 _logger.LogError(ex, "Falha ao listar as sugestões");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a solicitação.");
             }
-
-
         }
 
         /// <summary>
@@ -95,14 +95,16 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetById(string id)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
-                var result = await _sugestaoService.ObterPorId(id);
-                if (result == null)
-                {
+                var sugestao = await _sugestaoService.ObterPorId(id);
+                if (sugestao == null)
                     return NotFound($"Sugestão com ID {id} não encontrada.");
-                }
-                return Ok(result);
+
+                return Ok(MapearParaDto(sugestao));
             }
             catch (HttpRequestException ex)
             {
@@ -144,18 +146,28 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] Sugestao sugestao)
+        public async Task<IActionResult> Post([FromBody] SugestaoDto dto)
         {
             try
             {
-                if (sugestao == null)
+                if (dto == null)
+                    return BadRequest("Dados da sugestão inválidos.");
+
+                if (string.IsNullOrWhiteSpace(dto.DescricaoSugestao))
+                    return BadRequest("A descrição da sugestão é obrigatória.");
+
+                var novaSugestao = new Sugestao
                 {
-                    return BadRequest("Sugestão inválida.");
-                }
+                    Id = Guid.NewGuid().ToString(),
+                    TipoResiduoAceito = dto.TipoResiduoAceito,
+                    DescricaoSugestao = dto.DescricaoSugestao,
+                    FkSugestaoResiduoId = dto.FkSugestaoResiduoId
+                };
 
-                await _sugestaoService.Criar(sugestao);
+                await _sugestaoService.Criar(novaSugestao);
 
-                return CreatedAtAction(nameof(GetById), new { id = sugestao.Id }, sugestao);
+                var dtoRetorno = MapearParaDto(novaSugestao);
+                return CreatedAtAction(nameof(GetById), new { id = novaSugestao.Id }, dtoRetorno);
             }
             catch (ArgumentException ex)
             {
@@ -193,22 +205,25 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] Sugestao sugestao)
+        public async Task<IActionResult> Put(string id, [FromBody] SugestaoDto dto)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
-                if (sugestao == null || id != sugestao.Id)
-                {
-                    return BadRequest($"ID da sugestão inválido.");
-                }
+                if (dto == null)
+                    return BadRequest("Dados de atualização inválidos.");
 
                 var existing = await _sugestaoService.ObterPorId(id);
                 if (existing == null)
-                {
                     return NotFound($"Sugestão com ID {id} não encontrada.");
-                }
 
-                await _sugestaoService.Atualizar(id, sugestao);
+                existing.TipoResiduoAceito = dto.TipoResiduoAceito;
+                existing.DescricaoSugestao = dto.DescricaoSugestao;
+                existing.FkSugestaoResiduoId = dto.FkSugestaoResiduoId;
+
+                await _sugestaoService.Atualizar(id, existing);
                 return Ok($"Sugestão com ID {id} atualizada com sucesso.");
             }
             catch (ArgumentException ex)
@@ -252,6 +267,9 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(string id)
         {
+            if (!InputSanitizationService.IdEhSeguro(id))
+                return BadRequest("ID inválido ou com caracteres não permitidos.");
+
             try
             {
                 var existing = await _sugestaoService.ObterPorId(id);
@@ -275,6 +293,20 @@ namespace ApiRestReGraphik.Controllers
                 _logger.LogError(ex, $"Erro ao excluir dados da sugestão com ID {id}.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
+        }
+
+        /// <summary>
+        /// Método auxiliar para transcrever a Entidade do banco de dados para a sua SugestaoDto.
+        /// </summary>
+        private static SugestaoDto MapearParaDto(Sugestao sugestao)
+        {
+            return new SugestaoDto
+            {
+                TipoResiduoAceito = sugestao.TipoResiduoAceito,
+                DescricaoSugestao = sugestao.DescricaoSugestao,
+                FkSugestaoResiduoId = sugestao.FkSugestaoResiduoId,
+                SugestaoResiduo = sugestao.SugestaoResiduo
+            };
         }
     }
 }

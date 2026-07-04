@@ -12,7 +12,7 @@ namespace ApiRestReGraphik.Models
         public string? Id { get; set; }
 
         [JsonPropertyName("nome_ponto")]
-        public string NomePonto { get; set; } = "Sem Nome";
+        public string NomePonto { get; set; } = string.Empty;
 
         [JsonPropertyName("cidade")]
         public string Cidade { get; set; } = string.Empty;
@@ -21,15 +21,15 @@ namespace ApiRestReGraphik.Models
         public string Estado { get; set; } = string.Empty;
 
         [JsonPropertyName("cep")]
-        public string CEP { get; set; } = string.Empty;
+        public string Cep { get; set; } = string.Empty;
 
         [JsonPropertyName("residuos_aceitos")]
         public string ResiduosAceitos { get; set; } = string.Empty;
 
         [JsonPropertyName("latitude")]
-        public double Lat { get; set; } = 0.0;
+        public double Lat { get; set; }
 
-        [JsonPropertyName("longitude")]
-        public double Lng { get; set; } = 0.0;
+        [JsonPropertyName("longitude")] 
+        public double Long { get; set; }
     }
 }
