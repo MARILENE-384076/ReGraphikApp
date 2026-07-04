@@ -27,6 +27,6 @@ namespace ApiRestReGraphik.Models.DTOs
         public double Lat { get; set; }
 
         [JsonPropertyName("longitude")]
-        public double Lng { get; set; }
+        public double Long { get; set; }
     }
 }

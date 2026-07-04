@@ -29,7 +29,7 @@ namespace ApiRestReGraphik.Models
         [JsonPropertyName("latitude")]
         public double Lat { get; set; }
 
-        [JsonPropertyName("longitude")]
-        public double Lng { get; set; }
+        [JsonPropertyName("longitude")] 
+        public double Long { get; set; }
     }
 }
