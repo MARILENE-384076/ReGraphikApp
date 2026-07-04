@@ -391,6 +391,7 @@ namespace ApiRestReGraphik.Controllers
         {
             return new PontosColetaDto
             {
+                Id = ponto.Id,
                 NomePonto = ponto.NomePonto,
                 Cidade = ponto.Cidade,
                 Estado = ponto.Estado,

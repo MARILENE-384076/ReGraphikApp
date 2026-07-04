@@ -233,29 +233,31 @@ namespace ReGraphik.ViewModels
             {
                 CarregandoEstatisticas = true;
 
+                ///  Obtém todos os resíduos do usuário logado a partir do serviço de resíduos
                 var todos = await _residuoService.ObterTodosResiduosAsync();
 
-                /// Filtra apenas os resíduos do usuário logado pelo seu Id
-                var meus = todos
-                    .Where(r => r.IdUsuario == _usuarioAtual.Id)
-                    .ToList();
+                var meus = todos.ToList();
 
-                /// Calcula as estatísticas
+                /// Calcula o total de resíduos e o total de reaproveitados
                 TotalResiduos = meus.Count;
                 TotalReaproveitados = meus.Count(r => r.Status == "Reaproveitado");
-                ValorEconomico = meus.Sum(r => r.Quantidade * 5.50).ToString("C2");
 
-                /// Todos os resíduos do usuário, do mais recente ao mais antigo — sem limite
+                /// Calcula o valor econômico total considerando que cada unidade de resíduo vale R$ 5,50
+                double somaValores = meus.Sum(r => r.Quantidade * 5.50);
+                ValorEconomico = somaValores.ToString("C2");
+
                 var todos_ordenados = meus
+                    .Where(r => r.DataCadastro != null)
                     .OrderByDescending(r => r.DataCadastro)
                     .ToList();
 
+                /// Atualiza a coleção de resíduos na thread da UI para evitar problemas de threading
                 Application.Current.Dispatcher.Invoke(() =>
                     UltimosResiduos = new ObservableCollection<Residuo>(todos_ordenados));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                /// Falha silenciosa — estatísticas ficam zeradas sem quebrar a tela
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar estatísticas: {ex.Message}");
                 TotalResiduos = 0;
                 TotalReaproveitados = 0;
                 ValorEconomico = "R$ 0,00";

@@ -189,7 +189,6 @@ namespace ReGraphik.ViewModels
                         Quantidade = residuo.Quantidade,
                         DataCadastro = residuo.DataCadastro,
                         Status = residuo.Status,
-                        IdUsuario = residuo.IdUsuario,
                         Especificacao = residuo.Especificacao,
                         Projeto = residuo.Projeto,
                         Condicao = residuo.Condicao,

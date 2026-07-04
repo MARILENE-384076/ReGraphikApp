@@ -7,35 +7,35 @@ namespace ReGraphik.Models
     {
         [JsonPropertyName("id")]
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
-        [JsonPropertyName("name")]
-        [JsonProperty("name")]
-        public string Nome { get; set; }
+        [JsonPropertyName("nome")]
+        [JsonProperty("nome")]
+        public string Nome { get; set; } = string.Empty;
 
         [JsonPropertyName("cpf")]
         [JsonProperty("cpf")]
-        public string CPF { get; set; }
+        public string CPF { get; set; } = string.Empty;
 
         [JsonPropertyName("email")]
         [JsonProperty("email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [JsonPropertyName("login")]
         [JsonProperty("login")]
-        public string Login { get; set; }
+        public string Login { get; set; } = string.Empty;
 
         [JsonPropertyName("senha")]
         [JsonProperty("senha")]
-        public string Senha { get; set; }
+        public string Senha { get; set; } = string.Empty;
 
         [JsonPropertyName("perfil")]
         [JsonProperty("perfil")]
-        public string Perfil { get; set; }
+        public string Perfil { get; set; } = string.Empty;
 
         [JsonPropertyName("data_cadastro")]
         [JsonProperty("data_cadastro")]
-        public DateTime DataCadastro { get; set; }
+        public DateTime DataCadastro { get; set; } = DateTime.Now;
 
         [JsonPropertyName("foto_perfil")]
         [JsonProperty("foto_perfil")]
@@ -46,9 +46,33 @@ namespace ReGraphik.Models
         public bool Ativo { get; set; }
 
         /// <summary>
-        /// Iniciais do nome para exibição no avatar quando não há foto.
-        /// Retorna as iniciais das duas primeiras palavras do nome (ex: "Bruno Maia Silva" → "BM").
+        /// Chave estrangeira para o resíduo associado ao usuário.
         /// </summary>
+        [JsonPropertyName("fk_residuo_id")]
+        [JsonProperty("fk_residuo_id")]
+        public string? FkResiduoId { get; set; }
+
+        /// <summary>
+        /// Chave estrangeira para a conversa associada ao usuário. 
+        /// </summary>
+
+        [JsonPropertyName("fk_conversa_usuarioid")]
+        [JsonProperty("fk_conversa_usuarioid")]
+        public string? FkConversaUsuarioId { get; set; }
+
+        /// <summary>
+        /// Chave estrangeira para a mensagem associada ao usuário.
+        /// </summary>
+
+        [JsonPropertyName("fk_mensagem_id")]
+        [JsonProperty("fk_mensagem_id")]
+        public string? FkMensagemId { get; set; }
+
+        /// <summary>
+        /// Iniciais do nome para exibição no avatar quando não há foto.
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore] /// Impede que essa propriedade calculada vá para o banco
+        [Newtonsoft.Json.JsonIgnore]
         public string Iniciais
         {
             get

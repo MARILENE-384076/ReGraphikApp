@@ -10,7 +10,6 @@ namespace ApiRestReGraphik.Models
     /// </summary>
     public class Residuo
     {
-        [JsonIgnore]
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 

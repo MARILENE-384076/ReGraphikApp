@@ -9,6 +9,9 @@ namespace ApiRestReGraphik.Models.DTOs
     /// </summary> 
     public class SugestaoResiduoDto
     {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; }
+
         [JsonPropertyName("sugestao")]
         public string SugestaoTexto { get; set; }
 

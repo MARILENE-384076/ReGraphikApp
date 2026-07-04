@@ -302,10 +302,10 @@ namespace ApiRestReGraphik.Controllers
         {
             return new SugestaoDto
             {
+                Id = sugestao.Id,
                 TipoResiduoAceito = sugestao.TipoResiduoAceito,
                 DescricaoSugestao = sugestao.DescricaoSugestao,
-                FkSugestaoResiduoId = sugestao.FkSugestaoResiduoId,
-                SugestaoResiduo = sugestao.SugestaoResiduo
+                FkSugestaoResiduoId = sugestao.FkSugestaoResiduoId
             };
         }
     }

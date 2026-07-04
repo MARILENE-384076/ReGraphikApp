@@ -9,7 +9,6 @@ namespace ApiRestReGraphik.Models
     /// </summary>
     public class Usuario
     {
-        [JsonIgnore]
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 

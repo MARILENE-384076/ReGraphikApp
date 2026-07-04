@@ -7,7 +7,9 @@ namespace ApiRestReGraphik.Services
 {
     public class SugestaoResiduosService
     {
+        /// <summary>
         /// Logger para registrar informações e erros relacionados ao serviço ReGraphik
+        /// </summary>
         private readonly ILogger<SugestaoResiduosService> _logger;
         private readonly FirebaseClient _firebaseClient;
         private const string NodeName = "sugestoes_residuos";
@@ -35,45 +37,25 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                /// Obtém os dados do Firebase para a coleção de sugestões de resíduos
+                /// Obtém todas as sugestões de resíduos do Firebase
                 var sugestaoResiduos = await _firebaseClient
                     .Child(NodeName)
                     .OnceAsync<SugestaoResiduo>();
 
-                /// Mapeia os dados do Firebase para a lista de sugestões de resíduos
-                var listaSugestaoResiduos = sugestaoResiduos.Select(r => r.Object).ToList();
-
-                /// Obtém os dados do Firebase para a coleção de resíduos
-                var sugestaoFirebase = await _firebaseClient
-                    .Child(SugestoesNodeName)
-                    .OnceAsync<Sugestao>();
-
-                /// Mapeia os dados do Firebase para um dicionário de sugestões, onde a chave é o ID da sugestão e o valor é o objeto da sugestão
-                var dicionarioSugestao = sugestaoFirebase.ToDictionary(s => s.Key, s => s.Object);
-
-
-                /// Obtém os dados do Firebase para a coleção de usuários (caso seja necessário para mapear os resíduos aos usuários)
-                var residuosFirebase = await _firebaseClient
-                    .Child(ResiduosNodeName)
-                    .OnceAsync<Residuo>();
-
-                /// Cria um dicionário para mapear os usuários pelo ID, facilitando a associação dos resíduos aos seus respectivos usuários
-                var dicionarioResiduos = residuosFirebase.ToDictionary(u => u.Key, u => u.Object);
-
-                foreach (var sugestaoR in listaSugestaoResiduos)
-                {
-                    /// Associa a sugestão ao resíduo correspondente usando o dicionário de sugestões
-                    if (!string.IsNullOrEmpty(sugestaoR.IdSugestao) && dicionarioSugestao.ContainsKey(sugestaoR.IdSugestao))
+                /// Garante que cada sugestão de resíduo tenha seu ID definido corretamente, 
+                /// utilizando a chave do Firebase como ID quando necessário
+                var listaSugestaoResiduos = sugestaoResiduos
+                    .Select(r =>
                     {
-                        sugestaoR.Sugestao = dicionarioSugestao[sugestaoR.IdSugestao];
-                    }
-
-                    /// Associa a sugestão ao resíduo correspondente usando o dicionário de sugestões
-                    if (!string.IsNullOrEmpty(sugestaoR.IdCadastroResiduo) && dicionarioResiduos.ContainsKey(sugestaoR.IdCadastroResiduo))
-                    {
-                        sugestaoR.CadastroResiduo = dicionarioResiduos[sugestaoR.IdCadastroResiduo];
-                    }
-                }
+                        var obj = r.Object;
+                        if (obj != null && string.IsNullOrEmpty(obj.Id))
+                        {
+                            obj.Id = r.Key; /// Garante que o ID receba a chave do Firebase
+                        }
+                        return obj;
+                    })
+                    .Where(r => r != null)
+                    .ToList();
 
                 return listaSugestaoResiduos;
             }
@@ -119,28 +101,11 @@ namespace ApiRestReGraphik.Services
                      .Child(id)
                      .OnceSingleAsync<SugestaoResiduo>();
 
-                /// Associa a sugestão ao resíduo correspondente usando o ID do resíduo
-                if (sugestaoResiduo != null && !string.IsNullOrEmpty(sugestaoResiduo.IdSugestao))
+                /// Garante que o ID da sugestão de resíduo seja definido corretamente,
+                /// utilizando a chave do Firebase como ID quando necessário
+                if (sugestaoResiduo != null)
                 {
-                    /// Obtém a sugestão do Firebase usando o ID da sugestão associado à sugestão de resíduo
-                    var sugestao = await _firebaseClient
-                        .Child(SugestoesNodeName)
-                        .Child(sugestaoResiduo.IdSugestao)
-                        .OnceSingleAsync<Sugestao>();
-
-                    sugestaoResiduo.Sugestao = sugestao; 
-                }
-
-                /// Associa a sugestão ao resíduo correspondente usando o ID do resíduo
-                if (sugestaoResiduo != null && !string.IsNullOrEmpty(sugestaoResiduo.IdCadastroResiduo))
-                {
-                    /// Obtém o cadastro de resíduo do Firebase usando o ID do cadastro associado à sugestão de resíduo
-                    var cadastroResiduo = await _firebaseClient
-                        .Child(ResiduosNodeName)
-                        .Child(sugestaoResiduo.IdCadastroResiduo)
-                        .OnceSingleAsync<Residuo>();
-
-                    sugestaoResiduo.CadastroResiduo = cadastroResiduo;
+                    sugestaoResiduo.Id = id;
                 }
 
                 return sugestaoResiduo;

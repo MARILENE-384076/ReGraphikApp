@@ -35,7 +35,7 @@ namespace ApiRestReGraphik.Services
 
             try
             {
-                // Obtém o caminho físico correto onde a API está rodando no servidor
+                /// Obtém o caminho físico correto onde a API está rodando no servidor
                 var caminhoBase = AppContext.BaseDirectory;
                 var caminhoCompletoChave = Path.Combine(caminhoBase, credentialsFileName);
 
@@ -45,7 +45,7 @@ namespace ApiRestReGraphik.Services
                     throw new FileNotFoundException($"O arquivo {credentialsFileName} precisa estar na raiz da API.");
                 }
 
-                // Inicializa a credencial usando diretamente o arquivo .json do Firebase
+                /// Inicializa a credencial usando diretamente o arquivo .json do Firebase
                 GoogleCredential credenciais;
                 using (var stream = new FileStream(caminhoCompletoChave, FileMode.Open, FileAccess.Read))
                 {
@@ -62,7 +62,7 @@ namespace ApiRestReGraphik.Services
                     {
                         AuthTokenAsyncFactory = async () =>
                         {
-                            // Obtém o token de acesso de forma assíncrona e segura
+                            /// Obtém o token de acesso de forma assíncrona e segura
                             var token = await credenciais.UnderlyingCredential.GetAccessTokenForRequestAsync();
                             return token;
                         }
@@ -85,29 +85,29 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém os pontos de coleta do Firebase
+                /// Obtém os pontos de coleta do Firebase
                 var pontos = await _firebaseClient
                     .Child(NodeName)
                     .OnceAsync<PontosColeta>();
 
-                // Mapeia os dados do Firebase para a lista de PontosColeta
+                /// Mapeia os dados do Firebase para a lista de PontosColeta
                 return pontos.Select(p => p.Object).ToList();
             }
             catch (FirebaseException ex)
             {
-                // Erro específico relacionado ao Firebase, como problemas de autenticação ou comunicação
+                /// Erro específico relacionado ao Firebase, como problemas de autenticação ou comunicação
                 _logger.LogError(ex, "Erro de comunicação ou permissão no Firebase ao listar pontos de coleta.");
                 throw;
             }
             catch (JsonException ex)
             {
-                // Erro de desserialização, indicando que os dados no Firebase estão em um formato inesperado ou corrompido
+                /// Erro de desserialização, indicando que os dados no Firebase estão em um formato inesperado ou corrompido
                 _logger.LogError(ex, "Erro de desserialização. Os dados no Firebase estão em formato inválido.");
                 throw new InvalidOperationException("Os dados recuperados do banco estão corrompidos.", ex);
             }
             catch (Exception ex)
             {
-                // Qualquer outro erro inesperado que possa ocorrer durante a operação de listagem
+                /// Qualquer outro erro inesperado que possa ocorrer durante a operação de listagem
                 _logger.LogError(ex, "Erro inesperado na camada de serviço ao listar pontos de coleta.");
                 throw;
             }
@@ -123,7 +123,7 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém o ponto de coleta do Firebase usando o ID fornecido
+                /// Obtém o ponto de coleta do Firebase usando o ID fornecido
                 var ponto = await _firebaseClient
                      .Child(NodeName)
                      .Child(id)
@@ -133,19 +133,19 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, $"Erro de infraestrutura no Firebase ao obter o ponto de coleta por ID: {id}");
                 throw;
             }
             catch (JsonException ex)
             {
-                // Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
+                /// Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase estiverem em um formato inesperado ou corrompido
                 _logger.LogError(ex, $"Erro de desserialização. Os nós relacionados ao ID {id} possuem dados inválidos.");
                 throw new InvalidOperationException("Os dados obtidos do Firebase estão corrompidos ou em formato inválido.", ex);
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, $"Erro inesperado ao obter o ponto de coleta por ID: {id}");
                 throw;
             }
@@ -164,12 +164,12 @@ namespace ApiRestReGraphik.Services
             {
                 pontosColeta.Id = null;
 
-                // Adiciona o ponto de coleta ao Firebase e obtém o resultado, que inclui a chave gerada para o novo ponto de coleta
+                /// Adiciona o ponto de coleta ao Firebase e obtém o resultado, que inclui a chave gerada para o novo ponto de coleta
                 var resultado = await _firebaseClient
                                 .Child(NodeName)
                                 .PostAsync(pontosColeta);
 
-                // Atribui o ID gerado pelo Firebase ao ponto de coleta
+                /// Atribui o ID gerado pelo Firebase ao ponto de coleta
                 pontosColeta.Id = resultado.Key;
 
                 await _firebaseClient
@@ -179,13 +179,13 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, "Erro no Firebase ao tentar criar novo ponto de coleta.");
                 throw;
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, "Erro inesperado ao adicionar o ponto de coleta.");
                 throw;
             }
@@ -202,19 +202,19 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Obtém os pontos de coleta existentes no banco de dados para a cidade especificada, garantindo que tenhamos uma lista atualizada para comparação
+                /// Obtém os pontos de coleta existentes no banco de dados para a cidade especificada, garantindo que tenhamos uma lista atualizada para comparação
                 var pontosNoBanco = (await Listar())?.ToList() ?? new List<PontosColeta>();
 
-                // Cria um HashSet para armazenar as coordenadas existentes, permitindo uma busca ultra rápida
+                /// Cria um HashSet para armazenar as coordenadas existentes, permitindo uma busca ultra rápida
                 var coordenadasExistentes = new HashSet<(double, double)>(
-                    pontosNoBanco.Select(p => (p.Lat, p.Lng))
+                    pontosNoBanco.Select(p => (p.Lat, p.Long))
                 );
 
-                // Monta a URL de consulta para a API do Google Maps, utilizando o nome da cidade e a chave da API
+                /// Monta a URL de consulta para a API do Google Maps, utilizando o nome da cidade e a chave da API
                 var query = Uri.EscapeDataString($"ponto de coleta reciclagem {cidade}");
                 var url = $"https://maps.googleapis.com/maps/api/place/textsearch/json?query={query}&key={apiKey}";
 
-                // Faz a chamada para a API do Google Maps e obtém a resposta JSON
+                /// Faz a chamada para a API do Google Maps e obtém a resposta JSON
                 var json = await httpClient.GetStringAsync(url);
                 using var doc = System.Text.Json.JsonDocument.Parse(json);
 
@@ -240,7 +240,7 @@ namespace ApiRestReGraphik.Services
                 {
                     var nome = item.TryGetProperty("name", out var n) ? n.GetString() : "Sem nome";
 
-                    // O Google pode retornar resultados sem coordenadas, então precisamos verificar isso antes de tentar acessar os valores
+                    /// O Google pode retornar resultados sem coordenadas, então precisamos verificar isso antes de tentar acessar os valores
                     double lat = 0, lng = 0;
                     if (item.TryGetProperty("geometry", out var geo) && geo.TryGetProperty("location", out var loc))
                     {
@@ -248,7 +248,7 @@ namespace ApiRestReGraphik.Services
                         lng = loc.TryGetProperty("lng", out var ln) ? ln.GetDouble() : 0;
                     }
 
-                    // Verifica se as coordenadas já existem no banco de dados usando o HashSet, o que é extremamente rápido
+                    /// Verifica se as coordenadas já existem no banco de dados usando o HashSet, o que é extremamente rápido
                     if (coordenadasExistentes.Contains((lat, lng)))
                     {
                         totalIgnorado++;
@@ -260,15 +260,15 @@ namespace ApiRestReGraphik.Services
                         NomePonto     = nome,
                         Cidade        = cidade,
                         Estado          = _configuration["Sincronizacao:EstadoPadrao"] ?? "BR",
-                        CEP             = _configuration["Sincronizacao:CepPadrao"]    ?? "—",
+                        Cep             = _configuration["Sincronizacao:CepPadrao"]    ?? "—",
                         ResiduosAceitos = _configuration["Sincronizacao:ResiduosAceitos"] ?? "Reciclável",
                         Lat = lat,
-                        Lng = lng
+                        Long = lng
                     };
 
                     await Criar(novoPonto);
 
-                    // Adiciona as novas coordenadas ao HashSet para garantir que não sejam adicionadas novamente
+                    /// Adiciona as novas coordenadas ao HashSet para garantir que não sejam adicionadas novamente
                     coordenadasExistentes.Add((lat, lng));
                     totalSalvo++;
                 }
@@ -277,19 +277,19 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Erro específico relacionado ao Firebase, como problemas de autenticação ou comunicação
+                /// Erro específico relacionado ao Firebase, como problemas de autenticação ou comunicação
                 _logger.LogError(ex, "Erro de comunicação ou permissão no Firebase ao buscar pontos de coleta.");
                 throw;
             }
             catch (JsonException ex)
             {
-                // Erro de desserialização, indicando que os dados no Firebase estão em um formato inesperado ou corrompido
+                /// Erro de desserialização, indicando que os dados no Firebase estão em um formato inesperado ou corrompido
                 _logger.LogError(ex, "Erro de desserialização. Os dados no Firebase estão em formato inválido.");
                 throw new InvalidOperationException("Os dados recuperados do banco estão corrompidos.", ex);
             }
             catch (Exception ex)
             {
-                // Qualquer outro erro inesperado que possa ocorrer durante a operação de busca
+                /// Qualquer outro erro inesperado que possa ocorrer durante a operação de busca
                 _logger.LogError(ex, "Erro inesperado na camada de serviço ao buscar pontos de coleta.");
                 throw;
             }
@@ -307,7 +307,7 @@ namespace ApiRestReGraphik.Services
             {
                 pontosColeta.Id = id;
 
-                // Atualiza o ponto de coleta no Firebase usando o ID como chave
+                /// Atualiza o ponto de coleta no Firebase usando o ID como chave
                 await _firebaseClient
                     .Child(NodeName)
                     .Child(id)
@@ -315,13 +315,13 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, $"Erro no Firebase ao tentar atualizar o ponto de coleta ID: {id}");
                 throw;
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, $"Erro inesperado ao atualizar o ponto de coleta ID: {id}");
                 throw;
             }
@@ -337,7 +337,7 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
-                // Exclui o ponto de coleta do Firebase usando o ID fornecido
+                /// Exclui o ponto de coleta do Firebase usando o ID fornecido
                 await _firebaseClient
                     .Child(NodeName)
                     .Child(id)
@@ -345,13 +345,13 @@ namespace ApiRestReGraphik.Services
             }
             catch (FirebaseException ex)
             {
-                // Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
+                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
                 _logger.LogError(ex, $"Erro no Firebase ao tentar excluir o ponto de coleta ID: {id}");
                 throw;
             }
             catch (Exception ex)
             {
-                // Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
+                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
                 _logger.LogError(ex, $"Erro inesperado ao excluir o ponto de coleta ID: {id}");
                 throw;
             }

@@ -206,6 +206,7 @@ namespace ApiRestReGraphik.Controllers
             }
             catch (Exception ex)
             {
+                /// Loga o erro genérico e retorna um status 500 Internal Server Error com uma mensagem de erro
                 _logger.LogError(ex, "Erro ao salvar cadastro definitivo.");
                 return StatusCode(StatusCodes.Status500InternalServerError, "Erro ao persistir usuário.");
             }
@@ -387,11 +388,12 @@ namespace ApiRestReGraphik.Controllers
         {
             return new UsuarioDto
             {
+                Id = usuario.Id,
                 Nome = usuario.Nome,
                 CPF = usuario.CPF,
                 Email = usuario.Email,
                 Login = usuario.Login,
-                Senha = usuario.Senha, // Mapeado caso precise no fluxo interno da sua arquitetura
+                Senha = usuario.Senha, 
                 Perfil = usuario.Perfil,
                 DataCadastro = usuario.DataCadastro,
                 FotoPerfil = usuario.FotoPerfil,

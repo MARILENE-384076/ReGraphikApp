@@ -16,7 +16,6 @@ namespace ApiRestReGraphik.Services
     /// </summary>
     public static class InputSanitizationService
     {
-        // ─── Padrões proibidos ────────────────────────────────────────────────────
 
         /// <summary>
         /// Caracteres inválidos para chaves/nós do Firebase Realtime Database.
@@ -36,8 +35,6 @@ namespace ApiRestReGraphik.Services
         /// </summary>
         private static readonly Regex _htmlTag =
             new(@"<[^>]+>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-        // ─── Métodos públicos ─────────────────────────────────────────────────────
 
         /// <summary>
         /// Valida se um ID (usado como chave de nó no Firebase) é seguro para uso.
@@ -66,7 +63,7 @@ namespace ApiRestReGraphik.Services
         {
             if (string.IsNullOrWhiteSpace(valor)) return string.Empty;
 
-            // Remove tags HTML para mitigar XSS em campos que possam ser renderizados
+            /// Remove tags HTML para mitigar XSS em campos que possam ser renderizados
             var sanitizado = _htmlTag.Replace(valor.Trim(), string.Empty);
 
             return sanitizado.Length > tamanhoMaximo

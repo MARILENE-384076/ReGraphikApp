@@ -165,17 +165,18 @@ namespace ApiRestReGraphik.Controllers
                     return BadRequest("O campo 'sugestao' é obrigatório.");
                 }
 
+                /// Valida se a data de aplicação não é futura
                 var novaSugestao = new SugestaoResiduo
                 {
                     Id = Guid.NewGuid().ToString(),
-                    SugestaoTexto = dto.SugestaoTexto,
+                    Sugestao = dto.SugestaoTexto,
                     DataAplicacao = dto.DataAplicacao ?? DateTime.UtcNow
                 };
 
-                // CORREÇÃO: Efetivamente salva no banco de dados
+                /// Valida se a data de aplicação não é futura
                 await _sugestaoService.Criar(novaSugestao);
 
-                // CORREÇÃO: Retorna o status 201 Created com a rota de consulta
+                /// Loga a criação bem-sucedida da sugestão de resíduos
                 var dtoRetorno = MapearParaDto(novaSugestao);
                 return CreatedAtAction(nameof(GetById), new { id = novaSugestao.Id }, dtoRetorno);
             }
@@ -233,8 +234,7 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Sugestão de resíduos com ID {id} não encontrada.");
                 }
 
-                // Atualiza mantendo o ID original protegido
-                existing.SugestaoTexto = dto.SugestaoTexto;
+                existing.Sugestao = dto.SugestaoTexto;
                 if (dto.DataAplicacao.HasValue) existing.DataAplicacao = dto.DataAplicacao;
 
                 await _sugestaoService.Atualizar(id, existing);
@@ -313,7 +313,8 @@ namespace ApiRestReGraphik.Controllers
         {
             return new SugestaoResiduoDto
             {
-                SugestaoTexto = sugestao.SugestaoTexto, // Mapeia o campo do texto original
+                Id = sugestao.Id,
+                SugestaoTexto = sugestao.Sugestao,
                 DataAplicacao = sugestao.DataAplicacao
             };
         }
