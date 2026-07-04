@@ -53,8 +53,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Icone -->
-                    <Border Grid.Column="0" 
+                    <Border x:Name="IconBorder"
+                            Grid.Column="0" 
                             Background="#F0FDF4" 
                             BorderBrush="#DCFCE7"
                             BorderThickness="1"
@@ -65,7 +65,8 @@
                             HorizontalAlignment="Center"
                             Margin="0,0,16,0">
 
-                        <iconPacks:PackIconMaterial Kind="CheckCircleOutline"
+                        <iconPacks:PackIconMaterial x:Name="MessageIcon"
+                                                    Kind="CheckCircleOutline"
                                                     Foreground="{DynamicResource VerdeColor}" 
                                                     Width="28" 
                                                     Height="28"
@@ -73,7 +74,6 @@
                                                     VerticalAlignment="Center"/>
                     </Border>
 
-                    <!-- Mensagem -->
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock x:Name="TxtTitulo" 
                                    Text="Sucesso!" 
@@ -93,8 +93,8 @@
                     </StackPanel>
                 </Grid>
 
-                <!-- Botão -->
                 <Button Grid.Row="2" 
+                        x:Name="BtnAcao"
                         Content="Entendi" 
                         Height="38" 
                         Width="110"

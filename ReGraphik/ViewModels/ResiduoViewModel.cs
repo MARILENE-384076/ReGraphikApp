@@ -20,49 +20,22 @@ namespace ReGraphik.ViewModels
     /// </summary>
     public class ResiduoViewModel : BaseViewModel
     {
-        /// <summary>
-        /// Caminho completo do arquivo de imagem selecionado pelo usuário para anexar ao resíduo.
-        /// </summary>
         private string _caminhoArquivoSelecionado = string.Empty;
 
         /// <summary>
-        /// Tipos de material disponíveis no formulário.
+        /// Coleções de opções para os ComboBoxes, carregadas do arquivo de configuração <c>appsettings.json</c>.
         /// </summary>
         public ObservableCollection<string> TiposMaterial { get; }
-
-        /// <summary>
-        /// Especificações técnicas disponíveis no formulário.
-        /// </summary>
         public ObservableCollection<string> Especificacoes { get; }
-
-        /// <summary>
-        /// Origens possíveis do resíduo no formulário.
-        /// </summary>
         public ObservableCollection<string> Origens { get; }
-
-        /// <summary>
-        /// Condições físicas do material disponíveis no formulário.
-        /// </summary>
         public ObservableCollection<string> Condicoes { get; }
-
-        /// <summary>
-        /// Status possíveis para o resíduo no formulário.
-        /// </summary>
         public ObservableCollection<string> StatusOpcoes { get; }
-
-        /// <summary>
-        /// Unidades de medida disponíveis para o campo Quantidade.
-        /// </summary>
         public ObservableCollection<string> UnidadesMedida { get; }
 
         /// <summary>
-        /// Campos do formulário
+        /// Propriedades vinculadas aos campos do formulário de cadastro de resíduos.
         /// </summary>
         private string? _tipoMaterial;
-
-        /// <summary>
-        /// Tipo de material selecionado pelo usuário.
-        /// </summary>
         public string? TipoMaterial
         {
             get => _tipoMaterial;
@@ -70,10 +43,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string _especificacao = string.Empty;
-
-        /// <summary>
-        /// Especificação técnica do material.
-        /// </summary>
         public string Especificacao
         {
             get => _especificacao;
@@ -81,10 +50,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string? _origem;
-
-        /// <summary>
-        /// Origem do resíduo dentro do processo produtivo.
-        /// </summary>
         public string? Origem
         {
             get => _origem;
@@ -92,10 +57,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string _projetoOrigem = string.Empty;
-
-        /// <summary>
-        /// Nome do projeto de onde o resíduo originou.
-        /// </summary>
         public string ProjetoOrigem
         {
             get => _projetoOrigem;
@@ -103,10 +64,6 @@ namespace ReGraphik.ViewModels
         }
 
         private double _quantidade;
-
-        /// <summary>
-        /// Quantidade numérica do resíduo.
-        /// </summary>
         public double Quantidade
         {
             get => _quantidade;
@@ -114,10 +71,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string _unidadeMedida = "kg";
-
-        /// <summary>
-        /// Unidade de medida da quantidade (ex: kg, g, ton).
-        /// </summary>
         public string UnidadeMedida
         {
             get => _unidadeMedida;
@@ -125,10 +78,6 @@ namespace ReGraphik.ViewModels
         }
 
         private DateTime _data = DateTime.Now;
-
-        /// <summary>
-        /// Data de cadastro do resíduo.
-        /// </summary>
         public DateTime Data
         {
             get => _data;
@@ -136,10 +85,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string? _condicao;
-
-        /// <summary>
-        /// Condição física do material.
-        /// </summary>
         public string? Condicao
         {
             get => _condicao;
@@ -147,10 +92,6 @@ namespace ReGraphik.ViewModels
         }
 
         private double _comprimento;
-
-        /// <summary>
-        /// Comprimento do resíduo em centímetros.
-        /// </summary>
         public double Comprimento
         {
             get => _comprimento;
@@ -158,10 +99,6 @@ namespace ReGraphik.ViewModels
         }
 
         private double _largura;
-
-        /// <summary>
-        /// Largura do resíduo em centímetros.
-        /// </summary>
         public double Largura
         {
             get => _largura;
@@ -169,10 +106,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string _observacoes = string.Empty;
-
-        /// <summary>
-        /// Observações adicionais sobre o resíduo.
-        /// </summary>
         public string Observacoes
         {
             get => _observacoes;
@@ -180,10 +113,6 @@ namespace ReGraphik.ViewModels
         }
 
         private string? _status;
-
-        /// <summary>
-        /// Status atual do resíduo.
-        /// </summary>
         public string? Status
         {
             get => _status;
@@ -191,16 +120,11 @@ namespace ReGraphik.ViewModels
         }
 
         private string _nomeArquivo = "Nenhum arquivo selecionado";
-        /// <summary>Nome amigável do arquivo de imagem selecionado.</summary>
         public string NomeArquivo
         {
             get => _nomeArquivo;
             set { _nomeArquivo = value; OnPropertyChanged(); }
         }
-
-        /// <summary>
-        /// Mensagens de validação para cada campo do formulário, exibidas abaixo dos respectivos controles.
-        /// </summary>
 
         private string _mensaTipoMaterial = string.Empty;
         public string MensaTipoMaterial
@@ -252,37 +176,36 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Comandos associados aos botões da tela: Salvar, Limpar e Selecionar Arquivo.    
+        /// Comandos vinculados aos botões da interface, responsáveis por salvar o 
+        /// resíduo, limpar os campos e selecionar um arquivo para anexar.
         /// </summary>
-
         public ICommand SalvarResiduoCommand { get; }
         public ICommand LimparCommand { get; }
         public ICommand SelecionarArquivoCommand { get; }
 
         /// <summary>
-        /// Inicializa o ViewModel: carrega as listas dos ComboBoxes do appsettings.json
-        /// e registra os comandos.
+        /// Inicializa uma nova instância do <see cref="ResiduoViewModel"/>, 
+        /// carregando as opções dos ComboBoxes a partir do arquivo de configuração e configurando os comandos da interface.
         /// </summary>
         public ResiduoViewModel()
         {
-            // Carrega listas dos ComboBoxes do arquivo de configuração — sem hard-code
             var dropdowns = AppSettings.Dropdowns;
-            TiposMaterial  = new ObservableCollection<string>(dropdowns.TiposMaterial);
+            TiposMaterial = new ObservableCollection<string>(dropdowns.TiposMaterial);
             Especificacoes = new ObservableCollection<string>(dropdowns.Especificacoes);
-            Origens        = new ObservableCollection<string>(dropdowns.Origens);
-            Condicoes      = new ObservableCollection<string>(dropdowns.Condicoes);
-            StatusOpcoes   = new ObservableCollection<string>(dropdowns.Status);
+            Origens = new ObservableCollection<string>(dropdowns.Origens);
+            Condicoes = new ObservableCollection<string>(dropdowns.Condicoes);
+            StatusOpcoes = new ObservableCollection<string>(dropdowns.Status);
             UnidadesMedida = new ObservableCollection<string>(dropdowns.UnidadesMedida);
 
-            SalvarResiduoCommand     = new RelayCommand(async () => await SalvarResiduoAsync());
+            SalvarResiduoCommand = new RelayCommand(async () => await SalvarResiduoAsync());
             SelecionarArquivoCommand = new RelayCommand(async () => await SelecionarArquivoAsync());
-            LimparCommand            = new RelayCommand(LimparCampos);
+            LimparCommand = new RelayCommand(LimparCampos);
         }
 
         /// <summary>
-        /// Valida os campos obrigatórios e persiste o resíduo no Firebase Realtime Database.
-        /// O ID do usuário logado é obtido via <see cref="UsuarioSessaoService"/>.
+        /// Valida os campos do formulário e, se todos estiverem corretos, cria um novo objeto <see cref="Residuo"/> e o salva no Firebase.
         /// </summary>
+        /// <returns></returns>
         private async Task SalvarResiduoAsync()
         {
             try
@@ -325,36 +248,32 @@ namespace ReGraphik.ViewModels
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 string base64Payload = string.Empty;
 
-                if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) &&
-                    File.Exists(_caminhoArquivoSelecionado))
+                if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
                 {
-                    byte[] fileBytes = await File.ReadAllBytesAsync(
-                        _caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
+                    byte[] fileBytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
                     base64Payload = Convert.ToBase64String(fileBytes);
                 }
 
                 var novoResiduo = new Residuo
                 {
-                    Id            = Guid.NewGuid().ToString(),
-                    //IdUsuario     = idUsuario,
-                    TipoResiduo   = TipoMaterial!,
+                    Id = Guid.NewGuid().ToString(),
+                    TipoResiduo = TipoMaterial!,
                     Especificacao = Especificacao,
-                    Origem        = Origem!,
-                    Projeto       = ProjetoOrigem,
-                    Quantidade    = Quantidade,
+                    Origem = Origem!,
+                    Projeto = ProjetoOrigem,
+                    Quantidade = Quantidade,
                     UnidadeMedida = UnidadeMedida,
-                    DataCadastro  = Data,
-                    Condicao      = Condicao ?? string.Empty,
-                    DimensoesCm   = Comprimento,
-                    DimensoesLm   = Largura,
-                    Observacao    = Observacoes,
-                    Anexo         = base64Payload,
-                    Status        = Status ?? string.Empty
+                    DataCadastro = Data,
+                    Condicao = Condicao ?? string.Empty,
+                    DimensoesCm = Comprimento,
+                    DimensoesLm = Largura,
+                    Observacao = Observacoes,
+                    Anexo = base64Payload,
+                    Status = Status ?? string.Empty
                 };
 
                 try
                 {
-                    /// URL do Firebase lida do AppSettings — sem hard-code
                     var firebase = new FirebaseClient(AppSettings.FirebaseDatabaseUrl);
 
                     await firebase
@@ -362,47 +281,44 @@ namespace ReGraphik.ViewModels
                         .Child(novoResiduo.Id)
                         .PutAsync(novoResiduo);
 
-                    MostrarMensagemSucesso();
+                    /// Exibe uma mensagem de sucesso na interface do usuário, garantindo que a chamada seja feita na thread correta.
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MensagemWindow.Exibir("Sucesso!", "O resíduo foi cadastrado com sucesso no sistema.", MensagemWindow.TipoMensagem.Sucesso);
+                    });
+
+                    LimparCampos();
                 }
                 catch (Exception ex)
                 {
-                    MensagemErroGeral = $"Erro ao salvar os dados no banco: {ex.Message}";
+                    /// Exibe uma mensagem de erro na interface do usuário, garantindo que a chamada seja feita na thread correta.
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MensagemWindow.Exibir("Erro no Banco", $"Erro ao salvar os dados no banco: {ex.Message}", MensagemWindow.TipoMensagem.Erro);
+                    });
                 }
             }
             catch (Exception ex)
             {
-                MensagemErroGeral = $"Erro inesperado: {ex.Message}";
+                /// Exibe uma mensagem de erro inesperado na interface do usuário, garantindo que a chamada seja feita na thread correta.
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro Inesperado", ex.Message, MensagemWindow.TipoMensagem.Erro);
+                });
             }
         }
 
         /// <summary>
-        /// Exibe a janela de confirmação de sucesso e limpa o formulário.
+        /// Abre um diálogo para o usuário selecionar um arquivo de imagem, valida o tamanho do
+        /// arquivo e atualiza as propriedades correspondentes no ViewModel.
         /// </summary>
-        private void MostrarMensagemSucesso()
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var msgWindow = new MensagemWindow
-                {
-                    ShowInTaskbar = false,
-                    Owner = Application.Current.MainWindow,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                msgWindow.ShowDialog();
-            });
-
-            LimparCampos();
-        }
-
-        /// <summary>
-        /// Abre o diálogo de seleção de imagem. Rejeita arquivos maiores que 2 MB.
-        /// </summary>
+        /// <returns></returns>
         private async Task SelecionarArquivoAsync()
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
                 Filter = "Imagens|*.jpg;*.jpeg;*.png;",
-                Title  = "Selecione um arquivo para anexar"
+                Title = "Selecione um arquivo para anexar"
             };
 
             if (openFileDialog.ShowDialog() == true)
@@ -411,11 +327,13 @@ namespace ReGraphik.ViewModels
 
                 if (fileInfo.Length > 2 * 1024 * 1024)
                 {
-                    MessageBox.Show(
-                        "Arquivos maiores que 2 MB não são suportados para envio direto via JSON.",
-                        "Arquivo muito grande",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MensagemWindow.Exibir(
+                            "Arquivo muito grande",
+                            "Arquivos maiores que 2 MB não são suportados para envio direto via JSON.",
+                            MensagemWindow.TipoMensagem.Aviso);
+                    });
                     return;
                 }
 
@@ -427,40 +345,40 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Redefine todos os campos do formulário para os valores iniciais.
+        /// Limpa todos os campos do formulário de cadastro de resíduos,
         /// </summary>
         private void LimparCampos()
         {
-            TipoMaterial   = null;
-            Especificacao  = string.Empty;
-            Origem         = null;
-            ProjetoOrigem  = string.Empty;
-            Quantidade     = 0;
-            UnidadeMedida  = "kg";
-            Data           = DateTime.Now;
-            Condicao       = null;
-            Comprimento    = 0;
-            Largura        = 0;
-            Observacoes    = string.Empty;
-            Status         = null;
-            NomeArquivo    = "Nenhum arquivo selecionado";
+            TipoMaterial = null;
+            Especificacao = string.Empty;
+            Origem = null;
+            ProjetoOrigem = string.Empty;
+            Quantidade = 0;
+            UnidadeMedida = "kg";
+            Data = DateTime.Now;
+            Condicao = null;
+            Comprimento = 0;
+            Largura = 0;
+            Observacoes = string.Empty;
+            Status = null;
+            NomeArquivo = "Nenhum arquivo selecionado";
             _caminhoArquivoSelecionado = string.Empty;
 
             LimparMensagens();
         }
 
         /// <summary>
-        /// Limpa todas as mensagens de validação e erro do formulário.
+        /// Limpa todas as mensagens de erro e alerta exibidas na tela.
         /// </summary>
         private void LimparMensagens()
         {
             MensaTipoMaterial = string.Empty;
-            MensaOrigem       = string.Empty;
-            MensaQuantidade   = string.Empty;
-            MensaComprimento  = string.Empty;
-            MensaLargura      = string.Empty;
+            MensaOrigem = string.Empty;
+            MensaQuantidade = string.Empty;
+            MensaComprimento = string.Empty;
+            MensaLargura = string.Empty;
             MensagemErroGeral = string.Empty;
-            MensagemAlerta    = string.Empty;
+            MensagemAlerta = string.Empty;
         }
     }
 }
