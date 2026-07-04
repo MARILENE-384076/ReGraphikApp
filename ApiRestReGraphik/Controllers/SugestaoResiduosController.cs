@@ -313,7 +313,8 @@ namespace ApiRestReGraphik.Controllers
         {
             return new SugestaoResiduoDto
             {
-                SugestaoTexto = sugestao.SugestaoTexto, 
+                Id = sugestao.Id,
+                SugestaoTexto = sugestao.SugestaoTexto,
                 DataAplicacao = sugestao.DataAplicacao
             };
         }

@@ -7,6 +7,8 @@ namespace ApiRestReGraphik.Models.DTOs
     /// </summary>
     public class PontosColetaDto
     {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; }
 
         [JsonPropertyName("nome_ponto")]
         public string NomePonto { get; set; } = string.Empty;

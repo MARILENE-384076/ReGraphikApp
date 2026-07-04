@@ -13,7 +13,6 @@ namespace ApiRestReGraphik.Services
         private readonly ILogger<ResiduoService> _logger;
         private readonly FirebaseClient _firebaseClient;
         private const string NodeName = "residuos";
-        private const string UsersNodeName = "usuarios";
 
         /// <summary>
         ///  Construtor da classe ResiduoService que recebe as dependências necessárias, para permitir o registro de informações e erros durante a execução dos métodos do serviço.
@@ -55,30 +54,27 @@ namespace ApiRestReGraphik.Services
                     .ToList();
 
                 return listaResiduos;
-
             }
             catch (FirebaseException ex)
             {
-                /// Captura erros específicos relacionados à comunicação com o Firebase, como falhas de conexão ou erros de autenticação
-                _logger.LogError(ex, "Falha de comunicação com o Firebase ao carregar dados do ReGraphik (Resíduos/Usuários).");
-                throw; 
+                /// Ajustado log para focar exclusivamente em Resíduos
+                _logger.LogError(ex, "Falha de comunicação com o Firebase ao carregar dados de Resíduos.");
+                throw;
             }
             catch (ArgumentException ex)
             {
-                /// Captura erros de argumento que podem ocorrer se os dados do Firebase 
-                _logger.LogError(ex, "Erro de consistência de dados ao tentar agrupar usuários por ID.");
-                throw new InvalidOperationException("Não foi possível processar a relação entre resíduos e usuários devido a dados inconsistentes.", ex);
+                _logger.LogError(ex, "Erro de consistência de dados ao tentar mapear resíduos.");
+                throw new InvalidOperationException("Não foi possível processar a lista de resíduos devido a dados inconsistentes.", ex);
             }
             catch (JsonException ex)
             {
-                /// Captura erros de desserialização que podem ocorrer se os dados armazenados no Firebase
-                _logger.LogError(ex, "Erro de desserialização: Estrutura do nó de Resíduos ou Usuários é incompatível.");
+                /// Ajustado log para focar exclusivamente em Resíduos
+                _logger.LogError(ex, "Erro de desserialização: Estrutura do nó de Resíduos é incompatível.");
                 throw new InvalidOperationException("Os dados armazenados no Firebase possuem um formato inválido.", ex);
             }
             catch (Exception ex)
             {
-                /// Captura qualquer outro tipo de exceção não mapeada e registra um erro crítico
-                _logger.LogError(ex, "Erro crítico e não mapeado no serviço ReGraphik.");
+                _logger.LogError(ex, "Erro crítico e não mapeado no serviço de Resíduos.");
                 throw;
             }
         }

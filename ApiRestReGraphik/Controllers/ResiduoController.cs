@@ -350,6 +350,7 @@ namespace ApiRestReGraphik.Controllers
         /// </summary>
         private static ResiduoDto MapearParaDto(Residuo residuo) => new ResiduoDto
         {
+            Id = residuo.Id,
             TipoResiduo = residuo.TipoResiduo,
             Origem = residuo.Origem,
             Especificacao = residuo.Especificacao,

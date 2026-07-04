@@ -388,6 +388,7 @@ namespace ApiRestReGraphik.Controllers
         {
             return new UsuarioDto
             {
+                Id = usuario.Id,
                 Nome = usuario.Nome,
                 CPF = usuario.CPF,
                 Email = usuario.Email,
