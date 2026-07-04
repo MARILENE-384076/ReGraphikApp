@@ -7,7 +7,9 @@ namespace ApiRestReGraphik.Services
 {
     public class SugestaoService
     {
+        /// <summary>
         /// Logger para registrar informações e erros relacionados ao serviço ReGraphik
+        /// </summary>
         private readonly ILogger<SugestaoService> _logger;
         private readonly FirebaseClient _firebaseClient;
         private const string NodeName = "sugestoes";
