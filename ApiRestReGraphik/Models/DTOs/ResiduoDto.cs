@@ -10,37 +10,29 @@ namespace ApiRestReGraphik.Models.DTOs
     public class ResiduoDto
     {
         [JsonIgnore]
-        [JsonPropertyName("id_usuario")]
-        [ForeignKey("Usuario")]
-        public string? IdUsuario { get; set; }
-
-        /// <summary>
-        /// Propriedade de navegação para o usuário associado
-        /// </summary>
-        [JsonIgnore]
-        [ValidateNever]
-        public virtual Usuario? Usuario { get; set; }
+        [JsonPropertyName("id")]
+        public string? Id { get; set; }
 
         [JsonPropertyName("tipo_residuo")]
-        public string TipoResiduo { get; set; }
+        public string TipoResiduo { get; set; } = string.Empty;
 
         [JsonPropertyName("origem")]
-        public string Origem { get; set; }
+        public string Origem { get; set; } = string.Empty;
 
         [JsonPropertyName("especificacao")]
-        public string Especificacao { get; set; }
+        public string Especificacao { get; set; } = string.Empty;
 
         [JsonPropertyName("projeto")]
-        public string Projeto { get; set; }
+        public string Projeto { get; set; } = string.Empty;
 
         [JsonPropertyName("quantidade")]
-        public double Quantidade { get; set; }
+        public int Quantidade { get; set; }
 
         [JsonPropertyName("data_cadastro")]
         public DateTime DataCadastro { get; set; }
 
         [JsonPropertyName("condicao")]
-        public string Condicao { get; set; }
+        public string Condicao { get; set; } = string.Empty;
 
         [JsonPropertyName("dimensoes_cm")]
         public double? DimensoesCm { get; set; }
@@ -49,12 +41,23 @@ namespace ApiRestReGraphik.Models.DTOs
         public double? DimensoesLm { get; set; }
 
         [JsonPropertyName("observacao")]
-        public string Observacao { get; set; }
+        public string Observacao { get; set; } = string.Empty;
 
         [JsonPropertyName("anexo")]
         public string? Anexo { get; set; }
 
         [JsonPropertyName("status")]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Chave estrangeira para a sugestão de resíduo associada.
+        /// </summary>
+        [JsonPropertyName("fk_sugestao_residuo_id")]
+        [ForeignKey("SugestaoResiduo")]
+        public string? FkSugestaoResiduoId { get; set; }
+
+        [JsonIgnore]
+        [ValidateNever]
+        public virtual SugestaoResiduo? SugestaoResiduo { get; set; }
     }
 }

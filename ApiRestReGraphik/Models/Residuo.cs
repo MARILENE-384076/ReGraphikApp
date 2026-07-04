@@ -61,5 +61,4 @@ namespace ApiRestReGraphik.Models
         [ValidateNever]
         public virtual SugestaoResiduo? SugestaoResiduo { get; set; }
     }
-    }
 }
