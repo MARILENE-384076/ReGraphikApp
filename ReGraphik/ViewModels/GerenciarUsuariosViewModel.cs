@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using ReGraphik.Models;
 using ReGraphik.Services;
+using ReGraphik.Views;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Mail;
@@ -17,9 +18,16 @@ namespace ReGraphik.ViewModels
     public class GerenciarUsuariosViewModel : BaseViewModel
     {
         private readonly ConviteService _conviteService;
-        private readonly ChatService _chatService; // reutiliza ListarUsuariosAsync
+        private readonly ChatService _chatService; /// reutiliza ListarUsuariosAsync
 
-        // ── lista de usuários ─────────────────────────────────────────────
+        /// <summary>
+        /// Define o limite máximo de usuários cadastrados no sistema
+        /// </summary>
+        private const int LIMITE_MAXIMO_USUARIOS = 50;
+
+        /// <summary>
+        /// Lista de usuários cadastrados no sistema, exibida na interface.
+        /// </summary>
         private ObservableCollection<Usuario> _usuarios = [];
         public ObservableCollection<Usuario> Usuarios
         {
@@ -27,7 +35,9 @@ namespace ReGraphik.ViewModels
             set { _usuarios = value; OnPropertyChanged(); }
         }
 
-        // ── campo e-mail do convite ───────────────────────────────────────
+        /// <summary>
+        /// E-mail do novo usuário a ser convidado, preenchido pelo administrador na interface.
+        /// </summary>
         private string _emailConvite = string.Empty;
         public string EmailConvite
         {
@@ -35,18 +45,23 @@ namespace ReGraphik.ViewModels
             set { _emailConvite = value; OnPropertyChanged(); }
         }
 
-        private string _perfilSelecionado = "Usuário"; // Valor padrão
+        /// <summary>
+        /// Perfil do novo usuário a ser convidado, selecionado pelo administrador na interface.
+        /// </summary>
+        private string _perfilSelecionado = "Usuário"; 
         public string PerfilSelecionado
         {
             get => _perfilSelecionado;
             set
             {
                 _perfilSelecionado = value;
-                OnPropertyChanged(nameof(PerfilSelecionado)); // Ou SetProperty se usar CommunityToolkit
+                OnPropertyChanged(nameof(PerfilSelecionado)); 
             }
         }
 
-        // ── token gerado (exibido após gerar convite) ─────────────────────
+        /// <summary>
+        /// Token gerado (exibido após gerar convite)
+        /// </summary>
         private string _tokenGerado = string.Empty;
         public string TokenGerado
         {
@@ -60,7 +75,9 @@ namespace ReGraphik.ViewModels
         }
         public bool TokenGeradoVisivel => !string.IsNullOrEmpty(TokenGerado);
 
-        // ── estados de UI ─────────────────────────────────────────────────
+        /// <summary>
+        /// Estados de UI
+        /// </summary>
         private bool _carregando;
         public bool Carregando
         {
@@ -91,13 +108,17 @@ namespace ReGraphik.ViewModels
         }
         public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
 
-        // ── commands ──────────────────────────────────────────────────────
+        /// <summary>
+        /// Comandos para a interface
+        /// </summary>
         public ICommand CarregarUsuariosCommand { get; }
         public ICommand GerarConviteCommand { get; }
         public ICommand CopiarTokenCommand { get; }
         public ICommand LimparConviteCommand { get; }
 
-        // ── construtor ────────────────────────────────────────────────────
+        /// <summary>
+        /// Construtor da classe
+        /// </summary>
         public GerenciarUsuariosViewModel()
         {
             _conviteService = new ConviteService();
@@ -111,7 +132,10 @@ namespace ReGraphik.ViewModels
             _ = CarregarUsuariosAsync();
         }
 
-        // ── carregar lista de usuários ────────────────────────────────────
+        /// <summary>
+        /// Carregar lista de usuários
+        /// </summary>
+        /// <returns></returns>
         private async Task CarregarUsuariosAsync()
         {
             Carregando = true;
@@ -141,6 +165,20 @@ namespace ReGraphik.ViewModels
         private async Task GerarConviteAsync()
         {
             LimparMensagens();
+
+            /// Validação preventiva do limite de usuários antes de disparar o convite
+            if (Usuarios != null && Usuarios.Count >= LIMITE_MAXIMO_USUARIOS)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Limite Atingido",
+                        $"O sistema atingiu o limite máximo de {LIMITE_MAXIMO_USUARIOS} usuários ativos permitidos nesta licença.",
+                        MensagemWindow.TipoMensagem.Aviso
+                    );
+                });
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(EmailConvite))
             {
@@ -173,8 +211,19 @@ namespace ReGraphik.ViewModels
                 TokenGerado = token;
 
                 /// Mensagem de sucesso atualizada informando que também foi enviado por e-mail
-                Mensagem = $"Convite gerado com sucesso para {EmailConvite.Trim()} e enviado por e-mail! " +
-                           $"O token também está disponível abaixo.";
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Convite Enviado!",
+                        $"Convite gerado com sucesso para {EmailConvite.Trim()} e enviado por e-mail.",
+                        MensagemWindow.TipoMensagem.Sucesso
+                    );
+                });
+
+                Mensagem = "Convite ativo. O token também está disponível abaixo.";
+
+                /// Força atualização da lista de usuários para garantir o contador local correto
+                _ = CarregarUsuariosAsync();
             }
             catch
             {

@@ -47,18 +47,22 @@ namespace ReGraphik.Models
 
         /// <summary>
         /// Iniciais do nome para exibição no avatar quando não há foto.
-        /// Retorna as iniciais das duas primeiras palavras do nome (ex: "Bruno Maia" → "BM").
+        /// Retorna as iniciais das duas primeiras palavras do nome (ex: "Bruno Maia Silva" → "BM").
         /// </summary>
         public string Iniciais
         {
             get
             {
                 if (string.IsNullOrWhiteSpace(Nome)) return "?";
-                var partes = Nome.Trim().Split(' ',
-                    StringSplitOptions.RemoveEmptyEntries);
-                if (partes.Length == 1)
-                    return partes[0][0].ToString().ToUpper();
-                return $"{partes[0][0]}{partes[^1][0]}".ToUpper();
+
+                var partes = Nome.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                return partes.Length switch
+                {
+                    0 => "?",
+                    1 => partes[0][0].ToString().ToUpper(),
+                    _ => $"{partes[0][0]}{partes[1][0]}".ToUpper()
+                };
             }
         }
     }

@@ -18,6 +18,7 @@ namespace ReGraphik.Models
         /// <summary>
         /// Retorna o ID formatado e encurtado para exibição em cards (Ex: #10dcd90e).
         /// </summary>
+        /// 
         public string IdCard
         {
             get
