@@ -14,34 +14,52 @@ namespace ReGraphik.Converters
     /// </summary>
     public class StatusToColorConverter : IValueConverter
     {
+        /// <summary>
+        /// Converte o status do resíduo (string) em uma cor (SolidColorBrush) correspondente.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string? status = value as string;
 
-            // Define as cores para cada status usando códigos hexadecimais
+            /// Define as cores para cada status usando códigos hexadecimais
             string hexColor = status switch
             {
-                "Aguardando CADRI" => "#0d2a56",       // Azul Escuro
-                "Aguardando Triagem" => "#1649a2",     // Azul Médio
-                "Disponível" => "#64748B",             // Cinza
-                "Disponível para Coleta" => "#3274ba",  // Azul Claro
-                "Liberado para Venda" => "#2f80ec",    // Azul Muito Claro
-                _ => "#64748B"                         // Cor padrão (Cinza)
+                "Disponível" => "#64748B",     /// CinzaColor
+                "Reservado" => "#3274ba",      /// AzulClaroColor
+                "Em Análise" => "#1649a2",     /// AzulMedioColor
+                "Coletado" => "#0d2a56",       /// AzulEscuroColor
+                "Indisponível" => "#475569",   /// CinzaEscuroColor
+                _ => "#64748B"                 /// CinzaColor (Padrão)
             };
 
-            // Se o parâmetro for "Foreground", retornamos a cor apropriada para o texto, garantindo contraste com o fundo.
+            /// Se o parâmetro for "Foreground", retornamos a cor apropriada para o texto, garantindo contraste com o fundo.
             if (parameter as string == "Foreground")
             {
-                // Para os status que indicam que o resíduo está em um estado ativo ou disponível, usamos branco para garantir
-                // contraste. Para os outros, usamos uma cor escura.
-                return (status == "Aguardando CADRI" || status == "Aguardando Triagem" || status == "Disponível para Coleta" || status == "Liberado para Venda" || status == "Disponível")
+                /// Retorna Branco para status com fundos mais escuros (Azuis e Cinza Escuro) 
+                /// para garantir a legibilidade (Contraste Acessível)
+                return (status == "Reservado" || status == "Em Análise" || status == "Coletado" || status == "Indisponível")
                     ? Brushes.White
-                    : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B"));
+                    : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B")); /// TextoPadraoColor para o "Disponível" (Cinza claro/médio)
             }
 
             return new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor));
         }
 
+        /// <summary>
+        /// Implementação do método ConvertBack não é necessária para este conversor, pois ele é usado apenas para 
+        /// converter o status em uma cor. Portanto, lançamos uma exceção NotImplementedException.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter"></param>
+        /// <param name="culture"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

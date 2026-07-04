@@ -131,7 +131,11 @@ namespace ReGraphik.Services
             },
             Status = new List<string>
             {
-                "Disponível", "Reservado", "Em análise", "Descartado"
+                "Disponível",     
+                "Reservado",       
+                "Em Análise",      
+                "Coletado",        
+                "Indisponível"     
             },
             UnidadesMedida = new List<string>
             {

@@ -20,33 +20,49 @@ namespace ReGraphik.ViewModels
     /// </summary>
     public class ResiduoViewModel : BaseViewModel
     {
-        // ─── Infraestrutura ────────────────────────────────────────────────────────
+        /// <summary>
+        /// Caminho completo do arquivo de imagem selecionado pelo usuário para anexar ao resíduo.
+        /// </summary>
         private string _caminhoArquivoSelecionado = string.Empty;
 
-        // ─── Listas para ComboBoxes (carregadas do appsettings.json) ─────────────
-
-        /// <summary>Tipos de material disponíveis no formulário.</summary>
+        /// <summary>
+        /// Tipos de material disponíveis no formulário.
+        /// </summary>
         public ObservableCollection<string> TiposMaterial { get; }
 
-        /// <summary>Especificações técnicas disponíveis no formulário.</summary>
+        /// <summary>
+        /// Especificações técnicas disponíveis no formulário.
+        /// </summary>
         public ObservableCollection<string> Especificacoes { get; }
 
-        /// <summary>Origens possíveis do resíduo no formulário.</summary>
+        /// <summary>
+        /// Origens possíveis do resíduo no formulário.
+        /// </summary>
         public ObservableCollection<string> Origens { get; }
 
-        /// <summary>Condições físicas do material disponíveis no formulário.</summary>
+        /// <summary>
+        /// Condições físicas do material disponíveis no formulário.
+        /// </summary>
         public ObservableCollection<string> Condicoes { get; }
 
-        /// <summary>Status possíveis para o resíduo no formulário.</summary>
+        /// <summary>
+        /// Status possíveis para o resíduo no formulário.
+        /// </summary>
         public ObservableCollection<string> StatusOpcoes { get; }
 
-        /// <summary>Unidades de medida disponíveis para o campo Quantidade.</summary>
+        /// <summary>
+        /// Unidades de medida disponíveis para o campo Quantidade.
+        /// </summary>
         public ObservableCollection<string> UnidadesMedida { get; }
 
-        // ─── Campos do formulário ─────────────────────────────────────────────────
-
+        /// <summary>
+        /// Campos do formulário
+        /// </summary>
         private string? _tipoMaterial;
-        /// <summary>Tipo de material selecionado pelo usuário.</summary>
+
+        /// <summary>
+        /// Tipo de material selecionado pelo usuário.
+        /// </summary>
         public string? TipoMaterial
         {
             get => _tipoMaterial;
@@ -54,7 +70,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string _especificacao = string.Empty;
-        /// <summary>Especificação técnica do material.</summary>
+
+        /// <summary>
+        /// Especificação técnica do material.
+        /// </summary>
         public string Especificacao
         {
             get => _especificacao;
@@ -62,7 +81,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string? _origem;
-        /// <summary>Origem do resíduo dentro do processo produtivo.</summary>
+
+        /// <summary>
+        /// Origem do resíduo dentro do processo produtivo.
+        /// </summary>
         public string? Origem
         {
             get => _origem;
@@ -70,7 +92,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string _projetoOrigem = string.Empty;
-        /// <summary>Nome do projeto de onde o resíduo originou.</summary>
+
+        /// <summary>
+        /// Nome do projeto de onde o resíduo originou.
+        /// </summary>
         public string ProjetoOrigem
         {
             get => _projetoOrigem;
@@ -78,7 +103,10 @@ namespace ReGraphik.ViewModels
         }
 
         private double _quantidade;
-        /// <summary>Quantidade numérica do resíduo.</summary>
+
+        /// <summary>
+        /// Quantidade numérica do resíduo.
+        /// </summary>
         public double Quantidade
         {
             get => _quantidade;
@@ -86,7 +114,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string _unidadeMedida = "kg";
-        /// <summary>Unidade de medida da quantidade (ex: kg, g, ton).</summary>
+
+        /// <summary>
+        /// Unidade de medida da quantidade (ex: kg, g, ton).
+        /// </summary>
         public string UnidadeMedida
         {
             get => _unidadeMedida;
@@ -94,7 +125,10 @@ namespace ReGraphik.ViewModels
         }
 
         private DateTime _data = DateTime.Now;
-        /// <summary>Data de cadastro do resíduo.</summary>
+
+        /// <summary>
+        /// Data de cadastro do resíduo.
+        /// </summary>
         public DateTime Data
         {
             get => _data;
@@ -102,7 +136,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string? _condicao;
-        /// <summary>Condição física do material.</summary>
+
+        /// <summary>
+        /// Condição física do material.
+        /// </summary>
         public string? Condicao
         {
             get => _condicao;
@@ -110,7 +147,10 @@ namespace ReGraphik.ViewModels
         }
 
         private double _comprimento;
-        /// <summary>Comprimento do resíduo em centímetros.</summary>
+
+        /// <summary>
+        /// Comprimento do resíduo em centímetros.
+        /// </summary>
         public double Comprimento
         {
             get => _comprimento;
@@ -118,7 +158,10 @@ namespace ReGraphik.ViewModels
         }
 
         private double _largura;
-        /// <summary>Largura do resíduo em centímetros.</summary>
+
+        /// <summary>
+        /// Largura do resíduo em centímetros.
+        /// </summary>
         public double Largura
         {
             get => _largura;
@@ -126,7 +169,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string _observacoes = string.Empty;
-        /// <summary>Observações adicionais sobre o resíduo.</summary>
+
+        /// <summary>
+        /// Observações adicionais sobre o resíduo.
+        /// </summary>
         public string Observacoes
         {
             get => _observacoes;
@@ -134,7 +180,10 @@ namespace ReGraphik.ViewModels
         }
 
         private string? _status;
-        /// <summary>Status atual do resíduo.</summary>
+
+        /// <summary>
+        /// Status atual do resíduo.
+        /// </summary>
         public string? Status
         {
             get => _status;
@@ -149,7 +198,9 @@ namespace ReGraphik.ViewModels
             set { _nomeArquivo = value; OnPropertyChanged(); }
         }
 
-        // ─── Mensagens de validação ───────────────────────────────────────────────
+        /// <summary>
+        /// Mensagens de validação para cada campo do formulário, exibidas abaixo dos respectivos controles.
+        /// </summary>
 
         private string _mensaTipoMaterial = string.Empty;
         public string MensaTipoMaterial
@@ -200,13 +251,13 @@ namespace ReGraphik.ViewModels
             set { _mensagemAlerta = value; OnPropertyChanged(); }
         }
 
-        // ─── Comandos ─────────────────────────────────────────────────────────────
+        /// <summary>
+        /// Comandos associados aos botões da tela: Salvar, Limpar e Selecionar Arquivo.    
+        /// </summary>
 
         public ICommand SalvarResiduoCommand { get; }
         public ICommand LimparCommand { get; }
         public ICommand SelecionarArquivoCommand { get; }
-
-        // ─── Construtor ───────────────────────────────────────────────────────────
 
         /// <summary>
         /// Inicializa o ViewModel: carrega as listas dos ComboBoxes do appsettings.json
@@ -227,8 +278,6 @@ namespace ReGraphik.ViewModels
             SelecionarArquivoCommand = new RelayCommand(async () => await SelecionarArquivoAsync());
             LimparCommand            = new RelayCommand(LimparCampos);
         }
-
-        // ─── Lógica de salvamento ─────────────────────────────────────────────────
 
         /// <summary>
         /// Valida os campos obrigatórios e persiste o resíduo no Firebase Realtime Database.
@@ -305,7 +354,7 @@ namespace ReGraphik.ViewModels
 
                 try
                 {
-                    // URL do Firebase lida do AppSettings — sem hard-code
+                    /// URL do Firebase lida do AppSettings — sem hard-code
                     var firebase = new FirebaseClient(AppSettings.FirebaseDatabaseUrl);
 
                     await firebase
@@ -326,9 +375,9 @@ namespace ReGraphik.ViewModels
             }
         }
 
-        // ─── Helpers ──────────────────────────────────────────────────────────────
-
-        /// <summary>Exibe a janela de confirmação de sucesso e limpa o formulário.</summary>
+        /// <summary>
+        /// Exibe a janela de confirmação de sucesso e limpa o formulário.
+        /// </summary>
         private void MostrarMensagemSucesso()
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -345,7 +394,9 @@ namespace ReGraphik.ViewModels
             LimparCampos();
         }
 
-        /// <summary>Abre o diálogo de seleção de imagem. Rejeita arquivos maiores que 2 MB.</summary>
+        /// <summary>
+        /// Abre o diálogo de seleção de imagem. Rejeita arquivos maiores que 2 MB.
+        /// </summary>
         private async Task SelecionarArquivoAsync()
         {
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
@@ -375,7 +426,9 @@ namespace ReGraphik.ViewModels
             await Task.CompletedTask;
         }
 
-        /// <summary>Redefine todos os campos do formulário para os valores iniciais.</summary>
+        /// <summary>
+        /// Redefine todos os campos do formulário para os valores iniciais.
+        /// </summary>
         private void LimparCampos()
         {
             TipoMaterial   = null;
@@ -396,7 +449,9 @@ namespace ReGraphik.ViewModels
             LimparMensagens();
         }
 
-        /// <summary>Limpa todas as mensagens de validação e erro do formulário.</summary>
+        /// <summary>
+        /// Limpa todas as mensagens de validação e erro do formulário.
+        /// </summary>
         private void LimparMensagens()
         {
             MensaTipoMaterial = string.Empty;

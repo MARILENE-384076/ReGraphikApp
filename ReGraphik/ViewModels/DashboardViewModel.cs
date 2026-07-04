@@ -10,8 +10,16 @@ using System.Windows.Media.Imaging;
 
 namespace ReGraphik.ViewModels
 {
+    /// <summary>
+    /// ViewModel responsável por gerenciar os dados e a lógica do Dashboard da aplicação. Ele interage com a interface de 
+    /// usuário para exibir informações sobre resíduos, gráficos de status e contadores, além de fornecer 
+    /// comandos para atualizar os dados a partir da API.
+    /// </summary>
     public class DashboardViewModel : BaseViewModel
     {
+        /// <summary>
+        /// Referência para o serviço de resíduos, que é responsável por obter os dados da API relacionados aos resíduos.
+        /// </summary>
         private readonly IResiduoService _residuoService = new Services.ResiduoService();
 
         private string _nomeUsuario;
@@ -20,6 +28,10 @@ namespace ReGraphik.ViewModels
             get => _nomeUsuario;
             set { _nomeUsuario = value; OnPropertyChanged(); }
         }
+
+        /// <summary>
+        /// Obtém a imagem de perfil do usuário logado a partir do caminho armazenado no serviço de sessão.
+        /// </summary>
         public BitmapImage? FotoPerfil
         {
             get
@@ -101,11 +113,22 @@ namespace ReGraphik.ViewModels
             set { _ultimosResiduos = value; OnPropertyChanged(); }
         }
 
-
+        /// <summary>
+        /// Função de formatação para os valores do eixo Y do gráfico de barras, garantindo
+        /// que os números sejam exibidos com duas casas decimais e a unidade "kg".
+        /// </summary>
         public Func<double, string> FormatterTipos { get; set; } = value => value.ToString("N2") + " kg";
 
+        /// <summary>
+        /// Comando que aciona a atualização dos dados do dashboard, incluindo gráficos e contadores, a partir da API de resíduos.
+        /// </summary>
         public ICommand AtualizarDadosCommand { get; set; }
 
+        /// <summary>
+        /// Construtor do ViewModel do Dashboard, responsável por inicializar os gráficos, carregar os dados 
+        /// do usuário logado e configurar o comando de atualização de dados.
+        /// </summary>
+        /// <param name="usuarioLogado"></param>
         public DashboardViewModel(Usuario usuarioLogado)
         {
             /// Inicialização única e fixa dos Models de Gráfico
@@ -138,6 +161,10 @@ namespace ReGraphik.ViewModels
                 OnPropertyChanged(nameof(FotoPerfil));
         }
 
+        /// <summary>
+        /// Carrega os dados da API de resíduos, atualizando as propriedades vinculadas à tela e os gráficos.
+        /// </summary>
+        /// <returns></returns>
         private async Task CarregarDadosDaApiAsync()
         {
             try
@@ -189,20 +216,21 @@ namespace ReGraphik.ViewModels
 
                     var coresPaleta = new List<OxyColor>();
 
+                    /// Lógica de agrupamento e contagem de resíduos por status, garantindo 
+                    /// que cada status tenha uma cor distinta no gráfico de pizza.
                     foreach (var grupo in todosResiduos.GroupBy(r => r.Status))
                     {
                         string statusLabel = string.IsNullOrWhiteSpace(grupo.Key) ? "Não Informado" : grupo.Key;
 
                         OxyColor corFatia = statusLabel switch
                         {
-                            "Aguardando CADRI" => OxyColor.Parse("#0d2a56"),
-                            "Aguardando Triagem" => OxyColor.Parse("#1649a2"),
-                            "Disponível" => OxyColor.Parse("#64748B"),
-                            "Disponível para Coleta" => OxyColor.Parse("#3274ba"),
-                            "Liberado para Venda" => OxyColor.Parse("#2f80ec"),
-                            _ => OxyColor.Parse("#cbd5e1")
+                            "Disponível" => OxyColor.Parse("#64748B"),     /// CinzaColor
+                            "Reservado" => OxyColor.Parse("#3274ba"),      /// AzulClaroColor
+                            "Em Análise" => OxyColor.Parse("#1649a2"),     /// AzulMedioColor
+                            "Coletado" => OxyColor.Parse("#0d2a56"),       /// AzulEscuroColor
+                            "Indisponível" => OxyColor.Parse("#475569"),   /// CinzaEscuroColor
+                            _ => OxyColor.Parse("#CBD5E1")                 /// CinzaClaroColor (Fallback visual)
                         };
-
                         pieSeries.Slices.Add(new PieSlice(statusLabel, grupo.Count()));
                         coresPaleta.Add(corFatia);
                     }
@@ -229,6 +257,7 @@ namespace ReGraphik.ViewModels
                         BarWidth = 0.6
                     };
 
+                    /// Adiciona os valores de peso total para cada tipo de resíduo na série de barras
                     foreach (var item in tiposAgrupados)
                         barSeries.Items.Add(new BarItem((double)item.PesoTotal));
 
