@@ -245,15 +245,19 @@ namespace ReGraphik.ViewModels
 
                 if (possuiErro) return;
 
+                /// Cria um token de cancelamento com timeout de 60 segundos para operações assíncronas, 
+                /// garantindo que a leitura do arquivo não bloqueie indefinidamente.
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
                 string base64Payload = string.Empty;
 
+                /// Se um arquivo foi selecionado, lê o conteúdo do arquivo e converte para Base64.
                 if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
                 {
                     byte[] fileBytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
                     base64Payload = Convert.ToBase64String(fileBytes);
                 }
 
+                /// Cria um novo objeto Residuo com os dados do formulário.
                 var novoResiduo = new Residuo
                 {
                     Id = Guid.NewGuid().ToString(),
