@@ -100,7 +100,6 @@ namespace ReGraphik.ViewModels
 
             // Inicializa apenas os comandos pertencentes ao fluxo de Login
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
-            EsqueciSenhaCommand = new RelayCommand((param) => EsqueciSenha());
             RevelarSenhaCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
         }
 
@@ -189,16 +188,6 @@ namespace ReGraphik.ViewModels
             MensaLogin = string.Empty;
             MensaSenha = string.Empty;
             MensagemErroGeral = string.Empty;
-        }
-
-        private void EsqueciSenha()
-        {
-            RecuperarSenhaWindow recuperacaoTela = new RecuperarSenhaWindow
-            {
-                Owner = Application.Current.MainWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
-            recuperacaoTela.ShowDialog();
         }
 
         private void AlternarVisibilidadeSenha(object parameter)
