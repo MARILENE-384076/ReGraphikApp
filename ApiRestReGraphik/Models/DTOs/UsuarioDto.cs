@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace ApiRestReGraphik.Models.DTOs
 {
@@ -12,7 +10,7 @@ namespace ApiRestReGraphik.Models.DTOs
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
-        [JsonPropertyName("nome")]
+        [JsonPropertyName("name")]
         public string Nome { get; set; }
 
         [JsonPropertyName("cpf")]
@@ -38,16 +36,5 @@ namespace ApiRestReGraphik.Models.DTOs
 
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }
-
-        /// <summary>
-        /// Chave estrangeira para o resíduo associado ao usuário.
-        /// </summary>
-        [JsonPropertyName("fk_residuo_id")]
-        [ForeignKey("Residuo")]
-        public string? FkResiduoId { get; set; }
-
-        [JsonIgnore]
-        [ValidateNever]
-        public virtual Residuo? Residuo { get; set; }
     }
 }

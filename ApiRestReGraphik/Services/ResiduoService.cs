@@ -169,6 +169,7 @@ namespace ApiRestReGraphik.Services
         {
             try
             {
+                residuo.Anexo = null;
                 /// Garante que o ID do resíduo seja definido corretamente para a atualização
                 residuo.Id = id;
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -11,22 +10,33 @@ namespace ApiRestReGraphik.Models
     public class SugestaoResiduo
     {
         [JsonPropertyName("id")]
-        [JsonProperty("id")]
         public string? Id { get; set; }
 
-        // Fiel ao Diagrama: DataAplicacao está como VARCHAR
-        [JsonPropertyName("data_aplicacao")]
-        [JsonProperty("data_aplicacao")]
-        public DateTime? DataAplicacao { get; set; }
-
-        // Fiel ao Diagrama: Sugestao está como DATE
-        [JsonPropertyName("sugestao")]
-        [JsonProperty("sugestao")]
-        public string? Sugestao { get; set; }
-
-        // Mapeamento da FK para manter o vínculo com o Resíduo se necessário
         [JsonPropertyName("id_cadastro_residuo")]
-        [JsonProperty("id_cadastro_residuo")]
+        [ForeignKey("CadastroResiduo")]
         public string? IdCadastroResiduo { get; set; }
+
+        /// <summary>
+        /// Chamando a propriedade de navegação para o cadastro de resíduo associado
+        /// </summary>
+
+        [JsonIgnore]
+        [ValidateNever]
+        public virtual Residuo? CadastroResiduo { get; set; }
+
+        [JsonPropertyName("id_sugestao")]
+        [ForeignKey("Sugestao")]
+        public string? IdSugestao { get; set; }
+
+        /// <summary>
+        /// Chamando a propriedade de navegação para a sugestão associada
+        /// </summary>
+
+        [JsonIgnore]
+        [ValidateNever]
+        public virtual Sugestao? Sugestao { get; set; }
+
+        [JsonPropertyName("data_aplicacao")]
+        public DateTime? DataAplicacao { get; set; }
     }
 }

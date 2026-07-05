@@ -160,8 +160,7 @@ namespace ApiRestReGraphik.Controllers
                 {
                     Id = Guid.NewGuid().ToString(),
                     TipoResiduoAceito = dto.TipoResiduoAceito,
-                    DescricaoSugestao = dto.DescricaoSugestao,
-                    FkSugestaoResiduoId = dto.FkSugestaoResiduoId
+                    DescricaoSugestao = dto.DescricaoSugestao
                 };
 
                 await _sugestaoService.Criar(novaSugestao);
@@ -221,7 +220,6 @@ namespace ApiRestReGraphik.Controllers
 
                 existing.TipoResiduoAceito = dto.TipoResiduoAceito;
                 existing.DescricaoSugestao = dto.DescricaoSugestao;
-                existing.FkSugestaoResiduoId = dto.FkSugestaoResiduoId;
 
                 await _sugestaoService.Atualizar(id, existing);
                 return Ok($"Sugestão com ID {id} atualizada com sucesso.");
@@ -304,8 +302,7 @@ namespace ApiRestReGraphik.Controllers
             {
                 Id = sugestao.Id,
                 TipoResiduoAceito = sugestao.TipoResiduoAceito,
-                DescricaoSugestao = sugestao.DescricaoSugestao,
-                FkSugestaoResiduoId = sugestao.FkSugestaoResiduoId
+                DescricaoSugestao = sugestao.DescricaoSugestao
             };
         }
     }

@@ -72,10 +72,10 @@ namespace ReGraphik.Services
                                 NomePonto = item.TryGetProperty("name", out JsonElement nameElement) ? nameElement.GetString() : "Sem Nome",
                                 Cidade = cidade,
                                 Estado = "UF",
-                                Cep = "00000-000",
+                                CEP = "00000-000",
                                 ResiduosAceitos = material,
                                 Lat = 0.0,
-                                Long = 0.0
+                                Lng = 0.0
                             };
 
                             /// Isola a leitura de coordenadas geográficas
@@ -88,7 +88,7 @@ namespace ReGraphik.Services
                                         novoPonto.Lat = latElement.GetDouble();
 
                                     if (location.TryGetProperty("lng", out JsonElement lngElement))
-                                        novoPonto.Long = lngElement.GetDouble();
+                                        novoPonto.Lng = lngElement.GetDouble();
                                 }
                             }
                             catch (Exception jsonEx)

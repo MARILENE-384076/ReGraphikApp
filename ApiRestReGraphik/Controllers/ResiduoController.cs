@@ -197,8 +197,7 @@ namespace ApiRestReGraphik.Controllers
                 DimensoesLm = dto.DimensoesLm,
                 Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
                 Anexo = dto.Anexo,
-                Status = dto.Status,
-                FkSugestaoResiduoId = dto.FkSugestaoResiduoId
+                Status = dto.Status
             };
 
             var erros = InputSanitizationService.ValidarResiduo(novoResiduo);
@@ -276,7 +275,6 @@ namespace ApiRestReGraphik.Controllers
                 existing.Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000);
                 existing.Anexo = dto.Anexo;
                 existing.Status = dto.Status;
-                existing.FkSugestaoResiduoId = dto.FkSugestaoResiduoId;
 
                 await _residuoService.Atualizar(id, existing);
                 return Ok($"Resíduo com ID {id} atualizado com sucesso.");
@@ -367,9 +365,7 @@ namespace ApiRestReGraphik.Controllers
             DimensoesLm = residuo.DimensoesLm, 
             Observacao = residuo.Observacao,
             Anexo = residuo.Anexo,
-            Status = residuo.Status,
-            FkSugestaoResiduoId = residuo.FkSugestaoResiduoId,
-            SugestaoResiduo = residuo.SugestaoResiduo
+            Status = residuo.Status
         };
     }
 }

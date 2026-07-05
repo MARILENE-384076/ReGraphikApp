@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ReGraphik.Models
@@ -13,30 +12,16 @@ namespace ReGraphik.Models
     /// </summary>
     public class ConviteFirebase
     {
-        [JsonPropertyName("email")]
-        [JsonProperty("email")]
-        public string Email { get; set; } = string.Empty;
+        [JsonProperty("email")] 
+        public string Email { get; set; } = "";
 
-        /// <summary>
-        /// Data de expiração do convite.
-        /// </summary>
-        [JsonPropertyName("expira")]
         [JsonProperty("expira")]
-        public DateTime Expira { get; set; }
+        public string Expira { get; set; } = "";
 
-        [JsonPropertyName("usado")]
-        [JsonProperty("usado")]
+        [JsonProperty("usado")] 
         public bool Usado { get; set; }
 
-        [JsonPropertyName("perfil")]
         [JsonProperty("perfil")]
-        public string Perfil { get; set; } = string.Empty;
-
-        /// <summary>
-        ///  Validação de data expirada
-        /// </summary>
-        [System.Text.Json.Serialization.JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
-        public bool IsValido => !Usado && Expira > DateTime.Now;
+        public string Perfil { get; set; } = "";
     }
 }
