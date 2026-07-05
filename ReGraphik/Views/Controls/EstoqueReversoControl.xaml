@@ -18,7 +18,6 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
-            <converters:Base64ToImageConverter x:Key="Base64ToImageConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -239,7 +238,7 @@
                                         <RectangleGeometry Rect="0,0,370,150" RadiusX="12" RadiusY="12"/>
                                     </Grid.Clip>
 
-                                    <Image Source="{Binding Anexo, Converter={StaticResource Base64ToImageConverter}, TargetNullValue='pack://application:,,,/Assets/placeholder.png', FallbackValue='pack://application:,,,/Assets/placeholder.png'}" 
+                                    <Image Source="{Binding Anexo, TargetNullValue='pack://application:,,,/Assets/placeholder.png', FallbackValue='pack://application:,,,/Assets/placeholder.png'}" 
                            Stretch="UniformToFill"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
 
