@@ -34,6 +34,7 @@ namespace ReGraphik.ViewModels
         public ObservableCollection<string> Condicoes { get; }
         public ObservableCollection<string> StatusOpcoes { get; }
         public ObservableCollection<string> UnidadesMedida { get; }
+        public ObservableCollection<string> UnidadesDimensao { get; }
 
         /// <summary>
         /// Propriedades vinculadas aos campos do formulário de cadastro de resíduos.
@@ -66,8 +67,8 @@ namespace ReGraphik.ViewModels
             set { _projetoOrigem = value; OnPropertyChanged(); }
         }
 
-        private double _quantidade;
-        public double Quantidade
+        private double? _quantidade;
+        public double? Quantidade
         {
             get => _quantidade;
             set { _quantidade = value; OnPropertyChanged(); }
@@ -78,6 +79,13 @@ namespace ReGraphik.ViewModels
         {
             get => _unidadeMedida;
             set { _unidadeMedida = value; OnPropertyChanged(); }
+        }
+
+        private string _unidadeDimensao = "cm";
+        public string UnidadeDimensao
+        {
+            get => _unidadeDimensao;
+            set { _unidadeDimensao = value; OnPropertyChanged(); }
         }
 
         private DateTime _data = DateTime.Now;
@@ -94,15 +102,15 @@ namespace ReGraphik.ViewModels
             set { _condicao = value; OnPropertyChanged(); }
         }
 
-        private double _comprimento;
-        public double Comprimento
+        private double? _comprimento;
+        public double? Comprimento
         {
             get => _comprimento;
             set { _comprimento = value; OnPropertyChanged(); }
         }
 
-        private double _largura;
-        public double Largura
+        private double? _largura;
+        public double? Largura
         {
             get => _largura;
             set { _largura = value; OnPropertyChanged(); }
@@ -199,6 +207,7 @@ namespace ReGraphik.ViewModels
             Condicoes = new ObservableCollection<string>(dropdowns.Condicoes);
             StatusOpcoes = new ObservableCollection<string>(dropdowns.Status);
             UnidadesMedida = new ObservableCollection<string>(dropdowns.UnidadesMedida);
+            UnidadesDimensao = new ObservableCollection<string>(dropdowns.UnidadesDimensao);
 
             SalvarResiduoCommand = new RelayCommand(async () => await SalvarResiduoAsync());
             SelecionarArquivoCommand = new RelayCommand(async () => await SelecionarArquivoAsync());
@@ -345,12 +354,6 @@ namespace ReGraphik.ViewModels
                         });
                     }
 
-                    /// Exibe uma mensagem de sucesso na interface do usuário, garantindo que a chamada seja feita na thread correta.
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MensagemWindow.Exibir("Sucesso!", "O resíduo foi cadastrado com sucesso no sistema.", MensagemWindow.TipoMensagem.Sucesso);
-                    });
-
                     LimparCampos();
                 }
                 catch (Exception ex)
@@ -387,23 +390,17 @@ namespace ReGraphik.ViewModels
 
             if (openFileDialog.ShowDialog() == true)
             {
-                var fileInfo = new FileInfo(openFileDialog.FileName);
-
-                if (fileInfo.Length > 20 * 1024 * 1024)
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        MensagemWindow.Exibir(
-                            "Arquivo muito grande",
-                            "Selecione uma imagem com no máximo 20 MB.",
-                            MensagemWindow.TipoMensagem.Aviso);
-                    });
-
-                    return;
-                }
-
                 NomeArquivo = openFileDialog.SafeFileName;
                 _caminhoArquivoSelecionado = openFileDialog.FileName;
+
+                /// Mensagem informativa de limite/aviso após a seleção
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Arquivo Anexado",
+                        "O arquivo foi selecionado. Certifique-se de que ele esteja dentro dos limites aceitáveis do servidor para evitar falhas no envio.",
+                        MensagemWindow.TipoMensagem.Aviso);
+                });
             }
 
             await Task.CompletedTask;
@@ -420,6 +417,7 @@ namespace ReGraphik.ViewModels
             ProjetoOrigem = string.Empty;
             Quantidade = 0;
             UnidadeMedida = "kg";
+            UnidadeDimensao = "cm";
             Data = DateTime.Now;
             Condicao = null;
             Comprimento = 0;

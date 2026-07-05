@@ -4,6 +4,7 @@ using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace ApiRestReGraphik.Controllers
 {
@@ -13,16 +14,21 @@ namespace ApiRestReGraphik.Controllers
     {
         private readonly ResiduoService _residuoService;
         private readonly ILogger<ResiduoController> _logger;
+        private readonly IWebHostEnvironment _env;
+
+        private const string ImgBbApiKey = "68af9837d10d537215a04d7b1b60aa3c";
 
         /// <summary>
         /// Construtor da classe ResiduoController, que recebe um logger e um serviço de Residuo para ser utilizado nas ações do controlador.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros.</param>
         /// <param name="residuoService">Serviço de Residuo para operações relacionadas.</param>
-        public ResiduoController(ILogger<ResiduoController> logger, ResiduoService residuoService)
+        /// <param name="env"></param>
+        public ResiduoController(ILogger<ResiduoController> logger, ResiduoService residuoService, IWebHostEnvironment env)
         {
             _logger = logger;
             _residuoService = residuoService;
+            _env = env;
         }
 
 
@@ -126,7 +132,8 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Resíduo com ID {id} não encontrado.");
                 }
 
-                return Ok(MapearParaDto(result));
+                var dto = MapearParaDto(result);
+                return Ok(dto);
             }
             catch (HttpRequestException ex)
             {
@@ -168,7 +175,7 @@ namespace ApiRestReGraphik.Controllers
         /// um status 500 Internal Server Error em caso de falha.
         /// </remarks>
         /// 
-        /// <param name="residuo">Objeto do tipo Residuo a ser criado.</param>
+        /// <param name="dto">Objeto do tipo Residuo a ser criado.</param>
         /// 
         /// <response code="201">Resíduo criado com sucesso.</response>
         /// <response code="400">Requisição inválida, resíduo não fornecido ou dados incorretos.</response>
@@ -183,33 +190,44 @@ namespace ApiRestReGraphik.Controllers
         {
             try
             {
-                if (dto == null)
-                    return BadRequest("Resíduo inválido.");
+                string linkDaImagemWeb = "";
 
-                string caminhoImagem = "";
-
+                /// Se o usuário enviou uma imagem, transformamos ela em Link de Internet
                 if (dto.Imagem != null)
                 {
-                    var pasta = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "uploads");
+                    using var httpClient = new HttpClient();
+                    using var content = new MultipartFormDataContent();
 
-                    Directory.CreateDirectory(pasta);
+                    /// Converte a imagem recebida em bytes
+                    using var ms = new MemoryStream();
+                    await dto.Imagem.CopyToAsync(ms);
+                    var byteData = ms.ToArray();
 
-                    var nomeArquivo =
-                        $"{Guid.NewGuid()}{Path.GetExtension(dto.Imagem.FileName)}";
+                    content.Add(new ByteArrayContent(byteData, 0, byteData.Length), "image", dto.Imagem.FileName);
 
-                    var caminhoCompleto =
-                        Path.Combine(pasta, nomeArquivo);
+                    /// SUA CHAVE DA API DO IMGBB AQUI
+                    string apiKey = "68af9837d10d537215a04d7b1b60aa3c";
 
-                    using var stream = new FileStream(caminhoCompleto, FileMode.Create);
+                    var response = await httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={apiKey}", content);
 
-                    await dto.Imagem.CopyToAsync(stream);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var jsonString = await response.Content.ReadAsStringAsync();
+                        using var jsonDoc = JsonDocument.Parse(jsonString);
 
-                    caminhoImagem = $"uploads/{nomeArquivo}";
+                        /// Pega a URL direta da imagem criada pelo ImgBB
+                        linkDaImagemWeb = jsonDoc.RootElement
+                            .GetProperty("data")
+                            .GetProperty("url")
+                            .GetString();
+                    }
+                    else
+                    {
+                        throw new Exception("Falha ao transformar a imagem em link no servidor externo.");
+                    }
                 }
 
+                /// Criamos o objeto já com o LINK FINAL da internet
                 var novoResiduo = new Residuo
                 {
                     TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo),
@@ -222,25 +240,16 @@ namespace ApiRestReGraphik.Controllers
                     DimensoesCm = dto.DimensoesCm,
                     DimensoesLm = dto.DimensoesLm,
                     Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
-                    Anexo = caminhoImagem,
+                    Anexo = linkDaImagemWeb, // <-- Aqui vai o link puro da internet (ex: https://i.ibb.co/XYZ/foto.png)
                     Status = dto.Status
                 };
 
                 var erros = InputSanitizationService.ValidarResiduo(novoResiduo);
-                if (erros.Any())
-                    return BadRequest(new { mensagem = "Dados inválidos.", erros });
-
+                if (erros.Any()) return BadRequest(new { mensagem = "Dados inválidos.", erros });
 
                 await _residuoService.Criar(novoResiduo);
 
                 var dtoRetorno = MapearParaDto(novoResiduo);
-
-                /// Adiciona o caminho completo do anexo, se houver, para que o cliente possa acessar a imagem corretamente
-                if (!string.IsNullOrWhiteSpace(dtoRetorno.Anexo))
-                {
-                    dtoRetorno.Anexo =
-                        $"{Request.Scheme}://{Request.Host}/{dtoRetorno.Anexo}";
-                }
                 return CreatedAtAction(nameof(GetById), new { id = novoResiduo.Id }, dtoRetorno);
             }
             catch (ArgumentException ex)
@@ -266,7 +275,7 @@ namespace ApiRestReGraphik.Controllers
         /// um status 404 Not Found se o resíduo não for encontrado ou um status 500 Internal Server Error em caso de falha.</remarks>
         /// 
         /// <param name="id"></param>
-        /// <param name="residuo"></param>
+        /// <param name="dto"></param>
         /// 
         /// <response code="200">Resíduo atualizado com sucesso.</response>
         /// <response code="400">Requisição inválida, resíduo não fornecido ou dados incorretos.</response>
@@ -284,18 +293,24 @@ namespace ApiRestReGraphik.Controllers
             if (!InputSanitizationService.IdEhSeguro(id))
                 return BadRequest("ID inválido ou com caracteres não permitidos.");
 
+            if (dto == null)
+                return BadRequest("Dados de atualização inválidos.");
+
             try
             {
-                if (dto == null)
-                    return BadRequest("Dados de atualização inválidos.");
-
                 var existing = await _residuoService.ObterPorId(id);
                 if (existing == null)
                 {
                     return NotFound($"Resíduo com ID {id} não encontrado.");
                 }
 
-                /// Atualiza os campos do resíduo existente com os valores fornecidos no DTO, aplicando sanitização de entrada
+                // CORREÇÃO: Mantém o link da imagem atual, a menos que uma nova imagem seja enviada
+                string caminhoImagem = existing.Anexo;
+                if (dto.Imagem != null)
+                {
+                    caminhoImagem = await EnviarImagemParaImgBb(dto.Imagem);
+                }
+
                 existing.TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo);
                 existing.Origem = InputSanitizationService.SanitizarTexto(dto.Origem);
                 existing.Especificacao = InputSanitizationService.SanitizarTexto(dto.Especificacao);
@@ -305,11 +320,11 @@ namespace ApiRestReGraphik.Controllers
                 existing.DimensoesCm = dto.DimensoesCm;
                 existing.DimensoesLm = dto.DimensoesLm;
                 existing.Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000);
-                existing.Anexo = dto.Anexo;
+                existing.Anexo = caminhoImagem; // Grava a URL da web
                 existing.Status = dto.Status;
 
                 await _residuoService.Atualizar(id, existing);
-                return Ok($"Resíduo com ID {id} atualizado com sucesso.");
+                return Ok(new { mensagem = $"Resíduo com ID {id} atualizado com sucesso." });
             }
             catch (ArgumentException ex)
             {
@@ -399,5 +414,35 @@ namespace ApiRestReGraphik.Controllers
             Anexo = residuo.Anexo,
             Status = residuo.Status
         };
+
+        /// <summary>
+        /// Método auxiliar para isolar o envio de imagens ao ImgBB
+        /// </summary>
+        private async Task<string> EnviarImagemParaImgBb(IFormFile imagem)
+        {
+            using var httpClient = new HttpClient();
+            using var content = new MultipartFormDataContent();
+
+            using var ms = new MemoryStream();
+            await imagem.CopyToAsync(ms);
+            var byteData = ms.ToArray();
+
+            content.Add(new ByteArrayContent(byteData, 0, byteData.Length), "image", imagem.FileName);
+
+            var response = await httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={ImgBbApiKey}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                using var jsonDoc = JsonDocument.Parse(jsonString);
+
+                return jsonDoc.RootElement
+                    .GetProperty("data")
+                    .GetProperty("url")
+                    .GetString() ?? "";
+            }
+
+            throw new Exception("Falha ao transformar a imagem em link no servidor externo ImgBB.");
+        }
     }
 }
