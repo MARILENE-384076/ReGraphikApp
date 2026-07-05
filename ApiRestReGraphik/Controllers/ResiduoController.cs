@@ -179,36 +179,68 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] ResiduoDto dto)
+        public async Task<IActionResult> Post([FromForm] ResiduoDto dto)
         {
-            if (dto == null)
-                return BadRequest("Resíduo inválido.");
-
-            var novoResiduo = new Residuo
-            {
-                TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo),
-                Origem = InputSanitizationService.SanitizarTexto(dto.Origem),
-                Especificacao = InputSanitizationService.SanitizarTexto(dto.Especificacao),
-                Projeto = dto.Projeto,
-                Quantidade = dto.Quantidade,
-                DataCadastro = dto.DataCadastro == default ? DateTime.UtcNow : dto.DataCadastro,
-                Condicao = dto.Condicao,
-                DimensoesCm = dto.DimensoesCm,
-                DimensoesLm = dto.DimensoesLm,
-                Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
-                Anexo = dto.Anexo,
-                Status = dto.Status
-            };
-
-            var erros = InputSanitizationService.ValidarResiduo(novoResiduo);
-            if (erros.Any())
-                return BadRequest(new { mensagem = "Dados inválidos.", erros });
-
             try
             {
+                if (dto == null)
+                    return BadRequest("Resíduo inválido.");
+
+                string caminhoImagem = "";
+
+                if (dto.Imagem != null)
+                {
+                    var pasta = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "uploads");
+
+                    Directory.CreateDirectory(pasta);
+
+                    var nomeArquivo =
+                        $"{Guid.NewGuid()}{Path.GetExtension(dto.Imagem.FileName)}";
+
+                    var caminhoCompleto =
+                        Path.Combine(pasta, nomeArquivo);
+
+                    using var stream = new FileStream(caminhoCompleto, FileMode.Create);
+
+                    await dto.Imagem.CopyToAsync(stream);
+
+                    caminhoImagem = $"uploads/{nomeArquivo}";
+                }
+
+                var novoResiduo = new Residuo
+                {
+                    TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo),
+                    Origem = InputSanitizationService.SanitizarTexto(dto.Origem),
+                    Especificacao = InputSanitizationService.SanitizarTexto(dto.Especificacao),
+                    Projeto = dto.Projeto,
+                    Quantidade = dto.Quantidade,
+                    DataCadastro = dto.DataCadastro == default ? DateTime.UtcNow : dto.DataCadastro,
+                    Condicao = dto.Condicao,
+                    DimensoesCm = dto.DimensoesCm,
+                    DimensoesLm = dto.DimensoesLm,
+                    Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
+                    Anexo = caminhoImagem,
+                    Status = dto.Status
+                };
+
+                var erros = InputSanitizationService.ValidarResiduo(novoResiduo);
+                if (erros.Any())
+                    return BadRequest(new { mensagem = "Dados inválidos.", erros });
+
+
                 await _residuoService.Criar(novoResiduo);
 
                 var dtoRetorno = MapearParaDto(novoResiduo);
+
+                /// Adiciona o caminho completo do anexo, se houver, para que o cliente possa acessar a imagem corretamente
+                if (!string.IsNullOrWhiteSpace(dtoRetorno.Anexo))
+                {
+                    dtoRetorno.Anexo =
+                        $"{Request.Scheme}://{Request.Host}/{dtoRetorno.Anexo}";
+                }
                 return CreatedAtAction(nameof(GetById), new { id = novoResiduo.Id }, dtoRetorno);
             }
             catch (ArgumentException ex)
@@ -358,11 +390,11 @@ namespace ApiRestReGraphik.Controllers
             Origem = residuo.Origem,
             Especificacao = residuo.Especificacao,
             Projeto = residuo.Projeto,
-            Quantidade = residuo.Quantidade, 
+            Quantidade = residuo.Quantidade,
             DataCadastro = residuo.DataCadastro,
             Condicao = residuo.Condicao,
-            DimensoesCm = residuo.DimensoesCm, 
-            DimensoesLm = residuo.DimensoesLm, 
+            DimensoesCm = residuo.DimensoesCm,
+            DimensoesLm = residuo.DimensoesLm,
             Observacao = residuo.Observacao,
             Anexo = residuo.Anexo,
             Status = residuo.Status

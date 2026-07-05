@@ -6,10 +6,12 @@ using ReGraphik.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+
 
 namespace ReGraphik.ViewModels
 {
@@ -248,14 +250,7 @@ namespace ReGraphik.ViewModels
                 /// Cria um token de cancelamento com timeout de 60 segundos para operações assíncronas, 
                 /// garantindo que a leitura do arquivo não bloqueie indefinidamente.
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-                string base64Payload = string.Empty;
 
-                /// Se um arquivo foi selecionado, lê o conteúdo do arquivo e converte para Base64.
-                if (!string.IsNullOrEmpty(_caminhoArquivoSelecionado) && File.Exists(_caminhoArquivoSelecionado))
-                {
-                    byte[] fileBytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado, cts.Token).ConfigureAwait(false);
-                    base64Payload = Convert.ToBase64String(fileBytes);
-                }
 
                 /// Converte os valores de comprimento e largura para double?, tratando casos onde os campos podem estar vazios ou nulos.
                 double? comprimentoNullable = string.IsNullOrWhiteSpace(Comprimento.ToString())
@@ -266,32 +261,89 @@ namespace ReGraphik.ViewModels
                     ? null
                     : Convert.ToDouble(Largura);
 
-                /// Cria um novo objeto Residuo com os dados do formulário, garantindo que campos opcionais sejam tratados corretamente.
-                var novoResiduo = new Residuo
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    TipoResiduo = TipoMaterial!,
-                    Especificacao = Especificacao ?? string.Empty,
-                    Origem = Origem!,
-                    Projeto = ProjetoOrigem ?? string.Empty,
-                    Quantidade = Convert.ToInt32(Quantidade), 
-                    DataCadastro = Data,
-                    Condicao = Condicao ?? string.Empty,
-                    DimensoesCm = comprimentoNullable,
-                    DimensoesLm = larguraNullable,
-                    Observacao = Observacoes ?? string.Empty,
-                    Anexo = base64Payload,
-                    Status = Status ?? string.Empty
-                };
+                
 
                 try
                 {
-                    var firebase = new FirebaseClient(AppSettings.FirebaseDatabaseUrl);
+                    /// Cria uma instância de HttpClient para enviar a requisição POST para o endpoint da API.
+                    using var client = new HttpClient();
 
-                    await firebase
-                        .Child("residuos")
-                        .Child(novoResiduo.Id)
-                        .PutAsync(novoResiduo);
+                    /// Configura o cabeçalho da requisição para aceitar JSON.
+                    var form = new MultipartFormDataContent();
+
+                    /// Adiciona os campos do objeto Residuo ao formulário, garantindo que valores nulos sejam tratados como strings vazias.
+                    form.Add(new StringContent(TipoMaterial!), "TipoResiduo");
+                    form.Add(new StringContent(Especificacao), "Especificacao");
+                    form.Add(new StringContent(Origem!), "Origem");
+                    form.Add(new StringContent(ProjetoOrigem), "Projeto");
+                    form.Add(new StringContent(Quantidade.ToString()), "Quantidade");
+                    form.Add(new StringContent(Data.ToString("o")), "DataCadastro");
+                    form.Add(new StringContent(Condicao ?? ""), "Condicao");
+                    form.Add(new StringContent(Comprimento.ToString()), "DimensoesCm");
+                    form.Add(new StringContent(Largura.ToString()), "DimensoesLm");
+                    form.Add(new StringContent(Observacoes), "Observacao");
+                    form.Add(new StringContent(Status ?? ""), "Status");
+                    form.Add(new StringContent(UnidadeMedida), "UnidadeMedida");
+
+                    /// Se um arquivo foi selecionado, lê o conteúdo do arquivo e adiciona ao formulário como um anexo.
+                    if (File.Exists(_caminhoArquivoSelecionado))
+                    {
+                        var bytes = await File.ReadAllBytesAsync(_caminhoArquivoSelecionado);
+
+                        var imagem = new ByteArrayContent(bytes);
+
+                        string extensao = Path.GetExtension(_caminhoArquivoSelecionado).ToLower();
+
+                        /// Define o tipo MIME do arquivo com base na extensão, garantindo que a API receba o tipo correto.
+                        string tipo = extensao switch
+                        {
+                            ".png" => "image/png",
+                            ".jpg" => "image/jpeg",
+                            ".jpeg" => "image/jpeg",
+                            _ => "application/octet-stream"
+                        };
+
+                        /// Define o tipo de conteúdo do arquivo anexado com base na extensão do arquivo,
+                        /// garantindo que a API receba o tipo correto.
+                        imagem.Headers.ContentType =
+                            new System.Net.Http.Headers.MediaTypeHeaderValue(tipo);
+
+                        form.Add(
+                            imagem,
+                            "Imagem",
+                            Path.GetFileName(_caminhoArquivoSelecionado));
+                    }
+
+                    /// Envia a requisição POST para o endpoint da API, passando o formulário com os dados do resíduo.
+                    var response = await client.PostAsync(
+                        "https://webregraphik.runasp.net/api/Residuo",
+                        form);
+
+                    /// Verifica se a resposta da API indica sucesso e exibe uma mensagem apropriada na interface do usuário.
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MensagemWindow.Exibir(
+                                "Sucesso!",
+                                "O resíduo foi cadastrado com sucesso.",
+                                MensagemWindow.TipoMensagem.Sucesso);
+                        });
+
+                        LimparCampos();
+                    }
+                    else
+                    {
+                        var erro = await response.Content.ReadAsStringAsync();
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MensagemWindow.Exibir(
+                                "Erro",
+                                erro,
+                                MensagemWindow.TipoMensagem.Erro);
+                        });
+                    }
 
                     /// Exibe uma mensagem de sucesso na interface do usuário, garantindo que a chamada seja feita na thread correta.
                     Application.Current.Dispatcher.Invoke(() =>
@@ -337,15 +389,16 @@ namespace ReGraphik.ViewModels
             {
                 var fileInfo = new FileInfo(openFileDialog.FileName);
 
-                if (fileInfo.Length > 2 * 1024 * 1024)
+                if (fileInfo.Length > 20 * 1024 * 1024)
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         MensagemWindow.Exibir(
                             "Arquivo muito grande",
-                            "Arquivos maiores que 2 MB não são suportados para envio direto via JSON.",
+                            "Selecione uma imagem com no máximo 20 MB.",
                             MensagemWindow.TipoMensagem.Aviso);
                     });
+
                     return;
                 }
 

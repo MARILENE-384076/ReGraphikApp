@@ -58,6 +58,7 @@ app.UseSwaggerUI(c =>
 // mas deve ser configurado com mais restrição em ambientes de produção para garantir a segurança da aplicação.
 app.UseCors("PermitirTudo");
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllers();
 

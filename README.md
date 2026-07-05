@@ -459,11 +459,13 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo da tela de certificação ESG do sistema ReGraphik.
 
+<img width="1826" height="565" alt="image" src="https://github.com/user-attachments/assets/af5f47cb-f57b-44f3-8872-7082eeec0c8f" />
 
 ### Diagrama de Conta do Usuário:
 
 **Figura 1** - Diagrama de fluxo da tela de informações do usuário do sistema ReGraphik.
 
+<img width="1870" height="807" alt="image" src="https://github.com/user-attachments/assets/fd5d396f-a10e-4103-bd64-dc029232db13" />
 
 ### Diagrama de Chat:
 
