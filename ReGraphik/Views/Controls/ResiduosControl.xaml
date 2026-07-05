@@ -242,7 +242,7 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBox x:Name="TxtQuantidade" Text="{Binding Quantidade, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                        <TextBox x:Name="TxtQuantidade" Text="{Binding Quantidade, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}" Style="{StaticResource InputControlStyle}"/>
                                         <ComboBox Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}" BorderThickness="0,1,1,1"
                                                   ItemsSource="{Binding UnidadesMedida}"
                                                   SelectedValue="{Binding UnidadeMedida, Mode=TwoWay}"/>
@@ -263,12 +263,7 @@
                                         </TextBlock>
                                     </Grid>
                                     <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
-                                        <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
-                                                                    Width="14" 
-                                                                    Height="14" 
-                                                                    Margin="0,0,6,0" 
-                                                                    Foreground="DarkRed"
-                                                                    VerticalAlignment="Center">
+                                        <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="14" Height="14" Margin="0,0,6,0" Foreground="DarkRed" VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial.Style>
                                                 <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                                     <Setter Property="Visibility" Value="Visible"/>
@@ -283,16 +278,10 @@
                                                 </Style>
                                             </iconPacks:PackIconMaterial.Style>
                                         </iconPacks:PackIconMaterial>
-
-                                        <TextBlock x:Name="TxtMensaQuantidade" 
-                                                   Style="{StaticResource LabelStyle}" 
-                                                   Text="{Binding MensaQuantidade}" 
-                                                   Foreground="DarkRed" 
-                                                   VerticalAlignment="Center"
-                                                   Margin="0"/>
+                                        <TextBlock x:Name="TxtMensaQuantidade" Style="{StaticResource LabelStyle}" Text="{Binding MensaQuantidade}" Foreground="DarkRed" VerticalAlignment="Center" Margin="0"/>
                                     </StackPanel>
                                 </StackPanel>
-
+                                
                                 <!-- Data -->
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Style="{StaticResource FieldLabelStyle}">
@@ -370,7 +359,7 @@
                             <!-- Comprimento -->
                             <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,0,0,16">
                                 <Grid>
-                                    <TextBox x:Name="TxtComprimento" Text="{Binding Comprimento, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                    <TextBox x:Name="TxtComprimento" Text="{Binding Comprimento, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}" Style="{StaticResource InputControlStyle}"/>
                                     <TextBlock Text="Comprimento do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
@@ -388,12 +377,7 @@
                                     </TextBlock>
                                 </Grid>
                                 <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
-                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
-                                                                Width="14" 
-                                                                Height="14" 
-                                                                Margin="0,0,6,0" 
-                                                                Foreground="DarkRed"
-                                                                VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="14" Height="14" Margin="0,0,6,0" Foreground="DarkRed" VerticalAlignment="Center">
                                         <iconPacks:PackIconMaterial.Style>
                                             <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                                 <Setter Property="Visibility" Value="Visible"/>
@@ -408,13 +392,7 @@
                                             </Style>
                                         </iconPacks:PackIconMaterial.Style>
                                     </iconPacks:PackIconMaterial>
-
-                                    <TextBlock x:Name="TxtMensaComprimento" 
-                                               Style="{StaticResource LabelStyle}" 
-                                               Text="{Binding MensaComprimento}" 
-                                               Foreground="DarkRed" 
-                                               VerticalAlignment="Center"
-                                               Margin="0"/>
+                                    <TextBlock x:Name="TxtMensaComprimento" Style="{StaticResource LabelStyle}" Text="{Binding MensaComprimento}" Foreground="DarkRed" VerticalAlignment="Center" Margin="0"/>
                                 </StackPanel>
                             </StackPanel>
 
@@ -425,9 +403,8 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
                                     <Grid Grid.Column="0">
-                                        <TextBox x:Name="TxtLargura" Text="{Binding Largura, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
+                                        <TextBox x:Name="TxtLargura" Text="{Binding Largura, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}" Style="{StaticResource InputControlStyle}"/>
                                         <TextBlock Text="Largura do material" Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
@@ -444,18 +421,12 @@
                                             </TextBlock.Style>
                                         </TextBlock>
                                     </Grid>
-
-                                    <ComboBox x:Name="CboUnidadeMedida" Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}"
-                                              ItemsSource="{Binding UnidadesMedida}"
-                                              SelectedValue="{Binding UnidadeMedida, Mode=TwoWay, FallbackValue=cm}"/>
+                                    <ComboBox x:Name="CboUnidadeDimensao" Grid.Column="1" Width="60" Style="{StaticResource InputControlStyle}"
+                                              ItemsSource="{Binding UnidadesDimensao}"
+                                              SelectedValue="{Binding UnidadeDimensao, Mode=TwoWay}"/>
                                 </Grid>
                                 <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
-                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
-                                                                Width="14" 
-                                                                Height="14" 
-                                                                Margin="0,0,6,0" 
-                                                                Foreground="DarkRed"
-                                                                VerticalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" Width="14" Height="14" Margin="0,0,6,0" Foreground="DarkRed" VerticalAlignment="Center">
                                         <iconPacks:PackIconMaterial.Style>
                                             <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
                                                 <Setter Property="Visibility" Value="Visible"/>
@@ -470,13 +441,7 @@
                                             </Style>
                                         </iconPacks:PackIconMaterial.Style>
                                     </iconPacks:PackIconMaterial>
-
-                                    <TextBlock x:Name="TxtMensaLargura" 
-                                               Style="{StaticResource LabelStyle}" 
-                                               Text="{Binding MensaLargura}" 
-                                               Foreground="DarkRed" 
-                                               VerticalAlignment="Center"
-                                               Margin="0"/>
+                                    <TextBlock x:Name="TxtMensaLargura" Style="{StaticResource LabelStyle}" Text="{Binding MensaLargura}" Foreground="DarkRed" VerticalAlignment="Center" Margin="0"/>
                                 </StackPanel>
                             </StackPanel>
 

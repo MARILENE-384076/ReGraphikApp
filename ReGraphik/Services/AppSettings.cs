@@ -9,8 +9,6 @@ namespace ReGraphik.Services
     /// </summary>
     public static class AppSettings
     {
-        // ─── Caminhos e instância ─────────────────────────────────────────────────
-
         private static readonly string _caminhoArquivo =
             Path.Combine(AppContext.BaseDirectory, "appsettings.json");
 
@@ -21,12 +19,14 @@ namespace ReGraphik.Services
         /// </summary>
         private static ConfigModel Config => _config ??= Carregar();
 
-        // ─── Propriedades de acesso público ───────────────────────────────────────
-
-        /// <summary>URL base da API REST do ReGraphik (ex: https://webregraphik.runasp.net/api/).</summary>
+        /// <summary>
+        /// URL base da API REST do ReGraphik (ex: https://webregraphik.runasp.net/api/).
+        /// </summary>
         public static string UrlApi => Config.UrlApi;
 
-        /// <summary>URL do Firebase Realtime Database.</summary>
+        /// <summary>
+        /// URL do Firebase Realtime Database.
+        /// </summary>
         public static string FirebaseDatabaseUrl => Config.FirebaseDatabaseUrl;
 
         /// <summary>
@@ -34,8 +34,6 @@ namespace ReGraphik.Services
         /// evitando valores hard-coded no XAML.
         /// </summary>
         public static DropdownsConfig Dropdowns => Config.Dropdowns;
-
-        // ─── Carregamento ─────────────────────────────────────────────────────────
 
         /// <summary>
         /// Lê e desserializa o arquivo <c>appsettings.json</c>.
@@ -59,16 +57,18 @@ namespace ReGraphik.Services
             }
         }
 
-        // ─── Modelos de configuração ──────────────────────────────────────────────
-
-        /// <summary>Raiz do arquivo appsettings.json do cliente WPF.</summary>
+        /// <summary>
+        /// Raiz do arquivo appsettings.json do cliente WPF.
+        /// </summary>
         private class ConfigModel
         {
             public string UrlApi { get; set; } = "https://webregraphik.runasp.net/api/";
             public string FirebaseDatabaseUrl { get; set; } = "https://regraphikfirebase-default-rtdb.firebaseio.com/";
             public DropdownsConfig Dropdowns { get; set; } = new();
 
-            /// <summary>Valores padrão usados quando o arquivo não é encontrado ou está corrompido.</summary>
+            /// <summary>
+            /// Valores padrão usados quando o arquivo não é encontrado ou está corrompido.
+            /// </summary>
             public static ConfigModel Padrao() => new ConfigModel
             {
                 UrlApi = "https://webregraphik.runasp.net/api/",
@@ -84,28 +84,49 @@ namespace ReGraphik.Services
     /// </summary>
     public class DropdownsConfig
     {
-        /// <summary>Tipos de material aceitos no cadastro de resíduos.</summary>
+        /// <summary>
+        /// Tipos de material aceitos no cadastro de resíduos.
+        /// </summary>
         public List<string> TiposMaterial { get; set; } = new();
 
-        /// <summary>Especificações técnicas de acabamento/superfície do material.</summary>
+        /// <summary>
+        /// Especificações técnicas de acabamento/superfície do material.
+        /// </summary>
         public List<string> Especificacoes { get; set; } = new();
 
-        /// <summary>Origens possíveis do resíduo no processo produtivo.</summary>
+        /// <summary>
+        /// Origens possíveis do resíduo no processo produtivo.
+        /// </summary>
         public List<string> Origens { get; set; } = new();
 
-        /// <summary>Condições físicas em que o material pode se encontrar.</summary>
+        /// <summary>
+        /// Condições físicas em que o material pode se encontrar.
+        /// </summary>
         public List<string> Condicoes { get; set; } = new();
 
-        /// <summary>Status possíveis de um resíduo no estoque reverso.</summary>
+        /// <summary>
+        /// Status possíveis de um resíduo no estoque reverso.
+        /// </summary>
         public List<string> Status { get; set; } = new();
 
-        /// <summary>Unidades de medida disponíveis para a quantidade do resíduo.</summary>
+        /// <summary>
+        /// Unidades de medida disponíveis para a quantidade do resíduo.
+        /// </summary>
         public List<string> UnidadesMedida { get; set; } = new();
 
-        /// <summary>Perfis de usuário gerenciáveis pelo administrador.</summary>
+        /// <summary>
+        /// Unidades de medida disponíveis para o comprimento e largura (Dimensões).
+        /// </summary>
+        public List<string> UnidadesDimensao { get; set; } = new();
+
+        /// <summary>
+        /// Perfis de usuário gerenciáveis pelo administrador.
+        /// </summary>
         public List<string> Perfis { get; set; } = new();
 
-        /// <summary>Retorna listas com os valores padrão do domínio gráfico.</summary>
+        /// <summary>
+        /// Retorna listas com os valores padrão do domínio gráfico.
+        /// </summary>
         public static DropdownsConfig Padrao() => new DropdownsConfig
         {
             TiposMaterial = new List<string>
@@ -140,6 +161,10 @@ namespace ReGraphik.Services
             UnidadesMedida = new List<string>
             {
                 "kg", "g", "ton", "unid", "m²", "m"
+            },
+            UnidadesDimensao = new List<string> 
+            {
+                "cm", "m", "mm"
             },
             Perfis = new List<string>
             {
