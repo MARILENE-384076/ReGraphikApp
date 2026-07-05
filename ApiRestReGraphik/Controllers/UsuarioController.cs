@@ -187,8 +187,7 @@ namespace ApiRestReGraphik.Controllers
                     Perfil = string.IsNullOrWhiteSpace(dto.Perfil) ? "User" : dto.Perfil,
                     DataCadastro = DateTime.UtcNow,
                     FotoPerfil = dto.FotoPerfil,
-                    Ativo = true,
-                    FkResiduoId = dto.FkResiduoId
+                    Ativo = true
                 };
 
                 await _usuarioService.Criar(novoUsuario);
@@ -309,7 +308,6 @@ namespace ApiRestReGraphik.Controllers
                 existing.Perfil = dto.Perfil;
                 existing.FotoPerfil = dto.FotoPerfil;
                 existing.Ativo = dto.Ativo;
-                existing.FkResiduoId = dto.FkResiduoId;
 
                 await _usuarioService.Atualizar(id, existing);
                 return Ok($"Usuário com ID {id} atualizado com sucesso.");
@@ -397,9 +395,7 @@ namespace ApiRestReGraphik.Controllers
                 Perfil = usuario.Perfil,
                 DataCadastro = usuario.DataCadastro,
                 FotoPerfil = usuario.FotoPerfil,
-                Ativo = usuario.Ativo,
-                FkResiduoId = usuario.FkResiduoId,
-                Residuo = usuario.Residuo
+                Ativo = usuario.Ativo
             };
         }
     }

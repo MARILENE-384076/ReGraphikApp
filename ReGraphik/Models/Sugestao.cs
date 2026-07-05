@@ -1,6 +1,4 @@
-﻿using RestReGraphik.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace ReGraphik.Models
 {
@@ -17,15 +15,5 @@ namespace ReGraphik.Models
 
         [JsonPropertyName("descricao_sugestao")]
         public string DescricaoSugestao { get; set; }
-
-        /// <summary>
-        /// Chave estrangeira para a sugestão de resíduo associada.
-        /// </summary>
-        [JsonPropertyName("fk_sugestao_residuo_id")]
-        [ForeignKey("SugestaoResiduo")]
-        public string? FkSugestaoResiduoId { get; set; }
-
-        [JsonIgnore]
-        public virtual SugestaoResiduo? SugestaoResiduo { get; set; }
     }
 }

@@ -281,8 +281,7 @@ namespace ReGraphik.ViewModels
                     DimensoesLm = larguraNullable,
                     Observacao = Observacoes ?? string.Empty,
                     Anexo = base64Payload,
-                    Status = Status ?? string.Empty,
-                    FkSugestaoResiduoId = null 
+                    Status = Status ?? string.Empty
                 };
 
                 try

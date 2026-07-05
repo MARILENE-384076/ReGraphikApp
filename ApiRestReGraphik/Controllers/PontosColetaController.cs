@@ -244,10 +244,10 @@ namespace ApiRestReGraphik.Controllers
                     NomePonto = dto.NomePonto,
                     Cidade = dto.Cidade,
                     Estado = dto.Estado,
-                    Cep = dto.Cep,
+                    CEP = dto.CEP,
                     ResiduosAceitos = dto.ResiduosAceitos,
                     Lat = dto.Lat,
-                    Long = dto.Long
+                    Lng = dto.Lng
                 };
 
                 await _pontosColetaService.Criar(novoPonto);
@@ -310,10 +310,10 @@ namespace ApiRestReGraphik.Controllers
                 existing.NomePonto = dto.NomePonto;
                 existing.Cidade = dto.Cidade;
                 existing.Estado = dto.Estado;
-                existing.Cep = dto.Cep;
+                existing.CEP = dto.CEP;
                 existing.ResiduosAceitos = dto.ResiduosAceitos;
                 existing.Lat = dto.Lat;
-                existing.Long = dto.Long;
+                existing.Lng = dto.Lng;
 
                 await _pontosColetaService.Atualizar(id, existing);
                 return Ok($"Ponto de coleta com ID {id} atualizado com sucesso.");
@@ -395,10 +395,10 @@ namespace ApiRestReGraphik.Controllers
                 NomePonto = ponto.NomePonto,
                 Cidade = ponto.Cidade,
                 Estado = ponto.Estado,
-                Cep = ponto.Cep,
+                CEP = ponto.CEP,
                 ResiduosAceitos = ponto.ResiduosAceitos,
                 Lat = ponto.Lat,
-                Long = ponto.Long
+                Lng = ponto.Lng
             };
         }
     }

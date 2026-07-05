@@ -207,7 +207,7 @@ namespace ApiRestReGraphik.Services
 
                 /// Cria um HashSet para armazenar as coordenadas existentes, permitindo uma busca ultra rápida
                 var coordenadasExistentes = new HashSet<(double, double)>(
-                    pontosNoBanco.Select(p => (p.Lat, p.Long))
+                    pontosNoBanco.Select(p => (p.Lat, p.Lng))
                 );
 
                 /// Monta a URL de consulta para a API do Google Maps, utilizando o nome da cidade e a chave da API
@@ -260,10 +260,10 @@ namespace ApiRestReGraphik.Services
                         NomePonto     = nome,
                         Cidade        = cidade,
                         Estado          = _configuration["Sincronizacao:EstadoPadrao"] ?? "BR",
-                        Cep             = _configuration["Sincronizacao:CepPadrao"]    ?? "—",
+                        CEP               = _configuration["Sincronizacao:CepPadrao"]    ?? "—",
                         ResiduosAceitos = _configuration["Sincronizacao:ResiduosAceitos"] ?? "Reciclável",
                         Lat = lat,
-                        Long = lng
+                        Lng = lng
                     };
 
                     await Criar(novoPonto);

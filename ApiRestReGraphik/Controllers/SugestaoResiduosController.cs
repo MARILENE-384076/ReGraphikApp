@@ -160,16 +160,12 @@ namespace ApiRestReGraphik.Controllers
                     return BadRequest("Sugestão de resíduos inválida.");
                 }
 
-                if (string.IsNullOrWhiteSpace(dto.SugestaoTexto))
-                {
-                    return BadRequest("O campo 'sugestao' é obrigatório.");
-                }
 
                 /// Valida se a data de aplicação não é futura
                 var novaSugestao = new SugestaoResiduo
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Sugestao = dto.SugestaoTexto,
+                    Sugestao = dto.Sugestao,
                     DataAplicacao = dto.DataAplicacao ?? DateTime.UtcNow
                 };
 
@@ -234,7 +230,7 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Sugestão de resíduos com ID {id} não encontrada.");
                 }
 
-                existing.Sugestao = dto.SugestaoTexto;
+               
                 if (dto.DataAplicacao.HasValue) existing.DataAplicacao = dto.DataAplicacao;
 
                 await _sugestaoService.Atualizar(id, existing);
@@ -314,7 +310,7 @@ namespace ApiRestReGraphik.Controllers
             return new SugestaoResiduoDto
             {
                 Id = sugestao.Id,
-                SugestaoTexto = sugestao.Sugestao,
+                Sugestao = sugestao.Sugestao,
                 DataAplicacao = sugestao.DataAplicacao
             };
         }
