@@ -24,6 +24,7 @@ namespace ReGraphik.ViewModels
     {
         private string _caminhoArquivoSelecionado = string.Empty;
 
+
         /// <summary>
         /// Coleções de opções para os ComboBoxes, carregadas do arquivo de configuração <c>appsettings.json</c>.
         /// </summary>
@@ -275,7 +276,6 @@ namespace ReGraphik.ViewModels
                     form.Add(new StringContent(TipoMaterial!), "TipoResiduo");
                     form.Add(new StringContent(Especificacao), "Especificacao");
                     form.Add(new StringContent(Origem!), "Origem");
-                    form.Add(new StringContent(ProjetoOrigem), "Projeto");
                     form.Add(new StringContent(Quantidade.ToString()), "Quantidade");
                     form.Add(new StringContent(Data.ToString("o")), "DataCadastro");
                     form.Add(new StringContent(Condicao ?? ""), "Condicao");
