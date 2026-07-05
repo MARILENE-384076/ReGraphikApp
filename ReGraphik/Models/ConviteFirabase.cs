@@ -13,15 +13,15 @@ namespace ReGraphik.Models
     public class ConviteFirebase
     {
         [JsonProperty("email")] 
-        public string Email { get; set; } = "";
+        public string Email { get; set; } = string.Empty;
 
         [JsonProperty("expira")]
-        public string Expira { get; set; } = "";
+        public string Expira { get; set; } = string.Empty;
 
         [JsonProperty("usado")] 
         public bool Usado { get; set; }
 
         [JsonProperty("perfil")]
-        public string Perfil { get; set; } = "";
+        public string Perfil { get; set; } = string.Empty;
     }
 }

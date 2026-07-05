@@ -37,6 +37,6 @@ namespace ApiRestReGraphik.Models.DTOs
         public virtual Sugestao? Sugestao { get; set; }
 
         [JsonPropertyName("data_aplicacao")]
-        public DateTime? DataAplicacao { get; set; }
+        public DateTime? DataAplicacao { get; set; } = DateTime.MinValue;
     }
 }
