@@ -4,7 +4,9 @@ using OxyPlot.Series;
 using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
+using ReGraphik.Views;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
@@ -317,12 +319,18 @@ namespace ReGraphik.ViewModels
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("A API conectou, mas a lista de resíduos veio vazia.", "Aviso");
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MensagemWindow.Exibir("Aviso", $"A API conectou, mas a lista de resíduos veio vazia.", MensagemWindow.TipoMensagem.Aviso);
+                    });
                 }
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Falha de conexão: {ex.Message}", "Erro de Código");
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Código", $"Falha de conexão com a API", MensagemWindow.TipoMensagem.Erro);
+                });
             }
 
         }

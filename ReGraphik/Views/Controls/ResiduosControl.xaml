@@ -205,8 +205,18 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="TxtProjetoOrigem" Text="{Binding ProjetoOrigem, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource InputControlStyle}"/>
-                                    <TextBlock Text="Ex: Ambev / Projeto Verão"  Foreground="{DynamicResource TextoCinzaColor}" IsHitTestVisible="False" Margin="10,0,0,0" VerticalAlignment="Center">
+
+                                    <TextBox x:Name="TxtProjetoOrigem" 
+                                             Text="{Binding ProjetoOrigem, UpdateSourceTrigger=PropertyChanged}" 
+                                             Style="{StaticResource InputControlStyle}" 
+                                             Grid.Column="0"/>
+
+                                    <TextBlock Text="Ex: Ambev / Projeto Verão"  
+                                               Foreground="{DynamicResource TextoCinzaColor}" 
+                                               IsHitTestVisible="False" 
+                                               Margin="10,0,0,0" 
+                                               VerticalAlignment="Center"
+                                               Grid.Column="0">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>

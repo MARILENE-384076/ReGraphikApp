@@ -81,6 +81,8 @@ namespace ReGraphik.ViewModels
         public ICommand SugestaoCommand { get; }
         public ICommand ExportarCommand { get; }
 
+        public ICommand AbrirDetalhesCommand { get; }
+
         /// <summary>
         /// Inicializa uma nova instância do ViewModel, configurando a coleção filtrada e os comandos.
         /// </summary>
@@ -105,6 +107,8 @@ namespace ReGraphik.ViewModels
 
             /// Carrega os resíduos do Firebase Realtime Database de forma assíncrona
             _ = CarregarEstoqueDoBancoAsync();
+
+            AbrirDetalhesCommand = new RelayCommand((param) => AbrirDetalhes(param as Residuo));
         }
 
         /// <summary>
@@ -173,6 +177,27 @@ namespace ReGraphik.ViewModels
             }
 
             var tela = new SugestaoResiduoWindow(residuo);
+            tela.Owner = Application.Current.MainWindow;
+            tela.ShowDialog();
+        }
+
+        /// <summary>
+        /// Abre a janela de detalhes para o resíduo selecionado. Se o resíduo for nulo, exibe uma mensagem de aviso.
+        /// </summary>
+        /// <param name="residuo"></param>
+        private void AbrirDetalhes(Residuo? residuo)
+        {
+            if (residuo == null)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Aviso", "Não foi possível identificar o resíduo selecionado.", MensagemWindow.TipoMensagem.Aviso);
+                });
+                return;
+            }
+
+            // Altere 'DetalhesResiduoWindow' para o nome exato da sua Window/Tela de detalhes
+            var tela = new DetalhesResiduoWindow(residuo);
             tela.Owner = Application.Current.MainWindow;
             tela.ShowDialog();
         }
@@ -249,7 +274,7 @@ namespace ReGraphik.ViewModels
                 /// Exibe uma mensagem de erro ao usuário na thread da interface do usuário
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MensagemWindow.Exibir("Erro de Conexão", $"Não foi possível buscar os dados de estoque: {ex.Message}", MensagemWindow.TipoMensagem.Erro);
+                    MensagemWindow.Exibir("Erro de Conexão", $"Não foi possível buscar os dados de estoque!!", MensagemWindow.TipoMensagem.Erro);
                 });
             }
         }

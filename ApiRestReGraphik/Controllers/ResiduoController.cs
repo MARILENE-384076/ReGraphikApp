@@ -163,6 +163,8 @@ namespace ApiRestReGraphik.Controllers
         /// - Especificacao: Deve ser uma string não vazia. (ex: "Papel A4 usado", "Garrafas PET limpas", "Latas de alumínio amassadas", etc.)
         /// - Projeto: Deve ser uma string não vazia. (ex: "Projeto X", "Projeto Y", "Projeto Z", etc.)
         /// - Quantidade: Deve ser um número decimal positivo. (ex: 10.5, 20.0, 50.75, etc.)
+        /// - UnidadeMedida: Deve ser uma string não vazia. (ex: "kg", "g", "unid", etc.)
+        ///- UnidadeDimensao: Deve ser uma string não vazia. (ex: "cm", "mm", etc.)
         /// - DataCadastro: Deve ser uma data válida. (ex: "2024-06-01T12:00:00", "2024-07-15T09:30:00", etc.)
         /// - Condicao: Deve ser uma string não vazia. (ex: "Novo", "Usado", "Reciclado", etc.)
         /// - DimensoesCm: Deve ser um número decimal positivo. (ex: 30.0, 50.5, 100.75, etc.)
@@ -240,8 +242,10 @@ namespace ApiRestReGraphik.Controllers
                     DimensoesCm = dto.DimensoesCm,
                     DimensoesLm = dto.DimensoesLm,
                     Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
-                    Anexo = linkDaImagemWeb, // <-- Aqui vai o link puro da internet (ex: https://i.ibb.co/XYZ/foto.png)
-                    Status = dto.Status
+                    Anexo = linkDaImagemWeb, /// link puro da internet (ex: https://i.ibb.co/XYZ/foto.png)
+                    Status = dto.Status,
+                    UnidadeMedida = !string.IsNullOrWhiteSpace(dto.UnidadeMedida) ? dto.UnidadeMedida : "kg",
+                    UnidadeDimensao = !string.IsNullOrWhiteSpace(dto.UnidadeDimensao) ? dto.UnidadeDimensao : "cm"
                 };
 
                 var erros = InputSanitizationService.ValidarResiduo(novoResiduo);
@@ -288,7 +292,7 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] ResiduoDto dto)
+        public async Task<IActionResult> Put(string id, [FromForm] ResiduoDto dto)
         {
             if (!InputSanitizationService.IdEhSeguro(id))
                 return BadRequest("ID inválido ou com caracteres não permitidos.");
@@ -304,7 +308,6 @@ namespace ApiRestReGraphik.Controllers
                     return NotFound($"Resíduo com ID {id} não encontrado.");
                 }
 
-                // CORREÇÃO: Mantém o link da imagem atual, a menos que uma nova imagem seja enviada
                 string caminhoImagem = existing.Anexo;
                 if (dto.Imagem != null)
                 {
@@ -320,8 +323,10 @@ namespace ApiRestReGraphik.Controllers
                 existing.DimensoesCm = dto.DimensoesCm;
                 existing.DimensoesLm = dto.DimensoesLm;
                 existing.Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000);
-                existing.Anexo = caminhoImagem; // Grava a URL da web
+                existing.Anexo = caminhoImagem; /// Grava a URL da web
                 existing.Status = dto.Status;
+                existing.UnidadeDimensao = !string.IsNullOrWhiteSpace(dto.UnidadeDimensao) ? dto.UnidadeDimensao : "cm";
+                existing.UnidadeMedida = !string.IsNullOrWhiteSpace(dto.UnidadeMedida) ? dto.UnidadeMedida : "kg";
 
                 await _residuoService.Atualizar(id, existing);
                 return Ok(new { mensagem = $"Resíduo com ID {id} atualizado com sucesso." });
@@ -412,7 +417,9 @@ namespace ApiRestReGraphik.Controllers
             DimensoesLm = residuo.DimensoesLm,
             Observacao = residuo.Observacao,
             Anexo = residuo.Anexo,
-            Status = residuo.Status
+            Status = residuo.Status,
+            UnidadeMedida = !string.IsNullOrWhiteSpace(residuo.UnidadeMedida) ? residuo.UnidadeMedida : "kg",
+            UnidadeDimensao = !string.IsNullOrWhiteSpace(residuo.UnidadeDimensao) ? residuo.UnidadeDimensao : "cm"
         };
 
         /// <summary>

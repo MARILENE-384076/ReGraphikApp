@@ -5,6 +5,7 @@ using ReGraphik.Services;
 using ReGraphik.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -60,8 +61,8 @@ namespace ReGraphik.ViewModels
             set { _origem = value; OnPropertyChanged(); }
         }
 
-        private string _projetoOrigem = string.Empty;
-        public string ProjetoOrigem
+        private string? _projetoOrigem = null;
+        public string? ProjetoOrigem
         {
             get => _projetoOrigem;
             set { _projetoOrigem = value; OnPropertyChanged(); }
@@ -283,16 +284,18 @@ namespace ReGraphik.ViewModels
 
                     /// Adiciona os campos do objeto Residuo ao formulário, garantindo que valores nulos sejam tratados como strings vazias.
                     form.Add(new StringContent(TipoMaterial!), "TipoResiduo");
-                    form.Add(new StringContent(Especificacao), "Especificacao");
+                    form.Add(new StringContent(Especificacao ?? ""), "Especificacao");
                     form.Add(new StringContent(Origem!), "Origem");
-                    form.Add(new StringContent(Quantidade.ToString()), "Quantidade");
+                    form.Add(new StringContent(ProjetoOrigem ?? ""), "Projeto");
+                    form.Add(new StringContent(Quantidade.ToString() ?? "0"), "Quantidade");
                     form.Add(new StringContent(Data.ToString("o")), "DataCadastro");
                     form.Add(new StringContent(Condicao ?? ""), "Condicao");
-                    form.Add(new StringContent(Comprimento.ToString()), "DimensoesCm");
-                    form.Add(new StringContent(Largura.ToString()), "DimensoesLm");
-                    form.Add(new StringContent(Observacoes), "Observacao");
+                    form.Add(new StringContent(Comprimento.ToString() ?? "0"), "DimensoesCm");
+                    form.Add(new StringContent(Largura.ToString() ?? "0"), "DimensoesLm");
+                    form.Add(new StringContent(Observacoes ?? ""), "Observacao");
                     form.Add(new StringContent(Status ?? ""), "Status");
                     form.Add(new StringContent(UnidadeMedida), "UnidadeMedida");
+                    form.Add(new StringContent(UnidadeDimensao), "UnidadeDimensao");
 
                     /// Se um arquivo foi selecionado, lê o conteúdo do arquivo e adiciona ao formulário como um anexo.
                     if (File.Exists(_caminhoArquivoSelecionado))
@@ -414,14 +417,14 @@ namespace ReGraphik.ViewModels
             TipoMaterial = null;
             Especificacao = string.Empty;
             Origem = null;
-            ProjetoOrigem = string.Empty;
-            Quantidade = 0;
+            ProjetoOrigem = null;
+            Quantidade = null;
             UnidadeMedida = "kg";
             UnidadeDimensao = "cm";
             Data = DateTime.Now;
             Condicao = null;
-            Comprimento = 0;
-            Largura = 0;
+            Comprimento = null;
+            Largura = null;
             Observacoes = string.Empty;
             Status = null;
             NomeArquivo = "Nenhum arquivo selecionado";

@@ -42,9 +42,9 @@ namespace ReGraphik.Converters
             {
                 /// Retorna Branco para status com fundos mais escuros (Azuis e Cinza Escuro) 
                 /// para garantir a legibilidade (Contraste Acessível)
-                return (status == "Reservado" || status == "Em Análise" || status == "Coletado" || status == "Indisponível")
+                return (status == "Reservado" || status == "Em Análise" || status == "Coletado" || status == "Indisponível" || status == "disponível")
                     ? Brushes.White
-                    : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B")); /// TextoPadraoColor para o "Disponível" (Cinza claro/médio)
+                    : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B"));
             }
 
             return new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor));
