@@ -41,6 +41,7 @@
 - [Conceitos Técnicos Implementados](#conceitos-técnicos-implementados)
 - [Status dos Workflows de Status do Resíduo](#status-dos-workflows-de-status-do-resíduo)
 - [Como Executar o Projeto](#como-executar-o-projeto)
+- [Tela do Sistema](#Tela-Sistema)
 - [Documentação Complementar](#documentação-complementar)
 - [Integrantes](#integrantes)
 
@@ -1623,7 +1624,7 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 
 ---
 
-### Telas do Sistema
+### Telas Sistema
 
 **Login**
 
