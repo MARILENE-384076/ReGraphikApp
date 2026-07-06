@@ -6,11 +6,14 @@
         xmlns:local="clr-namespace:ReGraphik.Views"
         mc:Ignorable="d"
         Title="Informações Detalhadas do Resíduo" 
-        Height="720" Width="600"
-        Background="Transparent"
+        Height="720" 
+        Width="750" Background="Transparent"
         AllowsTransparency="True"
         WindowStyle="None" 
-        WindowStartupLocation="CenterOwner">
+        ShowInTaskbar="False" 
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="Manual"
+        UseLayoutRounding="True">
 
     <Window.Resources>
         <ResourceDictionary>

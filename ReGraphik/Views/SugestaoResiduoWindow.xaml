@@ -10,6 +10,7 @@
         Background="Transparent"
         AllowsTransparency="True"
         WindowStyle="None" 
+        ShowInTaskbar="False" 
         WindowStartupLocation="CenterOwner">
 
     <Window.Resources>
@@ -152,14 +153,14 @@
                     </Border>
 
                     <ListBox ItemsSource="{Binding SugestoesFiltradasView}"
-                             Background="White"
-                             BorderBrush="#E2E8F0"
-                             BorderThickness="1"
-                             Padding="8"
-                             ScrollViewer.VerticalScrollBarVisibility="Auto"
-                             VirtualizingStackPanel.IsVirtualizing="True"
-                             VirtualizingStackPanel.VirtualizationMode="Recycling"
-                             ScrollViewer.CanContentScroll="True">
+                 Background="White"
+                 BorderBrush="#E2E8F0"
+                 BorderThickness="1"
+                 Padding="8"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.CanContentScroll="True">
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -186,11 +187,11 @@
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListBoxItem">
                                             <Border Background="{TemplateBinding Background}" 
-                                                    BorderBrush="{TemplateBinding BorderBrush}" 
-                                                    BorderThickness="{TemplateBinding BorderThickness}" 
-                                                    CornerRadius="8" 
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter />
+                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                        BorderThickness="{TemplateBinding BorderThickness}" 
+                                        CornerRadius="8" 
+                                        Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                                             </Border>
                                         </ControlTemplate>
                                     </Setter.Value>

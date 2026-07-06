@@ -41,17 +41,20 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <iconPacks:PackIconMaterial Kind="ChartTimelineVariant" Width="14" Height="14" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="SUAS ESTATÍSTICAS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource CinzaColor}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
                         <Button Grid.Column="1" Command="{Binding AtualizarEstatisticasCommand}"
-                              Background="Transparent" BorderThickness="0" Cursor="Hand"
-                              ToolTip="Atualizar estatísticas" Width="28" Height="28">
-                            <TextBlock Text="↻" FontSize="18" Foreground="{DynamicResource CinzaColor}" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
-                                <TextBlock.RenderTransform>
+                                Background="Transparent" BorderThickness="0" Cursor="Hand"
+                                ToolTip="Atualizar estatísticas" Width="32" Height="32">
+                            <iconPacks:PackIconMaterial Kind="Refresh" FontSize="16" Foreground="{DynamicResource CinzaColor}" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                                <iconPacks:PackIconMaterial.RenderTransform>
                                     <RotateTransform Angle="0"/>
-                                </TextBlock.RenderTransform>
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
+                                </iconPacks:PackIconMaterial.RenderTransform>
+                                <iconPacks:PackIconMaterial.Style>
+                                    <Style TargetType="iconPacks:PackIconMaterial">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding CarregandoEstatisticas}" Value="True">
                                                 <DataTrigger.EnterActions>
@@ -71,8 +74,8 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                </iconPacks:PackIconMaterial.Style>
+                            </iconPacks:PackIconMaterial>
                         </Button>
                     </Grid>
 

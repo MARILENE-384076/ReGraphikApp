@@ -14,21 +14,28 @@ namespace ApiRestReGraphik.Controllers
     {
         private readonly ResiduoService _residuoService;
         private readonly ILogger<ResiduoController> _logger;
-        private readonly IWebHostEnvironment _env;
-
-        private const string ImgBbApiKey = "68af9837d10d537215a04d7b1b60aa3c";
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _imgBbApiKey;
 
         /// <summary>
         /// Construtor da classe ResiduoController, que recebe um logger e um serviço de Residuo para ser utilizado nas ações do controlador.
         /// </summary>
         /// <param name="logger">Logger para registrar informações e erros.</param>
         /// <param name="residuoService">Serviço de Residuo para operações relacionadas.</param>
-        /// <param name="env"></param>
-        public ResiduoController(ILogger<ResiduoController> logger, ResiduoService residuoService, IWebHostEnvironment env)
+        /// <param name="httpClientFactory"></param>
+        /// <param name="configuration">Configurações</param>
+        public ResiduoController(
+            ILogger<ResiduoController> logger,
+            ResiduoService residuoService,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             _logger = logger;
             _residuoService = residuoService;
-            _env = env;
+            _httpClientFactory = httpClientFactory;
+
+            /// Captura a chave configurada de forma segura
+            _imgBbApiKey = configuration["ImgBb:ApiKey"] ?? throw new ArgumentNullException("Chave do ImgBB não configurada no appsettings.json.");
         }
 
 
@@ -194,42 +201,11 @@ namespace ApiRestReGraphik.Controllers
             {
                 string linkDaImagemWeb = "";
 
-                /// Se o usuário enviou uma imagem, transformamos ela em Link de Internet
                 if (dto.Imagem != null)
                 {
-                    using var httpClient = new HttpClient();
-                    using var content = new MultipartFormDataContent();
-
-                    /// Converte a imagem recebida em bytes
-                    using var ms = new MemoryStream();
-                    await dto.Imagem.CopyToAsync(ms);
-                    var byteData = ms.ToArray();
-
-                    content.Add(new ByteArrayContent(byteData, 0, byteData.Length), "image", dto.Imagem.FileName);
-
-                    /// SUA CHAVE DA API DO IMGBB AQUI
-                    string apiKey = "68af9837d10d537215a04d7b1b60aa3c";
-
-                    var response = await httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={apiKey}", content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var jsonString = await response.Content.ReadAsStringAsync();
-                        using var jsonDoc = JsonDocument.Parse(jsonString);
-
-                        /// Pega a URL direta da imagem criada pelo ImgBB
-                        linkDaImagemWeb = jsonDoc.RootElement
-                            .GetProperty("data")
-                            .GetProperty("url")
-                            .GetString();
-                    }
-                    else
-                    {
-                        throw new Exception("Falha ao transformar a imagem em link no servidor externo.");
-                    }
+                    linkDaImagemWeb = await EnviarImagemParaImgBb(dto.Imagem);
                 }
 
-                /// Criamos o objeto já com o LINK FINAL da internet
                 var novoResiduo = new Residuo
                 {
                     TipoResiduo = InputSanitizationService.SanitizarTexto(dto.TipoResiduo),
@@ -242,7 +218,7 @@ namespace ApiRestReGraphik.Controllers
                     DimensoesCm = dto.DimensoesCm,
                     DimensoesLm = dto.DimensoesLm,
                     Observacao = InputSanitizationService.SanitizarTexto(dto.Observacao, 2000),
-                    Anexo = linkDaImagemWeb, /// link puro da internet (ex: https://i.ibb.co/XYZ/foto.png)
+                    Anexo = linkDaImagemWeb,
                     Status = dto.Status,
                     UnidadeMedida = !string.IsNullOrWhiteSpace(dto.UnidadeMedida) ? dto.UnidadeMedida : "kg",
                     UnidadeDimensao = !string.IsNullOrWhiteSpace(dto.UnidadeDimensao) ? dto.UnidadeDimensao : "cm"
@@ -427,7 +403,7 @@ namespace ApiRestReGraphik.Controllers
         /// </summary>
         private async Task<string> EnviarImagemParaImgBb(IFormFile imagem)
         {
-            using var httpClient = new HttpClient();
+            var httpClient = _httpClientFactory.CreateClient();
             using var content = new MultipartFormDataContent();
 
             using var ms = new MemoryStream();
@@ -436,7 +412,7 @@ namespace ApiRestReGraphik.Controllers
 
             content.Add(new ByteArrayContent(byteData, 0, byteData.Length), "image", imagem.FileName);
 
-            var response = await httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={ImgBbApiKey}", content);
+            var response = await httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={_imgBbApiKey}", content);
 
             if (response.IsSuccessStatusCode)
             {

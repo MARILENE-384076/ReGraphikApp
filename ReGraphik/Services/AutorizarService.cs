@@ -1,6 +1,7 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Services.Interface;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -98,6 +99,59 @@ namespace ReGraphik.Services
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Atualiza a foto de perfil do usuário
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="usuario"></param>
+        /// <param name="caminhoFotoLocal"></param>
+        /// <returns></returns>
+
+        public async Task<bool> AtualizarComFotoAsync(string id, Usuario usuario, string caminhoFotoLocal)
+        {
+            try
+            {
+                using var client = new HttpClient();
+                using var form = new MultipartFormDataContent();
+
+                /// Adiciona os campos normais do usuário
+                form.Add(new StringContent(usuario.Nome ?? ""), "Nome");
+                form.Add(new StringContent(usuario.Login ?? ""), "Login");
+                form.Add(new StringContent(usuario.Email ?? ""), "Email");
+                if (!string.IsNullOrWhiteSpace(usuario.Senha))
+                {
+                    form.Add(new StringContent(usuario.Senha), "Senha");
+                }
+
+                /// Se existir um arquivo de foto válido, anexa ao formulário como Multipart
+                if (!string.IsNullOrEmpty(caminhoFotoLocal) && File.Exists(caminhoFotoLocal))
+                {
+                    var bytes = await File.ReadAllBytesAsync(caminhoFotoLocal);
+                    var imagemContent = new ByteArrayContent(bytes);
+
+                    string extensao = Path.GetExtension(caminhoFotoLocal).ToLower();
+                    string tipoMime = extensao switch
+                    {
+                        ".png" => "image/png",
+                        ".jpg" or ".jpeg" => "image/jpeg",
+                        _ => "application/octet-stream"
+                    };
+
+                    imagemContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(tipoMime);
+
+                    form.Add(imagemContent, "ImagemPerfil", Path.GetFileName(caminhoFotoLocal));
+                }
+
+                var response = await client.PutAsync($"https://webregraphik.runasp.net/api/Usuario/{id}", form);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

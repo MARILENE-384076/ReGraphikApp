@@ -6,6 +6,7 @@ using ReGraphik.Services;
 using ReGraphik.Services.Interface;
 using ReGraphik.Views;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -44,16 +45,32 @@ namespace ReGraphik.ViewModels
 
                 try
                 {
-                    BitmapImage bitmap = new BitmapImage();
+                    var bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.UriSource = new Uri(caminho, UriKind.RelativeOrAbsolute);
+
+                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile | BitmapCreateOptions.IgnoreImageCache;
+
+                    if (caminho.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                    {
+                        bitmap.UriSource = new Uri(caminho, UriKind.Absolute);
+                    }
+                    else if (File.Exists(caminho))
+                    {
+                        bitmap.UriSource = new Uri(caminho, UriKind.RelativeOrAbsolute);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
                     bitmap.EndInit();
+                    bitmap.Freeze();
                     return bitmap;
                 }
                 catch
                 {
-                    return null; 
+                    return null;
                 }
             }
         }
@@ -225,12 +242,12 @@ namespace ReGraphik.ViewModels
 
                         OxyColor corFatia = statusLabel switch
                         {
-                            "Disponível" => OxyColor.Parse("#64748B"),     /// CinzaColor
-                            "Reservado" => OxyColor.Parse("#3274ba"),      /// AzulClaroColor
-                            "Em Análise" => OxyColor.Parse("#1649a2"),     /// AzulMedioColor
-                            "Coletado" => OxyColor.Parse("#0d2a56"),       /// AzulEscuroColor
-                            "Indisponível" => OxyColor.Parse("#475569"),   /// CinzaEscuroColor
-                            _ => OxyColor.Parse("#CBD5E1")                 /// CinzaClaroColor (Fallback visual)
+                            "Disponível" => OxyColor.FromRgb(100, 116, 139),     // #64748B
+                            "Reservado" => OxyColor.FromRgb(50, 116, 186),       // #3274ba
+                            "Em Análise" => OxyColor.FromRgb(22, 73, 162),       // #1649a2
+                            "Coletado" => OxyColor.FromRgb(13, 42, 86),          // #0d2a56
+                            "Indisponível" => OxyColor.FromRgb(71, 85, 105),     // #475569
+                            _ => OxyColor.FromRgb(203, 213, 225)                 // #CBD5E1
                         };
                         pieSeries.Slices.Add(new PieSlice(statusLabel, grupo.Count()));
                         coresPaleta.Add(corFatia);
@@ -306,6 +323,7 @@ namespace ReGraphik.ViewModels
                         GraficoPizzaModel.DefaultColors = coresPaleta;
                         GraficoPizzaModel.Series.Add(pieSeries);
 
+                        /// Atualiza Gráfico de Barras limpando eixos antigos
                         GraficoBarrasModel.Series.Clear();
                         GraficoBarrasModel.Axes.Clear();
                         GraficoBarrasModel.Axes.Add(categoryAxis);
