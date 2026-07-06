@@ -334,7 +334,7 @@ O modelo lógico pega as Ideias do modelo conceitual e as transforma no formato 
 Diferente da Modelagem de Banco de Dados acima (focada em como os dados são persistidos), esta seção representa o **domínio de negócio** do ReGraphik a partir das regras descritas em `Documentação/ReGraphik_Regras_Negocio.pdf`, independente de como cada conceito está (ou não) implementado hoje.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E6F1FB','primaryTextColor':'#000000','primaryBorderColor':'#185FA5','lineColor':'#FFFFFF','textColor':'#000000','classText':'#000000','fontSize':'20px'}}}%%
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E6F1FB','primaryTextColor':'#000000','primaryBorderColor':'#185FA5','lineColor':'#FFFFFF','textColor':'#000000','classText':'#000000','fontSize':'30px'}}}%%
 classDiagram
   class Empresa {
     <<Aggregate Root>>
