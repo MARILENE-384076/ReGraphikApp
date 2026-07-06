@@ -291,8 +291,7 @@
                                                         <TextBlock>
                                                             <TextBlock.Inlines>
                                                                 <Run Text="{Binding Quantidade}" />
-                                                                <Run Text=" " />
-                                                                <Run Text="{Binding Unidade}" />
+                                                                <Run Text="{Binding UnidadeMedida}" />
                                                             </TextBlock.Inlines>
                                                         </TextBlock>
                                                     </TextBlock>

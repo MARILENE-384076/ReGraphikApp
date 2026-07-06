@@ -42,7 +42,7 @@ namespace ReGraphik.Converters
             {
                 /// Retorna Branco para status com fundos mais escuros (Azuis e Cinza Escuro) 
                 /// para garantir a legibilidade (Contraste Acessível)
-                return (status == "Reservado" || status == "Em Análise" || status == "Coletado" || status == "Indisponível" || status == "disponível")
+                return (status == "Reservado" || status == "Em Análise" || status == "Coletado" || status == "Indisponível" || status == "Disponível")
                     ? Brushes.White
                     : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E293B"));
             }
