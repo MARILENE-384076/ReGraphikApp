@@ -33,45 +33,26 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
-        /// Obtém a imagem de perfil do usuário logado a partir do caminho armazenado no serviço de sessão.
+        /// Obtém a imagem de perfil do usuário logado a partir do caminho armazenado no serviço de sessão,
+        /// lendo em memória para não trancar arquivos locais do disco.
         /// </summary>
-        public BitmapImage? FotoPerfil
+        /// <summary>
+        /// Obtém o caminho ou URL da imagem de perfil do usuário logado.
+        /// </summary>
+        public string? FotoPerfil
         {
             get
             {
                 string? caminho = UsuarioSessaoService.Instancia.FotoCaminho;
+
                 if (string.IsNullOrWhiteSpace(caminho))
                     return null;
 
-                try
-                {
-                    var bitmap = new BitmapImage();
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-
-                    bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile | BitmapCreateOptions.IgnoreImageCache;
-
-                    if (caminho.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                    {
-                        bitmap.UriSource = new Uri(caminho, UriKind.Absolute);
-                    }
-                    else if (File.Exists(caminho))
-                    {
-                        bitmap.UriSource = new Uri(caminho, UriKind.RelativeOrAbsolute);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
-                    bitmap.EndInit();
-                    bitmap.Freeze();
-                    return bitmap;
-                }
-                catch
-                {
+                /// Se for um arquivo local, verifica se ele realmente existe antes de mandar pro XAML
+                if (!caminho.StartsWith("http", StringComparison.OrdinalIgnoreCase) && !File.Exists(caminho))
                     return null;
-                }
+
+                return caminho;
             }
         }
 
