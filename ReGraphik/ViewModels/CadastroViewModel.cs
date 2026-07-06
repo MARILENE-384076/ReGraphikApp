@@ -42,6 +42,7 @@ namespace ReGraphik.ViewModels
         private string _mensagemErroGeral = string.Empty;
         private string _mensagemErroToken = string.Empty;
         private bool _cadastroFinalizadoComSucesso;
+        private int _abaSelecionadaIndex;
 
         private string _perfilDoToken = "User";
 
@@ -140,6 +141,17 @@ namespace ReGraphik.ViewModels
             set { _tokenDigitado = value; OnPropertyChanged(); }
         }
 
+        
+        public int AbaSelecionadaIndex
+        {
+            get => _abaSelecionadaIndex;
+            set
+            {
+                _abaSelecionadaIndex = value;
+                OnPropertyChanged(nameof(AbaSelecionadaIndex));
+            }
+        }
+
         public string MensaNome { get => _mensaNome; set { _mensaNome = value; OnPropertyChanged(); } }
         public string MensaCpf { get => _mensaCpf; set { _mensaCpf = value; OnPropertyChanged(); } }
         public string MensaEmail { get => _mensaEmail; set { _mensaEmail = value; OnPropertyChanged(); } }
@@ -155,6 +167,7 @@ namespace ReGraphik.ViewModels
         public ICommand ValidarTokenCommand { get; }
         public ICommand FinalizarCadastroCommand { get; }
         public ICommand RevelarSenhaCadastroCommand { get; }
+        public ICommand IrParaLoginCommand { get; }
 
         /// <summary>
         /// construtor
@@ -169,6 +182,8 @@ namespace ReGraphik.ViewModels
             ValidarTokenCommand = new RelayCommand(async _ => await ValidarTokenAsync(), _ => !OcupadoToken);
             FinalizarCadastroCommand = new RelayCommand(async p => await FinalizarCadastroAsync(p), _ => !Ocupado);
             RevelarSenhaCadastroCommand = new RelayCommand(p => AlternarVisibilidadeSenha(p));
+
+            IrParaLoginCommand = new RelayCommand(ExecutarIrParaLogin);
         }
 
         /// ETAPA 1: verificar e-mail 
@@ -364,6 +379,18 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = false;
             }
+        }
+
+        /// <summary>
+        /// Método que limpa os estados e joga o usuário para o Login
+        /// </summary>
+        private void ExecutarIrParaLogin()
+        {
+            /// Reseta o estado de sucesso para o formulário sumir se ele voltar aqui voluntariamente
+            CadastroFinalizadoComSucesso = false;
+
+            /// Chame aqui a sua lógica existente de navegação. 
+            AbaSelecionadaIndex = 0;
         }
 
         /// <summary>
