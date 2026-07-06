@@ -41,7 +41,7 @@
 - [Conceitos Técnicos Implementados](#conceitos-técnicos-implementados)
 - [Status dos Workflows de Status do Resíduo](#status-dos-workflows-de-status-do-resíduo)
 - [Como Executar o Projeto](#como-executar-o-projeto)
-- [Tela do Sistema](#Tela-Sistema)
+- [Tela do Sistema](#tela-sistema)
 - [Documentação Complementar](#documentação-complementar)
 - [Integrantes](#integrantes)
 
