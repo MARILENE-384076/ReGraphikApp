@@ -329,6 +329,131 @@ O modelo lógico pega as Ideias do modelo conceitual e as transforma no formato 
 
 ---
 
+## Modelagem de Domínio
+
+Diferente da Modelagem de Banco de Dados acima (focada em como os dados são persistidos), esta seção representa o **domínio de negócio** do ReGraphik a partir das regras descritas em `Documentação/ReGraphik_Regras_Negocio.pdf`, independente de como cada conceito está (ou não) implementado hoje.
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E6F1FB','primaryTextColor':'#000000','primaryBorderColor':'#185FA5','lineColor':'#3d3d3a','textColor':'#000000','classText':'#000000'}}}%%
+classDiagram
+  class Empresa {
+    <<Aggregate Root>>
+    +string Id
+    +string RazaoSocial
+    +string CNPJ
+  }
+  class Usuario {
+    <<Aggregate Root>>
+    +string Id
+    +string Nome
+    +CPF Cpf
+    +string Email
+    +string Login
+    +PerfilUsuario Perfil
+    +DateTime DataCadastro
+    +bool Ativo
+  }
+  class PerfilUsuario {
+    <<Enumeration>>
+    User
+    Admin
+    Guest
+  }
+  class CPF {
+    <<Value Object>>
+    +string Numero
+    +bool EhValido()
+  }
+  class SolicitacaoCadastro {
+    <<Entity>>
+    +string Email
+    +string TokenValidacao
+    +bool Validado
+  }
+  class TipoMaterial {
+    <<Entity catalogo>>
+    +string Id
+    +string Nome
+  }
+  class Residuo {
+    <<Aggregate Root>>
+    +string Id
+    +string Especificacao
+    +string Origem
+    +string ProjetoOrigem
+    +double Quantidade
+    +DateTime DataCadastro
+    +string Condicao
+    +StatusResiduo Status
+  }
+  class StatusResiduo {
+    <<Enumeration>>
+    EmEstoque
+    Reaproveitado
+    Descartado
+  }
+  class Sugestao {
+    <<Aggregate Root>>
+    +string Id
+    +string TipoResiduoAceito
+    +string DescricaoSugestao
+  }
+  class AplicacaoSugestao {
+    <<Entidade associativa>>
+    +string Id
+    +DateTime DataAplicacao
+  }
+  class PontoColeta {
+    <<Aggregate Root>>
+    +string Id
+    +string NomePonto
+    +string Cidade
+    +string Estado
+    +string CEP
+    +double Latitude
+    +double Longitude
+  }
+  class Conversa {
+    <<Aggregate Root>>
+    +string Id
+  }
+  class Mensagem {
+    <<Entity>>
+    +string Id
+    +DateTime DataHora
+    +string Conteudo
+    +bool Lida
+  }
+  class Auditoria {
+    <<Aggregate Root>>
+    +string Id
+    +string Acao
+    +DateTime DataHora
+  }
+
+  Empresa "1" --> "0..*" Usuario : possui
+  Usuario "1" ..> "1" CPF : identificado_por
+  Usuario "1" ..> "1" SolicitacaoCadastro : origina
+  Usuario "1" --> "0..*" Residuo : cadastra
+  TipoMaterial "1" --> "0..*" Residuo : classifica
+  Residuo "1" --> "0..*" AplicacaoSugestao : recebe
+  Sugestao "1" --> "0..*" AplicacaoSugestao : aplicada_em
+  Usuario "2" --> "1" Conversa : participa_de
+  Conversa "1" *-- "0..*" Mensagem : contem
+  Usuario "1" --> "0..*" Auditoria : executa
+
+  note for Residuo "RN-11: transição de status\nEmEstoque -> Reaproveitado (final)\nEmEstoque -> Descartado (final)"
+  note for AplicacaoSugestao "RN-15/17: relação N:N\nResiduo x Sugestao"
+  note for Conversa "RN-20: Id determinístico\nmenor_maior dos IDs de usuário"
+```
+
+### Decisões de modelagem
+
+- **Aggregate Roots**: `Empresa`, `Usuario`, `Residuo`, `Sugestao`, `PontoColeta`, `Conversa` e `Auditoria` são as fronteiras de consistência do domínio.
+- **Value Objects**: `CPF` carrega a regra de validação (RN-06) junto do dado; `PerfilUsuario` e `StatusResiduo` são enumerações fechadas — `StatusResiduo` implementa a máquina de estados da RN-11.
+- **Entidade associativa**: `AplicacaoSugestao` representa o evento de negócio da RN-15/RN-17 (relação N:N entre `Residuo` e `Sugestao`), não apenas uma tabela de junção.
+- **Gap entre regra de negócio e implementação**: `Empresa`, `TipoMaterial` (como catálogo), `Conversa`/`Mensagem` e `Auditoria` estão descritos nas regras de negócio, mas ainda não existem como entidades persistidas na API atual — ponto relevante para a seção de limitações/trabalhos futuros do TCC.
+
 ## Diagrama de Caso de Uso
 
 Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
