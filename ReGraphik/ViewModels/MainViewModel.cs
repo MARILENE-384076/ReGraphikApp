@@ -419,15 +419,19 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private void RealizarLogout()
         {
+            /// Desassinar eventos primeiro (Evita Memory Leaks e NullReference)
             UsuarioSessaoService.Instancia.SessaoExpirada -= OnSessaoExpirada;
-            UsuarioSessaoService.Instancia.EncerrarSessao();
-
-            ChatViewModel.Dispose();
             ChatViewModel.NovaMensagemRecebida -= OnNovaMensagemRecebida;
 
+            /// Encerrar os serviços e descartar ViewModels
+            UsuarioSessaoService.Instancia.EncerrarSessao();
+            ChatViewModel.Dispose();
+
+            /// Transição de Janelas
             var loginWindow = new LoginWindow();
             Application.Current.MainWindow = loginWindow;
             loginWindow.Show();
+
             _currentWindow.Close();
         }
 
@@ -445,6 +449,7 @@ namespace ReGraphik.ViewModels
 
                 if (resultado == true)
                 {
+                    confirmWindow.Owner = null; 
                     RealizarLogout();
                 }
             });
