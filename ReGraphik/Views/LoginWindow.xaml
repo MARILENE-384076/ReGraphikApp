@@ -345,8 +345,7 @@
                                         <Button Content="ENTRAR" 
                                                 IsDefault="True" 
                                                 Command="{Binding EntrarCommand}" 
-                                                CommandParameter="{Binding ElementName=GridCamposSenha}" 
-                                                Style="{StaticResource BtnPrimario}" 
+                                                CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}" 
                                                 HorizontalAlignment="Stretch" 
                                                 Height="40">
                                             <Button.ToolTip>
