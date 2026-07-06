@@ -184,7 +184,7 @@
                         CornerRadius="0,16,16,0" 
                         Padding="50,40">
                     <Grid>
-                        <TabControl Background="Transparent" BorderThickness="0">
+                        <TabControl Background="Transparent" SelectedIndex="{Binding AbaSelecionadaIndex, Mode=TwoWay, FallbackValue=0, TargetNullValue=0}" BorderThickness="0">
 
                             <!-- Tela de Login -->
                             <TabItem Header="Fazer Login" Style="{StaticResource TabStyle}">
@@ -353,7 +353,13 @@
                                                        TextWrapping="Wrap"/>
                                         </StackPanel>
 
-                                        <Button Content="ENTRAR" IsDefault="True" Command="{Binding EntrarCommand}" CommandParameter="{Binding ElementName=TxtSenhaLogin}" Style="{StaticResource BtnPrimario}" HorizontalAlignment="Stretch" Height="40">
+                                        <Button Content="ENTRAR" 
+                                                IsDefault="True" 
+                                                Command="{Binding EntrarCommand}" 
+                                                CommandParameter="{Binding ElementName=GridCamposSenha}" 
+                                                Style="{StaticResource BtnPrimario}" 
+                                                HorizontalAlignment="Stretch" 
+                                                Height="40">
                                             <Button.ToolTip>
                                                 <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
                                                     <TextBlock Text="Botão para logar no sistema" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
@@ -612,20 +618,30 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </StackPanel.Style>
+
                                         <iconPacks:PackIconMaterial Kind="CheckCircle"
-                                                                    Foreground="{DynamicResource VerdeColor}"
-                                                                    Width="64" Height="64"
-                                                                    HorizontalAlignment="Center"/>
-                                        <TextBlock Text="Conta criada com sucesso!"
-                                                   FontSize="22" 
-                                                   FontWeight="Bold"
-                                                   HorizontalAlignment="Center"
-                                                   Foreground="{DynamicResource TextoPadraoColor}" 
-                                                   Margin="0,16,0,8"/>
-                                        <TextBlock Text="Clique em &quot;Fazer Login&quot; para entrar no sistema."
-                                                   FontSize="13" 
-                                                   Foreground="{DynamicResource CinzaColor}"
-                                                   HorizontalAlignment="Center"/>
+                                                                     Foreground="{DynamicResource VerdeColor}"
+                                                                     Width="64" Height="64"
+                                                                     HorizontalAlignment="Center"/>
+
+                                            <TextBlock Text="Conta criada com sucesso!"
+                                                        FontSize="22" 
+                                                        FontWeight="Bold"
+                                                        HorizontalAlignment="Center"
+                                                        Foreground="{DynamicResource TextoPadraoColor}" 
+                                                        Margin="0,16,0,8"/>
+
+                                        <TextBlock Text="Sua conta foi configurada. Avance para acessar o sistema."
+                                                    FontSize="13" 
+                                                    Foreground="{DynamicResource CinzaColor}"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="0,0,0,24"/>
+                                        <Button Content="IR PARA O LOGIN"
+                                                Command="{Binding IrParaLoginCommand}"
+                                                Style="{StaticResource BtnPrimario}"
+                                                Width="180"
+                                                Height="40"
+                                                HorizontalAlignment="Center"/>
                                     </StackPanel>
 
                                 </Grid>
