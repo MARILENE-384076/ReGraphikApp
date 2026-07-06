@@ -2,6 +2,7 @@
 using ApiRestReGraphik.Models.DTOs;
 using ApiRestReGraphik.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace ApiRestReGraphik.Controllers
 {
@@ -12,7 +13,8 @@ namespace ApiRestReGraphik.Controllers
         private static readonly Dictionary<string, string> _tokensAutorizados = new(StringComparer.OrdinalIgnoreCase);
         private readonly UsuarioService _usuarioService;
         private readonly ILogger<UsuarioController> _logger;
-        private readonly IConfiguration _configuration;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _imgBbApiKey;
 
         /// <summary>
         /// Construtor da classe UsuarioController, que recebe um logger e um serviço de Usuario para ser utilizado nas ações do controlador.
@@ -20,11 +22,19 @@ namespace ApiRestReGraphik.Controllers
         /// <param name="logger">Logger para registrar informações e erros.</param>
         /// <param name="usuarioService">Serviço de Usuario para operações relacionadas.</param>
         /// <param name="configuration">Configurações</param>
-        public UsuarioController(ILogger<UsuarioController> logger, UsuarioService usuarioService, IConfiguration configuration)
+        /// <param name="httpClientFactory"></param>
+        public UsuarioController(
+            ILogger<UsuarioController> logger,
+            UsuarioService usuarioService,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             _logger = logger;
             _usuarioService = usuarioService;
-            _configuration = configuration;
+            _httpClientFactory = httpClientFactory;
+
+            /// Busca a chave com segurança do appsettings.json
+            _imgBbApiKey = configuration["ImgBb:ApiKey"] ?? throw new ArgumentNullException("Chave do ImgBB não configurada.");
         }
 
         /// <summary>
@@ -161,7 +171,7 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] Usuario dto)
+        public async Task<IActionResult> Post([FromForm] UsuarioDto dto)
         {
             try
             {
@@ -176,9 +186,17 @@ namespace ApiRestReGraphik.Controllers
                 if (usuariosExistentes.Any(x => x.Login.Equals(dto.Login, StringComparison.OrdinalIgnoreCase)))
                     return BadRequest("Este nome de login já está em uso.");
 
+                string linkFotoPerfilWeb = "";
+
+                /// Se uma imagem foi enviada pelo DTO, fazemos o upload para o ImgBB
+                if (dto.ImagemPerfil != null)
+                {
+                    linkFotoPerfilWeb = await EnviarImagemParaImgBb(dto.ImagemPerfil);
+                }
+
                 var novoUsuario = new Usuario
                 {
-                    Id = Guid.NewGuid().ToString(), 
+                    Id = Guid.NewGuid().ToString(),
                     Nome = dto.Nome,
                     CPF = dto.CPF,
                     Email = dto.Email,
@@ -186,7 +204,7 @@ namespace ApiRestReGraphik.Controllers
                     Senha = dto.Senha,
                     Perfil = string.IsNullOrWhiteSpace(dto.Perfil) ? "User" : dto.Perfil,
                     DataCadastro = DateTime.UtcNow,
-                    FotoPerfil = dto.FotoPerfil,
+                    FotoPerfil = linkFotoPerfilWeb, 
                     Ativo = true
                 };
 
@@ -284,7 +302,7 @@ namespace ApiRestReGraphik.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(string id, [FromBody] UsuarioDto dto)
+        public async Task<IActionResult> Put(string id, [FromForm] UsuarioDto dto)
         {
             if (!InputSanitizationService.IdEhSeguro(id))
                 return BadRequest("ID inválido ou com caracteres não permitidos.");
@@ -298,6 +316,14 @@ namespace ApiRestReGraphik.Controllers
                 var existing = await _usuarioService.ObterPorId(id);
                 if (existing == null)
                     return NotFound($"Usuário com ID {id} não encontrado.");
+
+                string linkFotoPerfilWeb = existing.FotoPerfil;
+
+                // Se o usuário enviou uma nova foto no update, substitui a antiga
+                if (dto.ImagemPerfil != null)
+                {
+                    linkFotoPerfilWeb = await EnviarImagemParaImgBb(dto.ImagemPerfil);
+                }
 
                 /// Atualizamos os campos, mas o ID original (existing.Id) NUNCA é tocado!
                 existing.Nome = dto.Nome;
@@ -378,6 +404,37 @@ namespace ApiRestReGraphik.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro ao processar a solicitação.");
             }
         }
+
+        /// <summary>
+        /// Método auxiliar isolado e seguro para envio de imagens ao ImgBB usando HttpClientFactory
+        /// </summary>
+        private async Task<string> EnviarImagemParaImgBb(IFormFile imagem)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            using var content = new MultipartFormDataContent();
+
+            using var ms = new MemoryStream();
+            await imagem.CopyToAsync(ms);
+            var byteData = ms.ToArray();
+
+            content.Add(new ByteArrayContent(byteData, 0, byteData.Length), "image", imagem.FileName);
+
+            var response = await httpClient.PostAsync($"https://api.imgbb.com/1/upload?key={_imgBbApiKey}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                using var jsonDoc = JsonDocument.Parse(jsonString);
+
+                return jsonDoc.RootElement
+                    .GetProperty("data")
+                    .GetProperty("url")
+                    .GetString() ?? "";
+            }
+
+            throw new Exception("Falha ao transformar a imagem de perfil em link no servidor externo ImgBB.");
+        }
+
 
         /// <summary>
         /// Método auxiliar para transformar o Model de domínio em UsuarioDto de resposta.

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApiRestReGraphik.Models
 {
@@ -33,6 +34,13 @@ namespace ApiRestReGraphik.Models
 
         [JsonPropertyName("foto_perfil")]
         public string? FotoPerfil { get; set; }
+
+        /// <summary>
+        /// Arquivo enviado pelo formulário.
+        /// </summary>
+        [JsonIgnore]
+        [NotMapped]
+        public IFormFile ImagemPerfil { get; set; }
 
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }

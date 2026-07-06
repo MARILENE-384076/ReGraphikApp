@@ -15,5 +15,7 @@ namespace ReGraphik.Services.Interface
         Task<bool> ValidarTokenAsync(string email, string token);
 
         Task<bool> AtualizarAsync(string id, object usuario);
+
+        Task<bool> AtualizarComFotoAsync(string id, Usuario usuario, string caminhoFotoLocal);
     }
 }

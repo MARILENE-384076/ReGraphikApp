@@ -2,8 +2,10 @@
 using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Services.Interface;
+using ReGraphik.Views;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -21,11 +23,19 @@ namespace ReGraphik.ViewModels
         private readonly IResiduoService _residuoService;
         private string _emailReal = string.Empty;
 
+        /// Guarda temporariamente o caminho da nova foto selecionada antes de salvar na API
+        private string _caminhoNovaFotoSelecionada = string.Empty;
+
         private BitmapImage? _imgFoto;
         public BitmapImage? ImgFoto
         {
             get => _imgFoto;
-            set { _imgFoto = value; OnPropertyChanged(); OnPropertyChanged(nameof(SemFoto)); }
+            set
+            {
+                _imgFoto = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SemFoto));
+            }
         }
 
         /// <summary>
@@ -90,7 +100,7 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
-        // ── Estatísticas ─────────────────────────────────────────
+        /// ── Estatísticas ─────────────────────────────────────────
 
         /// <summary>
         /// Total de resíduos cadastrados pelo usuário logado
@@ -142,7 +152,7 @@ namespace ReGraphik.ViewModels
             set { _carregandoEstatisticas = value; OnPropertyChanged(); }
         }
 
-        // ── Mensagens inline ─────────────────────────────────────
+        /// ── Mensagens inline ─────────────────────────────────────
 
         /// <summary>
         /// Mensagem de erro inline para o campo de e-mail, exibida abaixo do campo sem MessageBox
@@ -198,10 +208,18 @@ namespace ReGraphik.ViewModels
             SelecionarFotoCommand = new RelayCommand(_ => MudarFoto());
             AtualizarEstatisticasCommand = new RelayCommand(async _ => await CarregarEstatisticasAsync());
 
-            /// Carrega foto persistida do disco ao abrir a tela
-            var fotoSalva = ConfiguracaoLocalService.CarregarFoto();
-            if (fotoSalva != null)
-                CarregarBitmapDoCaminho(fotoSalva);
+            /// Carrega a foto da URL vinda da API
+            if (!string.IsNullOrEmpty(_usuarioAtual.FotoPerfil))
+            {
+                if (_usuarioAtual.FotoPerfil.StartsWith("http"))
+                {
+                    ImgFoto = new BitmapImage(new Uri(_usuarioAtual.FotoPerfil));
+                }
+                else if (File.Exists(_usuarioAtual.FotoPerfil))
+                {
+                    CarregarBitmapDoCaminho(_usuarioAtual.FotoPerfil);
+                }
+            }
 
             /// Carrega as estatísticas do usuário em background ao abrir a tela
             _ = CarregarEstatisticasAsync();
@@ -258,6 +276,15 @@ namespace ReGraphik.ViewModels
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Erro ao carregar estatísticas: {ex.Message}");
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Erro",
+                        $"Não foi possível carregar as estatísticas!!!",
+                        MensagemWindow.TipoMensagem.Erro);
+                });
+
                 TotalResiduos = 0;
                 TotalReaproveitados = 0;
                 ValorEconomico = "R$ 0,00";
@@ -310,22 +337,21 @@ namespace ReGraphik.ViewModels
 
                 if (openFileDialog.ShowDialog() != true) return;
 
-                string caminho = openFileDialog.FileName;
+                /// Armazena temporariamente na memória local
+                _caminhoNovaFotoSelecionada = openFileDialog.FileName;
 
-                /// Carrega a imagem em memória para exibição imediata na tela
-                CarregarBitmapDoCaminho(caminho);
-
-                /// Persiste o caminho da foto no modelo e no serviço de sessão compartilhado
-                _usuarioAtual.FotoPerfil = caminho;
-                UsuarioSessaoService.Instancia.FotoCaminho = caminho;
-
-                /// Salva localmente para persistir entre sessões
-                ConfiguracaoLocalService.SalvarFoto(caminho);
+                /// Exibe imediatamente o preview na tela para o usuário ver
+                CarregarBitmapDoCaminho(_caminhoNovaFotoSelecionada);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar a foto: {ex.Message}", "Erro",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Erro",
+                        $"Erro ao carregar a foto de perfil!!!",
+                        MensagemWindow.TipoMensagem.Erro);
+                });
             }
         }
 
@@ -334,11 +360,15 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private void CarregarBitmapDoCaminho(string caminho)
         {
+            if (!File.Exists(caminho)) return;
+
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
             bitmap.UriSource = new Uri(caminho);
             bitmap.EndInit();
+            bitmap.Freeze();
             ImgFoto = bitmap;
         }
 
@@ -365,62 +395,94 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private async Task SalvarPerfilAsync(object? parameter)
         {
-            /// Limpa mensagens anteriores
-            MensagemSucesso = string.Empty;
-            MensagemErroGeral = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Login))
-            {
-                MensagemErroGeral = "Nome e Login são obrigatórios.";
-                return;
-            }
-
-            /// Bloqueia o salvamento se o e-mail estiver inválido
-            if (!string.IsNullOrWhiteSpace(MensagemErroEmail))
-            {
-                MensagemErroGeral = "Corrija os erros antes de salvar.";
-                return;
-            }
-
-            /// Captura da senha de forma segura vinda da View via CommandParameter
-            string novaSenha = string.Empty;
-            if (parameter is PasswordBox passwordBox)
-                novaSenha = passwordBox.Password;
-
-            /// Atualiza o objeto com os dados da tela
-            _usuarioAtual.Nome = Nome;
-            _usuarioAtual.Login = Login;
-            _usuarioAtual.Email = _emailReal;
-
-            if (!string.IsNullOrWhiteSpace(novaSenha))
-                _usuarioAtual.Senha = novaSenha;
-
             try
             {
+                /// Limpa mensagens anteriores
+                MensagemSucesso = string.Empty;
+                MensagemErroGeral = string.Empty;
+
+                if (string.IsNullOrWhiteSpace(Nome) || string.IsNullOrWhiteSpace(Login))
+                {
+                    MensagemErroGeral = "Nome e Login são obrigatórios.";
+                    return;
+                }
+
+                /// Bloqueia o salvamento se o e-mail estiver inválido
+                if (!string.IsNullOrWhiteSpace(MensagemErroEmail))
+                {
+                    MensagemErroGeral = "Corrija os erros antes de salvar.";
+                    return;
+                }
+
+                /// Captura da senha de forma segura vinda da View via CommandParameter
+                string novaSenha = string.Empty;
+                if (parameter is PasswordBox passwordBox)
+                    novaSenha = passwordBox.Password;
+
+                /// Atualiza o objeto com os dados da tela
+                _usuarioAtual.Nome = Nome;
+                _usuarioAtual.Login = Login;
+                _usuarioAtual.Email = _emailReal;
+
+                if (!string.IsNullOrWhiteSpace(novaSenha))
+                    _usuarioAtual.Senha = novaSenha;
                 Ocupado = true;
 
-                bool sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
+                bool sucesso;
 
-                if (sucesso)
+                /// Se o usuário escolheu uma nova foto, faz o upload em lote via Multipart. Caso contrário, faz a atualização comum.
+                if (!string.IsNullOrEmpty(_caminhoNovaFotoSelecionada))
                 {
-                    /// Exibe mensagem de sucesso inline sem MessageBox
-                    MensagemSucesso = "✔ Dados atualizados com sucesso!";
-                    Email = MascararEmail(_emailReal);
-                    OnPropertyChanged(nameof(EmailResumido));
-                    OnPropertyChanged(nameof(LoginExibicao));
-
-                    /// Limpa a mensagem de sucesso após 3 segundos
-                    await Task.Delay(3000);
-                    MensagemSucesso = string.Empty;
+                    sucesso = await _autorizarService.AtualizarComFotoAsync(_usuarioAtual.Id, _usuarioAtual, _caminhoNovaFotoSelecionada);
                 }
                 else
                 {
-                    MensagemErroGeral = "Erro ao atualizar os dados. Tente novamente.";
+                    sucesso = await _autorizarService.AtualizarAsync(_usuarioAtual.Id, _usuarioAtual);
+                }
+
+                if (sucesso)
+                {
+                    Email = MascararEmail(_emailReal);
+
+                    OnPropertyChanged(nameof(EmailResumido));
+                    OnPropertyChanged(nameof(LoginExibicao));
+
+                    /// Atualiza a sessão compartilhada local caso o caminho mude
+                    if (!string.IsNullOrEmpty(_caminhoNovaFotoSelecionada))
+                    {
+                        UsuarioSessaoService.Instancia.FotoCaminho = _caminhoNovaFotoSelecionada;
+                        ConfiguracaoLocalService.SalvarFoto(_caminhoNovaFotoSelecionada);
+                        _caminhoNovaFotoSelecionada = string.Empty; /// Reseta o estado temporário
+                    }
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MensagemWindow.Exibir(
+                            "Sucesso!",
+                            "Os dados do perfil foram atualizados com sucesso.",
+                            MensagemWindow.TipoMensagem.Sucesso);
+                    });
+                }
+                else
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        MensagemWindow.Exibir(
+                            "Erro",
+                            "Erro ao atualizar os dados. Tente novamente mais tarde.",
+                            MensagemWindow.TipoMensagem.Erro);
+                    });
                 }
             }
             catch (Exception ex)
             {
-                MensagemErroGeral = $"Erro de conexão: {ex.Message}";
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Erro",
+                        $"Erro de conexão!!!",
+                        MensagemWindow.TipoMensagem.Erro);
+                });
             }
             finally
             {
