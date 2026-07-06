@@ -319,24 +319,35 @@ namespace ApiRestReGraphik.Controllers
 
                 string linkFotoPerfilWeb = existing.FotoPerfil;
 
-                // Se o usuário enviou uma nova foto no update, substitui a antiga
+                /// Se o usuário enviou uma nova foto no update, faz o upload e pega o link do ImgBB
                 if (dto.ImagemPerfil != null)
                 {
                     linkFotoPerfilWeb = await EnviarImagemParaImgBb(dto.ImagemPerfil);
                 }
+                else if (!string.IsNullOrWhiteSpace(dto.FotoPerfil))
+                {
+                    /// Caso não tenha enviado arquivo novo, mas tenha enviado uma string de caminho
+                    linkFotoPerfilWeb = dto.FotoPerfil;
+                }
 
-                /// Atualizamos os campos, mas o ID original (existing.Id) NUNCA é tocado!
+                /// Atualizamos os campos com segurança
                 existing.Nome = dto.Nome;
                 existing.CPF = dto.CPF;
                 existing.Email = dto.Email;
                 existing.Login = dto.Login;
-                if (!string.IsNullOrWhiteSpace(dto.Senha)) existing.Senha = dto.Senha;
+
+                if (!string.IsNullOrWhiteSpace(dto.Senha))
+                    existing.Senha = dto.Senha;
+
                 existing.Perfil = dto.Perfil;
-                existing.FotoPerfil = dto.FotoPerfil;
+                existing.FotoPerfil = linkFotoPerfilWeb;
                 existing.Ativo = dto.Ativo;
 
                 await _usuarioService.Atualizar(id, existing);
-                return Ok($"Usuário com ID {id} atualizado com sucesso.");
+
+                /// Mapeia para DTO e retorna o objeto JSON em vez de uma frase em texto
+                var dtoRetorno = MapearParaDto(existing);
+                return Ok(dtoRetorno);
             }
             catch (ArgumentException ex)
             {

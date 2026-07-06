@@ -23,16 +23,21 @@ namespace ReGraphik.ViewModels
         private readonly IResiduoService _residuoService;
         private string _emailReal = string.Empty;
 
+        /// <summary>
         /// Guarda temporariamente o caminho da nova foto selecionada antes de salvar na API
+        /// </summary>
         private string _caminhoNovaFotoSelecionada = string.Empty;
 
-        private BitmapImage? _imgFoto;
-        public BitmapImage? ImgFoto
+        private string? _fotoPerfilCaminho;
+        /// <summary>
+        /// Obtém ou define o caminho (local ou URL) da foto de perfil para o XAML tratar nativamente.
+        /// </summary>
+        public string? FotoPerfilCaminho
         {
-            get => _imgFoto;
+            get => _fotoPerfilCaminho;
             set
             {
-                _imgFoto = value;
+                _fotoPerfilCaminho = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SemFoto));
             }
@@ -41,7 +46,7 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Indica se o usuário não possui foto — exibe a inicial do nome no lugar
         /// </summary>
-        public bool SemFoto => ImgFoto == null;
+        public bool SemFoto => string.IsNullOrWhiteSpace(FotoPerfilCaminho);
 
         /// <summary>
         /// Inicial do nome para exibir no avatar quando não há foto
@@ -208,18 +213,12 @@ namespace ReGraphik.ViewModels
             SelecionarFotoCommand = new RelayCommand(_ => MudarFoto());
             AtualizarEstatisticasCommand = new RelayCommand(async _ => await CarregarEstatisticasAsync());
 
-            /// Carrega a foto da URL vinda da API
-            if (!string.IsNullOrEmpty(_usuarioAtual.FotoPerfil))
-            {
-                if (_usuarioAtual.FotoPerfil.StartsWith("http"))
-                {
-                    ImgFoto = new BitmapImage(new Uri(_usuarioAtual.FotoPerfil));
-                }
-                else if (File.Exists(_usuarioAtual.FotoPerfil))
-                {
-                    CarregarBitmapDoCaminho(_usuarioAtual.FotoPerfil);
-                }
-            }
+            /// Define o caminho inicial vindo da API ou do serviço de sessão
+            string? fotoInicial = !string.IsNullOrEmpty(_usuarioAtual.FotoPerfil)
+                ? _usuarioAtual.FotoPerfil
+                : UsuarioSessaoService.Instancia.FotoCaminho;
+
+            FotoPerfilCaminho = fotoInicial;
 
             /// Carrega as estatísticas do usuário em background ao abrir a tela
             _ = CarregarEstatisticasAsync();
@@ -325,6 +324,9 @@ namespace ReGraphik.ViewModels
             Email = MascararEmail(_emailReal);
         }
 
+        /// <summary>
+        /// Método para abrir o diálogo de seleção de arquivo e permitir que o usuário escolha uma nova foto de perfil.
+        /// </summary>
         private void MudarFoto()
         {
             try
@@ -337,39 +339,16 @@ namespace ReGraphik.ViewModels
 
                 if (openFileDialog.ShowDialog() != true) return;
 
-                /// Armazena temporariamente na memória local
                 _caminhoNovaFotoSelecionada = openFileDialog.FileName;
-
-                /// Exibe imediatamente o preview na tela para o usuário ver
-                CarregarBitmapDoCaminho(_caminhoNovaFotoSelecionada);
+                FotoPerfilCaminho = _caminhoNovaFotoSelecionada;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MensagemWindow.Exibir(
-                        "Erro",
-                        $"Erro ao carregar a foto de perfil!!!",
-                        MensagemWindow.TipoMensagem.Erro);
+                    MensagemWindow.Exibir("Erro", "Erro ao carregar a foto de perfil!!!", MensagemWindow.TipoMensagem.Erro);
                 });
             }
-        }
-
-        /// <summary>
-        /// Carrega um BitmapImage a partir de um caminho local de forma segura
-        /// </summary>
-        private void CarregarBitmapDoCaminho(string caminho)
-        {
-            if (!File.Exists(caminho)) return;
-
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-            bitmap.UriSource = new Uri(caminho);
-            bitmap.EndInit();
-            bitmap.Freeze();
-            ImgFoto = bitmap;
         }
 
         /// <summary>
@@ -397,7 +376,6 @@ namespace ReGraphik.ViewModels
         {
             try
             {
-                /// Limpa mensagens anteriores
                 MensagemSucesso = string.Empty;
                 MensagemErroGeral = string.Empty;
 
@@ -407,33 +385,40 @@ namespace ReGraphik.ViewModels
                     return;
                 }
 
-                /// Bloqueia o salvamento se o e-mail estiver inválido
                 if (!string.IsNullOrWhiteSpace(MensagemErroEmail))
                 {
                     MensagemErroGeral = "Corrija os erros antes de salvar.";
                     return;
                 }
 
-                /// Captura da senha de forma segura vinda da View via CommandParameter
                 string novaSenha = string.Empty;
                 if (parameter is PasswordBox passwordBox)
                     novaSenha = passwordBox.Password;
 
-                /// Atualiza o objeto com os dados da tela
                 _usuarioAtual.Nome = Nome;
                 _usuarioAtual.Login = Login;
                 _usuarioAtual.Email = _emailReal;
 
                 if (!string.IsNullOrWhiteSpace(novaSenha))
                     _usuarioAtual.Senha = novaSenha;
+
                 Ocupado = true;
+                bool sucesso = false;
 
-                bool sucesso;
-
-                /// Se o usuário escolheu uma nova foto, faz o upload em lote via Multipart. Caso contrário, faz a atualização comum.
-                if (!string.IsNullOrEmpty(_caminhoNovaFotoSelecionada))
+                // Executa a chamada correta dependendo de haver ou não alteração na foto de perfil
+                if (!string.IsNullOrEmpty(_caminhoNovaFotoSelecionada) && File.Exists(_caminhoNovaFotoSelecionada))
                 {
-                    sucesso = await _autorizarService.AtualizarComFotoAsync(_usuarioAtual.Id, _usuarioAtual, _caminhoNovaFotoSelecionada);
+                    string? novaUrlFoto = await _autorizarService.AtualizarComFotoAsync(_usuarioAtual.Id, _usuarioAtual, _caminhoNovaFotoSelecionada);
+                    sucesso = novaUrlFoto != null;
+
+                    if (sucesso)
+                    {
+                        _usuarioAtual.FotoPerfil = novaUrlFoto;
+                        UsuarioSessaoService.Instancia.FotoCaminho = novaUrlFoto;
+                        ConfiguracaoLocalService.SalvarFoto(novaUrlFoto);
+                        FotoPerfilCaminho = novaUrlFoto;
+                        _caminhoNovaFotoSelecionada = string.Empty;
+                    }
                 }
                 else
                 {
@@ -443,34 +428,19 @@ namespace ReGraphik.ViewModels
                 if (sucesso)
                 {
                     Email = MascararEmail(_emailReal);
-
                     OnPropertyChanged(nameof(EmailResumido));
                     OnPropertyChanged(nameof(LoginExibicao));
 
-                    /// Atualiza a sessão compartilhada local caso o caminho mude
-                    if (!string.IsNullOrEmpty(_caminhoNovaFotoSelecionada))
-                    {
-                        UsuarioSessaoService.Instancia.FotoCaminho = _caminhoNovaFotoSelecionada;
-                        ConfiguracaoLocalService.SalvarFoto(_caminhoNovaFotoSelecionada);
-                        _caminhoNovaFotoSelecionada = string.Empty; /// Reseta o estado temporário
-                    }
-
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MensagemWindow.Exibir(
-                            "Sucesso!",
-                            "Os dados do perfil foram atualizados com sucesso.",
-                            MensagemWindow.TipoMensagem.Sucesso);
+                        MensagemWindow.Exibir("Sucesso!", "Os dados do perfil foram atualizados com sucesso.", MensagemWindow.TipoMensagem.Sucesso);
                     });
                 }
                 else
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MensagemWindow.Exibir(
-                            "Erro",
-                            "Erro ao atualizar os dados. Tente novamente mais tarde.",
-                            MensagemWindow.TipoMensagem.Erro);
+                        MensagemWindow.Exibir("Erro", "Erro ao atualizar os dados. Tente novamente mais tarde.", MensagemWindow.TipoMensagem.Erro);
                     });
                 }
             }

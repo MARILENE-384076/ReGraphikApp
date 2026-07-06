@@ -262,7 +262,7 @@
                             </Border>
                             <Border CornerRadius="70" ClipToBounds="True">
                                 <Border.Background>
-                                    <ImageBrush ImageSource="{Binding ImgFoto, TargetNullValue={x:Null}, FallbackValue={x:Null}}" Stretch="UniformToFill"/>
+                                    <ImageBrush ImageSource="{Binding FotoPerfilCaminho}" Stretch="UniformToFill"/>
                                 </Border.Background>
                             </Border>
                         </Grid>

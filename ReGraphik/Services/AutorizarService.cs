@@ -102,56 +102,64 @@ namespace ReGraphik.Services
         }
 
         /// <summary>
-        /// Atualiza a foto de perfil do usuário
+        /// Atualiza a foto de perfil do usuário e retorna a URL final que a API gerou para a foto.
         /// </summary>
         /// <param name="id"></param>
         /// <param name="usuario"></param>
         /// <param name="caminhoFotoLocal"></param>
         /// <returns></returns>
-
-        public async Task<bool> AtualizarComFotoAsync(string id, Usuario usuario, string caminhoFotoLocal)
+        public async Task<string?> AtualizarComFotoAsync(string id, Usuario usuario, string caminhoFoto)
         {
-            try
+            using var form = new MultipartFormDataContent();
+
+            /// Vincula as strings obrigatórias (Use os nomes exatos das propriedades da classe da API)
+            form.Add(new StringContent(usuario.Nome ?? ""), "Nome");
+            form.Add(new StringContent(usuario.CPF ?? ""), "CPF");
+            form.Add(new StringContent(usuario.Email ?? ""), "Email");
+            form.Add(new StringContent(usuario.Login ?? ""), "Login");
+            form.Add(new StringContent(usuario.Senha ?? ""), "Senha");
+            form.Add(new StringContent(usuario.Perfil ?? "User"), "Perfil");
+            form.Add(new StringContent(usuario.Ativo.ToString()), "Ativo");
+
+            /// Trata e anexa o arquivo real utilizando o nome EXATO que a API espera: "ImagemPerfil"
+            if (File.Exists(caminhoFoto))
             {
-                using var client = new HttpClient();
-                using var form = new MultipartFormDataContent();
+                var bytes = await File.ReadAllBytesAsync(caminhoFoto);
+                var fileContent = new ByteArrayContent(bytes);
 
-                /// Adiciona os campos normais do usuário
-                form.Add(new StringContent(usuario.Nome ?? ""), "Nome");
-                form.Add(new StringContent(usuario.Login ?? ""), "Login");
-                form.Add(new StringContent(usuario.Email ?? ""), "Email");
-                if (!string.IsNullOrWhiteSpace(usuario.Senha))
+                string extensao = Path.GetExtension(caminhoFoto).ToLower();
+                string tipoMime = extensao switch
                 {
-                    form.Add(new StringContent(usuario.Senha), "Senha");
-                }
+                    ".png" => "image/png",
+                    _ => "image/jpeg"
+                };
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(tipoMime);
 
-                /// Se existir um arquivo de foto válido, anexa ao formulário como Multipart
-                if (!string.IsNullOrEmpty(caminhoFotoLocal) && File.Exists(caminhoFotoLocal))
-                {
-                    var bytes = await File.ReadAllBytesAsync(caminhoFotoLocal);
-                    var imagemContent = new ByteArrayContent(bytes);
-
-                    string extensao = Path.GetExtension(caminhoFotoLocal).ToLower();
-                    string tipoMime = extensao switch
-                    {
-                        ".png" => "image/png",
-                        ".jpg" or ".jpeg" => "image/jpeg",
-                        _ => "application/octet-stream"
-                    };
-
-                    imagemContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(tipoMime);
-
-                    form.Add(imagemContent, "ImagemPerfil", Path.GetFileName(caminhoFotoLocal));
-                }
-
-                var response = await client.PutAsync($"https://webregraphik.runasp.net/api/Usuario/{id}", form);
-
-                return response.IsSuccessStatusCode;
+                form.Add(fileContent, "ImagemPerfil", Path.GetFileName(caminhoFoto));
             }
-            catch
+
+            /// Envia a requisição PUT para a API
+            var response = await _httpClient.PutAsync($"https://webregraphik.runasp.net/api/Usuario/{id}", form);
+
+            if (!response.IsSuccessStatusCode)
             {
-                return false;
+                string erroDaApi = await response.Content.ReadAsStringAsync();
+                System.Diagnostics.Debug.WriteLine($"Erro retornado pela API: {erroDaApi}");
+                return null; // Agora permitido pois alteramos o retorno do método para string?
             }
+
+            /// Captura o JSON do usuário atualizado
+            string conteudoSucesso = await response.Content.ReadAsStringAsync();
+
+            /// Desserializa o objeto utilizando System.Text.Json
+            var usuarioAtualizado = System.Text.Json.JsonSerializer.Deserialize<Usuario>(
+                conteudoSucesso,
+                new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            /// Retorna a URL estável/final que a API gerou para a foto
+            return usuarioAtualizado?.FotoPerfil;
         }
+
     }
 }

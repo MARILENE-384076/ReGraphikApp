@@ -39,6 +39,7 @@
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 
+                        <!-- Perfil do Usuário -->
                         <Grid Width="50" Height="50">
                             <Border CornerRadius="25" BorderBrush="#E2E8F0" BorderThickness="1" Background="{DynamicResource AzulEscuroColor}">
                                 <Border.Effect>
@@ -48,17 +49,30 @@
 
                             <Border CornerRadius="25" ClipToBounds="True">
                                 <Border.Background>
-                                    <ImageBrush ImageSource="{Binding FotoPerfil, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
-                        Stretch="UniformToFill"/>
+                                    <ImageBrush ImageSource="{Binding FotoPerfil}" Stretch="UniformToFill"/>
                                 </Border.Background>
                             </Border>
 
-                            <Image Source="/Imgs/logoRegraphik.png" 
-                                   Width="30" 
-                                   Height="30" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center"
-                                   Visibility="{Binding FotoPerfil, Converter={StaticResource NullToVisibilityConverter}}"/>
+                            <TextBlock Text="{Binding InicialNome, FallbackValue='?'}" 
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" 
+                                       HorizontalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding FotoPerfil}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding FotoPerfil}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
 
                             <Ellipse Width="12" Height="12" 
                                      Fill="{DynamicResource VerdeColor}"
