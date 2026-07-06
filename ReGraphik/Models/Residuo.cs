@@ -79,6 +79,13 @@ namespace ReGraphik.Models
         public string UnidadeMedida { get; set; } = "kg";
 
         /// <summary>
+        /// Unidade de dimensão do resíduo (ex: cm, m, mm).
+        /// Valor padrão: "cm".
+        /// </summary>
+        [JsonPropertyName("unidade_dimensao")]
+        public string UnidadeDimensao { get; set; } = "cm";
+
+        /// <summary>
         /// Data de cadastro do resíduo no sistema.
         /// </summary>
         [JsonPropertyName("data_cadastro")]

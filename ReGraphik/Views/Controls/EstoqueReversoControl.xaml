@@ -223,6 +223,13 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border Background="White" Width="370" CornerRadius="12" Margin="0,0,16,16">
+                            
+                            <Border.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" 
+                                              Command="{Binding DataContext.AbrirDetalhesCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                              CommandParameter="{Binding}" />
+                            </Border.InputBindings>
+                            
                             <Border.Effect>
                                 <DropShadowEffect ShadowDepth="1" BlurRadius="8" Opacity="0.05" Color="Black"/>
                             </Border.Effect>
@@ -239,18 +246,18 @@
                                     </Grid.Clip>
 
                                     <Image Source="{Binding Anexo, TargetNullValue='pack://application:,,,/Assets/placeholder.png', FallbackValue='pack://application:,,,/Assets/placeholder.png'}" 
-                           Stretch="UniformToFill"
-                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                                           Stretch="UniformToFill"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
 
                                     <Border Background="#CC1E293B" CornerRadius="6" Padding="6,3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="12">
                                         <TextBlock Text="{Binding IdCard}" Foreground="White" FontWeight="Bold" FontSize="11"/>
                                     </Border>
 
                                     <Border Background="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
-                            CornerRadius="12" Padding="8,3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12">
+                                            CornerRadius="12" Padding="8,3" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="12">
                                         <TextBlock Text="{Binding Status}" 
-                                   Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
-                                   FontSize="10" FontWeight="SemiBold"/>
+                                                   Foreground="{Binding Status, Converter={StaticResource StatusToColorConverter}, ConverterParameter=Foreground}"
+                                                   FontSize="10" FontWeight="SemiBold"/>
                                     </Border>
                                 </Grid>
 
@@ -264,12 +271,12 @@
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" 
-                                   Text="{Binding TipoResiduo}" 
-                                   FontSize="16" 
-                                   FontWeight="Bold" 
-                                   Foreground="{DynamicResource TextoPadraoColor}" 
-                                   TextWrapping="Wrap" 
-                                   Margin="0,0,0,12" MinHeight="22"/>
+                                                   Text="{Binding TipoResiduo}" 
+                                                   FontSize="16" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="{DynamicResource TextoPadraoColor}" 
+                                                   TextWrapping="Wrap" 
+                                                   Margin="0,0,0,12" MinHeight="22"/>
 
                                         <Border Grid.Row="1" Background="#F8FAFC" CornerRadius="8" Padding="12" Margin="0,0,0,12">
                                             <StackPanel>
@@ -280,7 +287,15 @@
 
                                                 <Grid Margin="0,0,0,6">
                                                     <TextBlock Text="Quantidade:" Foreground="{DynamicResource CinzaColor}" FontSize="12"/>
-                                                    <TextBlock Text="{Binding Quantidade, StringFormat='\{0\} kg'}" Foreground="{DynamicResource TextoPadraoColor}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                                    <TextBlock Foreground="{DynamicResource TextoPadraoColor}" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right">
+                                                        <TextBlock>
+                                                            <TextBlock.Inlines>
+                                                                <Run Text="{Binding Quantidade}" />
+                                                                <Run Text=" " />
+                                                                <Run Text="{Binding Unidade}" />
+                                                            </TextBlock.Inlines>
+                                                        </TextBlock>
+                                                    </TextBlock>
                                                 </Grid>
 
                                                 <Grid>

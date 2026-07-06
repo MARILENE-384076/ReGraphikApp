@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
 
 namespace ApiRestReGraphik.Models.DTOs
 {
@@ -28,6 +29,7 @@ namespace ApiRestReGraphik.Models.DTOs
         /// Propriedade de navegação para o usuário associado.
         /// </summary>
         [JsonIgnore]
+        [BindNever]
         [ValidateNever]
         public virtual Usuario? Usuario { get; set; }
 
@@ -68,6 +70,13 @@ namespace ApiRestReGraphik.Models.DTOs
         /// </summary>
         [JsonPropertyName("unidade_medida")]
         public string UnidadeMedida { get; set; } = "kg";
+
+        /// <summary>
+        /// Unidade de dimensão do resíduo (ex: cm, m, mm).
+        /// Valor padrão: "cm".
+        /// </summary>
+        [JsonPropertyName("unidade_dimensao")]
+        public string UnidadeDimensao { get; set; } = "cm";
 
         /// <summary>
         /// Data de cadastro do resíduo no sistema.
