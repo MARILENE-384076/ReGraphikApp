@@ -254,27 +254,37 @@
                                             <Run Text="*" Foreground="Red" FontWeight="Bold"/>
                                         </TextBlock>
                                         <Grid x:Name="GridCamposSenha" Margin="0,0,0,4">
-                                            <Grid Margin="0,0,0,4">
-                                                <PasswordBox x:Name="TxtSenhaLogin" 
-                                                             Style="{StaticResource PasswordStyle}" 
-                                                             Padding="35,0,10,0" 
-                                                             Height="40" 
-                                                             VerticalContentAlignment="Center"/>
+                                            <PasswordBox x:Name="TxtSenhaLogin" 
+                                                         Style="{StaticResource PasswordStyle}" 
+                                                         Padding="35,0,40,0" 
+                                                         Height="40" 
+                                                         VerticalContentAlignment="Center"/>
 
-                                                <iconPacks:PackIconMaterial Kind="Lock" 
+                                            <TextBox x:Name="TxtSenhaVisivelLogin" 
+                                                     Style="{StaticResource InputStyle}" 
+                                                     Padding="35,0,40,0" 
+                                                     Visibility="Collapsed" 
+                                                     Height="40" 
+                                                     VerticalContentAlignment="Center"/>
+
+                                            <iconPacks:PackIconMaterial Kind="Lock" 
                                                                         Width="17" 
                                                                         Height="17" 
-                                                                        Margin="10,0,0,0" 
+                                                                        Margin="12,0,0,0" 
                                                                         Foreground="{DynamicResource TextoCinzaColor}" 
                                                                         HorizontalAlignment="Left" 
                                                                         VerticalAlignment="Center"
                                                                         IsHitTestVisible="False"/>
-                                            </Grid>
-                                            <TextBox x:Name="TxtSenhaVisivelLogin" Style="{StaticResource InputStyle}" Padding="10,0,35,0" Visibility="Collapsed" Height="40" VerticalContentAlignment="Center"/>
+
                                             <Button x:Name="BtnRevelarSenha" 
                                                     Command="{Binding RevelarSenhaCommand}" 
                                                     CommandParameter="{Binding ElementName=GridCamposSenha}"
-                                                    HorizontalAlignment="Right" Width="30" Height="30" Margin="0,0,6,0" Background="Transparent" BorderThickness="0">
+                                                    HorizontalAlignment="Right" 
+                                                    Width="30" 
+                                                    Height="30" 
+                                                    Margin="0,0,6,0" 
+                                                    Background="Transparent" 
+                                                    BorderThickness="0">
                                                 <iconPacks:PackIconMaterial x:Name="IconeOlho" Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                             </Button>
                                         </Grid>
@@ -496,20 +506,30 @@
                                         </StackPanel>
 
                                         <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}" Foreground="{DynamicResource TextoCinzaColor}"/>
-                                        <TextBox Text="{Binding Email, Mode=OneWay}"
-                                                 Style="{StaticResource InputStyle}"
-                                                 IsReadOnly="True"
-                                                 Background="#F1F5F9"
-                                                 Foreground="{DynamicResource TextoCinzaColor}"
-                                                 Focusable="False"
-                                                 Margin="0,0,0,10"/>
+                                        <Grid Margin="0,0,0,10">
+                                            <TextBox Text="{Binding Email, Mode=OneWay}"
+                                                     Style="{StaticResource InputStyle}"
+                                                     IsReadOnly="True"
+                                                     Background="#F1F5F9"
+                                                     Foreground="{DynamicResource TextoCinzaColor}"
+                                                     Focusable="False"
+                                                     Padding="35,0,10,0" Height="40" 
+                                                     VerticalContentAlignment="Center"/>
+                                            <iconPacks:PackIconMaterial Kind="Email" Width="16" Height="16" Margin="12,0,0,0" 
+                                    Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        </Grid>
 
                                         <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
-                                        <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
-                                                 Style="{StaticResource InputStyle}" Margin="0,0,0,4"/>
-                                        <TextBlock Text="{Binding MensaNome}" 
-                                                   Style="{StaticResource LabelStyle}"
-                                                   Foreground="DarkRed" Margin="0,0,0,10"/>
+                                        <Grid Margin="0,0,0,4">
+                                            <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
+                                                     Style="{StaticResource InputStyle}" 
+                                                     Padding="35,0,10,0" 
+                                                     Height="40" 
+                                                     VerticalContentAlignment="Center"/>
+                                            <iconPacks:PackIconMaterial Kind="Account" Width="16" Height="16" Margin="12,0,0,0" 
+                                    Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        </Grid>
+                                        <TextBlock Text="{Binding MensaNome}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,0,0,10"/>
 
                                         <Grid Margin="0,0,0,4">
                                             <Grid.ColumnDefinitions>
@@ -520,65 +540,66 @@
 
                                             <StackPanel Grid.Column="0">
                                                 <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
-                                                <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}"
-                                                         Style="{StaticResource InputStyle}"
-                                                         MaxLength="14"/>
-                                                <TextBlock Text="{Binding MensaCpf}" Style="{StaticResource LabelStyle}"
-                                                           Foreground="DarkRed" Margin="0,4,0,0"/>
+                                                <Grid>
+                                                    <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}"
+                                                             Style="{StaticResource InputStyle}" 
+                                                             MaxLength="14"
+                                                             Padding="35,0,10,0" Height="40" 
+                                                             VerticalContentAlignment="Center"/>
+                                                    <iconPacks:PackIconMaterial Kind="CardAccountDetails" Width="16" Height="16" Margin="12,0,0,0" 
+                                            Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                                </Grid>
+                                                <TextBlock Text="{Binding MensaCpf}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,4,0,0"/>
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2">
                                                 <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
-                                                <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
-                                                         Style="{StaticResource InputStyle}"/>
-                                                <TextBlock Text="{Binding MensaLogin}" 
-                                                           Style="{StaticResource LabelStyle}"
-                                                           Foreground="DarkRed" Margin="0,4,0,0"/>
+                                                <Grid>
+                                                    <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
+                                                             Style="{StaticResource InputStyle}"
+                                                             Padding="35,0,10,0" Height="40" 
+                                                             VerticalContentAlignment="Center"/>
+                                                    <iconPacks:PackIconMaterial Kind="AccountKey" Width="16" Height="16" Margin="12,0,0,0" 
+                                            Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                                </Grid>
+                                                <TextBlock Text="{Binding MensaLogin}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Grid>
 
                                         <TextBlock Text="Senha" Style="{StaticResource LabelStyle}" Margin="0,6,0,0"/>
-                                        <Grid x:Name="GridCamposSenhaCadastro" MinHeight="35" Margin="0,0,0,4">
+                                        <Grid x:Name="GridCamposSenhaCadastro" Height="40" Margin="0,0,0,4">
                                             <PasswordBox x:Name="TxtSenhaCadastro"
                                                          Style="{StaticResource PasswordStyle}"
                                                          VerticalContentAlignment="Center"
-                                                         Padding="10,0,40,0" Height="40"/>
+                                                         Padding="35,0,40,0" Height="40"/>
                                             <TextBox x:Name="TxtSenhaVisivelCadastro"
                                                      Style="{StaticResource InputStyle}"
                                                      VerticalContentAlignment="Center"
-                                                     Padding="10,0,40,0"
+                                                     Padding="35,0,40,0"
                                                      Visibility="Collapsed" Height="40"/>
+
+                                            <iconPacks:PackIconMaterial Kind="Lock" Width="16" Height="16" Margin="12,0,0,0" 
+                                    Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+
                                             <Button Command="{Binding RevelarSenhaCadastroCommand}"
                                                     CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
-                                                    HorizontalAlignment="Right" 
-                                                    Width="30" Height="30"
+                                                    HorizontalAlignment="Right" Width="30" Height="30" 
                                                     Margin="0,0,6,0" 
                                                     Background="Transparent" 
                                                     BorderThickness="0">
-                                                <iconPacks:PackIconMaterial Kind="Eye" 
-                                                                            Foreground="{DynamicResource CinzaColor}"
-                                                                            Width="16" Height="16"/>
+                                                <iconPacks:PackIconMaterial Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                             </Button>
                                         </Grid>
-                                        <TextBlock Text="{Binding MensaSenha}" 
-                                                   Style="{StaticResource LabelStyle}"
-                                                   Foreground="DarkRed"
-                                                   Margin="0,0,0,16"/>
+                                        <TextBlock Text="{Binding MensaSenha}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,0,0,16"/>
 
-                                        <TextBlock Text="{Binding MensagemErroGeral}"
-                                                   Foreground="DarkRed" 
-                                                   FontSize="13"
-                                                   TextWrapping="Wrap" 
-                                                   Margin="0,0,0,12"/>
+                                        <TextBlock Text="{Binding MensagemErroGeral}" Foreground="DarkRed" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
-                                        <Button Content="CRIAR CONTA"
-                                                IsDefault="True"
+                                        <Button Content="CRIAR CONTA" IsDefault="True"
                                                 Command="{Binding FinalizarCadastroCommand}"
                                                 CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
-                                                Style="{StaticResource BtnPrimario}"
-                                                Height="40"/>
+                                                Style="{StaticResource BtnPrimario}" Height="40"/>
                                     </StackPanel>
-
+                                    
                                     <!-- ══ ETAPA FINAL: cadastro concluído ════════════════════════ -->
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <StackPanel.Style>
