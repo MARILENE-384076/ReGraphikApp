@@ -41,10 +41,10 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" 
-                        BorderBrush="{DynamicResource AzulMedioColor}" 
-                        BorderThickness="1,1,0,1" 
-                        CornerRadius="16,0,0,16"
-                        ClipToBounds="True">
+            BorderBrush="{DynamicResource AzulMedioColor}" 
+            BorderThickness="1,1,0,1" 
+            CornerRadius="16,0,0,16"
+            ClipToBounds="True">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="#3274ba" Offset="0.0"/>
@@ -55,20 +55,9 @@
 
                     <Grid>
                         <Canvas IsItemsHost="False">
-                            <Ellipse Width="320" Height="320" 
-                                     Stroke="White" StrokeThickness="32" 
-                                     Opacity="0.08" 
-                                     Canvas.Top="-80" Canvas.Right="-100"/>
-
-                            <Ellipse Width="240" Height="240" 
-                                     Stroke="White" StrokeThickness="24" 
-                                     Opacity="0.05" 
-                                     Canvas.Top="120" Canvas.Left="-120"/>
-
-                            <Border Width="300" Height="300" 
-                                    CornerRadius="150" 
-                                    Opacity="0.12" 
-                                    Canvas.Bottom="-100" Canvas.Left="-80">
+                            <Ellipse Width="320" Height="320" Stroke="White" StrokeThickness="32" Opacity="0.08" Canvas.Top="-80" Canvas.Right="-100"/>
+                            <Ellipse Width="240" Height="240" Stroke="White" StrokeThickness="24" Opacity="0.05" Canvas.Top="120" Canvas.Left="-120"/>
+                            <Border Width="300" Height="300" CornerRadius="150" Opacity="0.12" Canvas.Bottom="-100" Canvas.Left="-80">
                                 <Border.Background>
                                     <RadialGradientBrush>
                                         <GradientStop Color="White" Offset="0"/>
@@ -96,86 +85,72 @@
                             </StackPanel>
 
                             <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left" MaxWidth="400">
-                                <TextBlock Text="Olá,&#x0a;seja bem-vindo!" 
-                                           FontSize="46" 
-                                           FontWeight="Bold" 
-                                           Foreground="White" 
-                                           TextAlignment="Left" 
-                                           TextWrapping="Wrap"
-                                           LineHeight="52"
-                                           Margin="0,0,0,24"/>
-
-                                <TextBlock Text="Gestão inteligente de resíduos industriais e eficiência ecológica para o seu negócio." 
-                                           FontSize="15" 
-                                           FontWeight="Normal" 
-                                           Foreground="White" 
-                                           Opacity="0.8"
-                                           TextAlignment="Left" 
-                                           TextWrapping="Wrap"
-                                           LineHeight="22"/>
+                                <TextBlock Text="Olá,&#x0a;seja bem-vindo!" FontSize="46" FontWeight="Bold" Foreground="White" TextAlignment="Left" TextWrapping="Wrap" LineHeight="52" Margin="0,0,0,24"/>
+                                <TextBlock Text="Gestão inteligente de resíduos industriais e eficiência ecológica para o seu negócio." FontSize="15" FontWeight="Normal" Foreground="White" Opacity="0.8" TextAlignment="Left" TextWrapping="Wrap" LineHeight="22"/>
                             </StackPanel>
 
-                            <TextBlock Grid.Row="2" 
-                                       Text="© 2026 ReGraphik" 
-                                       Foreground="White" 
-                                       Opacity="0.5"
-                                       FontSize="11" 
-                                       FontWeight="Medium"
-                                       HorizontalAlignment="Left"/>
-                        </Grid>
-
-                        <Grid Visibility="{Binding DataContext.ExibirAlertaToken, ElementName=CadastroTab, Converter={StaticResource BoolToVisConverter}, FallbackValue=Collapsed}">
-                            <Border Background="#40000000" CornerRadius="16,0,0,16"/>
-
-                            <Border Background="White" 
-                                    CornerRadius="12" 
-                                    Width="320" 
-                                    MinHeight="190"
-                                    Height="Auto"
-                                    HorizontalAlignment="Center" 
-                                    VerticalAlignment="Center"
-                                    BorderBrush="{DynamicResource CinzaClaroColor}"
-                                    BorderThickness="1">
-                                <Border.Effect>
-                                    <DropShadowEffect BlurRadius="15" Direction="270" ShadowDepth="3" Opacity="0.2"/>
-                                </Border.Effect>
-
-                                <Grid Margin="20">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
-                                        <iconPacks:PackIconMaterial Kind="Key" Foreground="{DynamicResource AzulMedioColor}" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                        <TextBlock Text="Token de Cadastro Gerado" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" VerticalAlignment="Center"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,0,0,16">
-                                        <TextBlock Text="Copie o token abaixo para validar o cadastro:" FontSize="12" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,8"/>
-                                        <TextBox Text="{Binding DataContext.TokenGeradoAlerta, ElementName=CadastroTab}" 
-                                                 IsReadOnly="True" 
-                                                 FontSize="18" 
-                                                 FontWeight="Bold" 
-                                                 Foreground="{DynamicResource AzulMedioColor}" 
-                                                 Background="#F1F5F9" 
-                                                 BorderThickness="0" 
-                                                 Padding="8,6" 
-                                                 TextAlignment="Center"/>
-                                    </StackPanel>
-
-                                    <Button Content="FECHAR AVISO" 
-                                            Grid.Row="2" 
-                                            Command="{Binding DataContext.FecharAlertaTokenCommand, ElementName=CadastroTab}" 
-                                            Style="{StaticResource BtnPrimario}" 
-                                            Height="36" 
-                                            FontSize="11"/>
-                                </Grid>
-                            </Border>
+                            <TextBlock Grid.Row="2" Text="© 2026 ReGraphik" Foreground="White" Opacity="0.5" FontSize="11" FontWeight="Medium" HorizontalAlignment="Left"/>
                         </Grid>
                     </Grid>
                 </Border>
+
+                <Button Width="48" Height="48" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding AlternarAbasCommand}" Style="{StaticResource ToggleCircleButtonStyle}" Panel.ZIndex="10">
+                    <iconPacks:PackIconMaterial Kind="SwapHorizontal" Width="20" Height="20" Foreground="#334155"/>
+                </Button>
+
+                <Grid Grid.ColumnSpan="2" 
+                      Panel.ZIndex="100"
+                      Visibility="{Binding DataContext.ExibirAlertaToken, ElementName=CadastroTab, Converter={StaticResource BoolToVisConverter}, FallbackValue=Collapsed}">
+
+                    <Border Background="#60000000" CornerRadius="16"/>
+
+                    <Border Background="White" 
+                            CornerRadius="12" 
+                            Width="320" 
+                            MinHeight="190"
+                            Height="Auto"
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            BorderBrush="{DynamicResource CinzaClaroColor}"
+                            BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="15" Direction="270" ShadowDepth="3" Opacity="0.2"/>
+                        </Border.Effect>
+
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,12">
+                                <iconPacks:PackIconMaterial Kind="Key" Foreground="{DynamicResource AzulMedioColor}" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Token de Cadastro Gerado" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,0,0,16">
+                                <TextBlock Text="Copie o token abaixo para validar o cadastro:" FontSize="12" Foreground="{DynamicResource CinzaColor}" Margin="0,0,0,8"/>
+                                <TextBox Text="{Binding DataContext.TokenGeradoAlerta, ElementName=CadastroTab}" 
+                                         IsReadOnly="True" 
+                                         FontSize="18" 
+                                         FontWeight="Bold" 
+                                         Foreground="{DynamicResource AzulMedioColor}" 
+                                         Background="#F1F5F9" 
+                                         BorderThickness="0" 
+                                         Padding="8,6" 
+                                         TextAlignment="Center"/>
+                            </StackPanel>
+
+                            <Button Content="FECHAR AVISO" 
+                                    Grid.Row="2" 
+                                    Command="{Binding DataContext.FecharAlertaTokenCommand, ElementName=CadastroTab}" 
+                                    Style="{StaticResource BtnPrimario}" 
+                                    Height="36" 
+                                    FontSize="11"/>
+                        </Grid>
+                    </Border>
+                </Grid>
 
                 <Border Grid.Column="1" 
                         Background="White" 
@@ -605,7 +580,7 @@
                                                 CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
                                                 Style="{StaticResource BtnPrimario}" Height="40"/>
                                     </StackPanel>
-                                    
+
                                     <!-- ══ ETAPA FINAL: cadastro concluído ════════════════════════ -->
                                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                                         <StackPanel.Style>
@@ -624,7 +599,7 @@
                                                                      Width="64" Height="64"
                                                                      HorizontalAlignment="Center"/>
 
-                                            <TextBlock Text="Conta criada com sucesso!"
+                                        <TextBlock Text="Conta criada com sucesso!"
                                                         FontSize="22" 
                                                         FontWeight="Bold"
                                                         HorizontalAlignment="Center"
