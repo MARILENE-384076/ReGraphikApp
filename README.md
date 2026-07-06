@@ -334,7 +334,7 @@ O modelo lógico pega as Ideias do modelo conceitual e as transforma no formato 
 Diferente da Modelagem de Banco de Dados acima (focada em como os dados são persistidos), esta seção representa o **domínio de negócio** do ReGraphik a partir das regras descritas em `Documentação/ReGraphik_Regras_Negocio.pdf`, independente de como cada conceito está (ou não) implementado hoje.
 
 ```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E6F1FB','primaryTextColor':'#000000','primaryBorderColor':'#185FA5','lineColor':'#3d3d3a','textColor':'#000000','classText':'#000000'}}}%%
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E6F1FB','primaryTextColor':'#000000','primaryBorderColor':'#185FA5','lineColor':'#FFFFFF','textColor':'#000000','classText':'#000000'}}}%%
 classDiagram
   class Empresa {
     <<Aggregate Root>>
@@ -446,7 +446,6 @@ classDiagram
   note for AplicacaoSugestao "RN-15/17: relação N:N\nResiduo x Sugestao"
   note for Conversa "RN-20: Id determinístico\nmenor_maior dos IDs de usuário"
 ```
-
 ### Decisões de modelagem
 
 - **Aggregate Roots**: `Empresa`, `Usuario`, `Residuo`, `Sugestao`, `PontoColeta`, `Conversa` e `Auditoria` são as fronteiras de consistência do domínio.
