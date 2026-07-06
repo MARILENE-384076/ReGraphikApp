@@ -94,7 +94,15 @@
                     </Grid>
                 </Border>
 
-                <Button Width="48" Height="48" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding AlternarAbasCommand}" Style="{StaticResource ToggleCircleButtonStyle}" Panel.ZIndex="10">
+                <Button Width="48" 
+                        Height="48" 
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2" 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        Command="{Binding AlternarAbasCommand}" 
+                        Style="{StaticResource ToggleCircleButtonStyle}"
+                        Panel.ZIndex="10">
                     <iconPacks:PackIconMaterial Kind="SwapHorizontal" Width="20" Height="20" Foreground="#334155"/>
                 </Button>
 
@@ -160,10 +168,16 @@
                         Padding="50,40">
                     <Grid>
                         <TabControl Background="Transparent" SelectedIndex="{Binding AbaSelecionadaIndex, Mode=TwoWay, FallbackValue=0, TargetNullValue=0}" BorderThickness="0">
+                            
+                            <TabControl.ItemContainerStyle>
+                                <Style TargetType="TabItem">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </Style>
+                            </TabControl.ItemContainerStyle>
 
                             <!-- Tela de Login -->
-                            <TabItem Header="Fazer Login" Style="{StaticResource TabStyle}">
-                                <Grid Margin="32,16,32,0">
+                            <TabItem>
+                                <Grid Margin="32,16,32,0" DataContext="{Binding LoginVM}">
                                     <StackPanel Margin="0,10,0,10" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                         <StackPanel Margin="0,0,0,24">
                                             <TextBlock Text="Faça Login" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextoPadraoColor}" Margin="0,0,0,4"/>
@@ -346,7 +360,7 @@
                             </TabItem>
 
                             <!-- Tela de cadastro -->
-                            <TabItem x:Name="CadastroTab" Header="Criar Nova Conta" Style="{StaticResource TabStyle}">
+                            <TabItem x:Name="CadastroTab">
                                 <Grid Margin="32,16,32,0">
 
                                     <!-- ══ ETAPA 1: verificar e-mail ══════════════════════════════ -->
