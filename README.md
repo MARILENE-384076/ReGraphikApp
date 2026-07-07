@@ -442,13 +442,11 @@ classDiagram
   note for AplicacaoSugestao "RN-15/17: relação N:N\nResiduo x Sugestao"
   note for Conversa "RN-20: Id determinístico\nmenor_maior dos IDs de usuário"
 ```
-# Glossário de Domínio (Linguagem Ubíqua) — ReGraphik
+### Glossário de Domínio (Linguagem Ubíqua)
 
 > Extraído de `ReGraphik_Regras_Negocio.pdf`. Este glossário é um **ponto de partida**, não um resultado final — a Linguagem Ubíqua de verdade só se consolida quando o time e quem entende do negócio concordam com os termos e resolvem as ambiguidades marcadas ao final de cada seção.
 
----
-
-## Atores
+#### Atores
 
 | Termo | Definição |
 |---|---|
@@ -457,9 +455,7 @@ classDiagram
 | **Administrador** | Gerencia usuários e tipos de materiais, importa sugestões em lote via planilha e tem acesso à exclusão de registros com auditoria. |
 | **Sistema ReGraphik** | O próprio sistema, como ator: controla o estoque reverso, sugere reaproveitamento por tipo de material e gera dashboards e relatórios gerenciais. |
 
----
-
-## Módulo: Autenticação e Cadastro
+#### Módulo: Autenticação e Cadastro
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -474,9 +470,7 @@ classDiagram
 - O perfil **`Guest`** é citado (RN-04) mas nenhuma regra descreve o que ele pode ou não fazer. É um convidado temporário? Tem as mesmas permissões de `User`? Precisa de regra própria.
 - O documento não detalha atributos de **`Empresa`** (nome, CNPJ, etc.) além de exigir o vínculo — qualquer atributo que eu tenha sugerido em diagramas anteriores (ex: CNPJ, Razão Social) foi **inferência minha**, não algo definido no documento. Precisa confirmar com o grupo.
 
----
-
-## Módulo: Validação de Dados
+#### Módulo: Validação de Dados
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -486,9 +480,7 @@ classDiagram
 **⚠️ Ambiguidades a validar com o grupo:**
 - RN-07 fala especificamente de "Foto de perfil" — não fica claro se a mesma regra de extensão vale para o campo `Anexo` do `Residuo` (imagem do material). Vale confirmar se resíduo aceita os mesmos formatos ou outros (ex: PDF de laudo técnico).
 
----
-
-## Módulo: Resíduos
+#### Módulo: Resíduos
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -503,9 +495,7 @@ classDiagram
 - RN-13 fala em "trilha de auditoria/log" sem nomear uma entidade — o nome **`Auditoria`** usado nos diagramas anteriores foi uma escolha minha para dar identidade ao conceito, não um termo do documento. Vale o grupo decidir o nome oficial.
 - Os valores possíveis de **`Condição`** (ex: "Bom", "Regular", "Danificado") não aparecem no documento de regras — só nos comentários do código. Precisa decidir se isso é regra de negócio (lista fechada) ou texto livre.
 
----
-
-## Módulo: Sugestões de Reaproveitamento
+#### Módulo: Sugestões de Reaproveitamento
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -517,9 +507,7 @@ classDiagram
 - O documento chama a entidade associativa de **`SugestoesResiduos`** (plural, RN-15) mas em outro trecho usa **`SugestaoResiduos`** (RN-17) — e o código usa **`SugestaoResiduo`** (singular). São nomes inconsistentes para o mesmo conceito ao longo do próprio documento.
 - RN-17 menciona um evento chamado **`SugestaoAplicadaComSucesso`**, descrito como algo mantido "para compatibilidade com fluxos anteriores" — isso sugere que existiu uma versão anterior do sistema com uma nomenclatura diferente. Vale perguntar ao grupo se esse nome legado ainda deve ser usado ou pode ser substituído por um nome mais claro (ex: `SugestaoAplicadaEvent`).
 
----
-
-## Módulo: Pontos de Coleta
+#### Módulo: Pontos de Coleta
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -529,9 +517,7 @@ classDiagram
 **⚠️ Ambiguidades a validar com o grupo:**
 - Não há regra que descreva o que acontece se os pontos de uma cidade já cacheada mudarem no mundo real (loja fechou, endereço mudou) — não existe menção a expiração de cache ou revalidação periódica.
 
----
-
-## Módulo: Chat Interno
+#### Módulo: Chat Interno
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -541,9 +527,7 @@ classDiagram
 **⚠️ Ambiguidades a validar com o grupo:**
 - O esquema de Id determinístico (RN-20) só funciona para conversas **1 para 1**. O documento não prevê conversas em grupo — vale confirmar se isso é escopo do sistema ou não.
 
----
-
-## Módulo: Configuração Local e Exportação
+#### Módulo: Configuração Local e Exportação
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
@@ -553,9 +537,7 @@ classDiagram
 **⚠️ Ambiguidades a validar com o grupo:**
 - RN-23 menciona "dados ESG" pela primeira vez no documento, sem nenhuma outra regra de negócio explicando o que é o módulo ESG, o que ele calcula ou de onde vêm os dados — isso é um conceito de domínio inteiro sem regra de negócio documentada, apesar de existir uma tela ESG implementada no sistema.
 
----
-
-## Resumo — Termos que precisam de decisão do grupo antes de virarem Linguagem Ubíqua oficial
+#### Resumo — Termos que precisam de decisão do grupo antes de virarem Linguagem Ubíqua oficial
 
 1. `TipoMaterial` (regra) vs `TipoResiduo` (código) — qual é o nome oficial?
 2. `SugestoesResiduos` vs `SugestaoResiduos` vs `SugestaoResiduo` — inconsistência dentro do próprio documento de regras.
@@ -563,13 +545,6 @@ classDiagram
 4. Atributos de `Empresa` — não definidos, apenas o vínculo obrigatório.
 5. Nome oficial da entidade de auditoria (RN-13 não nomeia).
 6. Módulo ESG — mencionado uma única vez (RN-23), sem regras de negócio próprias, apesar de ter tela implementada.
-### Decisões de modelagem
-
-- **Aggregate Roots**: `Empresa`, `Usuario`, `Residuo`, `Sugestao`, `PontoColeta`, `Conversa` e `Auditoria` são as fronteiras de consistência do domínio.
-- **Value Objects**: `CPF` carrega a regra de validação (RN-06) junto do dado; `PerfilUsuario` e `StatusResiduo` são enumerações fechadas — `StatusResiduo` implementa a máquina de estados da RN-11.
-- **Entidade associativa**: `AplicacaoSugestao` representa o evento de negócio da RN-15/RN-17 (relação N:N entre `Residuo` e `Sugestao`), não apenas uma tabela de junção.
-- **Gap entre regra de negócio e implementação**: `Empresa`, `TipoMaterial` (como catálogo), `Conversa`/`Mensagem` e `Auditoria` estão descritos nas regras de negócio, mas ainda não existem como entidades persistidas na API atual — ponto relevante para a seção de limitações/trabalhos futuros do TCC.
-
 ## Diagrama de Caso de Uso
 
 Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
