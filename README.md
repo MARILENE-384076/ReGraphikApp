@@ -467,6 +467,7 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo do chat entre usuários do sistema.
 
+<img width="1641" height="653" alt="Captura de tela 2026-07-07 195647" src="https://github.com/user-attachments/assets/a77684f2-b222-467f-b18a-e15a8b04c113" />
 
 ---
 
