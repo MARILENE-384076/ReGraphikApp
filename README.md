@@ -668,7 +668,8 @@ Este mapa foi construído a partir dos módulos que já apareciam organizados no
 
 Linha do tempo dos eventos de domínio do ReGraphik, organizada por fluxo de negócio, com as políticas de reação do sistema e as regras adotadas para os pontos que as regras de negócio originais deixavam em aberto.
 
-![Event Storming do ReGraphik](Modelagem/regraphik_event_storming_final.png)
+<img width="3085" height="2104" alt="regraphik_event_storming_final" src="https://github.com/user-attachments/assets/840d86ee-58ee-451f-b09d-8198af228fd6" />
+
 
 ### Legenda
 
