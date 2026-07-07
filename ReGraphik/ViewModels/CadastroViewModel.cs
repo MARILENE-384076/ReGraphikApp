@@ -42,7 +42,6 @@ namespace ReGraphik.ViewModels
         private string _mensagemErroGeral = string.Empty;
         private string _mensagemErroToken = string.Empty;
         private bool _cadastroFinalizadoComSucesso;
-        private int _abaSelecionadaIndex;
 
         private string _perfilDoToken = "User";
 
@@ -141,17 +140,6 @@ namespace ReGraphik.ViewModels
             set { _tokenDigitado = value; OnPropertyChanged(); }
         }
 
-        
-        public int AbaSelecionadaIndex
-        {
-            get => _abaSelecionadaIndex;
-            set
-            {
-                _abaSelecionadaIndex = value;
-                OnPropertyChanged(nameof(AbaSelecionadaIndex));
-            }
-        }
-
         public string MensaNome { get => _mensaNome; set { _mensaNome = value; OnPropertyChanged(); } }
         public string MensaCpf { get => _mensaCpf; set { _mensaCpf = value; OnPropertyChanged(); } }
         public string MensaEmail { get => _mensaEmail; set { _mensaEmail = value; OnPropertyChanged(); } }
@@ -167,7 +155,6 @@ namespace ReGraphik.ViewModels
         public ICommand ValidarTokenCommand { get; }
         public ICommand FinalizarCadastroCommand { get; }
         public ICommand RevelarSenhaCadastroCommand { get; }
-        public ICommand IrParaLoginCommand { get; }
 
         /// <summary>
         /// construtor
@@ -182,8 +169,6 @@ namespace ReGraphik.ViewModels
             ValidarTokenCommand = new RelayCommand(async _ => await ValidarTokenAsync(), _ => !OcupadoToken);
             FinalizarCadastroCommand = new RelayCommand(async p => await FinalizarCadastroAsync(p), _ => !Ocupado);
             RevelarSenhaCadastroCommand = new RelayCommand(p => AlternarVisibilidadeSenha(p));
-
-            IrParaLoginCommand = new RelayCommand(ExecutarIrParaLogin);
         }
 
         /// ETAPA 1: verificar e-mail 
@@ -310,22 +295,46 @@ namespace ReGraphik.ViewModels
             bool possuiErro = false;
             string senha = string.Empty;
 
-            if (parameter is Grid grid)
+            if (parameter is PasswordBox pbDireto)
             {
-                PasswordBox? pb = null;
-                TextBox? tb = null;
-                foreach (var child in grid.Children)
+                /// Se o botão passou o PasswordBox e ele está visível
+                if (pbDireto.IsVisible)
                 {
-                    if (child is PasswordBox p) pb = p;
-                    else if (child is TextBox t) tb = t;
+                    senha = pbDireto.Password;
                 }
+                else if (pbDireto.Parent is Grid gridPai)
+                {
+                    /// Se o olho estava aberto, o PasswordBox está oculto.
+                    var tb = gridPai.FindName("TxtSenhaVisivelCadastro") as TextBox;
+                    if (tb != null) senha = tb.Text;
+                }
+            }
+            else if (parameter is Grid gridCampos)
+            {
+                var pb = gridCampos.FindName("TxtSenhaCadastro") as PasswordBox;
+                var tb = gridCampos.FindName("TxtSenhaVisivelCadastro") as TextBox;
+
                 if (pb != null && tb != null)
-                    senha = pb.Visibility == Visibility.Visible ? pb.Password : tb.Text;
+                {
+                    senha = pb.IsVisible ? pb.Password : tb.Text;
+                }
             }
 
-            if (string.IsNullOrWhiteSpace(Nome)) { MensaNome = "O nome completo é obrigatório."; possuiErro = true; }
-            if (string.IsNullOrWhiteSpace(Login)) { MensaLogin = "O login é obrigatório."; possuiErro = true; }
-            if (string.IsNullOrWhiteSpace(senha)) { MensaSenha = "A senha é obrigatória."; possuiErro = true; }
+            if (string.IsNullOrWhiteSpace(Nome)) 
+            { 
+                MensaNome = "O nome completo é obrigatório."; 
+                possuiErro = true; 
+            }
+            if (string.IsNullOrWhiteSpace(Login)) 
+            { 
+                MensaLogin = "O login é obrigatório."; 
+                possuiErro = true; 
+            }
+            if (string.IsNullOrWhiteSpace(senha)) 
+            { 
+                MensaSenha = "A senha é obrigatória."; 
+                possuiErro = true; 
+            }
 
             if (string.IsNullOrWhiteSpace(CPF))
             {
@@ -334,11 +343,9 @@ namespace ReGraphik.ViewModels
             }
             else
             {
-                /// Cria uma variável limpa, apenas com números
-                string cpfLimpo = System.Text.RegularExpressions.Regex.Replace(CPF, @"[^\d]", "");
+                string cpfLimpoValidacao = System.Text.RegularExpressions.Regex.Replace(CPF, @"[^\d]", "");
 
-                /// Passa o CPF SEM pontos e SEM hífen para o validador
-                if (!ValidacaoCpfService.Validar(cpfLimpo))
+                if (!ValidacaoCpfService.Validar(cpfLimpoValidacao))
                 {
                     MensaCpf = "CPF inválido. Verifique os dígitos informados.";
                     possuiErro = true;
@@ -347,20 +354,27 @@ namespace ReGraphik.ViewModels
 
             if (possuiErro) return;
 
+
             try
             {
                 Ocupado = true;
 
-                string cpfFormatado = ValidacaoCpfService.Formatar(CPF!);
+                string cpfLimpo = System.Text.RegularExpressions.Regex.Replace(CPF!, @"[^\d]", "");
 
-                /// Cria a conta na API com o e-mail já validado pelo convite
+                string perfilApi = "User";
+                if (_perfilDoToken.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ||
+                    _perfilDoToken.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    perfilApi = "Admin";
+                }
+
+                /// Envia os dados no novo formato aceito pela API ([FromForm] MultipartFormDataContent)
                 bool cadastrado = await _autorizarService.FinalizarCadastroAsync(
-                    Nome!, cpfFormatado, Email!, Login!, senha,
-                    TokenDigitado.Trim().ToUpper(), _perfilDoToken);
+                Nome!, cpfLimpo, Email!, Login!, senha,
+                TokenDigitado.Trim().ToUpper(), perfilApi);
 
                 if (cadastrado)
                 {
-                    /// Marca o token como usado — impede reuso imediato
                     await _conviteService.MarcarComoUsadoAsync(TokenDigitado.Trim().ToUpper());
 
                     CadastroFinalizadoComSucesso = true;
@@ -368,7 +382,7 @@ namespace ReGraphik.ViewModels
                 }
                 else
                 {
-                    MensagemErroGeral = "Erro ao criar a conta. Verifique os dados e tente novamente.";
+                    MensagemErroGeral = "Erro ao criar a conta. Verifique se o login ou e-mail já não estão em uso.";
                 }
             }
             catch
@@ -379,18 +393,6 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = false;
             }
-        }
-
-        /// <summary>
-        /// Método que limpa os estados e joga o usuário para o Login
-        /// </summary>
-        private void ExecutarIrParaLogin()
-        {
-            /// Reseta o estado de sucesso para o formulário sumir se ele voltar aqui voluntariamente
-            CadastroFinalizadoComSucesso = false;
-
-            /// Chame aqui a sua lógica existente de navegação. 
-            AbaSelecionadaIndex = 0;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using ReGraphik.Models;
 using ReGraphik.Services.Interface;
+using ReGraphik.Views;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -32,26 +33,37 @@ namespace ReGraphik.Services
         /// <summary>
         public async Task<bool> FinalizarCadastroAsync(string nome, string cpf, string email, string login, string senha, string token, string perfil)
         {
-            var payload = new Dictionary<string, object>
+            /// Usamos MultipartFormDataContent para simular o [FromForm] da API
+            using var content = new MultipartFormDataContent();
+
+            /// Adiciona cada campo como StringContent (respeitando as propriedades do seu UsuarioDto da API)
+            content.Add(new StringContent(nome ?? ""), "Nome");
+            content.Add(new StringContent(cpf ?? ""), "CPF");
+            content.Add(new StringContent(email ?? ""), "Email");
+            content.Add(new StringContent(login ?? ""), "Login");
+            content.Add(new StringContent(senha ?? ""), "Senha");
+            content.Add(new StringContent(perfil ?? "User"), "Perfil");
+
+            var response = await _httpClient.PostAsync("Usuario", content);
+
+            /// adicione estas linhas temporariamente para debugar
+            if (!response.IsSuccessStatusCode)
             {
-                { "name", nome },
-                { "cpf", cpf },
-                { "email", email },
-                { "login", login },
-                { "senha", senha },
-                { "perfil", perfil }
-            };
+                /// Lê a string exata enviada pelo 'return BadRequest("...")' da sua API
+                string motivoDoServidor = await response.Content.ReadAsStringAsync();
 
-            var content = new StringContent(
-                JsonSerializer.Serialize(payload),
-                Encoding.UTF8,
-                "application/json");
+                /// Escreve no console de saída do Visual Studio (Janela Output/Saída)
+                System.Diagnostics.Debug.WriteLine($"Falha na API: {motivoDoServidor}");
 
-            var response = await _httpClient.PostAsync(
-                $"usuario/finalizar-cadastro?token={token}",
-                content);
-
-            var resposta = await response.Content.ReadAsStringAsync();
+                /// Dispara a sua janela personalizada na Thread principal com uma mensagem amigável
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Não foi possível cadastrar",
+                        "Verifique se as informações digitadas estão corretas ou se o login/e-mail já estão em uso no sistema.",
+                        MensagemWindow.TipoMensagem.Aviso);
+                });
+            }
 
             return response.IsSuccessStatusCode;
         }
