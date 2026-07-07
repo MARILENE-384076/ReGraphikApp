@@ -41,6 +41,7 @@
 - [Conceitos Técnicos Implementados](#conceitos-técnicos-implementados)
 - [Status dos Workflows de Status do Resíduo](#status-dos-workflows-de-status-do-resíduo)
 - [Como Executar o Projeto](#como-executar-o-projeto)
+- [Tela do Sistema](#Tela-Sistema)
 - [Documentação Complementar](#documentação-complementar)
 - [Integrantes](#integrantes)
 
@@ -338,17 +339,6 @@ Controla a segurança e as portas de entrada do sistema. Ele valida o acesso de 
 **Figura 1** - Diagrama de caso de uso do sistema de login e cadastro do sistema ReGraphik.
 
 <img width="975" height="825" alt="image" src="https://github.com/user-attachments/assets/43457a1a-b0ed-4f0f-8057-a418e958efb1" />
-
-### Diagrama do Sistema:
-Funciona como o mapa do menu principal. Ele lista todos os módulos do sistema que o usuário comum pode acessar a partir da tela inicial (Dashboard, Cadastro, Estoque, Mapa, Relatórios, ESG, Conta e Chat). Caso seja um Administrador a tela de Gerenciamento de Usuário pode ser usada.
-
-**Figura 1** - Diagrama de caso de uso geral do sistema ReGraphik, com um administrador logado.
-
-<img width="873" height="927" alt="image" src="https://github.com/user-attachments/assets/4ce6f6c5-78fa-4e78-9dfa-8cdd7f87a274" />
-
-**Figura 2** - Diagrama de caso de uso geral do sistema ReGraphik, com um usuário logado.
-
-<img width="897" height="852" alt="image" src="https://github.com/user-attachments/assets/945e3f89-930f-4571-87e1-e1774be34269" />
 
 ### Diagrama da Dashboard:
 Carrega a tela de indicadores visuais do usuário. Ele processa gráficos de pizza e de barras, monta a tabela de históricos recentes e calcula blocos com métricas financeiras e de volume reciclado. 
@@ -1623,7 +1613,7 @@ O arquivo `FirebaseConfig.cs` usa as mesmas credenciais do Firebase para o chat 
 
 ---
 
-### Telas do Sistema
+### Telas Sistema
 
 **Login**
 
