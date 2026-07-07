@@ -420,11 +420,6 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 <img width="1710" height="875" alt="Captura de tela 2026-07-02 201040" src="https://github.com/user-attachments/assets/ef25294d-18fd-4847-9dff-1fff9f322d97" />
 
-### Diagrama do Sistema:
-
-**Figura 1** - Diagrama de fluxo geral do sistema ReGraphik, com um administrador logado.
-
-
 ### Diagrama da Dashboard:
 
 **Figura 1** - Diagrama de fluxo da tela de dashboard do sistema ReGraphik.
