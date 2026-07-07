@@ -1,3 +1,5 @@
+
+
 # ReGraphik — Plataforma de Gestão de Estoque Reverso
 
 <div align="center">
@@ -329,217 +331,7 @@ O modelo lógico pega as Ideias do modelo conceitual e as transforma no formato 
 
 ---
 
-```mermaid
-%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#E6F1FB','primaryTextColor':'#000000','primaryBorderColor':'#185FA5','lineColor':'#FFFFFF','textColor':'#000000','classText':'#000000','fontSize':'16px'}}}%%
-classDiagram
-  class Empresa {
-    <<Aggregate Root>>
-    +string Id
-    +string RazaoSocial
-    +string CNPJ
-  }
-  class Usuario {
-    <<Aggregate Root>>
-    +string Id
-    +string Nome
-    +CPF Cpf
-    +string Email
-    +string Login
-    +PerfilUsuario Perfil
-    +DateTime DataCadastro
-    +bool Ativo
-  }
-  class PerfilUsuario {
-    <<Enumeration>>
-    User
-    Admin
-    Guest
-  }
-  class CPF {
-    <<Value Object>>
-    +string Numero
-    +bool EhValido()
-  }
-  class SolicitacaoCadastro {
-    <<Entity>>
-    +string Email
-    +string TokenValidacao
-    +bool Validado
-  }
-  class TipoMaterial {
-    <<Entity catalogo>>
-    +string Id
-    +string Nome
-  }
-  class Residuo {
-    <<Aggregate Root>>
-    +string Id
-    +string Especificacao
-    +string Origem
-    +string ProjetoOrigem
-    +double Quantidade
-    +DateTime DataCadastro
-    +string Condicao
-    +StatusResiduo Status
-  }
-  class StatusResiduo {
-    <<Enumeration>>
-    EmEstoque
-    Reaproveitado
-    Descartado
-  }
-  class Sugestao {
-    <<Aggregate Root>>
-    +string Id
-    +string TipoResiduoAceito
-    +string DescricaoSugestao
-  }
-  class AplicacaoSugestao {
-    <<Entidade associativa>>
-    +string Id
-    +DateTime DataAplicacao
-  }
-  class PontoColeta {
-    <<Aggregate Root>>
-    +string Id
-    +string NomePonto
-    +string Cidade
-    +string Estado
-    +string CEP
-    +double Latitude
-    +double Longitude
-  }
-  class Conversa {
-    <<Aggregate Root>>
-    +string Id
-  }
-  class Mensagem {
-    <<Entity>>
-    +string Id
-    +DateTime DataHora
-    +string Conteudo
-    +bool Lida
-  }
-  class Auditoria {
-    <<Aggregate Root>>
-    +string Id
-    +string Acao
-    +DateTime DataHora
-  }
 
-  Empresa "1" --> "0..*" Usuario : possui
-  Usuario "1" ..> "1" CPF : identificado_por
-  Usuario "1" ..> "1" SolicitacaoCadastro : origina
-  Usuario "1" --> "0..*" Residuo : cadastra
-  TipoMaterial "1" --> "0..*" Residuo : classifica
-  Residuo "1" --> "0..*" AplicacaoSugestao : recebe
-  Sugestao "1" --> "0..*" AplicacaoSugestao : aplicada_em
-  Usuario "2" --> "1" Conversa : participa_de
-  Conversa "1" *-- "0..*" Mensagem : contem
-  Usuario "1" --> "0..*" Auditoria : executa
-
-  note for Residuo "RN-11: transição de status\nEmEstoque -> Reaproveitado (final)\nEmEstoque -> Descartado (final)"
-  note for AplicacaoSugestao "RN-15/17: relação N:N\nResiduo x Sugestao"
-  note for Conversa "RN-20: Id determinístico\nmenor_maior dos IDs de usuário"
-```
-### Glossário de Domínio (Linguagem Ubíqua)
-
-> Extraído de `ReGraphik_Regras_Negocio.pdf`. As definições abaixo consolidam a Linguagem Ubíqua adotada pelo projeto, incluindo decisões de nomenclatura tomadas para resolver inconsistências encontradas no próprio documento de regras de negócio.
-
-#### Atores
-
-| Termo | Definição |
-|---|---|
-| **Empresa** | Organização (indústria gráfica) que cadastra usuários e utiliza o sistema como ferramenta de gestão operacional. Todo `Usuário` deve pertencer obrigatoriamente a uma. |
-| **Usuário comum** | Realiza login, cadastra resíduos, consulta o estoque reverso, aplica sugestões de reaproveitamento e gera relatórios operacionais. |
-| **Administrador** | Gerencia usuários e tipos de materiais, importa sugestões em lote via planilha e tem acesso à exclusão de registros com auditoria. |
-| **Sistema ReGraphik** | O próprio sistema, como ator: controla o estoque reverso, sugere reaproveitamento por tipo de material e gera dashboards e relatórios gerenciais. |
-
-#### Módulo: Autenticação e Cadastro
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Pré-cadastro** | Registro criado antes da confirmação do e-mail, com `Ativo = false` e um `TokenValidacao` associado. | RN-01 |
-| **Token de Validação** | Código numérico de 6 dígitos, gerado aleatoriamente, enviado por e-mail para confirmar a identidade do usuário no cadastro. | RN-01, RN-02, RN-08 |
-| **Finalização de Cadastro** | Ato de efetivar o usuário como ativo (`Ativo = true`) após o token ser validado. | RN-03 |
-| **Login** | Ato de autenticação com `login` e `senha`; retorna o objeto `Usuario` completo em caso de sucesso. | RN-04 |
-| **Perfil** | Papel do usuário no sistema. Valores possíveis: `User` (padrão), `Admin`, `Guest`. | RN-04 |
-| **Pertencimento a Empresa** | Regra de que todo usuário deve estar vinculado a uma empresa cadastrada — não existe usuário "solto". | RN-05 |
-
-**✅ Decisões adotadas:**
-- **`Guest`**: perfil de acesso somente-leitura — consulta estoque reverso, sugestões e pontos de coleta, mas não pode cadastrar resíduos, aplicar sugestões, nem acessar exclusão/gestão de usuários. Serve para demonstração do sistema sem exigir cadastro completo.
-- **`Empresa`**: atributos oficiais adotados: `Id`, `RazaoSocial`, `CNPJ`. Vínculo obrigatório com `Usuario` conforme RN-05.
-
-#### Módulo: Validação de Dados
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **CPF** | Documento de identificação do usuário, validado pelo algoritmo oficial de dígitos verificadores, único por usuário, formatado como `000.000.000-00`. | RN-06 |
-| **Upload de Imagem/Arquivo** | Ato de enviar um arquivo ao sistema; restrito a `.jpg`, `.jpeg`, `.png`, `.bmp` para foto de perfil. | RN-07 |
-
-#### Módulo: Resíduos
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Tipo de Resíduo** | Classificação obrigatória do resíduo (papel, cartão, vinil, lona, PVC, etc.), armazenada como texto livre no campo `TipoResiduo`. | RN-09 |
-| **Resíduo** | Registro de um material descartado no processo produtivo, com campos obrigatórios: Tipo de Resíduo, Especificação, Origem, Projeto de Origem, Quantidade, Data, Condição. | RN-09, RN-10 |
-| **Status do Resíduo** | Estado do ciclo de vida do resíduo. Valores: `Em Estoque` (inicial) → `Reaproveitado` (final) ou `Descartado` (final). Não existe transição de volta. | RN-11 |
-| **Auditoria** | Entidade que registra a trilha/log gerado automaticamente sempre que um registro de resíduo é excluído; exige perfil `Administrador`. Campos: `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`. | RN-13 |
-| **Relatório de Resíduos** | Conjunto de estatísticas calculadas: `TotalResiduos`, `PesoTotal`, `Reaproveitados`, `ValorEconômico`, `TotalRegistros`, filtráveis por Tipo de Resíduo, Status, Origem e Período. | RN-14 |
-
-**✅ Decisões adotadas:**
-- Nome oficial do campo: **`TipoResiduo`** (string), como já implementado no código — o termo `TipoMaterial`/`IdTipoMaterial` do documento de regras foi descartado como escopo futuro (viraria um catálogo separado, mas não é o que está implementado hoje).
-- Nome oficial da entidade de log de exclusão: **`Auditoria`**, com campos `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`.
-- **`Condicao`** permanece como texto livre (não é lista fechada), já que nenhuma regra de negócio a restringe formalmente.
-
-#### Módulo: Sugestões de Reaproveitamento
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Sugestão** | Registro cadastral de uma ideia de reaproveitamento, vinculada a um tipo de resíduo aceito. Funciona em modo consulta (somente leitura) para o usuário comum. | RN-15, RN-16 |
-| **SugestaoResiduo** | Entidade associativa que vincula uma sugestão a um resíduo específico, registrando `IdCadastroResiduo`, `IdSugestao` e `DataAplicacao`. Relação N:N entre Resíduo e Sugestão. | RN-15, RN-17 |
-| **Filtragem por Tipo de Material** | Mecanismo que casa sugestões com resíduos por correspondência **parcial e bidirecional** de texto (ex: "Papel" casa com "Papel Couché"). | RN-16 |
-| **SugestaoAplicadaEvent** | Domain Event disparado quando uma sugestão é aplicada a um resíduo. | RN-17 |
-
-**✅ Decisões adotadas:**
-- Nome oficial da entidade associativa: **`SugestaoResiduo`** (singular), conforme já implementado na classe C# e no DTO — as variações `SugestoesResiduos`/`SugestaoResiduos` do documento de regras são descartadas.
-- O evento **`SugestaoAplicadaComSucesso`** é substituído oficialmente por **`SugestaoAplicadaEvent`**, seguindo a convenção de nomenclatura de Domain Events do restante do modelo.
-
-#### Módulo: Pontos de Coleta
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Ponto de Coleta** | Local físico que aceita resíduos, com nome, cidade, estado, CEP, tipos aceitos e coordenadas geográficas. | RN-18, RN-19 |
-| **Anti-Redundância de Cidades** | Regra de cache: antes de consultar a Google Places API, verifica se a cidade já tem pontos cadastrados no Firebase; evita gasto de cota gratuita da API externa. | RN-18 |
-
-#### Módulo: Chat Interno
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Conversa** | Canal de comunicação entre dois usuários, identificado por um Id determinístico gerado ordenando alfabeticamente os IDs dos participantes (`${menor}_${maior}`). | RN-20 |
-| **Mensagem** | Unidade de comunicação dentro de uma conversa, persistida por ordem de `DataHora`; marcada como lida automaticamente ao abrir a conversa. | RN-21 |
-
-**✅ Decisão adotada:**
-- Escopo confirmado: conversas **1 para 1** apenas. Conversas em grupo ficam fora do escopo do sistema.
-
-#### Módulo: Configuração Local e Exportação
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Configuração Local** | Armazenamento no cliente desktop (arquivo `%AppData%/ReGraphik/config.txt`) do caminho da foto de perfil. | RN-22 |
-| **Exportação de Relatório** | Ato de gerar relatórios e dados ESG via diálogo nativo de impressão do Windows (`PrintDialog`), para impressora física ou PDF local. | RN-23 |
-
-**✅ Decisão adotada:**
-- O módulo **ESG/Certificação** é tratado como um subdomínio próprio, separado de "Configuração" — reconhece-se que ele ainda não tem regras de negócio formalizadas (RN-24 em diante fica reservado para isso), mas já existe como funcionalidade implementada.
-
-#### Decisões de nomenclatura e escopo adotadas
-
-1. `TipoResiduo` é o nome oficial (não `TipoMaterial`).
-2. `SugestaoResiduo` (singular) é o nome oficial da entidade associativa.
-3. Perfil `Guest` = acesso somente-leitura.
-4. `Empresa` tem `Id`, `RazaoSocial`, `CNPJ` como atributos oficiais.
-5. Entidade de log de exclusão chama-se `Auditoria`.
-6. Módulo ESG é subdomínio próprio, com regras de negócio a serem formalizadas em versão futura do documento (RN-24+).
 ## Diagrama de Caso de Uso
 
 Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
@@ -728,7 +520,107 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
 
+<img width="5678" height="2796" alt="regraphik_modelagem_dominio" src="https://github.com/user-attachments/assets/ddf7f878-52bd-4b64-9935-ac74ddfefca2" />
 
+
+### Glossário de Domínio (Linguagem Ubíqua)
+
+> Extraído de `ReGraphik_Regras_Negocio.pdf`. As definições abaixo consolidam a Linguagem Ubíqua adotada pelo projeto, incluindo decisões de nomenclatura tomadas para resolver inconsistências encontradas no próprio documento de regras de negócio.
+
+#### Atores
+
+| Termo | Definição |
+|---|---|
+| **Empresa** | Organização (indústria gráfica) que cadastra usuários e utiliza o sistema como ferramenta de gestão operacional. Todo `Usuário` deve pertencer obrigatoriamente a uma. |
+| **Usuário comum** | Realiza login, cadastra resíduos, consulta o estoque reverso, aplica sugestões de reaproveitamento e gera relatórios operacionais. |
+| **Administrador** | Gerencia usuários e tipos de materiais, importa sugestões em lote via planilha e tem acesso à exclusão de registros com auditoria. |
+| **Sistema ReGraphik** | O próprio sistema, como ator: controla o estoque reverso, sugere reaproveitamento por tipo de material e gera dashboards e relatórios gerenciais. |
+
+#### Módulo: Autenticação e Cadastro
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **Pré-cadastro** | Registro criado antes da confirmação do e-mail, com `Ativo = false` e um `TokenValidacao` associado. | RN-01 |
+| **Token de Validação** | Código numérico de 6 dígitos, gerado aleatoriamente, enviado por e-mail para confirmar a identidade do usuário no cadastro. | RN-01, RN-02, RN-08 |
+| **Finalização de Cadastro** | Ato de efetivar o usuário como ativo (`Ativo = true`) após o token ser validado. | RN-03 |
+| **Login** | Ato de autenticação com `login` e `senha`; retorna o objeto `Usuario` completo em caso de sucesso. | RN-04 |
+| **Perfil** | Papel do usuário no sistema. Valores possíveis: `User` (padrão), `Admin`, `Guest`. | RN-04 |
+| **Pertencimento a Empresa** | Regra de que todo usuário deve estar vinculado a uma empresa cadastrada — não existe usuário "solto". | RN-05 |
+
+**✅ Decisões adotadas:**
+- **`Guest`**: perfil de acesso somente-leitura — consulta estoque reverso, sugestões e pontos de coleta, mas não pode cadastrar resíduos, aplicar sugestões, nem acessar exclusão/gestão de usuários. Serve para demonstração do sistema sem exigir cadastro completo.
+- **`Empresa`**: atributos oficiais adotados: `Id`, `RazaoSocial`, `CNPJ`. Vínculo obrigatório com `Usuario` conforme RN-05.
+
+#### Módulo: Validação de Dados
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **CPF** | Documento de identificação do usuário, validado pelo algoritmo oficial de dígitos verificadores, único por usuário, formatado como `000.000.000-00`. | RN-06 |
+| **Upload de Imagem/Arquivo** | Ato de enviar um arquivo ao sistema; restrito a `.jpg`, `.jpeg`, `.png`, `.bmp` para foto de perfil. | RN-07 |
+
+#### Módulo: Resíduos
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **Tipo de Resíduo** | Classificação obrigatória do resíduo (papel, cartão, vinil, lona, PVC, etc.), armazenada como texto livre no campo `TipoResiduo`. | RN-09 |
+| **Resíduo** | Registro de um material descartado no processo produtivo, com campos obrigatórios: Tipo de Resíduo, Especificação, Origem, Projeto de Origem, Quantidade, Data, Condição. | RN-09, RN-10 |
+| **Status do Resíduo** | Estado do ciclo de vida do resíduo. Valores: `Em Estoque` (inicial) → `Reaproveitado` (final) ou `Descartado` (final). Não existe transição de volta. | RN-11 |
+| **Auditoria** | Entidade que registra a trilha/log gerado automaticamente sempre que um registro de resíduo é excluído; exige perfil `Administrador`. Campos: `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`. | RN-13 |
+| **Relatório de Resíduos** | Conjunto de estatísticas calculadas: `TotalResiduos`, `PesoTotal`, `Reaproveitados`, `ValorEconômico`, `TotalRegistros`, filtráveis por Tipo de Resíduo, Status, Origem e Período. | RN-14 |
+
+**✅ Decisões adotadas:**
+- Nome oficial do campo: **`TipoResiduo`** (string), como já implementado no código — o termo `TipoMaterial`/`IdTipoMaterial` do documento de regras foi descartado como escopo futuro (viraria um catálogo separado, mas não é o que está implementado hoje).
+- Nome oficial da entidade de log de exclusão: **`Auditoria`**, com campos `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`.
+- **`Condicao`** permanece como texto livre (não é lista fechada), já que nenhuma regra de negócio a restringe formalmente.
+
+#### Módulo: Sugestões de Reaproveitamento
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **Sugestão** | Registro cadastral de uma ideia de reaproveitamento, vinculada a um tipo de resíduo aceito. Funciona em modo consulta (somente leitura) para o usuário comum. | RN-15, RN-16 |
+| **SugestaoResiduo** | Entidade associativa que vincula uma sugestão a um resíduo específico, registrando `IdCadastroResiduo`, `IdSugestao` e `DataAplicacao`. Relação N:N entre Resíduo e Sugestão. | RN-15, RN-17 |
+| **Filtragem por Tipo de Material** | Mecanismo que casa sugestões com resíduos por correspondência **parcial e bidirecional** de texto (ex: "Papel" casa com "Papel Couché"). | RN-16 |
+| **SugestaoAplicadaEvent** | Domain Event disparado quando uma sugestão é aplicada a um resíduo. | RN-17 |
+
+**✅ Decisões adotadas:**
+- Nome oficial da entidade associativa: **`SugestaoResiduo`** (singular), conforme já implementado na classe C# e no DTO — as variações `SugestoesResiduos`/`SugestaoResiduos` do documento de regras são descartadas.
+- O evento **`SugestaoAplicadaComSucesso`** é substituído oficialmente por **`SugestaoAplicadaEvent`**, seguindo a convenção de nomenclatura de Domain Events do restante do modelo.
+
+#### Módulo: Pontos de Coleta
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **Ponto de Coleta** | Local físico que aceita resíduos, com nome, cidade, estado, CEP, tipos aceitos e coordenadas geográficas. | RN-18, RN-19 |
+| **Anti-Redundância de Cidades** | Regra de cache: antes de consultar a Google Places API, verifica se a cidade já tem pontos cadastrados no Firebase; evita gasto de cota gratuita da API externa. | RN-18 |
+
+#### Módulo: Chat Interno
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **Conversa** | Canal de comunicação entre dois usuários, identificado por um Id determinístico gerado ordenando alfabeticamente os IDs dos participantes (`${menor}_${maior}`). | RN-20 |
+| **Mensagem** | Unidade de comunicação dentro de uma conversa, persistida por ordem de `DataHora`; marcada como lida automaticamente ao abrir a conversa. | RN-21 |
+
+**✅ Decisão adotada:**
+- Escopo confirmado: conversas **1 para 1** apenas. Conversas em grupo ficam fora do escopo do sistema.
+
+#### Módulo: Configuração Local e Exportação
+
+| Termo | Definição | Origem (RN) |
+|---|---|---|
+| **Configuração Local** | Armazenamento no cliente desktop (arquivo `%AppData%/ReGraphik/config.txt`) do caminho da foto de perfil. | RN-22 |
+| **Exportação de Relatório** | Ato de gerar relatórios e dados ESG via diálogo nativo de impressão do Windows (`PrintDialog`), para impressora física ou PDF local. | RN-23 |
+
+**✅ Decisão adotada:**
+- O módulo **ESG/Certificação** é tratado como um subdomínio próprio, separado de "Configuração" — reconhece-se que ele ainda não tem regras de negócio formalizadas (RN-24 em diante fica reservado para isso), mas já existe como funcionalidade implementada.
+
+#### Decisões de nomenclatura e escopo adotadas
+
+1. `TipoResiduo` é o nome oficial (não `TipoMaterial`).
+2. `SugestaoResiduo` (singular) é o nome oficial da entidade associativa.
+3. Perfil `Guest` = acesso somente-leitura.
+4. `Empresa` tem `Id`, `RazaoSocial`, `CNPJ` como atributos oficiais.
+5. Entidade de log de exclusão chama-se `Auditoria`.
+6. Módulo ESG é subdomínio próprio, com regras de negócio a serem formalizadas em versão futura do documento (RN-24+).
 ---
 
 ## Padrão MVVM em Detalhe
