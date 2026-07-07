@@ -528,6 +528,9 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 ## Diagrama Lógico do Sistema
 
 ---
+## Modelagem de Domínio (DDD tático)
+
+<img width="5678" height="2796" alt="regraphik_modelagem_dominio" src="https://github.com/user-attachments/assets/ddf7f878-52bd-4b64-9935-ac74ddfefca2" />
 
 ## Diagrama Físico do Sistema
 
