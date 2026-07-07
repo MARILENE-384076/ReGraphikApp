@@ -444,7 +444,7 @@ classDiagram
 ```
 ### Glossário de Domínio (Linguagem Ubíqua)
 
-> Extraído de `ReGraphik_Regras_Negocio.pdf`. Este glossário é um **ponto de partida**, não um resultado final — a Linguagem Ubíqua de verdade só se consolida quando o time e quem entende do negócio concordam com os termos e resolvem as ambiguidades marcadas ao final de cada seção.
+> Extraído de `ReGraphik_Regras_Negocio.pdf`. As definições abaixo consolidam a Linguagem Ubíqua adotada pelo projeto, incluindo decisões de nomenclatura tomadas para resolver inconsistências encontradas no próprio documento de regras de negócio.
 
 #### Atores
 
@@ -466,9 +466,9 @@ classDiagram
 | **Perfil** | Papel do usuário no sistema. Valores possíveis: `User` (padrão), `Admin`, `Guest`. | RN-04 |
 | **Pertencimento a Empresa** | Regra de que todo usuário deve estar vinculado a uma empresa cadastrada — não existe usuário "solto". | RN-05 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- O perfil **`Guest`** é citado (RN-04) mas nenhuma regra descreve o que ele pode ou não fazer. É um convidado temporário? Tem as mesmas permissões de `User`? Precisa de regra própria.
-- O documento não detalha atributos de **`Empresa`** (nome, CNPJ, etc.) além de exigir o vínculo — qualquer atributo que eu tenha sugerido em diagramas anteriores (ex: CNPJ, Razão Social) foi **inferência minha**, não algo definido no documento. Precisa confirmar com o grupo.
+**✅ Decisões adotadas:**
+- **`Guest`**: perfil de acesso somente-leitura — consulta estoque reverso, sugestões e pontos de coleta, mas não pode cadastrar resíduos, aplicar sugestões, nem acessar exclusão/gestão de usuários. Serve para demonstração do sistema sem exigir cadastro completo.
+- **`Empresa`**: atributos oficiais adotados: `Id`, `RazaoSocial`, `CNPJ`. Vínculo obrigatório com `Usuario` conforme RN-05.
 
 #### Módulo: Validação de Dados
 
@@ -477,35 +477,33 @@ classDiagram
 | **CPF** | Documento de identificação do usuário, validado pelo algoritmo oficial de dígitos verificadores, único por usuário, formatado como `000.000.000-00`. | RN-06 |
 | **Upload de Imagem/Arquivo** | Ato de enviar um arquivo ao sistema; restrito a `.jpg`, `.jpeg`, `.png`, `.bmp` para foto de perfil. | RN-07 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- RN-07 fala especificamente de "Foto de perfil" — não fica claro se a mesma regra de extensão vale para o campo `Anexo` do `Residuo` (imagem do material). Vale confirmar se resíduo aceita os mesmos formatos ou outros (ex: PDF de laudo técnico).
-
 #### Módulo: Resíduos
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
-| **Tipo de Material** | Classificação obrigatória do resíduo (papel, cartão, vinil, lona, PVC, etc.), referenciada via `IdTipoMaterial`. | RN-09 |
-| **Resíduo** | Registro de um material descartado no processo produtivo, com campos obrigatórios: Tipo de Material, Especificação, Origem, Projeto de Origem, Quantidade, Data, Condição. | RN-09, RN-10 |
+| **Tipo de Resíduo** | Classificação obrigatória do resíduo (papel, cartão, vinil, lona, PVC, etc.), armazenada como texto livre no campo `TipoResiduo`. | RN-09 |
+| **Resíduo** | Registro de um material descartado no processo produtivo, com campos obrigatórios: Tipo de Resíduo, Especificação, Origem, Projeto de Origem, Quantidade, Data, Condição. | RN-09, RN-10 |
 | **Status do Resíduo** | Estado do ciclo de vida do resíduo. Valores: `Em Estoque` (inicial) → `Reaproveitado` (final) ou `Descartado` (final). Não existe transição de volta. | RN-11 |
-| **Auditoria** | Trilha/log gerado automaticamente sempre que um registro de resíduo é excluído; exige perfil `Administrador`. | RN-13 |
-| **Relatório de Resíduos** | Conjunto de estatísticas calculadas: `TotalResiduos`, `PesoTotal`, `Reaproveitados`, `ValorEconômico`, `TotalRegistros`, filtráveis por Tipo de Material, Status, Origem e Período. | RN-14 |
+| **Auditoria** | Entidade que registra a trilha/log gerado automaticamente sempre que um registro de resíduo é excluído; exige perfil `Administrador`. Campos: `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`. | RN-13 |
+| **Relatório de Resíduos** | Conjunto de estatísticas calculadas: `TotalResiduos`, `PesoTotal`, `Reaproveitados`, `ValorEconômico`, `TotalRegistros`, filtráveis por Tipo de Resíduo, Status, Origem e Período. | RN-14 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- O documento chama o campo de **`IdTipoMaterial`** (RN-09), mas o código implementado usa uma string livre chamada **`TipoResiduo`** — são o mesmo conceito com nomes diferentes, ou o negócio realmente queria um catálogo (`TipoMaterial`) que nunca foi implementado? Essa é a inconsistência mais importante do domínio inteiro.
-- RN-13 fala em "trilha de auditoria/log" sem nomear uma entidade — o nome **`Auditoria`** usado nos diagramas anteriores foi uma escolha minha para dar identidade ao conceito, não um termo do documento. Vale o grupo decidir o nome oficial.
-- Os valores possíveis de **`Condição`** (ex: "Bom", "Regular", "Danificado") não aparecem no documento de regras — só nos comentários do código. Precisa decidir se isso é regra de negócio (lista fechada) ou texto livre.
+**✅ Decisões adotadas:**
+- Nome oficial do campo: **`TipoResiduo`** (string), como já implementado no código — o termo `TipoMaterial`/`IdTipoMaterial` do documento de regras foi descartado como escopo futuro (viraria um catálogo separado, mas não é o que está implementado hoje).
+- Nome oficial da entidade de log de exclusão: **`Auditoria`**, com campos `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`.
+- **`Condicao`** permanece como texto livre (não é lista fechada), já que nenhuma regra de negócio a restringe formalmente.
 
 #### Módulo: Sugestões de Reaproveitamento
 
 | Termo | Definição | Origem (RN) |
 |---|---|---|
 | **Sugestão** | Registro cadastral de uma ideia de reaproveitamento, vinculada a um tipo de resíduo aceito. Funciona em modo consulta (somente leitura) para o usuário comum. | RN-15, RN-16 |
-| **Aplicação de Sugestão** | Ato de vincular uma sugestão a um resíduo específico, registrando `IdCadastroResiduo`, `IdSugestao` e `DataAplicacao`. Relação N:N entre Resíduo e Sugestão. | RN-15, RN-17 |
+| **SugestaoResiduo** | Entidade associativa que vincula uma sugestão a um resíduo específico, registrando `IdCadastroResiduo`, `IdSugestao` e `DataAplicacao`. Relação N:N entre Resíduo e Sugestão. | RN-15, RN-17 |
 | **Filtragem por Tipo de Material** | Mecanismo que casa sugestões com resíduos por correspondência **parcial e bidirecional** de texto (ex: "Papel" casa com "Papel Couché"). | RN-16 |
+| **SugestaoAplicadaEvent** | Domain Event disparado quando uma sugestão é aplicada a um resíduo. | RN-17 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- O documento chama a entidade associativa de **`SugestoesResiduos`** (plural, RN-15) mas em outro trecho usa **`SugestaoResiduos`** (RN-17) — e o código usa **`SugestaoResiduo`** (singular). São nomes inconsistentes para o mesmo conceito ao longo do próprio documento.
-- RN-17 menciona um evento chamado **`SugestaoAplicadaComSucesso`**, descrito como algo mantido "para compatibilidade com fluxos anteriores" — isso sugere que existiu uma versão anterior do sistema com uma nomenclatura diferente. Vale perguntar ao grupo se esse nome legado ainda deve ser usado ou pode ser substituído por um nome mais claro (ex: `SugestaoAplicadaEvent`).
+**✅ Decisões adotadas:**
+- Nome oficial da entidade associativa: **`SugestaoResiduo`** (singular), conforme já implementado na classe C# e no DTO — as variações `SugestoesResiduos`/`SugestaoResiduos` do documento de regras são descartadas.
+- O evento **`SugestaoAplicadaComSucesso`** é substituído oficialmente por **`SugestaoAplicadaEvent`**, seguindo a convenção de nomenclatura de Domain Events do restante do modelo.
 
 #### Módulo: Pontos de Coleta
 
@@ -514,9 +512,6 @@ classDiagram
 | **Ponto de Coleta** | Local físico que aceita resíduos, com nome, cidade, estado, CEP, tipos aceitos e coordenadas geográficas. | RN-18, RN-19 |
 | **Anti-Redundância de Cidades** | Regra de cache: antes de consultar a Google Places API, verifica se a cidade já tem pontos cadastrados no Firebase; evita gasto de cota gratuita da API externa. | RN-18 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- Não há regra que descreva o que acontece se os pontos de uma cidade já cacheada mudarem no mundo real (loja fechou, endereço mudou) — não existe menção a expiração de cache ou revalidação periódica.
-
 #### Módulo: Chat Interno
 
 | Termo | Definição | Origem (RN) |
@@ -524,8 +519,8 @@ classDiagram
 | **Conversa** | Canal de comunicação entre dois usuários, identificado por um Id determinístico gerado ordenando alfabeticamente os IDs dos participantes (`${menor}_${maior}`). | RN-20 |
 | **Mensagem** | Unidade de comunicação dentro de uma conversa, persistida por ordem de `DataHora`; marcada como lida automaticamente ao abrir a conversa. | RN-21 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- O esquema de Id determinístico (RN-20) só funciona para conversas **1 para 1**. O documento não prevê conversas em grupo — vale confirmar se isso é escopo do sistema ou não.
+**✅ Decisão adotada:**
+- Escopo confirmado: conversas **1 para 1** apenas. Conversas em grupo ficam fora do escopo do sistema.
 
 #### Módulo: Configuração Local e Exportação
 
@@ -534,17 +529,17 @@ classDiagram
 | **Configuração Local** | Armazenamento no cliente desktop (arquivo `%AppData%/ReGraphik/config.txt`) do caminho da foto de perfil. | RN-22 |
 | **Exportação de Relatório** | Ato de gerar relatórios e dados ESG via diálogo nativo de impressão do Windows (`PrintDialog`), para impressora física ou PDF local. | RN-23 |
 
-**⚠️ Ambiguidades a validar com o grupo:**
-- RN-23 menciona "dados ESG" pela primeira vez no documento, sem nenhuma outra regra de negócio explicando o que é o módulo ESG, o que ele calcula ou de onde vêm os dados — isso é um conceito de domínio inteiro sem regra de negócio documentada, apesar de existir uma tela ESG implementada no sistema.
+**✅ Decisão adotada:**
+- O módulo **ESG/Certificação** é tratado como um subdomínio próprio, separado de "Configuração" — reconhece-se que ele ainda não tem regras de negócio formalizadas (RN-24 em diante fica reservado para isso), mas já existe como funcionalidade implementada.
 
-#### Resumo — Termos que precisam de decisão do grupo antes de virarem Linguagem Ubíqua oficial
+#### Decisões de nomenclatura e escopo adotadas
 
-1. `TipoMaterial` (regra) vs `TipoResiduo` (código) — qual é o nome oficial?
-2. `SugestoesResiduos` vs `SugestaoResiduos` vs `SugestaoResiduo` — inconsistência dentro do próprio documento de regras.
-3. Escopo do perfil `Guest` — não definido em nenhuma regra.
-4. Atributos de `Empresa` — não definidos, apenas o vínculo obrigatório.
-5. Nome oficial da entidade de auditoria (RN-13 não nomeia).
-6. Módulo ESG — mencionado uma única vez (RN-23), sem regras de negócio próprias, apesar de ter tela implementada.
+1. `TipoResiduo` é o nome oficial (não `TipoMaterial`).
+2. `SugestaoResiduo` (singular) é o nome oficial da entidade associativa.
+3. Perfil `Guest` = acesso somente-leitura.
+4. `Empresa` tem `Id`, `RazaoSocial`, `CNPJ` como atributos oficiais.
+5. Entidade de log de exclusão chama-se `Auditoria`.
+6. Módulo ESG é subdomínio próprio, com regras de negócio a serem formalizadas em versão futura do documento (RN-24+).
 ## Diagrama de Caso de Uso
 
 Serve para mapear o comportamento do sistema a partir do ponto de vista do usuário, detalhando quais ações ele pode realizar dentro de cada módulo. 
