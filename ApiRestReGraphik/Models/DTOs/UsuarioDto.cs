@@ -40,7 +40,7 @@ namespace ApiRestReGraphik.Models.DTOs
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        public IFormFile ImagemPerfil { get; set; }
+        public IFormFile? ImagemPerfil { get; set; }
 
         [JsonPropertyName("ativo")]
         public bool Ativo { get; set; }

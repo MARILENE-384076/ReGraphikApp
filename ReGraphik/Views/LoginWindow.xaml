@@ -41,10 +41,10 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0" 
-            BorderBrush="{DynamicResource AzulMedioColor}" 
-            BorderThickness="1,1,0,1" 
-            CornerRadius="16,0,0,16"
-            ClipToBounds="True">
+                        BorderBrush="{DynamicResource AzulMedioColor}" 
+                        BorderThickness="1,1,0,1" 
+                        CornerRadius="16,0,0,16"
+                        ClipToBounds="True">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                             <GradientStop Color="#3274ba" Offset="0.0"/>
@@ -573,7 +573,7 @@
                                                      Visibility="Collapsed" Height="40"/>
 
                                             <iconPacks:PackIconMaterial Kind="Lock" Width="16" Height="16" Margin="12,0,0,0" 
-                                    Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                                                        Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
 
                                             <Button Command="{Binding RevelarSenhaCadastroCommand}"
                                                     CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
@@ -581,17 +581,25 @@
                                                     Margin="0,0,6,0" 
                                                     Background="Transparent" 
                                                     BorderThickness="0">
-                                                <iconPacks:PackIconMaterial Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
+                                                <iconPacks:PackIconMaterial x:Name="IconeOlhoCadastro" Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                             </Button>
                                         </Grid>
                                         <TextBlock Text="{Binding MensaSenha}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,0,0,16"/>
 
                                         <TextBlock Text="{Binding MensagemErroGeral}" Foreground="DarkRed" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
 
-                                        <Button Content="CRIAR CONTA" IsDefault="True"
+                                        <Button Content="CRIAR CONTA"
+                                                IsDefault="True" 
                                                 Command="{Binding FinalizarCadastroCommand}"
-                                                CommandParameter="{Binding ElementName=GridCamposSenhaCadastro}"
-                                                Style="{StaticResource BtnPrimario}" Height="40"/>
+                                                CommandParameter="{Binding ElementName=TxtSenhaCadastro}" Style="{StaticResource BtnPrimario}" 
+                                                HorizontalAlignment="Stretch" 
+                                                Height="40">
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource BtnTooltip}" BorderThickness="0" HasDropShadow="True">
+                                                    <TextBlock Text="Botão para cadastrar no sistema" FontWeight="SemiBold" FontSize="12" Margin="4,2"/>
+                                                </ToolTip>
+                                            </Button.ToolTip>
+                                        </Button>
                                     </StackPanel>
 
                                     <!-- ══ ETAPA FINAL: cadastro concluído ════════════════════════ -->
@@ -625,7 +633,7 @@
                                                     HorizontalAlignment="Center"
                                                     Margin="0,0,0,24"/>
                                         <Button Content="IR PARA O LOGIN"
-                                                Command="{Binding IrParaLoginCommand}"
+                                                Command="{Binding DataContext.AlternarAbasCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                 Style="{StaticResource BtnPrimario}"
                                                 Width="180"
                                                 Height="40"

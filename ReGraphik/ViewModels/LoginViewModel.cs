@@ -47,7 +47,9 @@ namespace ReGraphik.ViewModels
             set { _login = value; OnPropertyChanged(); }
         }
 
-        // Propriedade para indicar se o processo de login está em andamento, usada para desabilitar o botão de login enquanto a operação está sendo processada
+        /// <summary>
+        /// Propriedade para indicar se o processo de login está em andamento, usada para desabilitar o botão de login enquanto a operação está sendo processada
+        /// </summary>
         public bool Ocupado
         {
             get => _ocupado;
@@ -78,7 +80,9 @@ namespace ReGraphik.ViewModels
             set { _formularioEnviado = value; OnPropertyChanged(); }
         }
 
-        // Controla a transição da tela do Token para a animação de Sucesso (✓)
+        /// <summary>
+        /// Controla a transição da tela do Token para a animação de Sucesso (✓)
+        /// </summary>
         public bool IsTokenValido
         {
             get => _isTokenValido;
@@ -98,7 +102,7 @@ namespace ReGraphik.ViewModels
         {
             _autorizarService = autorizarService ?? new AutorizarService();
 
-            // Inicializa apenas os comandos pertencentes ao fluxo de Login
+            /// Inicializa apenas os comandos pertencentes ao fluxo de Login
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
             RevelarSenhaCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
         }
@@ -121,8 +125,30 @@ namespace ReGraphik.ViewModels
                 MensaSenha = "Erro interno ao processar o campo de senha.";
                 return;
             }
-
             string senhaDigitada = passwordBox.Password;
+
+            /// Captura a senha de forma inteligente se vier o Grid completo
+            if (parameter is Grid gridCampos)
+            {
+                var pb = gridCampos.FindName("TxtSenhaLogin") as PasswordBox;
+                var tb = gridCampos.FindName("TxtSenhaVisivel") as TextBox;
+
+                if (pb != null && tb != null)
+                {
+                    /// Se o PasswordBox estiver visível, pega dele. Se não (olho aberto), pega do TextBox
+                    senhaDigitada = pb.IsVisible ? pb.Password : tb.Text;
+                }
+            }
+            /// Mantém a compatibilidade caso venha o PasswordBox direto
+            else if (parameter is PasswordBox pbDireto)
+            {
+                senhaDigitada = pbDireto.Password;
+            }
+            else
+            {
+                MensaSenha = "Erro interno ao processar o campo de senha.";
+                return;
+            }
             bool possuiErro = false;
 
             if (string.IsNullOrWhiteSpace(Login))
@@ -143,7 +169,7 @@ namespace ReGraphik.ViewModels
             {
                 Ocupado = true;
 
-                // Realiza a autenticação direta pelo serviço
+                /// Realiza a autenticação direta pelo serviço
                 Usuario? usuario = await _autorizarService.LoginAsync(Login, senhaDigitada);
 
                 if (usuario == null)
@@ -152,11 +178,11 @@ namespace ReGraphik.ViewModels
                     return;
                 }
 
-                // Inicia a sessão: armazena o usuário logado e dispara o timer de inatividade
+                /// Armazena o usuário logado e dispara o timer de inatividade
                 UsuarioSessaoService.Instancia.IniciarSessao(usuario);
                 UsuarioSessaoService.Instancia.FotoCaminho = usuario.FotoPerfil;
 
-                // Abre a tela principal caso o login seja bem-sucedido
+                /// Abre a tela principal caso o login seja bem-sucedido
                 var main = new MainWindow(usuario);
                 main.Show();
 
@@ -194,51 +220,43 @@ namespace ReGraphik.ViewModels
         {
             if (parameter is not Grid gridCampos) return;
 
-            PasswordBox passwordBox = null;
-            TextBox textBoxVisivel = null;
+            PasswordBox? passwordBox = null;
+            TextBox? textBoxVisivel = null;
+            PackIconMaterial? iconeOlho = null;
 
-            // Corrigido: Usamos a classe genérica base PackIconControlBase ou varremos dinamicamente 
-            // para evitar problemas de tipos fortemente declarados sem o namespace exato.
-            object iconeOlho = gridCampos.FindName("IconeOlho") ?? gridCampos.FindName("IconeOlho1");
-
-            // Busca os elementos diretamente na árvore pelo Name cadastrado no XAML
-            passwordBox = gridCampos.FindName("TxtSenhaLogin") as PasswordBox;
-            textBoxVisivel = gridCampos.FindName("TxtSenhaVisivel") as TextBox;
-
-            if (passwordBox == null || textBoxVisivel == null)
+            foreach (var child in gridCampos.Children)
             {
-                foreach (var child in gridCampos.Children)
-                {
-                    if (child is PasswordBox pb) passwordBox = pb;
-                    else if (child is TextBox tb) textBoxVisivel = tb;
-                }
+                if (child is PasswordBox pb)
+                    passwordBox = pb;
+                else if (child is TextBox tb)
+                    textBoxVisivel = tb;
+                else if (child is Button btn && btn.Content is PackIconMaterial icon)
+                    iconeOlho = icon;
             }
 
             if (passwordBox == null || textBoxVisivel == null) return;
 
+            /// Executa a inversão de visibilidade e cópia de valores
             if (passwordBox.Visibility == Visibility.Visible)
             {
+                /// Revelar Senha
                 textBoxVisivel.Text = passwordBox.Password;
                 passwordBox.Visibility = Visibility.Collapsed;
                 textBoxVisivel.Visibility = Visibility.Visible;
 
-                if (iconeOlho is PackIconMaterial iconMat)
-                {
-                    iconMat.Kind = PackIconMaterialKind.EyeOff;
-                }
+                if (iconeOlho != null)
+                    iconeOlho.Kind = PackIconMaterialKind.EyeOff;
             }
             else
             {
+                /// Ocultar Senha
                 passwordBox.Password = textBoxVisivel.Text;
                 textBoxVisivel.Visibility = Visibility.Collapsed;
                 passwordBox.Visibility = Visibility.Visible;
 
-                if (iconeOlho is PackIconMaterial iconMat)
-                {
-                    iconMat.Kind = PackIconMaterialKind.Eye;
-                }
+                if (iconeOlho != null)
+                    iconeOlho.Kind = PackIconMaterialKind.Eye;
             }
         }
     }
-
 }
