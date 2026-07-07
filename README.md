@@ -639,6 +639,34 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 5. Entidade de log de exclusão chama-se `Auditoria`.
 6. Módulo ESG é subdomínio próprio, com regras de negócio a serem formalizadas em versão futura do documento (RN-24+).
 ---
+## Mapa de Bounded Contexts
+
+Fronteiras entre os subdomínios do ReGraphik, classificados segundo sua relevância estratégica para o negócio, com as relações de integração entre eles (padrões de Context Mapping).
+
+### Observação importante
+
+Este mapa foi construído a partir dos módulos que já apareciam organizados no documento `ReGraphik_Regras_Negocio.pdf` e do glossário de domínio já consolidado — **não substitui uma sessão real de Context Mapping com o grupo**. As fronteiras aqui são a melhor proposta possível a partir da documentação disponível; vale validar com o time, principalmente o encaixe de **ESG** (que tem pouquíssima regra de negócio formalizada) e se **Comunicação Interna** realmente deveria estar tão desacoplada dos demais contextos.
+<img width="2541" height="935" alt="regraphik_bounded_context_map" src="https://github.com/user-attachments/assets/04f1f1c7-a74e-451d-8677-c6f206c72b2c" />
+
+### Classificação dos subdomínios
+
+| Subdomínio | Classificação | Justificativa |
+|---|---|---|
+| **Estoque Reverso** | 🟢 Domínio Core | É a razão de existir do sistema — controlar o ciclo de vida do resíduo é o diferencial competitivo do ReGraphik. |
+| **Reaproveitamento** | 🟢 Domínio Core | Junto com Estoque Reverso, entrega o valor central: transformar resíduo em economia circular real, não só um cadastro. |
+| **Identidade e Acesso** | 🔵 Subdomínio de Apoio | Necessário para o sistema funcionar, mas não é o diferencial — autenticação é resolvida do mesmo jeito em qualquer sistema. |
+| **Pontos de Coleta** | 🔵 Subdomínio de Apoio | Apoia a operação (achar onde descartar), mas depende inteiramente de um sistema externo (Google Places). |
+| **ESG e Certificação** | 🔵 Subdomínio de Apoio | Importante para compliance e imagem da empresa, mas consome dados de outros contextos em vez de gerar valor por si só. |
+| **Comunicação Interna** | ⚪ Subdomínio Genérico | Um chat 1-para-1 é um problema já resolvido no mercado (poderia ser um serviço pronto); não há motivo de negócio pra reinventar aqui. |
+
+### Relações entre contextos (Context Mapping)
+
+- **Identidade e Acesso → Estoque Reverso / Comunicação Interna** (*Customer/Supplier*): fornece `UsuarioId`, mas não dita como esses contextos usam essa informação — cada um decide sozinho o que fazer com o usuário autenticado.
+- **Estoque Reverso → Reaproveitamento** (*Customer/Supplier*): Reaproveitamento depende do `TipoResiduo` cadastrado no Estoque Reverso para fazer o matching de sugestões (RN-16) — Estoque Reverso é o lado "upstream" (fornecedor), não pode ser alterado livremente sem quebrar o outro contexto.
+- **Estoque Reverso / Identidade e Acesso → ESG** (*Customer/Supplier*): ESG consome dados agregados de resíduos e dados da empresa para calcular indicadores — é o contexto mais "downstream" de todos, o que faz sentido já que é o que tem menos regras de negócio formalizadas hoje.
+- **Pontos de Coleta → Google Places API** (*Anti-Corruption Layer*): a integração com a API do Google é isolada por uma camada de tradução, para que o modelo interno de `PontoColeta` não fique acoplado ao formato de dados do Google (RN-18, cache no Firebase antes de chamar a API externa).
+
+
 
 ## Padrão MVVM em Detalhe
 
