@@ -664,6 +664,28 @@ Este mapa foi construído a partir dos módulos que já apareciam organizados no
 - **Estoque Reverso / Identidade e Acesso → ESG** (*Customer/Supplier*): ESG consome dados agregados de resíduos e dados da empresa para calcular indicadores — é o contexto mais "downstream" de todos, o que faz sentido já que é o que tem menos regras de negócio formalizadas hoje.
 - **Pontos de Coleta → Google Places API** (*Anti-Corruption Layer*): a integração com a API do Google é isolada por uma camada de tradução, para que o modelo interno de `PontoColeta` não fique acoplado ao formato de dados do Google (RN-18, cache no Firebase antes de chamar a API externa).
 
+ ## Event Storming
+
+Linha do tempo dos eventos de domínio do ReGraphik, organizada por fluxo de negócio, com as políticas de reação do sistema e as regras adotadas para os pontos que as regras de negócio originais deixavam em aberto.
+
+![Event Storming do ReGraphik](Modelagem/regraphik_event_storming_final.png)
+
+### Legenda
+
+- 🟡 **Ator** — quem inicia a ação (Usuário, Administrador, Visitante)
+- 🔵 **Comando** — a intenção/ação disparada por um ator
+- 🟠 **Evento de Domínio** — o que efetivamente aconteceu no negócio (sempre no passado)
+- 🟣 **Política** — uma reação automática do sistema a um evento ("sempre que X, então Y")
+- 🟢 **Regra Adotada** — decisão tomada para fechar uma ambiguidade que a documentação de regras de negócio original não cobria
+
+### Regras adotadas para fechar as ambiguidades
+
+1. **Tentativas de token inválido**: após 5 tentativas inválidas, o token expira e o usuário precisa solicitar um novo.
+2. **Bloqueio de login**: após 5 tentativas de login malsucedidas, bloqueio temporário de 15 minutos.
+3. **Autorização para mudar status do resíduo**: apenas o usuário que cadastrou o resíduo ou um Administrador podem chamar `Reaproveitar()`/`Descartar()`.
+4. **Múltiplos matches de sugestão**: o sistema lista todas as sugestões compatíveis, ordenadas por especificidade do match, e o usuário escolhe manualmente qual aplicar.
+5. **Expiração de cache de pontos de coleta**: o cache de uma cidade expira a cada 30 dias; depois disso, uma nova consulta é feita à Google Places API mesmo que a cidade já tenha pontos cadastrados.
+
 ---
 
 ## Padrão MVVM em Detalhe
