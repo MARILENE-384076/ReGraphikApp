@@ -687,6 +687,13 @@ Linha do tempo dos eventos de domínio do ReGraphik, organizada por fluxo de neg
 4. **Múltiplos matches de sugestão**: o sistema lista todas as sugestões compatíveis, ordenadas por especificidade do match, e o usuário escolhe manualmente qual aplicar.
 5. **Expiração de cache de pontos de coleta**: o cache de uma cidade expira a cada 30 dias; depois disso, uma nova consulta é feita à Google Places API mesmo que a cidade já tenha pontos cadastrados.
 
+## Exemplo de Modelo Rico (DDD)
+
+Para ilustrar como o agregado `Residuo` ficaria seguindo o modelo de domínio (ao invés do modelo anêmico atual), veja o exemplo comentado:
+
+📄 [Residuo_ModeloRico_Exemplo.cs](ApiRestReGraphik/Domain/Residuo_ModeloRico_Exemplo.cs)
+
+O exemplo compara lado a lado o modelo anêmico (como está implementado hoje) com uma versão rica, incluindo construtor privado + factory method, invariantes protegidas (RN-11), Domain Events e a regra de autorização decidida no Event Storming.
 ---
 
 ## Padrão MVVM em Detalhe
