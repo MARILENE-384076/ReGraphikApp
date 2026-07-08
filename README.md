@@ -345,63 +345,63 @@ Controla a segurança e as portas de entrada do sistema. Ele valida o acesso de 
 
 **Figura 1** - Diagrama de caso de uso do sistema de login e cadastro do sistema ReGraphik.
 
-<img width="975" height="825" alt="image" src="https://github.com/user-attachments/assets/43457a1a-b0ed-4f0f-8057-a418e958efb1" />
+<img width="975" height="825" alt="Diagrama de Caso de Uso - Login_Cadastro" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso - Login_Cadastro.png" />
 
 ### Diagrama da Dashboard:
 Carrega a tela de indicadores visuais do usuário. Ele processa gráficos de pizza e de barras, monta a tabela de históricos recentes e calcula blocos com métricas financeiras e de volume reciclado. 
 
 **Figura 1** - Diagrama de caso de uso da tela de dashboard do sistema ReGraphik.
 
-<img width="842" height="932" alt="image" src="https://github.com/user-attachments/assets/355fe1f0-a565-481f-9e41-cc0c56bc260d" />
+<img width="842" height="932" alt="Diagrama de Caso de Uso_Dashboard" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Dashboard.png" />
 
 ### Diagrama de Cadastro de Resíduo:
 Gerencia o formulário de entrada de novos descartes. Ele exige que o usuário preencha dados como tipo, peso, origem e dimensões do material, valida essas informações e as salva no banco de dados. 
 
 **Figura 1** - Diagrama de caso de uso da tela de cadastro de resíduos do sistema ReGraphik.
 
-<img width="978" height="840" alt="image" src="https://github.com/user-attachments/assets/190812f1-1693-4de7-8cf6-dabd72f09627" />
+<img width="978" height="840" alt="Diagrama de Caso de Uso_Cadastro de Residuo" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Cadastro de Residuo.png" />
 
 ### Diagrama de Estoque Reverso:
 Exibe e organiza os materiais já cadastrados. Ele permite que o usuário filtre seus resíduos por atributos (como tipo e período) e exibe sugestões inteligentes do sistema sobre como reaproveitar cada material. 
 
 **Figura 1** - Diagrama de caso de uso da tela de estoque reverso do sistema ReGraphik.
 
-<img width="1033" height="906" alt="image" src="https://github.com/user-attachments/assets/a7f76237-2fea-4d8f-a841-301be3d046f9" />
+<img width="1033" height="906" alt="Diagrama de Caso de Uso_Estoque Reverso" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Estoque Reverso.png" />
 
 ### Diagrama de Mapa de Pontos de Coleta:
 Localiza pontos físicos de descarte. Ele abre um mapa interativo na tela, permite que o usuário digite o nome de uma cidade e mostra os postos de coleta autorizados na região. 
 
 **Figura 1** - Diagrama de caso de uso do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="1387" height="830" alt="image" src="https://github.com/user-attachments/assets/e8f59547-9f05-4fdf-91a7-a5ed5d67d3cd" />
+<img width="1387" height="830" alt="Diagrama de Caso de Uso_Mapa" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Mapa.png" />
 
 ### Diagrama de Relatórios:
 Consolida históricos para auditoria. Ele exige que o usuário defina filtros detalhados (como datas, tipo de material e status) para cruzar os dados, gerar um relatório consolidado e exportá-lo em formato PDF. 
 
 **Figura 1** - Diagrama de caso de uso da tela de relatórios do sistema ReGraphik.
 
-<img width="1287" height="902" alt="image" src="https://github.com/user-attachments/assets/38227de9-bb69-47de-98cf-52e0a3efe5ca" />
+<img width="1287" height="902" alt="Diagrama de Caso de Uso_Relatório" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Relatório.png" />
 
 ### Diagrama de Certificação ESG:
 Mede e comprova o impacto ecológico. Ele mostra ao usuário os indicadores de sustentabilidade alcançados e permite a geração e exportação de um relatório comprobatório para auditorias ambientais. 
 
 **Figura 1** - Diagrama de caso de uso da tela de certificação ESG do sistema ReGraphik.
 
-<img width="1565" height="837" alt="image" src="https://github.com/user-attachments/assets/68676dac-c05c-448f-9693-175bf2460ecc" />
+<img width="1565" height="837" alt="Diagrama de Caso de Uso_Certificação ESG" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Certificação ESG.png" />
 
 ### Diagrama de Conta do Usuário:
 Faz a gestão do perfil. Ele exibe os dados cadastrais do próprio usuário logado e abre caminhos para que ele execute ações de segurança ou personalização, como alterar a senha ou mudar a foto de perfil. 
 
 **Figura 1** - Diagrama de caso de uso da tela de informações do usuário do sistema ReGraphik.
 
-<img width="1317" height="788" alt="image" src="https://github.com/user-attachments/assets/e83730a6-8dbe-48e4-bc29-0db49c099bbc" />
+<img width="1317" height="788" alt="Diagrama de Caso de Uso_Minha Conta" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Minha Conta.png" />
 
 ### Diagrama de Chat:
 Intermedia a comunicação interna do app. Ele permite abrir uma lista de contatos, selecionar um usuário específico e trocar mensagens de texto para combinar detalhes de coletas ou doações. 
 
 **Figura 1** - Diagrama de caso de uso do chat entre usuários do sistema.
 
-<img width="1373" height="746" alt="image" src="https://github.com/user-attachments/assets/c7131115-4ae5-4fa0-81f5-e8de372e1523" />
+<img width="1373" height="746" alt="Diagrama de Caso de Uso_Chat" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Chat.png" />
 
 ---
 
@@ -413,57 +413,70 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo do sistema de login e cadastro do sistema ReGraphik.
 
-<img width="1671" height="411" alt="Captura de tela 2026-07-02 201118" src="https://github.com/user-attachments/assets/c44db327-d77c-4c42-85eb-7ad469426831" />
+<img width="1671" height="411" alt="Diagrama de Fluxo_Login" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Login.png" />
+
 
 ### Diagrama de Cadastro:
 
 **Figura 1** - Diagrama de fluxo do sistema de cadastro do sistema ReGraphik.
 
-<img width="1710" height="875" alt="Captura de tela 2026-07-02 201040" src="https://github.com/user-attachments/assets/ef25294d-18fd-4847-9dff-1fff9f322d97" />
+<img width="1657" height="856" alt="Diagrama de Fluxo_CadastroResiduos" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Cadastro.png" />
+
 
 ### Diagrama da Dashboard:
 
 **Figura 1** - Diagrama de fluxo da tela de dashboard do sistema ReGraphik.
+
+<img width="1530" height="821" alt="Diagrama de Fluxo_Dashboard" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Dashboard.png" />
 
 
 ### Diagrama de Cadastro de Resíduo:
 
 **Figura 1** - Diagrama de fluxo da tela de cadastro de resíduos do sistema ReGraphik.
 
+<img width="1657" height="856" alt="Diagrama de Fluxo_CadastroResiduos" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_CadastroResiduos.png" />
+
 
 ### Diagrama de Estoque Reverso:
 
 **Figura 1** - Diagrama de fluxo da tela de estoque reverso do sistema ReGraphik.
+
+<img width="1440" height="876" alt="Diagrama de Fluxo_EstoqueReverso" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_EstoqueReverso.png" />
 
 
 ### Diagrama de Mapa de Pontos de Coleta:
 
 **Figura 1** - Diagrama de fluxo do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="1880" height="685" alt="image" src="https://github.com/user-attachments/assets/d0df307c-4bc4-437e-9b8c-1fd6ecda78dd" />
+<img width="1880" height="685" alt="Diagrama de Fluxo_Mapa" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Mapa.png" />
+
 
 ### Diagrama de Relatórios:
 
 **Figura 1** - Diagrama de fluxo da tela de relatórios do sistema ReGraphik.
+
+<img width="1717" height="732" alt="Diagrama de Fluxo_Relatório" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Relatório.png" />
 
 
 ### Diagrama de Certificação ESG:
 
 **Figura 1** - Diagrama de fluxo da tela de certificação ESG do sistema ReGraphik.
 
-<img width="1826" height="565" alt="image" src="https://github.com/user-attachments/assets/af5f47cb-f57b-44f3-8872-7082eeec0c8f" />
+<img width="1623" height="523" alt="Diagrama de Fluxo_ESG" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_ESG.png" />
+
 
 ### Diagrama de Conta do Usuário:
 
 **Figura 1** - Diagrama de fluxo da tela de informações do usuário do sistema ReGraphik.
 
-<img width="1870" height="807" alt="image" src="https://github.com/user-attachments/assets/fd5d396f-a10e-4103-bd64-dc029232db13" />
+<img width="1807" height="740" alt="Diagrama de Fluxo_ContaUsuário" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_ContaUsuário.png" />
+
 
 ### Diagrama de Chat:
 
 **Figura 1** - Diagrama de fluxo do chat entre usuários do sistema.
 
-<img width="1641" height="653" alt="Captura de tela 2026-07-07 195647" src="https://github.com/user-attachments/assets/a77684f2-b222-467f-b18a-e15a8b04c113" />
+<img width="1641" height="653" alt="Diagrama de Fluxo_Chat" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Chat.png" />
 
 ---
 
