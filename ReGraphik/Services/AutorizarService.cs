@@ -157,7 +157,7 @@ namespace ReGraphik.Services
             {
                 string erroDaApi = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"Erro retornado pela API: {erroDaApi}");
-                return null; // Agora permitido pois alteramos o retorno do método para string?
+                return null;
             }
 
             /// Captura o JSON do usuário atualizado
@@ -173,5 +173,52 @@ namespace ReGraphik.Services
             return usuarioAtualizado?.FotoPerfil;
         }
 
+        /// <summary>
+        /// Método de recuperar senha do usuário
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<string> RecuperarSenhaAsync(string email)
+        {
+            try
+            {
+                using var client = new HttpClient();
+
+                /// Define o endereço da sua API (ajuste a rota /api/auth/recuperar se for diferente)
+                string url = "https://webregraphik.runasp.net/api/Autorizar/RecuperarSenha";
+
+                var dados = new { email = email };
+                string json = JsonSerializer.Serialize(dados);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                /// az o disparo via POST
+                var response = await client.PostAsync(url, content);
+
+                /// Lê o retorno da API
+                string resultado = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    /// Retorna a mensagem de sucesso da API (ou uma padrão se vier vazia)
+                    return string.IsNullOrWhiteSpace(resultado) ? "E-mail de recuperação enviado com sucesso." : resultado;
+                }
+                else
+                {
+                    /// Se a API retornar um erro (ex: 400 Bad Request, 404 Not Found), lança uma exceção com o texto retornado
+                    throw new Exception(string.IsNullOrWhiteSpace(resultado) ? $"Erro no servidor ({response.StatusCode})." : resultado);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                /// Erros de conexão, queda de internet, servidor fora do ar, etc.
+                throw new Exception("Não foi possível conectar ao servidor. Verifique sua conexão.", ex);
+            }
+            catch (Exception)
+            {
+                /// Repassa qualquer outro erro para ser capturado pelo 'catch' da sua ViewModel
+                throw;
+            }
+        }
     }
 }
