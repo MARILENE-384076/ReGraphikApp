@@ -105,6 +105,7 @@ namespace ReGraphik.ViewModels
             /// Inicializa apenas os comandos pertencentes ao fluxo de Login
             EntrarCommand = new RelayCommand(async (param) => await Entrar(param), CanEntrar);
             RevelarSenhaCommand = new RelayCommand((param) => AlternarVisibilidadeSenha(param));
+            EsqueciSenhaCommand = new RelayCommand((param) => AbrirEsqueciSenhaWindow());
         }
 
 
@@ -257,6 +258,15 @@ namespace ReGraphik.ViewModels
                 if (iconeOlho != null)
                     iconeOlho.Kind = PackIconMaterialKind.Eye;
             }
+        }
+
+        /// <summary>
+        /// Método para abrir o botão de esqueci a senha 
+        /// </summary>
+        private void AbrirEsqueciSenhaWindow()
+        {
+            var esqueciSenhaWindow = new EsqueciSenhaWindow();
+            esqueciSenhaWindow.ShowDialog();
         }
     }
 }

@@ -21,5 +21,7 @@ namespace ReGraphik.Services.Interface
         Task<bool> AtualizarAsync(string id, object usuario);
 
         Task<string?> AtualizarComFotoAsync(string id, Usuario usuario, string caminhoFoto);
+
+        Task<string> RecuperarSenhaAsync(string email);
     }
 }

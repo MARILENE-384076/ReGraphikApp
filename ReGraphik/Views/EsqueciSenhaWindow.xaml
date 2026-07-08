@@ -1,0 +1,104 @@
+﻿<Window x:Class="ReGraphik.Views.EsqueciSenhaWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Recuperar Senha" 
+        Height="450" Width="420"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStyle="None" 
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border Background="#F8FAFC" CornerRadius="16" Margin="12">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="25" ShadowDepth="4" Opacity="0.15" Color="#0F172A"/>
+        </Border.Effect>
+
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Button Grid.Row="0" Content="✕" Width="30" Height="30" Click="BtnFechar_Click"
+                    Background="Transparent" BorderThickness="0" Foreground="#64748B" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E2E8F0"/>
+                                <Setter Property="Foreground" Value="#0F172A"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,10,0,24">
+                <Border Background="#EFF6FF" CornerRadius="20" Width="64" Height="64" Margin="0,0,0,16" HorizontalAlignment="Center">
+                    <Path Data="M12,17A2,2 0 0,0 14,15C14,14.21 13.63,13.5 13,13.12V9H11V13.12C10.37,13.5 10,14.21 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" 
+                          Fill="#3B82F6" Width="28" Height="28" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+
+                <TextBlock Text="Recuperar Senha" FontSize="22" FontWeight="Bold" Foreground="#0F172A" HorizontalAlignment="Center"/>
+                <TextBlock Text="Insira o e-mail cadastrado na sua conta. Enviaremos um link para a redefinição de sua senha." 
+                           FontSize="13" Foreground="#64748B" TextWrapping="Wrap" TextAlignment="Center" Margin="0,8,0,0" Width="300"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" VerticalAlignment="Center">
+                <TextBlock Text="E-mail Corporativo" FontSize="12" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,6"/>
+                <TextBox x:Name="TxtEmail" 
+                         Style="{StaticResource InputControlStyle}" 
+                         Height="42" 
+                         Padding="10,0" 
+                         VerticalContentAlignment="Center"
+                         Tag="exemplo@empresa.com"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Margin="0,20,0,10">
+                <Button Content="Enviar Link de Recuperação" 
+                        Command="{Binding RecuperarSenhaCommand}"
+                        Background="#3B82F6" Foreground="White" FontWeight="SemiBold" FontSize="14"
+                        Height="44" BorderThickness="0">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#2563EB"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button Content="Voltar para o Login" 
+                        Click="BtnVoltar_Click"
+                        Background="Transparent" Foreground="#64748B" FontSize="13" FontWeight="Medium"
+                        Margin="0,12,0,0" BorderThickness="0"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

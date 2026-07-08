@@ -354,6 +354,16 @@
                                                 </ToolTip>
                                             </Button.ToolTip>
                                         </Button>
+
+                                        <Button x:Name="BtnEsqueciSenha" Content="Esqueci minha Senha" Background="Transparent" BorderThickness="0" 
+                                                Foreground="#0284C7" FontSize="12" FontWeight="SemiBold" Cursor="Hand" 
+                                                HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding EsqueciSenhaCommand}">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <TextBlock Text="{TemplateBinding Content}" TextDecorations="Underline"/>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                        </Button>
                                     </StackPanel>
                                 </Grid>
                             </TabItem>
