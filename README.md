@@ -534,7 +534,8 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 ## Diagrama de Domínio (DDD tático)
 
-<img width="5678" height="2796" alt="regraphik_modelagem_dominio" src="https://github.com/user-attachments/assets/ddf7f878-52bd-4b64-9935-ac74ddfefca2" />
+<img width="4880" height="2831" alt="regraphik_modelagem_dominio (1)" src="https://github.com/user-attachments/assets/5a2fdb55-7c12-48e1-b518-78619d60f9d1" />
+
 
 ### Glossário de Domínio (Linguagem Ubíqua)
 
