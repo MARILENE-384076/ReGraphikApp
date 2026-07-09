@@ -488,13 +488,14 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência do sistema de login do sistema ReGraphik.
 
+<img width="941" height="857" alt="Diagrama de Sequência_Login" src="https://github.com/user-attachments/assets/aa5c4c16-6392-4392-95e2-2e3ed6eb35d7" />
+
+
 ### Diagrama de Cadastro:
 
 **Figura 1** - Diagrama de sequência do sistema de cadastro do sistema ReGraphik.
 
-### Diagrama do Sistema:
 
-**Figura 1** - Diagrama de sequência geral do sistema ReGraphik, com um administrador logado.
 
 ### Diagrama da Dashboard:
 
@@ -502,18 +503,25 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 <img width="677" height="771" alt="Diagrama de Sequência_Dashboard" src="https://github.com/user-attachments/assets/51f87544-a8fe-469d-b46c-6623cd5cccf6" />
 
+
 ### Diagrama de Cadastro de Resíduo:
 
 **Figura 1** - Diagrama de sequência da tela de cadastro de resíduos do sistema ReGraphik.
+
+<img width="755" height="876" alt="Diagrama de Sequência_CadastroResíduo" src="https://github.com/user-attachments/assets/ab8ac834-23c4-4e36-9c89-5f9787b0d476" />
+
 
 ### Diagrama de Estoque Reverso:
 
 **Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
 
 
+
 ### Diagrama de Mapa de Pontos de Coleta:
 
 **Figura 1** - Diagrama de sequência do Mapa de pontos de coleta do sistema ReGraphik.
+
+<img width="662" height="851" alt="Diagrama de Sequência_Mapa" src="https://github.com/user-attachments/assets/bd727515-759e-4e8f-9484-5b8450fcd71c" />
 
 
 ### Diagrama de Relatórios:
@@ -525,6 +533,7 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
 
+
 ### Diagrama de Conta do Usuário:
 
 **Figura 1** - Diagrama de sequência da tela de informações do usuário do sistema ReGraphik.
@@ -533,6 +542,7 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 ### Diagrama de Chat:
 
 **Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
+
 
 ---
 
