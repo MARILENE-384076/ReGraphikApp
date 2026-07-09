@@ -462,7 +462,7 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo da tela de certificação ESG do sistema ReGraphik.
 
-<img width="1623" height="523" alt="Diagrama de Fluxo_ESG" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_ESG.png" />
+<img width="1840" height="638" alt="Diagrama de Fluxo_ESG" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_ESG.png" />
 
 
 ### Diagrama de Conta do Usuário:
