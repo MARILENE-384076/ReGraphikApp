@@ -566,9 +566,13 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 ---
 
-## Diagrama de Domínio (DDD tático)
+## Modelagem de Domínio
 
-<img width="4880" height="2831" alt="regraphik_modelagem_dominio (1)" src="https://github.com/user-attachments/assets/5a2fdb55-7c12-48e1-b518-78619d60f9d1" />
+### Diagrama de Domínio
+
+Visão macro do domínio de negócio do ReGraphik: as entidades principais e como elas se relacionam, independente de qualquer detalhe técnico ou de implementação.
+
+<img width="1436" height="1209" alt="regraphik_modelagem_dominio_macro" src="https://github.com/user-attachments/assets/e9fd5042-0d13-4ee8-8a34-8925e3d31748" />
 
 
 ### Glossário de Domínio (Linguagem Ubíqua)
