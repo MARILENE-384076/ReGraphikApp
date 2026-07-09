@@ -558,8 +558,19 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 ## Diagrama Lógico do Sistema
 
+## Modelagem Lógica Macro do Sistema
 
----
+O sistema é composto por um cliente desktop em **WPF** e uma **API**, que se comunicam entre si em via de mão dupla. A API é responsável por persistir e consultar os dados no **Firebase**, retornando as informações para o WPF exibir ao usuário.
+
+<img width="2084" height="1092" alt="diagrama-arquitetura" src="https://github.com/user-attachments/assets/360c81ea-6319-41da-9475-27c6e97e5c28" />
+
+
+### Módulos funcionais
+
+- **Cadastro de Resíduos** — permite cadastrar os resíduos informando dimensões, tipo e fotos do item.
+- **Estoque Reverso** — armazena os resíduos que foram cadastrados e sugere possíveis destinações de acordo com o tipo de cada resíduo.
+- **Mapa** — busca e exibe os pontos de coleta disponíveis.
+- **Relatórios** — atualiza os itens cadastrados e permite baixar um PDF com o relatório consolidado desses resíduos.
 
 ## Diagrama Físico do Sistema
 
