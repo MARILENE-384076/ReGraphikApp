@@ -32,7 +32,7 @@
 - [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
 - [Diagrama de Fluxo](#diagrama-de-fluxo)
 - [Diagrama de Sequência](#diagrama-de-sequência)
-- [Diagrama Lógico do Sistema](#diagrama-lógico-do-sistema)
+- [Modelagem Lógica Macro do Sistema](#modelagem-lógica-macro-do-sistema)
 - [Diagrama Físico do Sistema](#diagrama-físico-do-sistema)
 - [Diagrama de Domínio](#diagrama-de-domínio)
 - [Mapa de Bounded Contexts](#mapa-de-bounded-contexts)
@@ -556,7 +556,6 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 ---
 
-## Diagrama Lógico do Sistema
 
 ## Modelagem Lógica Macro do Sistema
 
