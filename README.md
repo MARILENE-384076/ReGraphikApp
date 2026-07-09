@@ -488,7 +488,8 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência do sistema de login do sistema ReGraphik.
 
-<img width="941" height="857" alt="Diagrama de Sequência_Login" src="https://github.com/user-attachments/assets/aa5c4c16-6392-4392-95e2-2e3ed6eb35d7" />
+<img width="1539" height="1413" alt="Diagrama de Sequência_Login" src="https://github.com/user-attachments/assets/aba36010-85e3-4b1e-9f56-5ad3fd68ab96" />
+
 
 
 ### Diagrama de Cadastro:
@@ -501,41 +502,42 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência da tela de dashboard do sistema ReGraphik.
 
-<img width="677" height="771" alt="Diagrama de Sequência_Dashboard" src="https://github.com/user-attachments/assets/51f87544-a8fe-469d-b46c-6623cd5cccf6" />
+<img width="1558" height="1727" alt="Diagrama de Sequência_Dashboard" src="https://github.com/user-attachments/assets/3781442a-fd41-4876-8bbd-430377b32fb8" />
 
 
 ### Diagrama de Cadastro de Resíduo:
 
 **Figura 1** - Diagrama de sequência da tela de cadastro de resíduos do sistema ReGraphik.
 
-<img width="755" height="876" alt="Diagrama de Sequência_CadastroResíduo" src="https://github.com/user-attachments/assets/ab8ac834-23c4-4e36-9c89-5f9787b0d476" />
+<img width="1569" height="1798" alt="Diagrama de Sequência_CadastroResíduo" src="https://github.com/user-attachments/assets/de1d2bee-e1b1-4001-909b-88ec42257d58" />
 
 
 ### Diagrama de Estoque Reverso:
 
 **Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
 
+<img width="1570" height="2707" alt="Diagrama de Sequência_EstoqueReverso" src="https://github.com/user-attachments/assets/67dead8c-8596-4c47-90a1-811c92a07f5a" />
 
 
 ### Diagrama de Mapa de Pontos de Coleta:
 
 **Figura 1** - Diagrama de sequência do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="662" height="851" alt="Diagrama de Sequência_Mapa" src="https://github.com/user-attachments/assets/bd727515-759e-4e8f-9484-5b8450fcd71c" />
+<img width="1573" height="1990" alt="Diagrama de Sequência_Mapa" src="https://github.com/user-attachments/assets/5a9bef73-23cb-4f1d-8782-19befe73942f" />
 
 
 ### Diagrama de Relatórios:
 
 **Figura 1** - Diagrama de sequência da tela de relatórios do sistema ReGraphik.
 
-<img width="662" height="838" alt="Diagrama de Sequência_Relatórios" src="https://github.com/user-attachments/assets/d14a6239-e7cd-4de3-a790-ae9efdfa4bf7" />
+<img width="1576" height="1967" alt="Diagrama de Sequência_Relatórios" src="https://github.com/user-attachments/assets/c73e6a6f-a361-4f8f-bed9-1c737f974af2" />
 
 
 ### Diagrama de Certificação ESG:
 
 **Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
 
-<img width="668" height="816" alt="Diagrama de Sequência_CertificaçãoESG" src="https://github.com/user-attachments/assets/ae087d40-d28c-4dee-96d7-49efcf71d6f8" />
+<img width="1559" height="1913" alt="Diagrama de Sequência_CertificaçãoESG" src="https://github.com/user-attachments/assets/be2bf428-ed18-4288-859f-4ab45322d013" />
 
 
 ### Diagrama de Conta do Usuário:
