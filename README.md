@@ -566,11 +566,19 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 ---
 
-## Diagrama de Domínio
+## Diagrama de Domínio do Sistema
 
-Visão macro do domínio de negócio do ReGraphik: as entidades principais e como elas se relacionam, independente de qualquer detalhe técnico ou de implementação.
+Evolução da arquitetura de comunicação do ReGraphik: originalmente, o cliente WPF acessava um banco **SQLite local** diretamente. Atualmente, o WPF se comunica via **HTTP** com a **API (MVC Controllers)**, que é responsável por toda leitura e escrita no **Firebase Realtime Database**.
 
-<img width="1436" height="1209" alt="regraphik_modelagem_dominio_macro" src="https://github.com/user-attachments/assets/e9fd5042-0d13-4ee8-8a34-8925e3d31748" />
+<img width="4262" height="541" alt="regraphik_dominio_evolucao" src="https://github.com/user-attachments/assets/1e295f0d-ff9a-4739-8bea-28889961dcc2" />
+
+**Por que migramos do SQLite para API + Firebase:**
+
+- **Dados isolados por máquina:** o SQLite era um banco local — cada instalação do WPF tinha seu próprio arquivo de banco, sem sincronização entre usuários da mesma empresa. Um resíduo cadastrado por um usuário não aparecia para os demais.
+- **Login incompatível:** o sistema de login original, baseado em SQLite, não era compatível com o modelo de autenticação adotado no Firebase, o que exigiu recriar as telas de login/cadastro do zero.
+- **Necessidade de dados centralizados e compartilhados:** o negócio exige que todos os usuários de uma mesma empresa vejam o mesmo estoque reverso em tempo real — algo que um banco local por máquina não permite.
+- **API como camada intermediária:** em vez do WPF acessar o Firebase diretamente, a API concentra as regras de negócio, validações e autenticação, evitando que a lógica fique espalhada ou duplicada entre múltiplos clientes desktop.
+
 
 
 ### Glossário de Domínio (Linguagem Ubíqua)
