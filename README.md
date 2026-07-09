@@ -570,7 +570,8 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 Evolução da arquitetura de comunicação do ReGraphik: originalmente, o cliente WPF acessava um banco **SQLite local** diretamente. Atualmente, o WPF se comunica via **HTTP** com a **API (MVC Controllers)**, que é responsável por toda leitura e escrita no **Firebase Realtime Database**.
 
-<img width="4262" height="541" alt="regraphik_dominio_evolucao" src="https://github.com/user-attachments/assets/1e295f0d-ff9a-4739-8bea-28889961dcc2" />
+<img width="4293" height="541" alt="regraphik_dominio_evolucao (1)" src="https://github.com/user-attachments/assets/35175297-1f20-4ffe-a879-3ca1ea9cecdf" />
+
 
 **Por que migramos do SQLite para API + Firebase:**
 
