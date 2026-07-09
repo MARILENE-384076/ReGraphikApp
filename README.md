@@ -528,10 +528,14 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência da tela de relatórios do sistema ReGraphik.
 
+<img width="662" height="838" alt="Diagrama de Sequência_Relatórios" src="https://github.com/user-attachments/assets/d14a6239-e7cd-4de3-a790-ae9efdfa4bf7" />
+
 
 ### Diagrama de Certificação ESG:
 
 **Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
+
+<img width="668" height="816" alt="Diagrama de Sequência_CertificaçãoESG" src="https://github.com/user-attachments/assets/ae087d40-d28c-4dee-96d7-49efcf71d6f8" />
 
 
 ### Diagrama de Conta do Usuário:
