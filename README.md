@@ -500,6 +500,7 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência da tela de dashboard do sistema ReGraphik.
 
+<img width="681" height="776" alt="Diagrama de Sequência_Dashboard" src="https://github.com/user-attachments/assets/1281eec9-5107-44e5-9dde-12ac682c14a7" />
 
 ### Diagrama de Cadastro de Resíduo:
 
