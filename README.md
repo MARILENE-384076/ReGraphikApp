@@ -566,9 +566,7 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 ---
 
-## Modelagem de Domínio
-
-### Diagrama de Domínio
+## Diagrama de Domínio
 
 Visão macro do domínio de negócio do ReGraphik: as entidades principais e como elas se relacionam, independente de qualquer detalhe técnico ou de implementação.
 
