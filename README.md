@@ -516,7 +516,8 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
 
-<img width="1570" height="2707" alt="Diagrama de Sequência_EstoqueReverso" src="https://github.com/user-attachments/assets/67dead8c-8596-4c47-90a1-811c92a07f5a" />
+<img width="1565" height="2747" alt="Diagrama de Sequência_EstoqueReverso" src="https://github.com/user-attachments/assets/e6aab3c5-d8a1-4e5d-8211-64ca64f575fd" />
+
 
 
 ### Diagrama de Mapa de Pontos de Coleta:
@@ -544,10 +545,13 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência da tela de informações do usuário do sistema ReGraphik.
 
+<img width="1588" height="2098" alt="Diagrama de Sequência_PerfilUsuário" src="https://github.com/user-attachments/assets/b87e3243-574c-46e6-a007-536098c2f172" />
+
 
 ### Diagrama de Chat:
 
 **Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
+
 
 
 ---
