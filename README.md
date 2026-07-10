@@ -488,35 +488,36 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência do sistema de login do sistema ReGraphik.
 
-<img width="1539" height="1413" alt="Diagrama de Sequência_Login" src="https://github.com/user-attachments/assets/aba36010-85e3-4b1e-9f56-5ad3fd68ab96" />
-
+<img width="1539" height="1413" alt="Diagrama de Sequência_Login" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Login.png" />
 
 
 ### Diagrama de Cadastro:
 
 **Figura 1** - Diagrama de sequência do sistema de cadastro do sistema ReGraphik.
 
+<img width="2038" height="2189" alt="Diagrama de Sequência_Cadastro" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Cadastro.png" />
+.png" />
 
 
 ### Diagrama da Dashboard:
 
 **Figura 1** - Diagrama de sequência da tela de dashboard do sistema ReGraphik.
 
-<img width="1558" height="1727" alt="Diagrama de Sequência_Dashboard" src="https://github.com/user-attachments/assets/3781442a-fd41-4876-8bbd-430377b32fb8" />
+<img width="1558" height="1727" alt="Diagrama de Sequência_Dashboard" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Dashboard.png" />
 
 
 ### Diagrama de Cadastro de Resíduo:
 
 **Figura 1** - Diagrama de sequência da tela de cadastro de resíduos do sistema ReGraphik.
 
-<img width="1569" height="1798" alt="Diagrama de Sequência_CadastroResíduo" src="https://github.com/user-attachments/assets/de1d2bee-e1b1-4001-909b-88ec42257d58" />
+<img width="1569" height="1798" alt="Diagrama de Sequência_CadastroResíduo" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_CadastroResíduo.png" />
 
 
 ### Diagrama de Estoque Reverso:
 
 **Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
 
-<img width="1565" height="2747" alt="Diagrama de Sequência_EstoqueReverso" src="https://github.com/user-attachments/assets/e6aab3c5-d8a1-4e5d-8211-64ca64f575fd" />
+<img width="1565" height="2747" alt="Diagrama de Sequência_EstoqueReverso" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_CadastroResíduo.png" />
 
 
 
@@ -524,34 +525,35 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="1573" height="1990" alt="Diagrama de Sequência_Mapa" src="https://github.com/user-attachments/assets/5a9bef73-23cb-4f1d-8782-19befe73942f" />
+<img width="1573" height="1990" alt="Diagrama de Sequência_Mapa" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Mapa.png" />
 
 
 ### Diagrama de Relatórios:
 
 **Figura 1** - Diagrama de sequência da tela de relatórios do sistema ReGraphik.
 
-<img width="1576" height="1967" alt="Diagrama de Sequência_Relatórios" src="https://github.com/user-attachments/assets/c73e6a6f-a361-4f8f-bed9-1c737f974af2" />
+<img width="1576" height="1967" alt="Diagrama de Sequência_Relatórios" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Relatórios.png" />
 
 
 ### Diagrama de Certificação ESG:
 
 **Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
 
-<img width="1559" height="1913" alt="Diagrama de Sequência_CertificaçãoESG" src="https://github.com/user-attachments/assets/be2bf428-ed18-4288-859f-4ab45322d013" />
+<img width="1559" height="1913" alt="Diagrama de Sequência_CertificaçãoESG" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_CertificaçãoESG.png" />
 
 
 ### Diagrama de Conta do Usuário:
 
 **Figura 1** - Diagrama de sequência da tela de informações do usuário do sistema ReGraphik.
 
-<img width="1588" height="2098" alt="Diagrama de Sequência_PerfilUsuário" src="https://github.com/user-attachments/assets/b87e3243-574c-46e6-a007-536098c2f172" />
+<img width="1588" height="2098" alt="Diagrama de Sequência_PerfilUsuário" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_PerfilUsuário.png" />
 
 
 ### Diagrama de Chat:
 
 **Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
 
+<img width="1655" height="2305" alt="Diagrama de Sequência_Chat" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Chat.png" />
 
 
 ---
