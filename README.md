@@ -34,7 +34,7 @@
 - [Diagrama de Sequência](#diagrama-de-sequência)
 - [Modelagem Lógica Macro do Sistema](#modelagem-lógica-macro-do-sistema)
 - [Diagrama Físico do Sistema](#diagrama-físico-do-sistema)
-- [Diagrama de Domínio](#diagrama-de-domínio)
+- [Diagrama de Domínio do Sistema](#diagrama-de-domínio-do-sistema)
 - [Mapa de Bounded Contexts](#mapa-de-bounded-contexts)
 - [Padrão MVVM em Detalhe](#padrão-mvvm-em-detalhe)
 - [Stack Tecnológica](#stack-tecnológica)
@@ -563,7 +563,7 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 O sistema é composto por um cliente desktop em **WPF** e uma **API**, que se comunicam entre si em via de mão dupla. A API é responsável por persistir e consultar os dados no **Firebase**, retornando as informações para o WPF exibir ao usuário.
 
-<img width="2084" height="1092" alt="diagrama-arquitetura" src="https://github.com/user-attachments/assets/360c81ea-6319-41da-9475-27c6e97e5c28" />
+<img width="2084" height="1092" alt="Diagrama Lógico_ReGraphik" src="./Modelagem/Diagramas de Sistema/Diagrama Lógico_ReGraphik.png" />
 
 
 ### Módulos funcionais
@@ -577,8 +577,15 @@ O sistema é composto por um cliente desktop em **WPF** e uma **API**, que se co
 
 ## Diagrama Físico do Sistema
 
-<img width="1536" height="1024" alt="Diagrama Fisico" src="https://github.com/user-attachments/assets/f647794e-8fc8-4bb5-b19f-aa1440686d2f" />
+O diagrama físico atua como a "planta baixa" para as equipes de Infraestrutura e DevOps, orientando o provisionamento de servidores, licenças e recursos necessários para a implantação do sistema.
 
+<img width="1536" height="1024" alt="Diagrama Fisico_ReGraphik" src="./Modelagem/Diagramas de Sistema/Diagrama Fisico_ReGraphik.jpeg"/>
+
+Além disso, é uma ferramenta indispensável para:
+
+- **Segurança:** Mapeamento do tráfego de dados sensíveis.
+
+- **Escalabilidade:** Planejamento arquitetural para suportar picos de acessos e crescimento de tráfego.
 
 ---
 
@@ -586,7 +593,7 @@ O sistema é composto por um cliente desktop em **WPF** e uma **API**, que se co
 
 Evolução da arquitetura de comunicação do ReGraphik: originalmente, o cliente WPF acessava um banco **SQLite local** diretamente. Atualmente, o WPF se comunica via **HTTP** com a **API (MVC Controllers)**, que é responsável por toda leitura e escrita no **Firebase Realtime Database**.
 
-<img width="4293" height="541" alt="regraphik_dominio_evolucao (1)" src="https://github.com/user-attachments/assets/35175297-1f20-4ffe-a879-3ca1ea9cecdf" />
+<img width="4293" height="541" alt="Diagrama de Dominio_ReGraphik" src="./Modelagem/Diagramas de Sistema/Diagrama de Dominio_ReGraphik.png" />
 
 
 **Por que migramos do SQLite para API + Firebase:**
