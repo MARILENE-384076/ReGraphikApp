@@ -573,7 +573,11 @@ O sistema é composto por um cliente desktop em **WPF** e uma **API**, que se co
 - **Mapa** — busca e exibe os pontos de coleta disponíveis.
 - **Relatórios** — atualiza os itens cadastrados e permite baixar um PDF com o relatório consolidado desses resíduos.
 
+---
+
 ## Diagrama Físico do Sistema
+
+<img width="1536" height="1024" alt="Diagrama Fisico" src="https://github.com/user-attachments/assets/f647794e-8fc8-4bb5-b19f-aa1440686d2f" />
 
 
 ---
