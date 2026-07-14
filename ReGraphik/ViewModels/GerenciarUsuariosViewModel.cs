@@ -109,6 +109,21 @@ namespace ReGraphik.ViewModels
         public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
 
         /// <summary>
+        /// Limite de tokens restantes para convites, exibido na interface.
+        /// </summary>
+        private int _limiteTokensRestantes = 50;
+
+        public int LimiteTokensRestantes
+        {
+            get => _limiteTokensRestantes;
+            set
+            {
+                _limiteTokensRestantes = value;
+                OnPropertyChanged(nameof(LimiteTokensRestantes));
+            }
+        }
+
+        /// <summary>
         /// Comandos para a interface
         /// </summary>
         public ICommand CarregarUsuariosCommand { get; }
@@ -166,6 +181,21 @@ namespace ReGraphik.ViewModels
         {
             LimparMensagens();
 
+            /// Validação do limite de tokens gerados pelo administrador (Bloqueia em 0)
+            if (LimiteTokensRestantes <= 0)
+            {
+                MensagemErro = "Você atingiu o limite de 50 tokens gerados nesta sessão.";
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Limite de Tokens Atingido",
+                        "Não é possível gerar novos tokens. O limite de 50 envios foi alcançado.",
+                        MensagemWindow.TipoMensagem.Aviso
+                    );
+                });
+                return;
+            }
+
             /// Validação preventiva do limite de usuários antes de disparar o convite
             if (Usuarios != null && Usuarios.Count >= LIMITE_MAXIMO_USUARIOS)
             {
@@ -207,8 +237,12 @@ namespace ReGraphik.ViewModels
 
                 string perfilUsuario = PerfilSelecionado == "Administrador" ? "Admin" : "User";
 
+                /// Geração do token no Firebase
                 string token = await _conviteService.GerarConviteAsync(EmailConvite.Trim(), perfilUsuario);
                 TokenGerado = token;
+
+                /// Decrementa o contador local após o sucesso na geração
+                LimiteTokensRestantes--;
 
                 /// Mensagem de sucesso atualizada informando que também foi enviado por e-mail
                 Application.Current.Dispatcher.Invoke(() =>
