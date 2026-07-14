@@ -32,9 +32,9 @@
 - [Diagrama de Caso de Uso](#diagrama-de-caso-de-uso)
 - [Diagrama de Fluxo](#diagrama-de-fluxo)
 - [Diagrama de Sequência](#diagrama-de-sequência)
-- [Diagrama Lógico do Sistema](#diagrama-lógico-do-sistema)
+- [Modelagem Lógica Macro do Sistema](#modelagem-lógica-macro-do-sistema)
 - [Diagrama Físico do Sistema](#diagrama-físico-do-sistema)
-- [Diagrama de Domínio (DDD tático)](#diagrama-de-domínio-ddd-tático)
+- [Diagrama de Domínio do Sistema](#diagrama-de-domínio-do-sistema)
 - [Mapa de Bounded Contexts](#mapa-de-bounded-contexts)
 - [Padrão MVVM em Detalhe](#padrão-mvvm-em-detalhe)
 - [Stack Tecnológica](#stack-tecnológica)
@@ -345,63 +345,63 @@ Controla a segurança e as portas de entrada do sistema. Ele valida o acesso de 
 
 **Figura 1** - Diagrama de caso de uso do sistema de login e cadastro do sistema ReGraphik.
 
-<img width="975" height="825" alt="image" src="https://github.com/user-attachments/assets/43457a1a-b0ed-4f0f-8057-a418e958efb1" />
+<img width="975" height="825" alt="Diagrama de Caso de Uso - Login_Cadastro" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso - Login_Cadastro.png" />
 
 ### Diagrama da Dashboard:
 Carrega a tela de indicadores visuais do usuário. Ele processa gráficos de pizza e de barras, monta a tabela de históricos recentes e calcula blocos com métricas financeiras e de volume reciclado. 
 
 **Figura 1** - Diagrama de caso de uso da tela de dashboard do sistema ReGraphik.
 
-<img width="842" height="932" alt="image" src="https://github.com/user-attachments/assets/355fe1f0-a565-481f-9e41-cc0c56bc260d" />
+<img width="842" height="932" alt="Diagrama de Caso de Uso_Dashboard" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Dashboard.png" />
 
 ### Diagrama de Cadastro de Resíduo:
 Gerencia o formulário de entrada de novos descartes. Ele exige que o usuário preencha dados como tipo, peso, origem e dimensões do material, valida essas informações e as salva no banco de dados. 
 
 **Figura 1** - Diagrama de caso de uso da tela de cadastro de resíduos do sistema ReGraphik.
 
-<img width="978" height="840" alt="image" src="https://github.com/user-attachments/assets/190812f1-1693-4de7-8cf6-dabd72f09627" />
+<img width="978" height="840" alt="Diagrama de Caso de Uso_Cadastro de Residuo" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Cadastro de Residuo.png" />
 
 ### Diagrama de Estoque Reverso:
 Exibe e organiza os materiais já cadastrados. Ele permite que o usuário filtre seus resíduos por atributos (como tipo e período) e exibe sugestões inteligentes do sistema sobre como reaproveitar cada material. 
 
 **Figura 1** - Diagrama de caso de uso da tela de estoque reverso do sistema ReGraphik.
 
-<img width="1033" height="906" alt="image" src="https://github.com/user-attachments/assets/a7f76237-2fea-4d8f-a841-301be3d046f9" />
+<img width="1033" height="906" alt="Diagrama de Caso de Uso_Estoque Reverso" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Estoque Reverso.png" />
 
 ### Diagrama de Mapa de Pontos de Coleta:
 Localiza pontos físicos de descarte. Ele abre um mapa interativo na tela, permite que o usuário digite o nome de uma cidade e mostra os postos de coleta autorizados na região. 
 
 **Figura 1** - Diagrama de caso de uso do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="1387" height="830" alt="image" src="https://github.com/user-attachments/assets/e8f59547-9f05-4fdf-91a7-a5ed5d67d3cd" />
+<img width="1387" height="830" alt="Diagrama de Caso de Uso_Mapa" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Mapa.png" />
 
 ### Diagrama de Relatórios:
 Consolida históricos para auditoria. Ele exige que o usuário defina filtros detalhados (como datas, tipo de material e status) para cruzar os dados, gerar um relatório consolidado e exportá-lo em formato PDF. 
 
 **Figura 1** - Diagrama de caso de uso da tela de relatórios do sistema ReGraphik.
 
-<img width="1287" height="902" alt="image" src="https://github.com/user-attachments/assets/38227de9-bb69-47de-98cf-52e0a3efe5ca" />
+<img width="1287" height="902" alt="Diagrama de Caso de Uso_Relatório" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Relatório.png" />
 
 ### Diagrama de Certificação ESG:
 Mede e comprova o impacto ecológico. Ele mostra ao usuário os indicadores de sustentabilidade alcançados e permite a geração e exportação de um relatório comprobatório para auditorias ambientais. 
 
 **Figura 1** - Diagrama de caso de uso da tela de certificação ESG do sistema ReGraphik.
 
-<img width="1565" height="837" alt="image" src="https://github.com/user-attachments/assets/68676dac-c05c-448f-9693-175bf2460ecc" />
+<img width="1565" height="837" alt="Diagrama de Caso de Uso_Certificação ESG" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Certificação ESG.png" />
 
 ### Diagrama de Conta do Usuário:
 Faz a gestão do perfil. Ele exibe os dados cadastrais do próprio usuário logado e abre caminhos para que ele execute ações de segurança ou personalização, como alterar a senha ou mudar a foto de perfil. 
 
 **Figura 1** - Diagrama de caso de uso da tela de informações do usuário do sistema ReGraphik.
 
-<img width="1317" height="788" alt="image" src="https://github.com/user-attachments/assets/e83730a6-8dbe-48e4-bc29-0db49c099bbc" />
+<img width="1317" height="788" alt="Diagrama de Caso de Uso_Minha Conta" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Minha Conta.png" />
 
 ### Diagrama de Chat:
 Intermedia a comunicação interna do app. Ele permite abrir uma lista de contatos, selecionar um usuário específico e trocar mensagens de texto para combinar detalhes de coletas ou doações. 
 
 **Figura 1** - Diagrama de caso de uso do chat entre usuários do sistema.
 
-<img width="1373" height="746" alt="image" src="https://github.com/user-attachments/assets/c7131115-4ae5-4fa0-81f5-e8de372e1523" />
+<img width="1373" height="746" alt="Diagrama de Caso de Uso_Chat" src="./Modelagem/Diagrama de Caso de Uso/Diagrama de Caso de Uso_Chat.png" />
 
 ---
 
@@ -413,57 +413,70 @@ Serve essencialmente para mapear o passo a passo visual de um processo.
 
 **Figura 1** - Diagrama de fluxo do sistema de login e cadastro do sistema ReGraphik.
 
-<img width="1671" height="411" alt="Captura de tela 2026-07-02 201118" src="https://github.com/user-attachments/assets/c44db327-d77c-4c42-85eb-7ad469426831" />
+<img width="1671" height="411" alt="Diagrama de Fluxo_Login" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Login.png" />
+
 
 ### Diagrama de Cadastro:
 
 **Figura 1** - Diagrama de fluxo do sistema de cadastro do sistema ReGraphik.
 
-<img width="1710" height="875" alt="Captura de tela 2026-07-02 201040" src="https://github.com/user-attachments/assets/ef25294d-18fd-4847-9dff-1fff9f322d97" />
+<img width="1657" height="856" alt="Diagrama de Fluxo_CadastroResiduos" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Cadastro.png" />
+
 
 ### Diagrama da Dashboard:
 
 **Figura 1** - Diagrama de fluxo da tela de dashboard do sistema ReGraphik.
+
+<img width="1530" height="821" alt="Diagrama de Fluxo_Dashboard" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Dashboard.png" />
 
 
 ### Diagrama de Cadastro de Resíduo:
 
 **Figura 1** - Diagrama de fluxo da tela de cadastro de resíduos do sistema ReGraphik.
 
+<img width="1657" height="856" alt="Diagrama de Fluxo_CadastroResiduos" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_CadastroResiduos.png" />
+
 
 ### Diagrama de Estoque Reverso:
 
 **Figura 1** - Diagrama de fluxo da tela de estoque reverso do sistema ReGraphik.
+
+<img width="1440" height="876" alt="Diagrama de Fluxo_EstoqueReverso" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_EstoqueReverso.png" />
 
 
 ### Diagrama de Mapa de Pontos de Coleta:
 
 **Figura 1** - Diagrama de fluxo do Mapa de pontos de coleta do sistema ReGraphik.
 
-<img width="1880" height="685" alt="image" src="https://github.com/user-attachments/assets/d0df307c-4bc4-437e-9b8c-1fd6ecda78dd" />
+<img width="1880" height="685" alt="Diagrama de Fluxo_Mapa" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Mapa.png" />
+
 
 ### Diagrama de Relatórios:
 
 **Figura 1** - Diagrama de fluxo da tela de relatórios do sistema ReGraphik.
+
+<img width="1717" height="732" alt="Diagrama de Fluxo_Relatório" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Relatório.png" />
 
 
 ### Diagrama de Certificação ESG:
 
 **Figura 1** - Diagrama de fluxo da tela de certificação ESG do sistema ReGraphik.
 
-<img width="1826" height="565" alt="image" src="https://github.com/user-attachments/assets/af5f47cb-f57b-44f3-8872-7082eeec0c8f" />
+<img width="1840" height="638" alt="Diagrama de Fluxo_ESG" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_ESG.png" />
+
 
 ### Diagrama de Conta do Usuário:
 
 **Figura 1** - Diagrama de fluxo da tela de informações do usuário do sistema ReGraphik.
 
-<img width="1870" height="807" alt="image" src="https://github.com/user-attachments/assets/fd5d396f-a10e-4103-bd64-dc029232db13" />
+<img width="1807" height="740" alt="Diagrama de Fluxo_ContaUsuário" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_ContaUsuário.png" />
+
 
 ### Diagrama de Chat:
 
 **Figura 1** - Diagrama de fluxo do chat entre usuários do sistema.
 
-<img width="1641" height="653" alt="Captura de tela 2026-07-07 195647" src="https://github.com/user-attachments/assets/a77684f2-b222-467f-b18a-e15a8b04c113" />
+<img width="1641" height="653" alt="Diagrama de Fluxo_Chat" src="./Modelagem/Diagrama de Fluxo/Diagrama de Fluxo_Chat.png" />
 
 ---
 
@@ -475,227 +488,124 @@ Serve para mapear o comportamento do sistema a partir do ponto de vista do usuá
 
 **Figura 1** - Diagrama de sequência do sistema de login do sistema ReGraphik.
 
+<img width="1539" height="1413" alt="Diagrama de Sequência_Login" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Login.png" />
+
+
 ### Diagrama de Cadastro:
 
 **Figura 1** - Diagrama de sequência do sistema de cadastro do sistema ReGraphik.
 
-### Diagrama do Sistema:
+<img width="2038" height="2189" alt="Diagrama de Sequência_Cadastro" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Cadastro.png" />
+.png" />
 
-**Figura 1** - Diagrama de sequência geral do sistema ReGraphik, com um administrador logado.
 
 ### Diagrama da Dashboard:
 
 **Figura 1** - Diagrama de sequência da tela de dashboard do sistema ReGraphik.
+
+<img width="1558" height="1727" alt="Diagrama de Sequência_Dashboard" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Dashboard.png" />
 
 
 ### Diagrama de Cadastro de Resíduo:
 
 **Figura 1** - Diagrama de sequência da tela de cadastro de resíduos do sistema ReGraphik.
 
+<img width="1569" height="1798" alt="Diagrama de Sequência_CadastroResíduo" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_CadastroResíduo.png" />
+
+
 ### Diagrama de Estoque Reverso:
 
 **Figura 1** - Diagrama de sequência da tela de estoque reverso do sistema ReGraphik.
+
+<img width="1565" height="2747" alt="Diagrama de Sequência_EstoqueReverso" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_CadastroResíduo.png" />
+
 
 
 ### Diagrama de Mapa de Pontos de Coleta:
 
 **Figura 1** - Diagrama de sequência do Mapa de pontos de coleta do sistema ReGraphik.
 
+<img width="1573" height="1990" alt="Diagrama de Sequência_Mapa" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Mapa.png" />
+
 
 ### Diagrama de Relatórios:
 
 **Figura 1** - Diagrama de sequência da tela de relatórios do sistema ReGraphik.
+
+<img width="1576" height="1967" alt="Diagrama de Sequência_Relatórios" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Relatórios.png" />
 
 
 ### Diagrama de Certificação ESG:
 
 **Figura 1** - Diagrama de sequência da tela de certificação ESG do sistema ReGraphik.
 
+<img width="1559" height="1913" alt="Diagrama de Sequência_CertificaçãoESG" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_CertificaçãoESG.png" />
+
+
 ### Diagrama de Conta do Usuário:
 
 **Figura 1** - Diagrama de sequência da tela de informações do usuário do sistema ReGraphik.
+
+<img width="1588" height="2098" alt="Diagrama de Sequência_PerfilUsuário" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_PerfilUsuário.png" />
 
 
 ### Diagrama de Chat:
 
 **Figura 1** - Diagrama de sequência do chat entre usuários do sistema.
 
+<img width="1655" height="2305" alt="Diagrama de Sequência_Chat" src="./Modelagem/Diagrama de Sequência/Diagrama de Sequência_Chat.png" />
+
+
 ---
 
-## Diagrama Lógico do Sistema
 
+## Modelagem Lógica Macro do Sistema
+
+O sistema é composto por um cliente desktop em **WPF** e uma **API**, que se comunicam entre si em via de mão dupla. A API é responsável por persistir e consultar os dados no **Firebase**, retornando as informações para o WPF exibir ao usuário.
+
+<img width="2084" height="1092" alt="Diagrama Lógico_ReGraphik" src="./Modelagem/Diagramas de Sistema/Diagrama Lógico_ReGraphik.png" />
+
+
+### Módulos funcionais
+
+- **Cadastro de Resíduos** — permite cadastrar os resíduos informando dimensões, tipo e fotos do item.
+- **Estoque Reverso** — armazena os resíduos que foram cadastrados e sugere possíveis destinações de acordo com o tipo de cada resíduo.
+- **Mapa** — busca e exibe os pontos de coleta disponíveis.
+- **Relatórios** — atualiza os itens cadastrados e permite baixar um PDF com o relatório consolidado desses resíduos.
 
 ---
 
 ## Diagrama Físico do Sistema
 
+O diagrama físico atua como a "planta baixa" para as equipes de Infraestrutura e DevOps, orientando o provisionamento de servidores, licenças e recursos necessários para a implantação do sistema.
+
+<img width="1536" height="1024" alt="Diagrama Fisico_ReGraphik" src="./Modelagem/Diagramas de Sistema/Diagrama Fisico_ReGraphik.jpeg"/>
+
+Além disso, é uma ferramenta indispensável para:
+
+- **Segurança:** Mapeamento do tráfego de dados sensíveis.
+
+- **Escalabilidade:** Planejamento arquitetural para suportar picos de acessos e crescimento de tráfego.
 
 ---
 
-## Diagrama de Domínio (DDD tático)
+## Diagrama de Domínio do Sistema
 
-<img width="4880" height="2831" alt="regraphik_modelagem_dominio (1)" src="https://github.com/user-attachments/assets/5a2fdb55-7c12-48e1-b518-78619d60f9d1" />
+Evolução da arquitetura de comunicação do ReGraphik: originalmente, o cliente WPF acessava um banco **SQLite local** diretamente. Atualmente, o WPF se comunica via **HTTP** com a **API (MVC Controllers)**, que é responsável por toda leitura e escrita no **Firebase Realtime Database**.
 
-
-### Glossário de Domínio (Linguagem Ubíqua)
-
-> Extraído de `ReGraphik_Regras_Negocio.pdf`. As definições abaixo consolidam a Linguagem Ubíqua adotada pelo projeto, incluindo decisões de nomenclatura tomadas para resolver inconsistências encontradas no próprio documento de regras de negócio.
-
-#### Atores
-
-| Termo | Definição |
-|---|---|
-| **Empresa** | Organização (indústria gráfica) que cadastra usuários e utiliza o sistema como ferramenta de gestão operacional. Todo `Usuário` deve pertencer obrigatoriamente a uma. |
-| **Usuário comum** | Realiza login, cadastra resíduos, consulta o estoque reverso, aplica sugestões de reaproveitamento e gera relatórios operacionais. |
-| **Administrador** | Gerencia usuários e tipos de materiais, importa sugestões em lote via planilha e tem acesso à exclusão de registros com auditoria. |
-| **Sistema ReGraphik** | O próprio sistema, como ator: controla o estoque reverso, sugere reaproveitamento por tipo de material e gera dashboards e relatórios gerenciais. |
-
-#### Módulo: Autenticação e Cadastro
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Pré-cadastro** | Registro criado antes da confirmação do e-mail, com `Ativo = false` e um `TokenValidacao` associado. | RN-01 |
-| **Token de Validação** | Código numérico de 6 dígitos, gerado aleatoriamente, enviado por e-mail para confirmar a identidade do usuário no cadastro. | RN-01, RN-02, RN-08 |
-| **Finalização de Cadastro** | Ato de efetivar o usuário como ativo (`Ativo = true`) após o token ser validado. | RN-03 |
-| **Login** | Ato de autenticação com `login` e `senha`; retorna o objeto `Usuario` completo em caso de sucesso. | RN-04 |
-| **Perfil** | Papel do usuário no sistema. Valores possíveis: `User` (padrão), `Admin`, `Guest`. | RN-04 |
-| **Pertencimento a Empresa** | Regra de que todo usuário deve estar vinculado a uma empresa cadastrada — não existe usuário "solto". | RN-05 |
-
-**✅ Decisões adotadas:**
-- **`Guest`**: perfil de acesso somente-leitura — consulta estoque reverso, sugestões e pontos de coleta, mas não pode cadastrar resíduos, aplicar sugestões, nem acessar exclusão/gestão de usuários. Serve para demonstração do sistema sem exigir cadastro completo.
-- **`Empresa`**: atributos oficiais adotados: `Id`, `RazaoSocial`, `CNPJ`. Vínculo obrigatório com `Usuario` conforme RN-05.
-
-#### Módulo: Validação de Dados
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **CPF** | Documento de identificação do usuário, validado pelo algoritmo oficial de dígitos verificadores, único por usuário, formatado como `000.000.000-00`. | RN-06 |
-| **Upload de Imagem/Arquivo** | Ato de enviar um arquivo ao sistema; restrito a `.jpg`, `.jpeg`, `.png`, `.bmp` para foto de perfil. | RN-07 |
-
-#### Módulo: Resíduos
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Tipo de Resíduo** | Classificação obrigatória do resíduo (papel, cartão, vinil, lona, PVC, etc.), armazenada como texto livre no campo `TipoResiduo`. | RN-09 |
-| **Resíduo** | Registro de um material descartado no processo produtivo, com campos obrigatórios: Tipo de Resíduo, Especificação, Origem, Projeto de Origem, Quantidade, Data, Condição. | RN-09, RN-10 |
-| **Status do Resíduo** | Estado do ciclo de vida do resíduo. Valores: `Em Estoque` (inicial) → `Reaproveitado` (final) ou `Descartado` (final). Não existe transição de volta. | RN-11 |
-| **Auditoria** | Entidade que registra a trilha/log gerado automaticamente sempre que um registro de resíduo é excluído; exige perfil `Administrador`. Campos: `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`. | RN-13 |
-| **Relatório de Resíduos** | Conjunto de estatísticas calculadas: `TotalResiduos`, `PesoTotal`, `Reaproveitados`, `ValorEconômico`, `TotalRegistros`, filtráveis por Tipo de Resíduo, Status, Origem e Período. | RN-14 |
-
-**✅ Decisões adotadas:**
-- Nome oficial do campo: **`TipoResiduo`** (string), como já implementado no código — o termo `TipoMaterial`/`IdTipoMaterial` do documento de regras foi descartado como escopo futuro (viraria um catálogo separado, mas não é o que está implementado hoje).
-- Nome oficial da entidade de log de exclusão: **`Auditoria`**, com campos `Id`, `Acao`, `DataHora`, `UsuarioId`, `EntidadeAfetada`.
-- **`Condicao`** permanece como texto livre (não é lista fechada), já que nenhuma regra de negócio a restringe formalmente.
-
-#### Módulo: Sugestões de Reaproveitamento
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Sugestão** | Registro cadastral de uma ideia de reaproveitamento, vinculada a um tipo de resíduo aceito. Funciona em modo consulta (somente leitura) para o usuário comum. | RN-15, RN-16 |
-| **SugestaoResiduo** | Entidade associativa que vincula uma sugestão a um resíduo específico, registrando `IdCadastroResiduo`, `IdSugestao` e `DataAplicacao`. Relação N:N entre Resíduo e Sugestão. | RN-15, RN-17 |
-| **Filtragem por Tipo de Material** | Mecanismo que casa sugestões com resíduos por correspondência **parcial e bidirecional** de texto (ex: "Papel" casa com "Papel Couché"). | RN-16 |
-| **SugestaoAplicadaEvent** | Domain Event disparado quando uma sugestão é aplicada a um resíduo. | RN-17 |
-
-**✅ Decisões adotadas:**
-- Nome oficial da entidade associativa: **`SugestaoResiduo`** (singular), conforme já implementado na classe C# e no DTO — as variações `SugestoesResiduos`/`SugestaoResiduos` do documento de regras são descartadas.
-- O evento **`SugestaoAplicadaComSucesso`** é substituído oficialmente por **`SugestaoAplicadaEvent`**, seguindo a convenção de nomenclatura de Domain Events do restante do modelo.
-
-#### Módulo: Pontos de Coleta
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Ponto de Coleta** | Local físico que aceita resíduos, com nome, cidade, estado, CEP, tipos aceitos e coordenadas geográficas. | RN-18, RN-19 |
-| **Anti-Redundância de Cidades** | Regra de cache: antes de consultar a Google Places API, verifica se a cidade já tem pontos cadastrados no Firebase; evita gasto de cota gratuita da API externa. | RN-18 |
-
-#### Módulo: Chat Interno
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Conversa** | Canal de comunicação entre dois usuários, identificado por um Id determinístico gerado ordenando alfabeticamente os IDs dos participantes (`${menor}_${maior}`). | RN-20 |
-| **Mensagem** | Unidade de comunicação dentro de uma conversa, persistida por ordem de `DataHora`; marcada como lida automaticamente ao abrir a conversa. | RN-21 |
-
-**✅ Decisão adotada:**
-- Escopo confirmado: conversas **1 para 1** apenas. Conversas em grupo ficam fora do escopo do sistema.
-
-#### Módulo: Configuração Local e Exportação
-
-| Termo | Definição | Origem (RN) |
-|---|---|---|
-| **Configuração Local** | Armazenamento no cliente desktop (arquivo `%AppData%/ReGraphik/config.txt`) do caminho da foto de perfil. | RN-22 |
-| **Exportação de Relatório** | Ato de gerar relatórios e dados ESG via diálogo nativo de impressão do Windows (`PrintDialog`), para impressora física ou PDF local. | RN-23 |
-
-**✅ Decisão adotada:**
-- O módulo **ESG/Certificação** é tratado como um subdomínio próprio, separado de "Configuração" — reconhece-se que ele ainda não tem regras de negócio formalizadas (RN-24 em diante fica reservado para isso), mas já existe como funcionalidade implementada.
-
-#### Decisões de nomenclatura e escopo adotadas
-
-1. `TipoResiduo` é o nome oficial (não `TipoMaterial`).
-2. `SugestaoResiduo` (singular) é o nome oficial da entidade associativa.
-3. Perfil `Guest` = acesso somente-leitura.
-4. `Empresa` tem `Id`, `RazaoSocial`, `CNPJ` como atributos oficiais.
-5. Entidade de log de exclusão chama-se `Auditoria`.
-6. Módulo ESG é subdomínio próprio, com regras de negócio a serem formalizadas em versão futura do documento (RN-24+).
-
----
-
-## Mapa de Bounded Contexts
-
-Fronteiras entre os subdomínios do ReGraphik, classificados segundo sua relevância estratégica para o negócio, com as relações de integração entre eles (padrões de Context Mapping).
-
-### Observação importante
-
-Este mapa foi construído a partir dos módulos que já apareciam organizados no documento `ReGraphik_Regras_Negocio.pdf` e do glossário de domínio já consolidado — **não substitui uma sessão real de Context Mapping com o grupo**. As fronteiras aqui são a melhor proposta possível a partir da documentação disponível; vale validar com o time, principalmente o encaixe de **ESG** (que tem pouquíssima regra de negócio formalizada) e se **Comunicação Interna** realmente deveria estar tão desacoplada dos demais contextos.
-<img width="2541" height="935" alt="regraphik_bounded_context_map" src="https://github.com/user-attachments/assets/04f1f1c7-a74e-451d-8677-c6f206c72b2c" />
-
-### Classificação dos subdomínios
-
-| Subdomínio | Classificação | Justificativa |
-|---|---|---|
-| **Estoque Reverso** | 🟢 Domínio Core | É a razão de existir do sistema — controlar o ciclo de vida do resíduo é o diferencial competitivo do ReGraphik. |
-| **Reaproveitamento** | 🟢 Domínio Core | Junto com Estoque Reverso, entrega o valor central: transformar resíduo em economia circular real, não só um cadastro. |
-| **Identidade e Acesso** | 🔵 Subdomínio de Apoio | Necessário para o sistema funcionar, mas não é o diferencial — autenticação é resolvida do mesmo jeito em qualquer sistema. |
-| **Pontos de Coleta** | 🔵 Subdomínio de Apoio | Apoia a operação (achar onde descartar), mas depende inteiramente de um sistema externo (Google Places). |
-| **ESG e Certificação** | 🔵 Subdomínio de Apoio | Importante para compliance e imagem da empresa, mas consome dados de outros contextos em vez de gerar valor por si só. |
-| **Comunicação Interna** | ⚪ Subdomínio Genérico | Um chat 1-para-1 é um problema já resolvido no mercado (poderia ser um serviço pronto); não há motivo de negócio pra reinventar aqui. |
-
-### Relações entre contextos (Context Mapping)
-
-- **Identidade e Acesso → Estoque Reverso / Comunicação Interna** (*Customer/Supplier*): fornece `UsuarioId`, mas não dita como esses contextos usam essa informação — cada um decide sozinho o que fazer com o usuário autenticado.
-- **Estoque Reverso → Reaproveitamento** (*Customer/Supplier*): Reaproveitamento depende do `TipoResiduo` cadastrado no Estoque Reverso para fazer o matching de sugestões (RN-16) — Estoque Reverso é o lado "upstream" (fornecedor), não pode ser alterado livremente sem quebrar o outro contexto.
-- **Estoque Reverso / Identidade e Acesso → ESG** (*Customer/Supplier*): ESG consome dados agregados de resíduos e dados da empresa para calcular indicadores — é o contexto mais "downstream" de todos, o que faz sentido já que é o que tem menos regras de negócio formalizadas hoje.
-- **Pontos de Coleta → Google Places API** (*Anti-Corruption Layer*): a integração com a API do Google é isolada por uma camada de tradução, para que o modelo interno de `PontoColeta` não fique acoplado ao formato de dados do Google (RN-18, cache no Firebase antes de chamar a API externa).
-
- ## Event Storming
-
-Linha do tempo dos eventos de domínio do ReGraphik, organizada por fluxo de negócio, com as políticas de reação do sistema e as regras adotadas para os pontos que as regras de negócio originais deixavam em aberto.
-
-<img width="3085" height="2104" alt="regraphik_event_storming_final" src="https://github.com/user-attachments/assets/840d86ee-58ee-451f-b09d-8198af228fd6" />
+<img width="4293" height="541" alt="Diagrama de Dominio_ReGraphik" src="./Modelagem/Diagramas de Sistema/Diagrama de Dominio_ReGraphik.png" />
 
 
-### Legenda
+**Por que migramos do SQLite para API + Firebase:**
 
-- 🟡 **Ator** — quem inicia a ação (Usuário, Administrador, Visitante)
-- 🔵 **Comando** — a intenção/ação disparada por um ator
-- 🟠 **Evento de Domínio** — o que efetivamente aconteceu no negócio (sempre no passado)
-- 🟣 **Política** — uma reação automática do sistema a um evento ("sempre que X, então Y")
-- 🟢 **Regra Adotada** — decisão tomada para fechar uma ambiguidade que a documentação de regras de negócio original não cobria
+- **Dados isolados por máquina:** o SQLite era um banco local — cada instalação do WPF tinha seu próprio arquivo de banco, sem sincronização entre usuários da mesma empresa. Um resíduo cadastrado por um usuário não aparecia para os demais.
+- **Login incompatível:** o sistema de login original, baseado em SQLite, não era compatível com o modelo de autenticação adotado no Firebase, o que exigiu recriar as telas de login/cadastro do zero.
+- **Necessidade de dados centralizados e compartilhados:** o negócio exige que todos os usuários de uma mesma empresa vejam o mesmo estoque reverso em tempo real — algo que um banco local por máquina não permite.
+- **API como camada intermediária:** em vez do WPF acessar o Firebase diretamente, a API concentra as regras de negócio, validações e autenticação, evitando que a lógica fique espalhada ou duplicada entre múltiplos clientes desktop.
 
-### Regras adotadas para fechar as ambiguidades
 
-1. **Tentativas de token inválido**: após 5 tentativas inválidas, o token expira e o usuário precisa solicitar um novo.
-2. **Bloqueio de login**: após 5 tentativas de login malsucedidas, bloqueio temporário de 15 minutos.
-3. **Autorização para mudar status do resíduo**: apenas o usuário que cadastrou o resíduo ou um Administrador podem chamar `Reaproveitar()`/`Descartar()`.
-4. **Múltiplos matches de sugestão**: o sistema lista todas as sugestões compatíveis, ordenadas por especificidade do match, e o usuário escolhe manualmente qual aplicar.
-5. **Expiração de cache de pontos de coleta**: o cache de uma cidade expira a cada 30 dias; depois disso, uma nova consulta é feita à Google Places API mesmo que a cidade já tenha pontos cadastrados.
 
-## Exemplo de Modelo Rico (DDD)
 
-Para ilustrar como o agregado `Residuo` ficaria seguindo o modelo de domínio (ao invés do modelo anêmico atual), veja o exemplo comentado:
-
-📄 [Residuo_ModeloRico_Exemplo.cs](ApiRestReGraphik/Domain/Residuo_ModeloRico_Exemplo.cs)
-
-O exemplo compara lado a lado o modelo anêmico (como está implementado hoje) com uma versão rica, incluindo construtor privado + factory method, invariantes protegidas (RN-11), Domain Events e a regra de autorização decidida no Event Storming.
----
 
 ## Padrão MVVM em Detalhe
 
