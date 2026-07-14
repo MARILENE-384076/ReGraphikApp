@@ -209,6 +209,7 @@ namespace ReGraphik.ViewModels
                 {
                     var opcoes = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
+                    /// Deserializa os JSONs em listas de objetos, garantindo que não sejam nulos
                     var listaResiduosRaw = JsonSerializer.Deserialize<List<Residuo>>(jsonResiduos, opcoes) ?? new List<Residuo>();
                     var listaSugestoesRaw = JsonSerializer.Deserialize<List<Sugestao>>(jsonSugestoes, opcoes) ?? new List<Sugestao>();
 
@@ -218,6 +219,7 @@ namespace ReGraphik.ViewModels
                         .Select(g => g.First())
                         .ToList();
 
+                    /// Atualiza a interface de forma segura na Thread de UI
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         try

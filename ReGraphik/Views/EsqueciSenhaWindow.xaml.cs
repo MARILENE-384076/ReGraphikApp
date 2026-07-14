@@ -23,7 +23,7 @@ namespace ReGraphik.Views
         public EsqueciSenhaWindow()
         {
             InitializeComponent();
-            DataContext = new RecuperarSenhaViewModel(new Services.AutorizarService());
+            this.DataContext = new EsqueciSenhaViewModel();
         }
 
         private void BtnFechar_Click(object sender, RoutedEventArgs e)
@@ -33,6 +33,7 @@ namespace ReGraphik.Views
 
         private void BtnVoltar_Click(object sender, RoutedEventArgs e)
         {
+            /// Lógica para voltar ao login...
             this.Close();
         }
     }

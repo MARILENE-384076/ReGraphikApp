@@ -17,10 +17,19 @@ using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
 {
+    /// <summary>
+    /// ViewModel para a janela de relatório de resíduos, responsável por gerenciar a lógica de geração de relatórios, aplicação de filtros e exportação para PDF.
+    /// </summary>
     public class RelatorioViewModel : BaseViewModel
     {
+        /// <summary>
+        /// Serviço de resíduos que fornece métodos para obter dados de resíduos do banco de dados ou API.
+        /// </summary>
         private readonly IResiduoService _residuoService = new ResiduoService();
 
+        /// <summary>
+        /// Filtro selecionado para o tipo de resíduo. Inicialmente definido como "Todos" para incluir todos os tipos.
+        /// </summary>
         private string _filtroTipo = "Todos";
         public string FiltroTipo
         {
@@ -28,6 +37,9 @@ namespace ReGraphik.ViewModels
             set { _filtroTipo = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Filtro selecionado para o status do resíduo. Inicialmente definido como "Todos" para incluir todos os status.
+        /// </summary>
         private string _filtroStatus = "Todos";
         public string FiltroStatus
         {
@@ -35,6 +47,9 @@ namespace ReGraphik.ViewModels
             set { _filtroStatus = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Filtro selecionado para a origem do resíduo. Inicialmente definido como "Todas" para incluir todas as origens.
+        /// </summary>
         private string _filtroOrigem = "Todas";
         public string FiltroOrigem
         {
@@ -121,10 +136,16 @@ namespace ReGraphik.ViewModels
 
         private List<Residuo> _todosResiduos = new();
 
+        /// <summary>
+        /// Comando para gerar o relatório de resíduos com base nos filtros selecionados pelo usuário.
+        /// </summary>
         public ICommand GerarRelatorioCommand { get; }
         public ICommand LimparFiltrosCommand { get; }
         public ICommand ExportarPdfCommand { get; }
 
+        /// <summary>
+        /// Inicializa uma nova instância do ViewModel de relatório, configurando os comandos e a licença da biblioteca QuestPDF.
+        /// </summary>
         public RelatorioViewModel()
         {
             GerarRelatorioCommand = new RelayCommand(async () => await GerarRelatorioAsync());
@@ -134,6 +155,10 @@ namespace ReGraphik.ViewModels
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
+        /// <summary>
+        /// Gera o relatório de resíduos, carregando os dados do serviço e aplicando os filtros selecionados pelo usuário. Atualiza a interface do usuário com os resultados e mensagens de status.
+        /// </summary>
+        /// <returns></returns>
         private async Task GerarRelatorioAsync()
         {
             try
@@ -156,12 +181,16 @@ namespace ReGraphik.ViewModels
             }
         }
 
+        /// <summary>
+        /// Aplica os filtros selecionados pelo usuário à lista de resíduos e atualiza a coleção filtrada, bem como os totais e mensagens de status.
+        /// </summary>
         private void AplicarFiltros()
         {
             if (_todosResiduos == null) return;
 
             var filtrados = _todosResiduos.AsEnumerable();
 
+            /// Aplica os filtros de acordo com as seleções do usuário
             if (FiltroTipo != "Todos") filtrados = filtrados.Where(r => r.TipoResiduo == FiltroTipo);
             if (FiltroStatus != "Todos") filtrados = filtrados.Where(r => r.Status == FiltroStatus);
             if (FiltroOrigem != "Todas") filtrados = filtrados.Where(r => r.Origem == FiltroOrigem);
@@ -175,6 +204,7 @@ namespace ReGraphik.ViewModels
                 lista[i].Id = (i + 1).ToString();
             }
 
+            /// Atualiza a UI no thread principal
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
                 ResiduosFiltrados = new ObservableCollection<Residuo>(lista);
@@ -190,6 +220,9 @@ namespace ReGraphik.ViewModels
             });
         }
 
+        /// <summary>
+        /// Limpa todos os filtros e reseta os valores do relatório para o estado inicial.
+        /// </summary>
         private void LimparFiltros()
         {
             FiltroTipo = "Todos";
@@ -207,6 +240,9 @@ namespace ReGraphik.ViewModels
             MensagemStatus = "Filtros limpos. Clique em \"Gerar Relatório\" para carregar os dados.";
         }
 
+        /// <summary>
+        /// Exporta o relatório filtrado para um arquivo PDF usando a biblioteca QuestPDF.
+        /// </summary>
         private void ExportarPdf()
         {
             if (ResiduosFiltrados == null || ResiduosFiltrados.Count == 0)
@@ -305,7 +341,7 @@ namespace ReGraphik.ViewModels
                                      .BorderBottom(1).BorderColor("#93C5FD")
                                      .Padding(6);
 
-                                /// CORREÇÃO AQUI: table.Header é chamado apenas UMA vez
+                                /// Cabeçalho da Tabela
                                 string[] headers = { "ID", "Material", "Origem", "Projeto", "Qtd (kg)", "Condição", "Data", "Status" };
                                 table.Header(header =>
                                 {
@@ -384,6 +420,13 @@ namespace ReGraphik.ViewModels
             }
         }
 
+        /// <summary>
+        /// Monta um card de resumo no PDF com título e valor, usando cores de fundo específicas.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="bg"></param>
+        /// <param name="titulo"></param>
+        /// <param name="valor"></param>
         private static void Card(RowDescriptor row, string bg, string titulo, string valor)
         {
             row.RelativeItem().Background(bg).Padding(12).Column(c =>
@@ -394,6 +437,10 @@ namespace ReGraphik.ViewModels
             row.ConstantItem(6);
         }
 
+        /// <summary>
+        /// Monta uma string descritiva dos filtros aplicados para exibição no PDF.
+        /// </summary>
+        /// <returns></returns>
         private string MontarDescricaoFiltros()
         {
             var partes = new List<string>();

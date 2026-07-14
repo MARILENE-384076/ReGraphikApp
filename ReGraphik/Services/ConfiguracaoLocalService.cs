@@ -3,6 +3,9 @@ using System.IO;
 
 namespace ReGraphik.Services
 {
+    /// <summary>
+    /// Serviço para salvar e carregar configurações locais, como o caminho da foto do usuário.
+    /// </summary>
     public static class ConfiguracaoLocalService
     {
         private static readonly string _pasta = Path.Combine(

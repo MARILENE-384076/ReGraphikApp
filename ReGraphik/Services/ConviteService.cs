@@ -12,13 +12,14 @@ namespace ReGraphik.Services
 
         public ConviteService()
         {
-            _db = FirebaseConfig.Client;
+            _db = FirebaseConfigService.Client;
         }
 
         /// <summary>
         /// Chamado pelo Administrador para gerar convite
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="perfil"></param>
         /// <returns></returns>
         public async Task<string> GerarConviteAsync(string email, string perfil)
         {
@@ -26,9 +27,12 @@ namespace ReGraphik.Services
             var convite = new
             {
                 email = email.Trim().ToLower(),
-                expira = DateTime.UtcNow.AddHours(48).ToString("o"),
+                /// Configurado para expirar em 30 minutos
+                expira = DateTime.UtcNow.AddMinutes(30).ToString("o"),
+                perfil = perfil, /// Salva o perfil (Admin/User) no Firebase
                 usado = false
             };
+
             await _db.Child(NodeConvites).Child(token).PutAsync(convite);
             return token;
         }
@@ -119,16 +123,16 @@ namespace ReGraphik.Services
         {
             try
             {
-                // 1. Busca todos os convites do nó do Firebase
+                /// Busca todos os convites do nó do Firebase
                 var todos = await _db.Child(NodeConvites).OnceAsync<ConviteFirebase>();
 
-                // 2. Procura o primeiro registro que pertença ao e-mail, que não esteja usado e não esteja expirado
+                /// Procura o primeiro registro que pertença ao e-mail, que não esteja usado e não esteja expirado
                 var conviteValido = todos.FirstOrDefault(item =>
                     string.Equals(item.Object.Email, email.Trim(), StringComparison.OrdinalIgnoreCase) &&
                     !item.Object.Usado &&
                     DateTime.UtcNow <= DateTime.Parse(item.Object.Expira));
 
-                // 3. Como a chave do nó (Key) é o token criado, retornamos item.Key
+                /// Como a chave do nó (Key) é o token criado, retornamos item.Key
                 return conviteValido?.Key;
             }
             catch

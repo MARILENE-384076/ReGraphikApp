@@ -18,7 +18,8 @@ namespace ReGraphik.ViewModels
     public class GerenciarUsuariosViewModel : BaseViewModel
     {
         private readonly ConviteService _conviteService;
-        private readonly ChatService _chatService; /// reutiliza ListarUsuariosAsync
+        private readonly ChatService _chatService;
+        private readonly EmailService _emailService;
 
         /// <summary>
         /// Define o limite máximo de usuários cadastrados no sistema
@@ -109,6 +110,20 @@ namespace ReGraphik.ViewModels
         public bool TemErro => !string.IsNullOrEmpty(MensagemErro);
 
         /// <summary>
+        /// Limite de tokens restantes para convites, lido diretamente das configurações persistentes do app.
+        /// </summary>
+        public int LimiteTokensRestantes
+        {
+            get => Properties.Settings.Default.LimiteTokensRestantes;
+            set
+            {
+                Properties.Settings.Default.LimiteTokensRestantes = value;
+                Properties.Settings.Default.Save(); /// Salva no arquivo físico permanentemente
+                OnPropertyChanged(nameof(LimiteTokensRestantes));
+            }
+        }
+
+        /// <summary>
         /// Comandos para a interface
         /// </summary>
         public ICommand CarregarUsuariosCommand { get; }
@@ -123,6 +138,7 @@ namespace ReGraphik.ViewModels
         {
             _conviteService = new ConviteService();
             _chatService = new ChatService();
+            _emailService = new EmailService();
 
             CarregarUsuariosCommand = new RelayCommand(async _ => await CarregarUsuariosAsync());
             GerarConviteCommand = new RelayCommand(async _ => await GerarConviteAsync(), _ => !GerandoConvite);
@@ -166,6 +182,21 @@ namespace ReGraphik.ViewModels
         {
             LimparMensagens();
 
+            /// Validação do limite de tokens gerados pelo administrador 
+            if (LimiteTokensRestantes <= 0)
+            {
+                MensagemErro = "Você atingiu o limite de 50 tokens gerados nesta sessão.";
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir(
+                        "Limite de Tokens Atingido",
+                        "Não é possível gerar novos tokens. O limite de 50 envios foi alcançado.",
+                        MensagemWindow.TipoMensagem.Aviso
+                    );
+                });
+                return;
+            }
+
             /// Validação preventiva do limite de usuários antes de disparar o convite
             if (Usuarios != null && Usuarios.Count >= LIMITE_MAXIMO_USUARIOS)
             {
@@ -206,16 +237,24 @@ namespace ReGraphik.ViewModels
                 GerandoConvite = true;
 
                 string perfilUsuario = PerfilSelecionado == "Administrador" ? "Admin" : "User";
+                string emailDestino = EmailConvite.Trim();
 
-                string token = await _conviteService.GerarConviteAsync(EmailConvite.Trim(), perfilUsuario);
+                /// Gera o token no Firebase
+                string token = await _conviteService.GerarConviteAsync(emailDestino, perfilUsuario);
                 TokenGerado = token;
+
+                /// Envia o e-mail com o token gerado
+                await _emailService.EnviarTokenPorEmailAsync(emailDestino, token);
+
+                /// Decrementa o contador local após o sucesso na geração
+                LimiteTokensRestantes--;
 
                 /// Mensagem de sucesso atualizada informando que também foi enviado por e-mail
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     MensagemWindow.Exibir(
                         "Convite Enviado!",
-                        $"Convite gerado com sucesso para {EmailConvite.Trim()} e enviado por e-mail.",
+                        $"Convite gerado com sucesso para {emailDestino} e enviado por e-mail.",
                         MensagemWindow.TipoMensagem.Sucesso
                     );
                 });

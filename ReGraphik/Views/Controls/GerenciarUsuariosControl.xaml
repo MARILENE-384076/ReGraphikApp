@@ -70,12 +70,12 @@
         </Grid>
 
         <Border Grid.Row="2"
-                Background="White"
-                CornerRadius="12"
-                Padding="28,24">
+        Background="White"
+        CornerRadius="12"
+        Padding="28,24">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="12" ShadowDepth="1"
-                                  Color="Black" Opacity="0.05" Direction="270"/>
+                          Color="Black" Opacity="0.05" Direction="270"/>
             </Border.Effect>
 
             <Grid>
@@ -89,19 +89,37 @@
                 <StackPanel Grid.Column="0">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
                         <Border Background="#EFF6FF" CornerRadius="8"
-                                Width="36" Height="36" Margin="0,0,12,0">
+                        Width="36" Height="36" Margin="0,0,12,0">
                             <iconPacks:PackIconMaterial Kind="EmailPlusOutline"
-                                                        Width="18" Height="18"
-                                                        Foreground="#1D4ED8"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"/>
+                                                Width="18" Height="18"
+                                                Foreground="#1D4ED8"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="Convidar Novo Usuário"
-                                       FontSize="15" FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextoPadraoColor}"/>
-                            <TextBlock Text="Gere um token de acesso de 48h e envie ao usuário."
-                                       FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
+                               FontSize="15" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextoPadraoColor}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Gere um token de acesso de 30 minutos e envie ao usuário."
+                                   FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
+                                <!-- TEXTO DO CONTADOR DE TOKENS -->
+                                <TextBlock Margin="8,0,0,0" FontSize="12" FontWeight="SemiBold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{Binding LimiteTokensRestantes, StringFormat='(Restam {0} envios)'}"/>
+                                            <Setter Property="Foreground" Value="#1D4ED8"/>
+                                            <Style.Triggers>
+                                                <!-- Altera a cor para vermelho caso o limite chegue a 0 -->
+                                                <DataTrigger Binding="{Binding LimiteTokensRestantes}" Value="0">
+                                                    <Setter Property="Foreground" Value="{DynamicResource VermelhoColor}"/>
+                                                    <Setter Property="Text" Value="(Limite esgotado!)"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
 
@@ -116,45 +134,51 @@
 
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="E-mail do novo usuário"
-                                       Style="{StaticResource LabelStyle}"
-                                       Margin="0,0,0,6"/>
+                               Style="{StaticResource LabelStyle}"
+                               Margin="0,0,0,6"/>
                             <TextBox Text="{Binding EmailConvite, UpdateSourceTrigger=PropertyChanged}"
-                                     Style="{StaticResource InputStyle}"
-                                     Height="40"/>
+                             Style="{StaticResource InputStyle}"
+                             Height="40"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2">
                             <TextBlock Text="Perfil de acesso"
-                                       Style="{StaticResource LabelStyle}"
-                                       Margin="0,0,0,6"/>
+                               Style="{StaticResource LabelStyle}"
+                               Margin="0,0,0,6"/>
                             <ComboBox SelectedValuePath="Content"
-                                     SelectedValue="{Binding PerfilSelecionado, UpdateSourceTrigger=PropertyChanged}"
-                                     Height="40"
-                                     VerticalContentAlignment="Center"
-                                     Padding="10,0">
+                              SelectedValue="{Binding PerfilSelecionado, UpdateSourceTrigger=PropertyChanged}"
+                              Height="40"
+                              VerticalContentAlignment="Center"
+                              Padding="10,0">
                                 <ComboBoxItem Content="Usuário" IsSelected="True"/>
                                 <ComboBoxItem Content="Administrador"/>
                             </ComboBox>
                         </StackPanel>
 
                         <Button Grid.Column="4"
-                                Command="{Binding GerarConviteCommand}"
-                                Height="40" Padding="20,0"
-                                VerticalAlignment="Bottom"
-                                Background="{DynamicResource AzulMedioColor}"
-                                BorderThickness="0"
-                                Foreground="White"
-                                FontWeight="SemiBold"
-                                FontSize="13"
-                                Cursor="Hand">
+                        Command="{Binding GerarConviteCommand}"
+                        Height="40" Padding="20,0"
+                        VerticalAlignment="Bottom"
+                        Background="{DynamicResource AzulMedioColor}"
+                        BorderThickness="0"
+                        Foreground="White"
+                        FontWeight="SemiBold"
+                        FontSize="13"
+                        Cursor="Hand">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
                                     <Setter Property="Foreground" Value="White"/>
                                     <Setter Property="BorderThickness" Value="0"/>
                                     <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="IsEnabled" Value="True"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="Background" Value="{DynamicResource TextoCinzaColor}"/>
+                                        </DataTrigger>
+                                        <!-- BLOQUEIA O BOTÃO CASO CHEGUE A ZERO TOKENS -->
+                                        <DataTrigger Binding="{Binding LimiteTokensRestantes}" Value="0">
                                             <Setter Property="IsEnabled" Value="False"/>
                                             <Setter Property="Background" Value="{DynamicResource TextoCinzaColor}"/>
                                         </DataTrigger>
@@ -163,10 +187,10 @@
                             </Button.Style>
                             <StackPanel Orientation="Horizontal">
                                 <iconPacks:PackIconMaterial Kind="KeyPlus"
-                                                            Width="14" Height="14"
-                                                            Foreground="White"
-                                                            VerticalAlignment="Center"
-                                                            Margin="0,0,8,0"/>
+                                                    Width="14" Height="14"
+                                                    Foreground="White"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,0,8,0"/>
                                 <TextBlock VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -174,6 +198,10 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding GerandoConvite}" Value="True">
                                                     <Setter Property="Text" Value="Gerando..."/>
+                                                </DataTrigger>
+                                                <!-- ALTERA O TEXTO CASO ESTEJA BLOQUEADO -->
+                                                <DataTrigger Binding="{Binding LimiteTokensRestantes}" Value="0">
+                                                    <Setter Property="Text" Value="Sem Limite"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -184,24 +212,24 @@
                     </Grid>
 
                     <StackPanel Orientation="Horizontal"
-                                Margin="0,8,0,0"
-                                Visibility="{Binding TemErro, Converter={StaticResource BoolVis}}">
+                        Margin="0,8,0,0"
+                        Visibility="{Binding TemErro, Converter={StaticResource BoolVis}}">
                         <iconPacks:PackIconMaterial Kind="AlertCircleOutline"
-                                                    Width="13" Height="13"
-                                                    Foreground="{DynamicResource VermelhoColor}"
-                                                    VerticalAlignment="Center"
-                                                    Margin="0,0,6,0"/>
+                                            Width="13" Height="13"
+                                            Foreground="{DynamicResource VermelhoColor}"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,6,0"/>
                         <TextBlock Text="{Binding MensagemErro}"
-                                   FontSize="12" Foreground="{DynamicResource VermelhoColor}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap"/>
+                            FontSize="12" Foreground="{DynamicResource VermelhoColor}"
+                            VerticalAlignment="Center"
+                            TextWrapping="Wrap"/>
                     </StackPanel>
                 </StackPanel>
 
                 <Border Grid.Column="1" Width="1"
-                        Background="#E2E8F0"
-                        VerticalAlignment="Stretch"
-                        Margin="0,8"/>
+                Background="#E2E8F0"
+                VerticalAlignment="Stretch"
+                Margin="0,8"/>
 
                 <StackPanel Grid.Column="2" Width="260" VerticalAlignment="Center">
                     <StackPanel>
@@ -216,22 +244,22 @@
                             </Style>
                         </StackPanel.Style>
                         <Border Background="#F8FAFC" CornerRadius="10"
-                                Padding="20,24" BorderBrush="#E2E8F0" BorderThickness="1">
+                        Padding="20,24" BorderBrush="#E2E8F0" BorderThickness="1">
                             <StackPanel HorizontalAlignment="Center">
                                 <iconPacks:PackIconMaterial Kind="KeyOutline"
-                                                            Width="32" Height="32"
-                                                            Foreground="{DynamicResource CinzaClaroColor}"
-                                                            HorizontalAlignment="Center"
-                                                            Margin="0,0,0,10"/>
+                                                    Width="32" Height="32"
+                                                    Foreground="{DynamicResource CinzaClaroColor}"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="0,0,0,10"/>
                                 <TextBlock Text="Token aparecerá aqui"
-                                           FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
-                                           HorizontalAlignment="Center"
-                                           TextAlignment="Center"/>
+                                   FontSize="13" Foreground="{DynamicResource TextoCinzaColor}"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"/>
                                 <TextBlock Text="após gerar o convite"
-                                           FontSize="12" Foreground="{DynamicResource CinzaClaroColor}"
-                                           HorizontalAlignment="Center"
-                                           TextAlignment="Center"
-                                           Margin="0,2,0,0"/>
+                                   FontSize="12" Foreground="{DynamicResource CinzaClaroColor}"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Margin="0,2,0,0"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -239,36 +267,36 @@
                     <!-- Token Gerado -->
                     <StackPanel Visibility="{Binding TokenGeradoVisivel, Converter={StaticResource BoolVis}}">
                         <Border Background="#F0FFF4" CornerRadius="10"
-                                Padding="20,16" BorderBrush="#86EFAC" BorderThickness="1">
+                        Padding="20,16" BorderBrush="#86EFAC" BorderThickness="1">
                             <StackPanel>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
                                     <iconPacks:PackIconMaterial Kind="CheckCircle"
-                                                                Width="14" Height="14"
-                                                                Foreground="{DynamicResource VerdeColor}"
-                                                                VerticalAlignment="Center"
-                                                                Margin="0,0,6,0"/>
+                                                        Width="14" Height="14"
+                                                        Foreground="{DynamicResource VerdeColor}"
+                                                        VerticalAlignment="Center"
+                                                        Margin="0,0,6,0"/>
                                     <TextBlock Text="Token gerado!"
-                                               FontSize="13" FontWeight="SemiBold"
-                                               Foreground="#15803D"
-                                               VerticalAlignment="Center"/>
+                                       FontSize="13" FontWeight="SemiBold"
+                                       Foreground="#15803D"
+                                       VerticalAlignment="Center"/>
                                 </StackPanel>
 
                                 <Border Background="White" CornerRadius="8"
-                                        Padding="12,10" Margin="0,0,0,12"
-                                        BorderBrush="#86EFAC" BorderThickness="1">
+                                Padding="12,10" Margin="0,0,0,12"
+                                BorderBrush="#86EFAC" BorderThickness="1">
                                     <TextBlock Text="{Binding TokenGerado}"
-                                               FontFamily="Courier New"
-                                               FontSize="22"
-                                               FontWeight="Bold"
-                                               Foreground="{DynamicResource AzulMedioColor}"
-                                               HorizontalAlignment="Center"
-                                               TextAlignment="Center"/>
+                                       FontFamily="Courier New"
+                                       FontSize="22"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource AzulMedioColor}"
+                                       HorizontalAlignment="Center"
+                                       TextAlignment="Center"/>
                                 </Border>
 
-                                <TextBlock Text="Válido por 48 horas · Uso único"
-                                           FontSize="11" Foreground="{DynamicResource CinzaColor}"
-                                           HorizontalAlignment="Center"
-                                           Margin="0,0,0,12"/>
+                                <TextBlock Text="Válido por 30 minutos · Uso único"
+                                   FontSize="11" Foreground="{DynamicResource CinzaColor}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,12"/>
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -278,14 +306,14 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Button Grid.Column="0"
-                                            Command="{Binding CopiarTokenCommand}"
-                                            Height="34"
-                                            Background="{DynamicResource AzulMedioColor}"
-                                            BorderThickness="0"
-                                            Foreground="White"
-                                            FontSize="12"
-                                            FontWeight="SemiBold"
-                                            Cursor="Hand">
+                                    Command="{Binding CopiarTokenCommand}"
+                                    Height="34"
+                                    Background="{DynamicResource AzulMedioColor}"
+                                    BorderThickness="0"
+                                    Foreground="White"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Cursor="Hand">
                                         <Button.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="CornerRadius" Value="6"/>
@@ -293,29 +321,29 @@
                                         </Button.Resources>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:PackIconMaterial Kind="ContentCopy"
-                                                                        Width="12" Height="12"
-                                                                        Foreground="White"
-                                                                        VerticalAlignment="Center"
-                                                                        Margin="0,0,6,0"/>
+                                                                Width="12" Height="12"
+                                                                Foreground="White"
+                                                                VerticalAlignment="Center"
+                                                                Margin="0,0,6,0"/>
                                             <TextBlock Text="Copiar" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Button Grid.Column="2"
-                                            Command="{Binding LimparConviteCommand}"
-                                            Height="34" Width="34"
-                                            Background="White"
-                                            BorderBrush="#E2E8F0" BorderThickness="1"
-                                            Cursor="Hand"
-                                            ToolTip="Gerar novo convite">
+                                    Command="{Binding LimparConviteCommand}"
+                                    Height="34" Width="34"
+                                    Background="White"
+                                    BorderBrush="#E2E8F0" BorderThickness="1"
+                                    Cursor="Hand"
+                                    ToolTip="Gerar novo convite">
                                         <Button.Resources>
                                             <Style TargetType="Border">
                                                 <Setter Property="CornerRadius" Value="6"/>
                                             </Style>
                                         </Button.Resources>
                                         <iconPacks:PackIconMaterial Kind="Refresh"
-                                                                    Width="14" Height="14"
-                                                                    Foreground="{DynamicResource CinzaColor}"/>
+                                                            Width="14" Height="14"
+                                                            Foreground="{DynamicResource CinzaColor}"/>
                                     </Button>
                                 </Grid>
                             </StackPanel>
@@ -323,11 +351,11 @@
 
                         <!-- Mensagem de sucesso -->
                         <TextBlock Text="{Binding Mensagem}"
-                                   FontSize="11" Foreground="{DynamicResource VerdeColor}"
-                                   TextWrapping="Wrap"
-                                   TextAlignment="Center"
-                                   Margin="0,8,0,0"
-                                   Visibility="{Binding TemMensagem, Converter={StaticResource BoolVis}}"/>
+                           FontSize="11" Foreground="{DynamicResource VerdeColor}"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"
+                           Margin="0,8,0,0"
+                           Visibility="{Binding TemMensagem, Converter={StaticResource BoolVis}}"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

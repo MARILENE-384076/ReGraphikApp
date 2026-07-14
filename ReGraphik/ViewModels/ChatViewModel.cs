@@ -2,6 +2,7 @@
 using Firebase.Database.Query;
 using ReGraphik.Models;
 using ReGraphik.Services;
+using ReGraphik.Views;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -20,10 +21,14 @@ namespace ReGraphik.ViewModels
         private readonly Usuario _usuarioLogado;
         private readonly DispatcherTimer _timerAtualizacao;
 
-        // Mantém as assinaturas dos listeners do Firebase para cancelamento
+        /// <summary>
+        /// Mantém as assinaturas dos listeners do Firebase para cancelamento
+        /// </summary>
         private readonly List<IDisposable> _listeners = [];
 
-        // Rastreia IDs de mensagens já vistas para não re-notificar
+        /// <summary>
+        /// Rastreia IDs de mensagens já vistas para não re-notificar
+        /// </summary>
         private readonly HashSet<string> _mensagensJaVistas = [];
 
         private ObservableCollection<Conversa> _conversas = [];
@@ -36,14 +41,15 @@ namespace ReGraphik.ViewModels
         private int _totalNaoLidas;
         private bool _carregando;
 
-        // ── evento disparado quando chega mensagem nova de outro usuário ─────
         /// <summary>
         /// Disparado quando uma mensagem nova chega enquanto o chat está fechado.
         /// Parâmetros: nome do remetente, prévia do texto.
         /// </summary>
         public event Action<string, string>? NovaMensagemRecebida;
 
-        // ── propriedades ─────────────────────────────────────────────────────
+        /// <summary>
+        /// Lista de conversas do usuário logado, exibida na lateral do painel de chat.
+        /// </summary>
         public ObservableCollection<Conversa> Conversas
         {
             get => _conversas;
@@ -62,6 +68,9 @@ namespace ReGraphik.ViewModels
             set { _usuariosDisponiveis = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Conversa atualmente aberta no painel de chat. Ao ser alterada, dispara o carregamento das mensagens correspondentes.
+        /// </summary>
         public Conversa? ConversaSelecionada
         {
             get => _conversaSelecionada;
@@ -110,7 +119,9 @@ namespace ReGraphik.ViewModels
             set { _carregando = value; OnPropertyChanged(); }
         }
 
-        // ── commands ─────────────────────────────────────────────────────────
+        /// <summary>
+        /// Comando que alterna a visibilidade do painel de chat. Se o painel for aberto, carrega as conversas do usuário logado.
+        /// </summary>
         public ICommand AbrirChatCommand { get; }
         public ICommand FecharChatCommand { get; }
         public ICommand EnviarMensagemCommand { get; }
@@ -120,7 +131,10 @@ namespace ReGraphik.ViewModels
         public ICommand SelecionarConversaCommand { get; }
         public ICommand VoltarListaCommand { get; }
 
-        // ── construtor ───────────────────────────────────────────────────────
+        /// <summary>
+        /// Inicializa uma nova instância do ViewModel de chat, configurando o serviço de chat, comandos e listeners do Firebase.
+        /// </summary>
+        /// <param name="usuarioLogado"></param>
         public ChatViewModel(Usuario usuarioLogado)
         {
             _usuarioLogado = usuarioLogado;
@@ -135,15 +149,14 @@ namespace ReGraphik.ViewModels
             SelecionarConversaCommand = new RelayCommand<Conversa>(c => ConversaSelecionada = c);
             VoltarListaCommand = new RelayCommand(() => ConversaSelecionada = null);
 
-            // Carrega conversas e notificações ao inicializar —
-            // assim o badge já aparece antes de o usuário abrir o chat.
+            /// Carrega as conversas e atualiza notificações ao iniciar
             _ = CarregarConversasPublicAsync();
             _ = AtualizarNotificacoesAsync();
 
-            // Inicia a escuta em tempo real do Firebase para mensagens novas
+            /// Inicia a escuta em tempo real do Firebase para mensagens novas
             IniciarEscutaFirebase();
 
-            // Timer de segurança: garante sync caso algum evento Firebase seja perdido
+            /// Timer de segurança: garante sync caso algum evento Firebase seja perdido
             _timerAtualizacao = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(15)
@@ -152,7 +165,6 @@ namespace ReGraphik.ViewModels
             _timerAtualizacao.Start();
         }
 
-        // ── escuta Firebase em tempo real ────────────────────────────────────
 
         /// <summary>
         /// Assina o nó raiz "mensagens" do Firebase e reage a qualquer
@@ -166,22 +178,20 @@ namespace ReGraphik.ViewModels
         {
             try
             {
-                var db = FirebaseConfig.Client;
+                var db = FirebaseConfigService.Client;
 
-                // Assina todas as conversas que contêm o ID do usuário logado.
-                // O Firebase SDK chama o callback a cada inserção/alteração no nó.
+                /// Assina o nó "mensagens" do Firebase para receber eventos em tempo real
                 var listener = db
                     .Child("mensagens")
                     .AsObservable<Mensagem>()
                     .Subscribe(evento =>
                     {
-                        // Ignora eventos nulos ou de deleção
+                        /// Ignora eventos nulos ou de deleção
                         if (evento?.Object == null) return;
 
                         var msg = evento.Object;
 
-                        // Só processa mensagens destinadas ao usuário logado
-                        // e que ainda não foram processadas nesta sessão
+                        /// Ignora mensagens que não são destinadas ao usuário logado ou que já foram vistas
                         if (msg.DestinatarioId != _usuarioLogado.Id) return;
                         if (_mensagensJaVistas.Contains(msg.Id)) return;
 
@@ -189,27 +199,26 @@ namespace ReGraphik.ViewModels
 
                         Application.Current.Dispatcher.Invoke(async () =>
                         {
-                            // 1. Atualiza o badge de não-lidas
+                            /// Atualiza o badge de não-lidas
                             await AtualizarNotificacoesAsync();
 
-                            // 2. Se a conversa com este remetente estiver aberta,
-                            //    adiciona a mensagem em tempo real na lista de mensagens
+                            /// Se a conversa com este remetente estiver aberta, adiciona a mensagem em tempo real na lista de mensagens
                             if (ConversaSelecionada?.UsuarioId == msg.RemetenteId)
                             {
                                 msg.EhMinhaMensagem = false;
                                 Mensagens.Add(msg);
 
-                                // Marca como lida imediatamente
+                                /// Marca como lida imediatamente
                                 await _chatService.MarcarComoLidaAsync(
                                     msg.RemetenteId, _usuarioLogado.Id);
                                 await AtualizarNotificacoesAsync();
                             }
                             else
                             {
-                                // 3. Atualiza (ou cria) a linha da conversa na lista lateral
+                                /// Atualiza (ou cria) a linha da conversa na lista lateral
                                 await AtualizarConversaNaListaAsync(msg);
 
-                                // 4. Dispara o toast se o painel estiver fechado
+                                /// Dispara o toast se o painel estiver fechado
                                 if (!ChatAberto)
                                 {
                                     var preview = msg.Texto.Length > 50
@@ -223,9 +232,16 @@ namespace ReGraphik.ViewModels
 
                 _listeners.Add(listener);
             }
-            catch
+            catch (Exception ex) 
             {
-                // Se o Firebase não estiver disponível, o timer de 15s garante sync
+                /// Loga o erro no console de depuração para análise posterior
+                System.Diagnostics.Debug.WriteLine($"Erro ao iniciar escuta do Firebase: {ex.Message}");
+
+                /// Mostra uma mensagem de erro ao usuário, garantindo que seja executada na thread da UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Erro ao iniciar escuta do Firebase!", MensagemWindow.TipoMensagem.Erro);
+                });
             }
         }
 
@@ -235,51 +251,65 @@ namespace ReGraphik.ViewModels
         /// </summary>
         private async Task AtualizarConversaNaListaAsync(Mensagem msg)
         {
-            var naoLidas = await _chatService.ContarNaoLidasAsync(
-                _usuarioLogado.Id, msg.RemetenteId);
-
-            var existente = Conversas.FirstOrDefault(c => c.UsuarioId == msg.RemetenteId);
-
-            if (existente != null)
+            try
             {
-                // Atualiza dados da conversa existente
-                existente.UltimaMensagem = msg.Texto.Length > 40
-                    ? msg.Texto[..40] + "..."
-                    : msg.Texto;
-                existente.UltimaDataHora = msg.DataHora;
-                existente.MensagensNaoLidas = naoLidas;
+                var naoLidas = await _chatService.ContarNaoLidasAsync(
+                    _usuarioLogado.Id, msg.RemetenteId);
 
-                // Move a conversa para o topo da lista
-                Conversas.Remove(existente);
-                Conversas.Insert(0, existente);
-            }
-            else
-            {
-                // Nova conversa — cria a entrada na lista
-                Conversas.Insert(0, new Conversa
+                var existente = Conversas.FirstOrDefault(c => c.UsuarioId == msg.RemetenteId);
+
+                if (existente != null)
                 {
-                    UsuarioId = msg.RemetenteId,
-                    UsuarioNome = msg.RemetenteNome,
-                    UltimaMensagem = msg.Texto.Length > 40
+                    /// Atualiza dados da conversa existente
+                    existente.UltimaMensagem = msg.Texto.Length > 40
                         ? msg.Texto[..40] + "..."
-                        : msg.Texto,
-                    UltimaDataHora = msg.DataHora,
-                    MensagensNaoLidas = naoLidas
+                        : msg.Texto;
+                    existente.UltimaDataHora = msg.DataHora;
+                    existente.MensagensNaoLidas = naoLidas;
+
+                    /// Move a conversa para o topo da lista
+                    Conversas.Remove(existente);
+                    Conversas.Insert(0, existente);
+                }
+                else
+                {
+                    /// Nova conversa — cria a entrada na lista
+                    Conversas.Insert(0, new Conversa
+                    {
+                        UsuarioId = msg.RemetenteId,
+                        UsuarioNome = msg.RemetenteNome,
+                        UltimaMensagem = msg.Texto.Length > 40
+                            ? msg.Texto[..40] + "..."
+                            : msg.Texto,
+                        UltimaDataHora = msg.DataHora,
+                        MensagensNaoLidas = naoLidas
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                /// Loga o erro no console de depuração para análise posterior
+                System.Diagnostics.Debug.WriteLine($"Erro ao atualizar conversa na lista: {ex.Message}");
+
+                /// Mostra uma mensagem de erro ao usuário, garantindo que seja executada na thread da UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Erro ao atualizar conversa na lista!", MensagemWindow.TipoMensagem.Erro);
                 });
             }
         }
 
-        // ── métodos públicos ─────────────────────────────────────────────────
-
         /// <summary>
-        /// Carrega todas as conversas do usuário logado.
-        /// Exposto como público para que o MainViewModel possa chamá-lo
-        /// ao abrir o painel de chat.
+        /// 
         /// </summary>
+        /// <returns></returns>
         public async Task CarregarConversasPublicAsync()
             => await CarregarConversasAsync();
 
-        // ── métodos privados ─────────────────────────────────────────────────
+        /// <summary>
+        /// Alterna a visibilidade do painel de chat. Se o painel for aberto, carrega as conversas do usuário logado.
+        /// </summary>
+        /// <returns></returns>
         private async Task AbrirChatAsync()
         {
             ChatAberto = !ChatAberto;
@@ -287,11 +317,17 @@ namespace ReGraphik.ViewModels
                 await CarregarConversasAsync();
         }
 
+        /// <summary>
+        /// Carrega a lista de conversas do usuário logado, obtendo a última mensagem e o número de mensagens não lidas para cada conversa.
+        /// </summary>
+        /// <returns></returns>
         private async Task CarregarConversasAsync()
         {
             Carregando = true;
+
             try
             {
+                /// Obtém todos os usuários do sistema, exceto o usuário logado
                 var usuarios = await _chatService.ListarUsuariosAsync();
                 var conversas = new List<Conversa>();
 
@@ -324,24 +360,40 @@ namespace ReGraphik.ViewModels
                         conversas.OrderByDescending(c => c.UltimaDataHora));
                 });
             }
+            catch (Exception ex)
+            {
+                /// Loga o erro no console de depuração para análise posterior
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar conversas: {ex.Message}");
+                /// Mostra uma mensagem de erro ao usuário, garantindo que seja executada na thread da UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Erro ao carregar conversas!", MensagemWindow.TipoMensagem.Erro);
+                });
+            }
             finally
             {
                 Carregando = false;
             }
         }
 
+        /// <summary>
+        /// Carrega as mensagens da conversa selecionada, marcando todas como lidas e atualizando o badge de não-lidas.
+        /// </summary>
+        /// <param name="outroUsuarioId"></param>
+        /// <returns></returns>
         private async Task CarregarMensagensAsync(string outroUsuarioId)
         {
             Carregando = true;
             try
             {
+                /// Obtém todas as mensagens entre o usuário logado e o outro usuário
                 var msgs = await _chatService.ObterMensagensAsync(
                     _usuarioLogado.Id, outroUsuarioId);
 
                 foreach (var m in msgs)
                 {
                     m.EhMinhaMensagem = m.RemetenteId == _usuarioLogado.Id;
-                    // Marca todos os IDs como vistos para não re-notificar
+                    /// Marca todos os IDs como vistos para não re-notificar
                     _mensagensJaVistas.Add(m.Id);
                 }
 
@@ -354,16 +406,27 @@ namespace ReGraphik.ViewModels
                 await _chatService.MarcarComoLidaAsync(outroUsuarioId, _usuarioLogado.Id);
                 await AtualizarNotificacoesAsync();
 
-                // Atualiza o badge da conversa na lista lateral
+                /// Atualiza o badge da conversa na lista lateral
                 var conv = Conversas.FirstOrDefault(c => c.UsuarioId == outroUsuarioId);
                 if (conv != null)
                 {
                     conv.MensagensNaoLidas = 0;
-                    // Força atualização do binding (Conversa não implementa INotifyPropertyChanged)
+                    /// Força atualização do binding (Conversa não implementa INotifyPropertyChanged)
                     var idx = Conversas.IndexOf(conv);
                     Conversas.RemoveAt(idx);
                     Conversas.Insert(idx, conv);
                 }
+            }
+            catch (Exception ex)
+            {
+                /// Loga o erro no console de depuração para análise posterior
+                System.Diagnostics.Debug.WriteLine($"Erro ao carregar mensagens: {ex.Message}");
+
+                /// Mostra uma mensagem de erro ao usuário, garantindo que seja executada na thread da UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Erro ao carregar mensagens!", MensagemWindow.TipoMensagem.Erro);
+                });
             }
             finally
             {
@@ -373,35 +436,53 @@ namespace ReGraphik.ViewModels
 
         private async Task EnviarMensagemAsync()
         {
-            if (string.IsNullOrWhiteSpace(TextoMensagem) || ConversaSelecionada == null)
-                return;
-
-            var mensagem = new Mensagem
+            try
             {
-                Id = Guid.NewGuid().ToString(),
-                RemetenteId = _usuarioLogado.Id,
-                RemetenteNome = _usuarioLogado.Nome ?? "Usuário",
-                DestinatarioId = ConversaSelecionada.UsuarioId,
-                Texto = TextoMensagem.Trim(),
-                DataHora = DateTime.Now,
-                Lida = false,
-                EhMinhaMensagem = true
-            };
+                if (string.IsNullOrWhiteSpace(TextoMensagem) || ConversaSelecionada == null)
+                    return;
 
-            // Marca como vista antes de enviar para não gerar notificação para si mesmo
-            _mensagensJaVistas.Add(mensagem.Id);
+                var mensagem = new Mensagem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    RemetenteId = _usuarioLogado.Id,
+                    RemetenteNome = _usuarioLogado.Nome ?? "Usuário",
+                    DestinatarioId = ConversaSelecionada.UsuarioId,
+                    Texto = TextoMensagem.Trim(),
+                    DataHora = DateTime.Now,
+                    Lida = false,
+                    EhMinhaMensagem = true
+                };
 
-            TextoMensagem = string.Empty;
+                /// Marca como vista antes de enviar para não gerar notificação para si mesmo
+                _mensagensJaVistas.Add(mensagem.Id);
 
-            // Adiciona localmente para resposta imediata (UX)
-            Application.Current.Dispatcher.Invoke(() => Mensagens.Add(mensagem));
+                TextoMensagem = string.Empty;
 
-            await _chatService.EnviarMensagemAsync(mensagem);
+                /// Adiciona localmente para resposta imediata (UX)
+                Application.Current.Dispatcher.Invoke(() => Mensagens.Add(mensagem));
 
-            // Atualiza a lista lateral de conversas
-            await CarregarConversasAsync();
+                await _chatService.EnviarMensagemAsync(mensagem);
+
+                /// Atualiza a lista lateral de conversas
+                await CarregarConversasAsync();
+            }
+            catch (Exception ex)
+            {
+                /// Loga o erro no console de depuração para análise posterior
+                System.Diagnostics.Debug.WriteLine($"Erro ao enviar mensagem: {ex.Message}");
+
+                /// Mostra uma mensagem de erro ao usuário, garantindo que seja executada na thread da UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Erro ao enviar mensagem!", MensagemWindow.TipoMensagem.Erro);
+                });
+            }
         }
 
+        /// <summary>
+        /// Abre a tela de nova conversa, listando todos os usuários disponíveis para iniciar uma conversa.
+        /// </summary>
+        /// <returns></returns>
         private async Task AbrirNovaConversaAsync()
         {
             var usuarios = await _chatService.ListarUsuariosAsync();
@@ -416,11 +497,16 @@ namespace ReGraphik.ViewModels
             MostrarNovaConversa = true;
         }
 
+        /// <summary>
+        /// Inicia uma nova conversa com o usuário selecionado. Se já existir uma conversa, apenas a seleciona. Impede iniciar conversa consigo mesmo.
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <returns></returns>
         private async Task IniciarConversaComAsync(Usuario? usuario)
         {
             if (usuario == null) return;
 
-            // Impede conversa consigo mesmo
+            /// Impede conversa consigo mesmo
             if (usuario.Id == _usuarioLogado.Id ||
                 usuario.Login == _usuarioLogado.Login)
             {
@@ -437,6 +523,7 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
+            /// Cria uma nova conversa com o usuário selecionado
             var novaConversa = new Conversa
             {
                 UsuarioId = usuario.Id,
@@ -452,6 +539,10 @@ namespace ReGraphik.ViewModels
             ConversaSelecionada = novaConversa;
         }
 
+        /// <summary>
+        /// Atualiza o total de mensagens não lidas do usuário logado, somando todas as conversas. Atualiza a propriedade TotalNaoLidas para refletir no badge do painel de chat.
+        /// </summary>
+        /// <returns></returns>
         private async Task AtualizarNotificacoesAsync()
         {
             try
@@ -468,14 +559,26 @@ namespace ReGraphik.ViewModels
 
                 Application.Current.Dispatcher.Invoke(() => TotalNaoLidas = total);
             }
-            catch { /* silencioso */ }
+            catch (Exception ex)
+            {
+                /// Loga o erro no console de depuração para análise posterior
+                System.Diagnostics.Debug.WriteLine($"Erro ao atualizar notificações: {ex.Message}");
+                /// Mostra uma mensagem de erro ao usuário, garantindo que seja executada na thread da UI
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Erro de Conexão", $"Erro ao atualizar notificações!", MensagemWindow.TipoMensagem.Erro);
+                });
+            }
         }
 
+        /// <summary>
+        /// Libera recursos, interrompe o timer de atualização e cancela todos os listeners do Firebase para evitar vazamentos de memória.
+        /// </summary>
         public void Dispose()
         {
             _timerAtualizacao.Stop();
 
-            // Cancela todos os listeners do Firebase
+            /// Cancela todos os listeners do Firebase
             foreach (var l in _listeners)
                 l.Dispose();
             _listeners.Clear();

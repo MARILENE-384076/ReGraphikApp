@@ -147,12 +147,12 @@ namespace ReGraphik.ViewModels
             {
                 var todosPontos = await BuscarPontosDoBancoAsync();
 
-                // Filtro geométrico em memória: seleciona registros contidos estritamente nos limites da tela atual
+                /// Filtro geométrico em memória: seleciona registros contidos estritamente nos limites da tela atual
                 var visiveisNoMapa = todosPontos.Where(p =>
                     p.Lat >= southWestLat && p.Lat <= northEastLat &&
                     p.Lng >= southWestLng && p.Lng <= northEastLng).ToList();
 
-                // Garante que as mutações na coleção Observable ocorram estritamente na Thread principal de UI
+                /// Garante que as mutações na coleção Observable ocorram estritamente na Thread principal de UI
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     PontosAtuais.Clear();
@@ -326,85 +326,85 @@ namespace ReGraphik.ViewModels
             var marcadoresJson = GerarJsonMarcadores(pontos);
 
             return $@"<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8' />
-    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
-    <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
-    <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
-    <style>
-        html, body, #map {{ height: 100%; margin: 0; padding: 0; font-family: sans-serif; }}
-        .popup-custom {{ font-size: 14px; line-height: 1.4; min-width: 200px; }}
-        .popup-title {{ font-weight: bold; color: #2e7d32; margin-bottom: 8px; font-size: 15px; text-transform: uppercase; }}
-        .popup-info {{ margin-bottom: 4px; }}
-    </style>
-</head>
-<body>
-    <div id='map'></div>
-    <script>
-        // Cria a instância do mapa focada por padrão nas coordenadas geográficas centrais do Brasil
-        var map = L.map('map').setView([-14.2350, -51.9253], 4);
+            <html>
+            <head>
+                <meta charset='utf-8' />
+                <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+                <link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css' />
+                <script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script>
+                <style>
+                    html, body, #map {{ height: 100%; margin: 0; padding: 0; font-family: sans-serif; }}
+                    .popup-custom {{ font-size: 14px; line-height: 1.4; min-width: 200px; }}
+                    .popup-title {{ font-weight: bold; color: #2e7d32; margin-bottom: 8px; font-size: 15px; text-transform: uppercase; }}
+                    .popup-info {{ margin-bottom: 4px; }}
+                </style>
+            </head>
+            <body>
+                <div id='map'></div>
+                <script>
+                    // Cria a instância do mapa focada por padrão nas coordenadas geográficas centrais do Brasil
+                    var map = L.map('map').setView([-14.2350, -51.9253], 4);
         
-        L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-            attribution: '&copy; OpenStreetMap contributors'
-        }}).addTo(map);
+                    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }}).addTo(map);
 
-        var marcadores = [];
+                    var marcadores = [];
 
-        // Gerencia e plota dinamicamente os marcadores geográficos fornecidos
-        function renderizarPontos(listaPontos) {{
-            try {{
-                if (typeof listaPontos === 'string') {{
-                    listaPontos = JSON.parse(listaPontos);
-                }}
+                    // Gerencia e plota dinamicamente os marcadores geográficos fornecidos
+                    function renderizarPontos(listaPontos) {{
+                        try {{
+                            if (typeof listaPontos === 'string') {{
+                                listaPontos = JSON.parse(listaPontos);
+                            }}
 
-                if (marcadores && marcadores.length > 0) {{
-                    marcadores.forEach(function(m) {{ map.removeLayer(m); }});
-                }}
-                marcadores = [];
+                            if (marcadores && marcadores.length > 0) {{
+                                marcadores.forEach(function(m) {{ map.removeLayer(m); }});
+                            }}
+                            marcadores = [];
 
-                if (listaPontos && listaPontos.length > 0) {{
-                    listaPontos.forEach(function(p) {{
-                        var marker = L.marker([p.lat, p.lng]).addTo(map);
-                        var conteudo = '<div class=""popup-custom"">' +
-                                       '<div class=""popup-title"">' + p.nome + '</div>' +
-                                       '<div class=""popup-info""><b>Endereço:</b> ' + p.endereco + '</div>' +
-                                       '<div class=""popup-info""><b>Resíduos:</b> ' + p.tipos + '</div>' +
-                                       '</div>';
+                            if (listaPontos && listaPontos.length > 0) {{
+                                listaPontos.forEach(function(p) {{
+                                    var marker = L.marker([p.lat, p.lng]).addTo(map);
+                                    var conteudo = '<div class=""popup-custom"">' +
+                                                   '<div class=""popup-title"">' + p.nome + '</div>' +
+                                                   '<div class=""popup-info""><b>Endereço:</b> ' + p.endereco + '</div>' +
+                                                   '<div class=""popup-info""><b>Resíduos:</b> ' + p.tipos + '</div>' +
+                                                   '</div>';
 
-                        marker.bindPopup(conteudo);
-                        marcadores.push(marker);
+                                    marker.bindPopup(conteudo);
+                                    marcadores.push(marker);
+                                }});
+                            }}
+                        }} catch(e) {{ }}
+                    }}
+
+                    renderizarPontos({marcadoresJson});
+
+                    // Evento contínuo acionado pelo Leaflet no momento imediato em que qualquer deslocamento de mapa é encerrado
+                    map.on('moveend', function() {{
+                        try {{
+                            if (window.external && typeof window.external.NotificarMovimentoMapa !== 'undefined') {{
+                                var bounds = map.getBounds();
+                                var sw = bounds.getSouthWest();
+                                var ne = bounds.getNorthEast();
+                                // Interopera em tempo real chamando o método C# e passando o enquadramento geográfico delimitador
+                                window.external.NotificarMovimentoMapa(sw.lat, sw.lng, ne.lat, ne.lng);
+                            }}
+                        }} catch(err) {{ }}
                     }});
-                }}
-            }} catch(e) {{ }}
-        }}
 
-        renderizarPontos({marcadoresJson});
-
-        // Evento contínuo acionado pelo Leaflet no momento imediato em que qualquer deslocamento de mapa é encerrado
-        map.on('moveend', function() {{
-            try {{
-                if (window.external && typeof window.external.NotificarMovimentoMapa !== 'undefined') {{
-                    var bounds = map.getBounds();
-                    var sw = bounds.getSouthWest();
-                    var ne = bounds.getNorthEast();
-                    // Interopera em tempo real chamando o método C# e passando o enquadramento geográfico delimitador
-                    window.external.NotificarMovimentoMapa(sw.lat, sw.lng, ne.lat, ne.lng);
-                }}
-            }} catch(err) {{ }}
-        }});
-
-        // Direciona a câmera com zoom de proximidade para um ponto selecionado e abre seu respectivo popup descritivo
-        function centralizarPonto(index) {{
-            if (marcadores[index]) {{
-                var m = marcadores[index];
-                map.setView(m.getLatLng(), 16);
-                m.openPopup();
-            }}
-        }}
-    </script>
-</body>
-</html>";
+                    // Direciona a câmera com zoom de proximidade para um ponto selecionado e abre seu respectivo popup descritivo
+                    function centralizarPonto(index) {{
+                        if (marcadores[index]) {{
+                            var m = marcadores[index];
+                            map.setView(m.getLatLng(), 16);
+                            m.openPopup();
+                        }}
+                    }}
+                </script>
+            </body>
+            </html>";
         }
 
         /// <summary>
