@@ -11,18 +11,24 @@ namespace ReGraphik.Services
     /// </summary>
     public class ChatService
     {
+        /// <summary>
+        /// Instancia do FirebaseClient para interagir com o Realtime Database.
+        /// </summary>
         private readonly FirebaseClient _db;
         private const string NodeMensagens = "mensagens";
         private const string NodeUsuarios = "usuarios";
 
         public ChatService()
         {
-            _db = FirebaseConfig.Client;
+            _db = FirebaseConfigService.Client;
         }
 
-        
-        /// Gera ID de conversa deterministico (menor ID primeiro)
-        
+        /// <summary>
+        /// Gera um ID único para a conversa entre dois usuários, garantindo que a ordem dos IDs não importe.
+        /// </summary>
+        /// <param name="id1"></param>
+        /// <param name="id2"></param>
+        /// <returns></returns>
         private static string ConversaId(string id1, string id2)
         {
             var ids = new[] { id1, id2 };
@@ -30,8 +36,12 @@ namespace ReGraphik.Services
             return $"{ids[0]}_{ids[1]}";
         }
 
-        
+        /// <summary>
         /// ObterMensagensAsync
+        /// </summary>
+        /// <param name="usuarioId1"></param>
+        /// <param name="usuarioId2"></param>
+        /// <returns></returns>
         public async Task<List<Mensagem>> ObterMensagensAsync(
             string usuarioId1, string usuarioId2)
         {
@@ -51,8 +61,11 @@ namespace ReGraphik.Services
             catch { return []; }
         }
 
-        
+        /// <summary>
         /// EnviarMensagemAsync
+        /// </summary>
+        /// <param name="mensagem"></param>
+        /// <returns></returns>
         public async Task EnviarMensagemAsync(Mensagem mensagem)
         {
             var convId = ConversaId(
@@ -65,9 +78,13 @@ namespace ReGraphik.Services
                 .PutAsync(mensagem);
         }
 
-        
+        /// <summary>
         /// MarcarComoLidaAsync
-        
+        /// </summary>
+        /// <param name="remetenteId"></param>
+        /// <param name="destinatarioId"></param>
+        /// <returns></returns>
+
         public async Task MarcarComoLidaAsync(
             string remetenteId, string destinatarioId)
         {
@@ -94,7 +111,6 @@ namespace ReGraphik.Services
             }
         }
 
-        
         /// <summary>
         /// ListarUsuariosAsync
         /// </summary>
@@ -111,8 +127,7 @@ namespace ReGraphik.Services
                     .Select(i =>
                     {
                         var u = i.Object;
-                        // Garante que o Id vem da chave do Firebase
-                        // mesmo que o campo "id" dentro do JSON esteja vazio
+                        /// Garantir que o ID do usuário seja definido corretamente
                         if (string.IsNullOrEmpty(u.Id))
                             u.Id = i.Key;
                         return u;
@@ -122,8 +137,6 @@ namespace ReGraphik.Services
             }
             catch { return []; }
         }
-
-
         
         /// <summary>
         /// ContarNaoLidasAsync

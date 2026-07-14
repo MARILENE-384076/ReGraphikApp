@@ -155,6 +155,11 @@ namespace ReGraphik.ViewModels
             }
         }
 
+        /// <summary>
+        /// Manipula a mudança de propriedades no serviço de sessão do usuário, atualizando a imagem de perfil na interface quando o caminho da foto é alterado.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnUsuarioSessaoPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho))
@@ -223,12 +228,12 @@ namespace ReGraphik.ViewModels
 
                         OxyColor corFatia = statusLabel switch
                         {
-                            "Disponível" => OxyColor.FromRgb(100, 116, 139),     // #64748B
-                            "Reservado" => OxyColor.FromRgb(50, 116, 186),       // #3274ba
-                            "Em Análise" => OxyColor.FromRgb(22, 73, 162),       // #1649a2
-                            "Coletado" => OxyColor.FromRgb(13, 42, 86),          // #0d2a56
-                            "Indisponível" => OxyColor.FromRgb(71, 85, 105),     // #475569
-                            _ => OxyColor.FromRgb(203, 213, 225)                 // #CBD5E1
+                            "Disponível" => OxyColor.FromRgb(100, 116, 139),     /// #64748B
+                            "Reservado" => OxyColor.FromRgb(50, 116, 186),       /// #3274ba
+                            "Em Análise" => OxyColor.FromRgb(22, 73, 162),       /// #1649a2
+                            "Coletado" => OxyColor.FromRgb(13, 42, 86),          /// #0d2a56
+                            "Indisponível" => OxyColor.FromRgb(71, 85, 105),     /// #475569
+                            _ => OxyColor.FromRgb(203, 213, 225)                 /// #CBD5E1
                         };
                         pieSeries.Slices.Add(new PieSlice(statusLabel, grupo.Count()));
                         coresPaleta.Add(corFatia);

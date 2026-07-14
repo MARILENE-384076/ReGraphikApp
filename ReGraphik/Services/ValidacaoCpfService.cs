@@ -21,7 +21,7 @@
             if (cpfLimpo.Length != 11)
                 return false;
 
-            // Ignora CPFs com todos os dígitos iguais (ex: 111.111.111-11)
+            /// Ignora CPFs com todos os dígitos iguais (ex: 111.111.111-11)
             if (new string(cpfLimpo[0], 11) == cpfLimpo)
                 return false;
 

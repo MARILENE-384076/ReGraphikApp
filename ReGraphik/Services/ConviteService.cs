@@ -12,7 +12,7 @@ namespace ReGraphik.Services
 
         public ConviteService()
         {
-            _db = FirebaseConfig.Client;
+            _db = FirebaseConfigService.Client;
         }
 
         /// <summary>

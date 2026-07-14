@@ -13,6 +13,9 @@ using System.Windows.Input;
 
 namespace ReGraphik.ViewModels
 {
+    /// <summary>
+    /// ViewModel responsável pelo gerenciamento do fluxo de cadastro de novos usuários, incluindo a solicitação de acesso, validação de token e finalização do cadastro.
+    /// </summary>
     public class CadastroViewModel : BaseViewModel
     {
         private readonly IAutorizarService _autorizarService;
@@ -84,6 +87,10 @@ namespace ReGraphik.ViewModels
                 OnPropertyChanged();
             } 
         }
+
+        /// <summary>
+        /// O e-mail corporativo do usuário, usado para verificar se há um convite válido no Firebase.
+        /// </summary>
         public string? Email { get => _email; set { _email = value; OnPropertyChanged(); } }
         public string? Login { get => _login; set { _login = value; OnPropertyChanged(); } }
 
@@ -140,6 +147,9 @@ namespace ReGraphik.ViewModels
             set { _tokenDigitado = value; OnPropertyChanged(); }
         }
 
+        /// <summary>
+        /// Mensagens de erro específicas para cada campo do formulário, exibidas na interface do usuário.
+        /// </summary>
         public string MensaNome { get => _mensaNome; set { _mensaNome = value; OnPropertyChanged(); } }
         public string MensaCpf { get => _mensaCpf; set { _mensaCpf = value; OnPropertyChanged(); } }
         public string MensaEmail { get => _mensaEmail; set { _mensaEmail = value; OnPropertyChanged(); } }
@@ -149,7 +159,7 @@ namespace ReGraphik.ViewModels
         public string MensagemErroToken { get => _mensagemErroToken; set { _mensagemErroToken = value; OnPropertyChanged(); } }
 
         /// <summary>
-        /// commands
+        /// Comandos vinculados aos botões da interface, responsáveis por acionar as ações de solicitação de acesso, validação de token, finalização do cadastro e alternância da visibilidade da senha.
         /// </summary>
         public ICommand SolicitarAcessoCommand { get; }
         public ICommand ValidarTokenCommand { get; }

@@ -107,7 +107,11 @@ namespace ReGraphik.ViewModels
 
         #endregion
 
-
+        /// <summary>
+        /// Inicializa uma nova instância do MainViewModel, configurando as views, comandos e eventos necessários para a navegação e funcionalidades da aplicação.
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="window"></param>
 
         public MainViewModel(Usuario usuario, Window window)
         {
@@ -116,7 +120,7 @@ namespace ReGraphik.ViewModels
 
             _currentWindow = window;
 
-            // Assina o evento de sessão expirada para realizar logout automático por inatividade
+            /// Assina o evento de sessão expirada para realizar logout automático por inatividade
             UsuarioSessaoService.Instancia.SessaoExpirada += OnSessaoExpirada;
 
 

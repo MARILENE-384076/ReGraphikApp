@@ -16,6 +16,9 @@ using System.Windows.Media.Imaging;
 
 namespace ReGraphik.ViewModels
 {
+    /// <summary>
+    /// ViewModel para a tela de conta do usuário, responsável por gerenciar os dados do perfil, estatísticas e interações com a API.
+    /// </summary>
     public class ContaViewModel : BaseViewModel
     {
         private readonly Usuario _usuarioAtual;
@@ -105,7 +108,6 @@ namespace ReGraphik.ViewModels
             set { _ocupado = value; OnPropertyChanged(); }
         }
 
-        /// ── Estatísticas ─────────────────────────────────────────
 
         /// <summary>
         /// Total de resíduos cadastrados pelo usuário logado
@@ -156,8 +158,6 @@ namespace ReGraphik.ViewModels
             get => _carregandoEstatisticas;
             set { _carregandoEstatisticas = value; OnPropertyChanged(); }
         }
-
-        /// ── Mensagens inline ─────────────────────────────────────
 
         /// <summary>
         /// Mensagem de erro inline para o campo de e-mail, exibida abaixo do campo sem MessageBox
@@ -405,7 +405,7 @@ namespace ReGraphik.ViewModels
                 Ocupado = true;
                 bool sucesso = false;
 
-                // Executa a chamada correta dependendo de haver ou não alteração na foto de perfil
+                /// Executa a chamada correta dependendo de haver ou não alteração na foto de perfil
                 if (!string.IsNullOrEmpty(_caminhoNovaFotoSelecionada) && File.Exists(_caminhoNovaFotoSelecionada))
                 {
                     string? novaUrlFoto = await _autorizarService.AtualizarComFotoAsync(_usuarioAtual.Id, _usuarioAtual, _caminhoNovaFotoSelecionada);

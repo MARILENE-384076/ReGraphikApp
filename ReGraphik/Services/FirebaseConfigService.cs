@@ -11,9 +11,9 @@ namespace ReGraphik.Services
     /// Fornece acesso singleton ao FirebaseClient configurado
     /// para o Realtime Database do ReGraphik.
     /// </summary>
-    public static class FirebaseConfig
+    public static class FirebaseConfigService
     {
-        // URL do Realtime Database do projeto Firebase
+        /// URL do Realtime Database do projeto Firebase
         private const string DatabaseUrl =
             "https://regraphikfirebase-default-rtdb.firebaseio.com/";
 
