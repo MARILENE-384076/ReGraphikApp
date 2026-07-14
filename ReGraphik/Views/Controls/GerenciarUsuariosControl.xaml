@@ -101,7 +101,7 @@
                                FontSize="15" FontWeight="SemiBold"
                                Foreground="{DynamicResource TextoPadraoColor}"/>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Gere um token de acesso de 48h e envie ao usuário."
+                                <TextBlock Text="Gere um token de acesso de 30 minutos e envie ao usuário."
                                    FontSize="12" Foreground="{DynamicResource CinzaColor}"/>
                                 <!-- TEXTO DO CONTADOR DE TOKENS -->
                                 <TextBlock Margin="8,0,0,0" FontSize="12" FontWeight="SemiBold">
@@ -293,7 +293,7 @@
                                        TextAlignment="Center"/>
                                 </Border>
 
-                                <TextBlock Text="Válido por 48 horas · Uso único"
+                                <TextBlock Text="Válido por 30 minutos · Uso único"
                                    FontSize="11" Foreground="{DynamicResource CinzaColor}"
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,12"/>

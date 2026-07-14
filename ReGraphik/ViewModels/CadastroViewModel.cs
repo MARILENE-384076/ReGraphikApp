@@ -204,20 +204,9 @@ namespace ReGraphik.ViewModels
 
                 if (temConvite)
                 {
-                    /// Como o admin já gerou, precisamos buscar do Firebase 
-                    /// para exibir na janela de simulação. (Crie esse método no seu service se necessário)
-                    string tokenDoFirebase = await _conviteService.ObterTokenPorEmailAsync(Email.Trim()) ?? "ST-XXXXX";
-
-                    /// Passa o token recuperado E o e-mail digitado (Email.Trim())
-                    var telaSimulada = new ReGraphik.Views.TokenEmailWindow(tokenDoFirebase, Email.Trim());
-                    telaSimulada.Owner = System.Windows.Application.Current.MainWindow;
-
-                    /// Pausa a execução aqui até o usuário fechar a janela de e-mail
-                    telaSimulada.ShowDialog();
-
                     /// Avança para a etapa 2 na interface (digitar o token)
                     SolicitacaoEnviada = true;
-                    MensagemErroGeral = "E-mail localizado. Digite o token que o Administrador enviou a você.";
+                    MensagemErroGeral = "Um token de acesso foi enviado para o seu e-mail. Verifique sua caixa de entrada.";
                 }
                 else
                 {
