@@ -52,9 +52,18 @@ namespace ReGraphik.ViewModels
         public bool SemFoto => string.IsNullOrWhiteSpace(FotoPerfilCaminho);
 
         /// <summary>
-        /// Inicial do nome para exibir no avatar quando não há foto
+        /// Obtém as iniciais do usuário logado (primeira e última letra do nome) para exibir no avatar caso não haja foto.
         /// </summary>
-        public string InicialNome => string.IsNullOrWhiteSpace(Nome) ? "?" : Nome[..1].ToUpper();
+        public string Iniciais
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Nome)) return "?";
+                var partes = Nome.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (partes.Length == 1) return partes[0][0].ToString().ToUpper();
+                return (partes[0][0].ToString() + partes[^1][0].ToString()).ToUpper();
+            }
+        }
 
         /// <summary>
         /// Login formatado com @ para exibição no card do perfil
@@ -70,7 +79,12 @@ namespace ReGraphik.ViewModels
         public string Nome
         {
             get => _nome;
-            set { _nome = value; OnPropertyChanged(); OnPropertyChanged(nameof(InicialNome)); }
+            set
+            {
+                _nome = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Iniciais));
+            }
         }
 
         private string? _cpf;

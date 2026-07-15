@@ -16,9 +16,9 @@
                 <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:CaminhoParaImagemConverter x:Key="CaminhoParaImagemConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     
@@ -47,32 +47,21 @@
                                 </Border.Effect>
                             </Border>
 
-                            <Border CornerRadius="25" ClipToBounds="True">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="{Binding FotoPerfil}" Stretch="UniformToFill"/>
-                                </Border.Background>
-                            </Border>
-
-                            <TextBlock Text="{Binding InicialNome, FallbackValue='?'}" 
+                            <!-- Inicias do nome -->
+                            <TextBlock Text="{Binding Iniciais, FallbackValue='?'}" 
                                        Foreground="White"
                                        FontSize="18"
                                        FontWeight="SemiBold"
                                        VerticalAlignment="Center" 
-                                       HorizontalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding FotoPerfil}" Value="{x:Null}">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding FotoPerfil}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                       HorizontalAlignment="Center"/>
+
+                            <Border CornerRadius="25" ClipToBounds="True">
+                                <Border.Background>
+                                    <!-- O Converter assume toda a responsabilidade de criar a imagem ou retornar nulo sem estourar exceção -->
+                                    <ImageBrush ImageSource="{Binding FotoPerfil}" 
+                                                Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
 
                             <Ellipse Width="12" Height="12" 
                                      Fill="{DynamicResource VerdeColor}"

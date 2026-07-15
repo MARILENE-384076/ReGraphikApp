@@ -29,7 +29,26 @@ namespace ReGraphik.ViewModels
         public string NomeUsuario
         {
             get => _nomeUsuario;
-            set { _nomeUsuario = value; OnPropertyChanged(); }
+            set
+            {
+                _nomeUsuario = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Iniciais));
+            }
+        }
+
+        /// <summary>
+        /// Calcula as iniciais do usuário logado para exibir como fallback no Dashboard.
+        /// </summary>
+        public string Iniciais
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(NomeUsuario)) return "?";
+                var partes = NomeUsuario.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (partes.Length == 1) return partes[0][0].ToString().ToUpper();
+                return (partes[0][0].ToString() + partes[^1][0].ToString()).ToUpper();
+            }
         }
 
         /// <summary>
