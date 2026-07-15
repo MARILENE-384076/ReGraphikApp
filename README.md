@@ -604,12 +604,11 @@ Evolução da arquitetura de comunicação do ReGraphik: originalmente, o client
 - **Necessidade de dados centralizados e compartilhados:** o negócio exige que todos os usuários de uma mesma empresa vejam o mesmo estoque reverso em tempo real — algo que um banco local por máquina não permite.
 - **API como camada intermediária:** em vez do WPF acessar o Firebase diretamente, a API concentra as regras de negócio, validações e autenticação, evitando que a lógica fique espalhada ou duplicada entre múltiplos clientes desktop.
 
-# Plano de Implantação
-# 1. Identificação do Projeto e da Equipe
+## 1. Identificação do Projeto e da Equipe
 
 Este documento apresenta o Plano de Implantação do sistema ReGraphik, desenvolvido pela equipe abaixo como Trabalho de Conclusão de Curso (TCC) do Curso Técnico em Desenvolvimento de Sistemas do SENAI. O objetivo deste plano é detalhar os aspectos técnicos, organizacionais e operacionais necessários para que o ReGraphik saia do ambiente acadêmico e seja implantado em um contexto real, assumindo a equipe o papel de uma consultoria especializada em implantação de sistemas.
 
-## 1.1 Dados do Projeto
+### 1.1 Dados do Projeto
 
 | Campo | Descrição |
 |---|---|
@@ -620,12 +619,12 @@ Este documento apresenta o Plano de Implantação do sistema ReGraphik, desenvol
 | Repositório | [github.com/BrunoMaiaSenai/ReGraphikApp](https://github.com/BrunoMaiaSenai/ReGraphikApp) |
 | Data de início prevista | A definir, após validação do ambiente do cliente |
 
-## 1.2 Equipe e Funções
+### 1.2 Equipe e Funções
 
 | Integrante | Curso | Função no projeto |
 |---|---|---|
 | Bruno Maia | Téc. Desenvolvimento de Sistemas | Gestor do Projeto — coordenação geral da implantação, condução do kickoff, controle do cronograma, comunicação com o cliente e elaboração da documentação de implantação |
-| Otávio Henrique | Téc. Desenvolvimento de Sistemas | Técnico de Infraestrutura — instalação e configuração do cliente desktop nas estações da AML; suporte na entrada em produção (Go-Live) |
+| Otávio Henrique | Téc. Desenvolvimento de Sistemas | Técnico de Infraestrutura — instalação e configuração do cliente desktop nas estações das empresas do setor gráfico; suporte na entrada em produção (Go-Live) |
 | Lucas Aquino | Téc. Desenvolvimento de Sistemas | Técnico de Infraestrutura — deploy e configuração da API em nuvem; controle de versão das entregas via GitHub; suporte técnico durante a implantação |
 | Luna Beatriz | Téc. Desenvolvimento de Sistemas | Suporte Técnico — correção de erros identificados em testes e homologação; suporte técnico ativo durante o Go-Live |
 | Kaio Alves | Téc. Desenvolvimento de Sistemas | Analista de Dados — diagnóstico, extração, conversão e carga dos dados na migração; configuração do Firebase e da Google Maps Places API em produção |
@@ -634,7 +633,7 @@ Este documento apresenta o Plano de Implantação do sistema ReGraphik, desenvol
 
 ---
 
-# 2. Situação-Problema e Objetivo do Plano
+## 2. Situação-Problema e Objetivo do Plano
 
 O ReGraphik foi desenvolvido para resolver um problema real identificado nas indústrias de setores gráficos com a ausência de controle estruturado sobre os resíduos sólidos gerados no processo produtivo gráfico (aparas de papel, retalhos de vinil, restos de cartão, lona e PVC), hoje descartados sem qualquer critério de reaproveitamento.
 
@@ -642,37 +641,37 @@ Concluída a etapa de desenvolvimento, este plano tem como objetivo detalhar com
 
 ---
 
-# 3. Perguntas Norteadoras da Implantação
+## 3. Perguntas Norteadoras da Implantação
 
 Esta seção responde, de forma objetiva, às perguntas levantadas pela equipe durante o planejamento, organizadas em dois blocos: características técnicas do sistema e características da implantação.
 
-## 3.1 Sobre o Sistema
+### 3.1 Sobre o Sistema
 
-### O sistema possui banco de dados? Qual?
+#### O sistema possui banco de dados? Qual?
 
 Sim. O ReGraphik utiliza o Firebase Realtime Database, um banco de dados NoSQL em nuvem mantido pelo Google. O sistema já utilizou anteriormente um banco relacional local (SQLite), mas foi migrado para o Firebase para permitir que todos os usuários de uma mesma empresa compartilhem o mesmo estoque reverso em tempo real — o que um banco local por máquina não permitia.
 
-### O sistema precisa de internet?
+#### O sistema precisa de internet?
 
 Sim, de forma obrigatória. O cliente desktop (WPF) não acessa mais nenhum banco local: toda leitura e escrita passam pela API REST, que por sua vez se comunica com o Firebase Realtime Database e com a Google Maps Places API, ambos serviços em nuvem. Sem conexão à internet, o sistema não consegue realizar login, cadastrar resíduos, consultar o estoque nem localizar pontos de coleta.
 
-### O sistema possui login?
+#### O sistema possui login?
 
 Sim. O acesso é controlado por login e senha, com dois perfis: "Usuário" (uso operacional — cadastro de resíduos, consulta ao estoque, aplicação de sugestões de reaproveitamento e emissão de relatórios) e "Administrador" (gestão de usuários, tipos de materiais e exclusão de registros, com trilha de auditoria). O cadastro de novos usuários é feito por convite: o administrador registra o e-mail do futuro usuário, o sistema gera um token de 6 dígitos enviado por e-mail, e o próprio usuário finaliza seu cadastro com esse token.
 
-### O sistema possui API?
+#### O sistema possui API?
 
 Sim. A API REST do ReGraphik é desenvolvida em ASP.NET Core e expõe 5 controllers com operações CRUD completas (Usuário, Resíduos, PontosColeta, Sugestão e SugestãoResíduos), documentados via Swagger/OpenAPI. É essa API que concentra as regras de negócio, autenticação e persistência dos dados no Firebase, evitando que a lógica fique duplicada entre diferentes instalações do cliente desktop.
 
-### Precisa instalar runtime?
+#### Precisa instalar runtime?
 
 Sim. O cliente desktop exige Windows 10/11 (64 bits) com o .NET 8 Runtime (ou superior), o Visual C++ Redistributável e o componente WebView2 (necessário para a renderização do mapa via Leaflet.js dentro da tela de mapa). Esses componentes serão empacotados junto ao instalador do ReGraphik para simplificar a instalação nas máquinas do cliente.
 
-### Como o sistema será atualizado?
+#### Como o sistema será atualizado?
 
 As atualizações seguem dois fluxos distintos, de acordo com a camada afetada: a API REST é atualizada por meio de um novo deploy no serviço de hospedagem em nuvem, sem necessidade de intervenção nas máquinas do cliente; já o cliente desktop WPF é atualizado por meio da distribuição de um novo instalador (gerado a partir do repositório GitHub), que deverá ser aplicado pelo técnico responsável em cada estação de trabalho. Todo o controle de versão é feito via Git/GitHub, o que garante rastreabilidade das mudanças.
 
-### Como recuperar um backup?
+#### Como recuperar um backup?
 
 O Firebase Realtime Database realiza backups conforme o SLA do plano contratado (99,95% de disponibilidade no plano gratuito Spark). Para reforçar a segurança, será adotada uma rotina complementar de exportação periódica (semanal) do banco em formato JSON, armazenada em local seguro e versionado.
 
@@ -681,66 +680,66 @@ Em caso de necessidade de recuperação, o processo consiste em:
 2. Restaurar o arquivo JSON no console do Firebase;
 3. Validar a integridade dos dados restaurados junto ao cliente antes de liberar o uso normal do sistema.
 
-### Existe manual do sistema?
+#### Existe manual do sistema?
 
 Existe um README técnico completo no repositório e uma documentação complementar publicada no Myntlife (introdução, quickstart da API, autenticação, erros). Não existe, porém, um manual de usuário final (passo a passo de telas para o operador do setor gráfico) — recomenda-se produzir esse manual como parte da entrega da implantação.
 
-### Quem será treinado?
+#### Quem será treinado?
 
 Serão treinados os dois perfis de uso do sistema: os usuários operacionais da empresa contratante responsáveis pelo cadastro e triagem dos resíduos no processo produtivo, e o(s) administrador(es) indicado(s) pela empresa, responsáveis pela gestão de usuários, tipos de materiais e geração de relatórios gerenciais.
 
-## 3.2 Sobre a Implantação
+### 3.2 Sobre a Implantação
 
-### Qual sistema será implantado?
+#### Qual sistema será implantado?
 
 O ReGraphik, sistema de gestão de estoque reverso para o setor gráfico, composto por uma API REST (ASP.NET Core), um cliente desktop (WPF/MVVM) e integrações com Firebase Realtime Database e Google Maps Places API.
 
-### Quem será o cliente?
+#### Quem será o cliente?
 
 Empresas do setor gráfico interessadas em gestão de estoque reverso e economia circular de resíduos (papel, aparas, sobras de produção), com potencial de extensão a outras gráficas de pequeno e médio porte que enfrentam o mesmo problema de gestão de resíduos.
 
-### Onde o sistema será instalado?
+#### Onde o sistema será instalado?
 
-A API REST será hospedada em um serviço de nuvem (ex.: Render, Railway ou Azure), acessível via HTTPS. O cliente desktop será instalado localmente nos computadores da empresa AML utilizados pelos operadores responsáveis pelo cadastro de resíduos e pelos gestores que acompanham os indicadores.
+A API REST será hospedada em um serviço de nuvem (ex.: Render, Railway ou Azure), acessível via HTTPS. O cliente desktop será instalado localmente nos computadores das empresas do setor gráfico utilizados pelos operadores responsáveis pelo cadastro de resíduos e pelos gestores que acompanham os indicadores.
 
-### Quais computadores serão utilizados?
+#### Quais computadores serão utilizados?
 
 Computadores com Windows 10 ou 11 (64 bits), já que WPF é exclusivo desse ecossistema. Como o projeto não define requisitos mínimos de hardware oficialmente, recomenda-se adotar como referência: processador dual core recente, 4GB de RAM (8 GB recomendado) e conexão de internet estável — valores a validar com a equipe antes da entrega final.
 
-### Quais programas precisam estar previamente instalados?
+#### Quais programas precisam estar previamente instalados?
 
 - Nas máquinas dos usuários finais: .NET 8 Runtime e Microsoft Edge WebView2 Runtime.
 - Nas máquinas de desenvolvimento/manutenção: .NET 8 SDK e uma IDE (Visual Studio 2022 ou JetBrains Rider, IDE já usada pela equipe conforme README).
 
-### Existe banco de dados? Qual?
+#### Existe banco de dados? Qual?
 
 Sim, Firebase Realtime Database (NoSQL), já hospedado no Firebase (projeto ReGraphikFirebase). Não exige instalação local — é um serviço gerenciado na nuvem, acessado via Service Account (arquivo `ReGraphikFirebaseKey.json`) e URL configurada em `appsettings.json`.
 
-### Será necessário migrar informações?
+#### Será necessário migrar informações?
 
-Sim. Ainda que o ReGraphik seja um sistema novo, a empresa AML atualmente controla seus resíduos de forma manual (planilhas ou ausência de registro estruturado). Será necessário migrar esse histórico mínimo disponível (cadastro de tipos de materiais e eventuais planilhas de controle) para o formato do ReGraphik.
+Sim. Ainda que o ReGraphik seja um sistema novo, as empresas do setor gráfico atualmente controlam seus resíduos de forma manual (planilhas ou ausência de registro estruturado). Será necessário migrar esse histórico mínimo disponível (cadastro de tipos de materiais e eventuais planilhas de controle) para o formato do ReGraphik.
 
-### Quem ficará responsável por cada etapa?
+#### Quem ficará responsável por cada etapa?
 
 A divisão apresentada é uma proposta baseada na estrutura do projeto (API, cliente WPF, integração, documentação e testes) e deve ser validada e ajustada pela equipe conforme a atuação real de cada integrante.
 
-### Quanto tempo será necessário para concluir a implantação?
+#### Quanto tempo será necessário para concluir a implantação?
 
 Estima-se um prazo total de 8 semanas entre o kickoff e a estabilização pós Go-Live, conforme o cronograma resumido apresentado na Seção 6.
 
-### Como será realizada a validação do sistema?
+#### Como será realizada a validação do sistema?
 
 Por meio de testes funcionais dos módulos disponíveis, testes de integração entre cliente desktop, API e serviços externos, e homologação final com participação do cliente, conforme detalhado no Plano de Validação (Seção 8).
 
-### Existe um plano caso ocorra algum problema durante a instalação?
+#### Existe um plano caso ocorra algum problema durante a instalação?
 
 Sim, apresentado na Seção 9 (Plano de Contingência), com cenários de risco, probabilidade, impacto e ações de mitigação previamente definidas.
 
 ---
 
-# 4. Levantamento da Infraestrutura Necessária
+## 4. Levantamento da Infraestrutura Necessária
 
-## 4.1 Requisitos de Hardware (estações cliente)
+### 4.1 Requisitos de Hardware (estações cliente)
 
 | Item | Requisito mínimo | Recomendado |
 |---|---|---|
@@ -750,14 +749,14 @@ Sim, apresentado na Seção 9 (Plano de Contingência), com cenários de risco, 
 | Sistema Operacional | Windows 10/11 (64 bits) | Windows 11 (64 bits) |
 | Conexão | Internet banda larga estável | Internet banda larga com redundância (4G de backup) |
 
-## 4.2 Requisitos de Software
+### 4.2 Requisitos de Software
 
 - .NET 8 Runtime ou superior (cliente WPF)
 - Visual C++ Redistributable
 - Microsoft Edge WebView2 (renderização do mapa via Leaflet.js)
 - Navegador atualizado, apenas para acesso administrativo ao console Firebase e ao Swagger da API
 
-## 4.3 Infraestrutura de Servidor e Serviços em Nuvem
+### 4.3 Infraestrutura de Servidor e Serviços em Nuvem
 
 | Camada | Serviço | Observação |
 |---|---|---|
@@ -767,41 +766,41 @@ Sim, apresentado na Seção 9 (Plano de Contingência), com cenários de risco, 
 | Documentação da API | Swagger/OpenAPI (Swashbuckle) | Disponível em `/swagger` para consulta técnica |
 | Controle de versão | Git/GitHub | Repositório já existente; usado também para distribuição de novas versões |
 
-## 4.4 Rede e Segurança
+### 4.4 Rede e Segurança
 
 - Conexão HTTPS obrigatória entre cliente desktop, API e serviços externos.
-- Liberação de acesso de saída (outbound) nas estações da AML para os domínios da API, do Firebase e da Google Maps Places API, caso haja firewall/proxy corporativo.
+- Liberação de acesso de saída (outbound) nas estações das empresas do setor gráfico para os domínios da API, do Firebase e da Google Maps Places API, caso haja firewall/proxy corporativo.
 - Senhas armazenadas com algoritmo de hash, nunca em texto claro (já implementado no sistema).
 - Definição, junto ao cliente, de quem terá o perfil Administrador antes do início do treinamento.
 
 ---
 
-# 5. Plano de Migração de Dados
+## 5. Plano de Migração de Dados
 
 Como o ReGraphik substitui um controle manual (planilhas ou inexistência de registro) por um sistema estruturado, a migração concentra-se em duas frentes: o cadastro inicial de referência (tipos de materiais e usuários) e, quando disponível, o histórico de controle de resíduos já mantido pela empresa em planilhas.
 
 | Fase | Atividade | Responsável |
 |---|---|---|
-| 1. Diagnóstico | Levantamento das planilhas e registros manuais existentes na AML; avaliação da qualidade dos dados | Analista de Dados (Kaio Alves) |
+| 1. Diagnóstico | Levantamento das planilhas e registros manuais existentes nas empresas do setor gráfico; avaliação da qualidade dos dados | Analista de Dados (Kaio Alves) |
 | 2. Extração | Extração dos dados relevantes (tipos de material, resíduos em estoque, pontos de coleta já conhecidos pela empresa) | Analista de Dados (Kaio Alves) |
 | 3. Conversão | Estruturação dos dados extraídos no formato das entidades do ReGraphik (TipoMaterial, CadastroResiduos) | Analista de Dados + Bruno Maia |
 | 4. Carga | Importação dos dados no Firebase Realtime Database, via API ou script de carga | Analista de Dados (Kaio Alves) |
-| 5. Validação | Conferência de integridade dos dados migrados em conjunto com a AML | Gestor do Projeto + Cliente |
+| 5. Validação | Conferência de integridade dos dados migrados em conjunto com as empresas do setor gráfico | Gestor do Projeto + Cliente |
 
 > Caso a empresa do setor gráfico não possua nenhum controle histórico digitalizado, esta etapa se reduz ao cadastro inicial dos tipos de material e dos usuários, sem necessidade de conversão de dados legados.
 
 ---
 
-# 6. Cronograma Resumido da Implantação
+## 6. Cronograma Resumido da Implantação
 
-O cronograma abaixo estima 8 semanas de implantação, a partir da assinatura do aceite pela empresa AML (D+0), adaptado da estrutura de cronograma corporativo usada como referência pela equipe.
+O cronograma abaixo estima 8 semanas de implantação, a partir da assinatura do aceite pelas empresas do setor gráfico (D+0), adaptado da estrutura de cronograma corporativo usada como referência pela equipe.
 
 | Etapa | Atividade principal | Duração estimada |
 |---|---|---|
 | 1. Kickoff | Reunião de abertura, alinhamento de expectativas e definição de responsáveis | 3 dias |
 | 2. Infraestrutura | Validação do ambiente do cliente, deploy da API em nuvem, configuração do Firebase e da Google Maps API | 5 dias |
-| 3. Migração de Dados | Diagnóstico, extração, conversão e carga dos dados existentes na AML | 5 dias |
-| 4. Instalação do Cliente | Instalação do ReGraphik nas estações de trabalho definidas pela AML | 3 dias |
+| 3. Migração de Dados | Diagnóstico, extração, conversão e carga dos dados existentes nas empresas do setor gráfico | 5 dias |
+| 4. Instalação do Cliente | Instalação do ReGraphik nas estações de trabalho definidas pelas empresas do setor gráfico | 3 dias |
 | 5. Elaboração de Manuais | Produção do manual do usuário e do manual administrativo | 5 dias |
 | 6. Treinamento | Capacitação dos usuários operacionais e do(s) administrador(es) | 5 dias |
 | 7. Testes e Homologação | Testes funcionais, testes de integração e homologação com o cliente (UAT) | 10 dias |
@@ -812,23 +811,23 @@ O cronograma abaixo estima 8 semanas de implantação, a partir da assinatura do
 
 ---
 
-# 7. Distribuição das Responsabilidades
+## 7. Distribuição das Responsabilidades
 
 | Papel na implantação | Integrante | Principais responsabilidades |
 |---|---|---|
 | Gestor do Projeto | Bruno Maia | Coordenação geral, kickoff, cronograma, comunicação com o cliente, relatório final |
-| Técnico de Infraestrutura | Otávio Henrique / Lucas Aquino | Deploy da API, instalação do cliente desktop nas estações da AML, configuração de rede |
+| Técnico de Infraestrutura | Otávio Henrique / Lucas Aquino | Deploy da API, instalação do cliente desktop nas estações das empresas do setor gráfico, configuração de rede |
 | Analista de Dados | Kaio Alves | Migração de dados, configuração do Firebase e da Google Maps API, backups |
 | Desenvolvedora / Suporte Técnico | Luna Beatriz | Correção de erros identificados na homologação, suporte técnico durante o Go-Live |
-| Instrutor de Treinamento | Toda a equipe (rodízio) | Elaboração de manuais e condução dos treinamentos com os usuários da AML |
+| Instrutor de Treinamento | Toda a equipe (rodízio) | Elaboração de manuais e condução dos treinamentos com os usuários das empresas do setor gráfico |
 
 ---
 
-# 8. Plano de Validação do Sistema
+## 8. Plano de Validação do Sistema
 
 A validação segue três níveis, do técnico ao aceite final do cliente:
 
-## 8.1 Testes Funcionais
+### 8.1 Testes Funcionais
 
 - Cadastro, edição e exclusão de resíduos (perfil Usuário e Administrador).
 - Login e controle de acesso por perfil (Usuário / Administrador).
@@ -836,15 +835,15 @@ A validação segue três níveis, do técnico ao aceite final do cliente:
 - Busca de pontos de coleta via Google Maps Places API.
 - Geração de relatórios e exportação em PDF/CSV.
 
-## 8.2 Testes de Integração
+### 8.2 Testes de Integração
 
 - Comunicação cliente WPF ↔ API REST ↔ Firebase Realtime Database.
 - Sincronização em tempo real entre múltiplas estações (dados visíveis para todos os usuários da empresa).
 - Resposta da API em cenários de perda momentânea de conexão.
 
-## 8.3 Homologação e Aceite (UAT)
+### 8.3 Homologação e Aceite (UAT)
 
-- Simulação de fluxos reais de trabalho pelos próprios operadores da AML.
+- Simulação de fluxos reais de trabalho pelos próprios operadores das empresas do setor gráfico.
 - Validação, pelo cliente, da migração de dados realizada na Seção 5.
 - Assinatura de termo de aceite formalizando a homologação antes do Go-Live.
 
@@ -852,7 +851,7 @@ A validação segue três níveis, do técnico ao aceite final do cliente:
 
 ---
 
-# 9. Plano de Contingência
+## 9. Plano de Contingência
 
 | Risco | Probabilidade | Impacto | Ação de mitigação |
 |---|---|---|---|
@@ -866,7 +865,7 @@ A validação segue três níveis, do técnico ao aceite final do cliente:
 
 ---
 
-# 10. Considerações Finais
+## 10. Considerações Finais
 
 O planejamento apresentado demonstra que o ReGraphik está tecnicamente apto a sair do ambiente acadêmico e ser implantado em um contexto real: sua arquitetura em camadas (cliente WPF, API REST e Firebase), já validada durante o desenvolvimento, permite uma implantação incremental e de baixo risco, começando pelo módulo de Mapa de Pontos de Coleta — já disponível — e avançando para os demais módulos conforme forem concluídos.
 
@@ -877,8 +876,6 @@ De forma geral, a viabilidade da implantação do ReGraphik está sustentada por
 1. Uma arquitetura desacoplada e escalável, que facilita ajustes sem impacto nos demais componentes;
 2. Um cronograma realista de 8 semanas, compatível com a maturidade atual do sistema;
 3. Uma distribuição clara de responsabilidades dentro da equipe, aproximando a experiência do TCC das práticas reais de uma consultoria de implantação de sistemas.
-
-
 
 ## Padrão MVVM em Detalhe
 
