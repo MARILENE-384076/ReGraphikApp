@@ -604,6 +604,8 @@ Evolução da arquitetura de comunicação do ReGraphik: originalmente, o client
 - **Necessidade de dados centralizados e compartilhados:** o negócio exige que todos os usuários de uma mesma empresa vejam o mesmo estoque reverso em tempo real — algo que um banco local por máquina não permite.
 - **API como camada intermediária:** em vez do WPF acessar o Firebase diretamente, a API concentra as regras de negócio, validações e autenticação, evitando que a lógica fique espalhada ou duplicada entre múltiplos clientes desktop.
 
+  #Plano de implantação
+
 ## 1. Identificação do Projeto e da Equipe
 
 Este documento apresenta o Plano de Implantação do sistema ReGraphik, desenvolvido pela equipe abaixo como Trabalho de Conclusão de Curso (TCC) do Curso Técnico em Desenvolvimento de Sistemas do SENAI. O objetivo deste plano é detalhar os aspectos técnicos, organizacionais e operacionais necessários para que o ReGraphik saia do ambiente acadêmico e seja implantado em um contexto real, assumindo a equipe o papel de uma consultoria especializada em implantação de sistemas.
