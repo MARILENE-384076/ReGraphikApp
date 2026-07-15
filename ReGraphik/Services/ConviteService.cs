@@ -47,13 +47,29 @@ namespace ReGraphik.Services
             try
             {
                 var todos = await _db.Child(NodeConvites).OnceAsync<ConviteFirebase>();
+
                 return todos.Any(item =>
-                    string.Equals(item.Object.Email, email.Trim(),
-                        StringComparison.OrdinalIgnoreCase) &&
-                    !item.Object.Usado &&
-                    DateTime.UtcNow <= DateTime.Parse(item.Object.Expira));
+                {
+                    if (item.Object == null || string.IsNullOrWhiteSpace(item.Object.Email))
+                        return false;
+
+                    /// Compara e-mails ignorando maiúsculas/minúsculas e espaços
+                    bool emailIgual = string.Equals(item.Object.Email.Trim(), email.Trim(), StringComparison.OrdinalIgnoreCase);
+
+                    /// Converte a string de expiração do Firebase forçando a leitura como UTC (por causa do 'Z')
+                    DateTime dataExpiraUtc = DateTime.Parse(item.Object.Expira, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+
+                    /// Compara de forma justa com o relógio UTC global
+                    bool naoExpirou = DateTime.UtcNow <= dataExpiraUtc;
+
+                    return emailIgual && !item.Object.Usado && naoExpirou;
+                });
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Erro ExisteConvitePendenteAsync]: {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>
@@ -67,23 +83,38 @@ namespace ReGraphik.Services
         {
             try
             {
-                var resultado = await _db
-                    .Child(NodeConvites)
-                    .Child(token.Trim().ToUpper())
-                    .OnceSingleAsync<ConviteFirebase>();
+                /// Busca todos os convites do nó no Firebase
+                var todos = await _db.Child(NodeConvites).OnceAsync<ConviteFirebase>();
 
-                if (resultado == null) return null;
-                if (resultado.Usado) return null;
-                if (DateTime.UtcNow > DateTime.Parse(resultado.Expira)) return null;
-                if (!string.Equals(resultado.Email, email.Trim(),
-                    StringComparison.OrdinalIgnoreCase)) return null;
+                /// Procura pelo convite específico
+                var conviteEncontrado = todos.FirstOrDefault(item =>
+                    /// Compara o Token gerado pelo Firebase (a chave do nó, ex: "TBEM4EC7") com o token digitado
+                    string.Equals(item.Key, token.Trim(), StringComparison.OrdinalIgnoreCase) &&
 
-                /// Retorna o perfil salvo no Firabse
-                return !string.IsNullOrWhiteSpace(resultado.Perfil) ? resultado.Perfil : "User";
-            }
-            catch 
-            { 
+                    /// Compara o e-mail cadastrado de forma segura
+                    string.Equals(item.Object.Email?.Trim(), email.Trim(), StringComparison.OrdinalIgnoreCase) &&
+
+                    /// Verifica se ainda não foi utilizado
+                    !item.Object.Usado);
+
+                if (conviteEncontrado != null)
+                {
+                    /// Converte e valida a data de expiração em formato UTC
+                    DateTime dataExpiraUtc = DateTime.Parse(conviteEncontrado.Object.Expira, null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+
+                    if (DateTime.UtcNow <= dataExpiraUtc)
+                    {
+                        /// Se o token for válido e não expirou, retorna o perfil ("User", "Admin", etc.)
+                        return conviteEncontrado.Object.Perfil ?? "User";
+                    }
+                }
+
                 return null; 
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Erro ValidarTokenAsync]: {ex.Message}");
+                return null;
             }
         }
 

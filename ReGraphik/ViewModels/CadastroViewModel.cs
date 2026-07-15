@@ -210,7 +210,7 @@ namespace ReGraphik.ViewModels
 
                 /// Verifica no Firebase se existe pelo menos um convite
                 /// para este e-mail que ainda não foi usado e não expirou.
-                bool temConvite = await _conviteService.ExisteConvitePendenteAsync(Email.Trim());
+                bool temConvite = await _conviteService.ExisteConvitePendenteAsync(Email.Trim().ToLower());
 
                 if (temConvite)
                 {
@@ -220,8 +220,7 @@ namespace ReGraphik.ViewModels
                 }
                 else
                 {
-                    /// E-mail não tem convite — bloqueia sem dar informação útil a invasores
-                    MensaEmail = "Este e-mail não possui um convite de acesso válido. Entre em contato com o Administrador.";
+                    MensaEmail = "Este e-mail não possui um convite de acesso.";
                 }
             }
             catch
