@@ -444,7 +444,7 @@
                                             <!-- Contêiner da Foto / Iniciais -->
                                             <Grid Width="40" Height="40" Margin="0,0,10,0" VerticalAlignment="Center">
 
-                                                <Border Background="#444444" CornerRadius="20"/>
+                                                <Border Background="{DynamicResource AzulMedioColor}" CornerRadius="20"/>
 
                                                 <Border CornerRadius="20" ClipToBounds="True">
                                                     <Border.Background>
