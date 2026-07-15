@@ -616,27 +616,6 @@ Evolução da arquitetura de comunicação do ReGraphik: originalmente, o client
 
 ## Sumário
 
-1. [Identificação do Projeto e da Equipe](#1-identificação-do-projeto-e-da-equipe)
-   - 1.1 [Dados do Projeto](#11-dados-do-projeto)
-   - 1.2 [Equipe e Funções](#12-equipe-e-funções)
-2. [Situação-Problema e Objetivo do Plano](#2-situação-problema-e-objetivo-do-plano)
-3. [Perguntas Norteadoras da Implantação](#3-perguntas-norteadoras-da-implantação)
-   - 3.1 [Sobre o Sistema](#31-sobre-o-sistema)
-   - 3.2 [Sobre a Implantação](#32-sobre-a-implantação)
-4. [Levantamento da Infraestrutura Necessária](#4-levantamento-da-infraestrutura-necessária)
-   - 4.1 [Requisitos de Hardware (estações cliente)](#41-requisitos-de-hardware-estações-cliente)
-   - 4.2 [Requisitos de Software](#42-requisitos-de-software)
-   - 4.3 [Infraestrutura de Servidor e Serviços em Nuvem](#43-infraestrutura-de-servidor-e-serviços-em-nuvem)
-   - 4.4 [Rede e Segurança](#44-rede-e-segurança)
-5. [Plano de Migração de Dados](#5-plano-de-migração-de-dados)
-6. [Cronograma Resumido da Implantação](#6-cronograma-resumido-da-implantação)
-7. [Distribuição das Responsabilidades](#7-distribuição-das-responsabilidades)
-8. [Plano de Validação do Sistema](#8-plano-de-validação-do-sistema)
-   - 8.1 [Testes Funcionais](#81-testes-funcionais)
-   - 8.2 [Testes de Integração](#82-testes-de-integração)
-   - 8.3 [Homologação e Aceite (UAT)](#83-homologação-e-aceite-uat)
-9. [Plano de Contingência](#9-plano-de-contingência)
-10. [Considerações Finais](#10-considerações-finais)
 
 ---
 
