@@ -256,6 +256,7 @@ namespace ReGraphik.ViewModels
             {
                 OcupadoToken = true;
 
+                /// Valida o token digitado pelo usuário consultando o Firebase.
                 string? perfilObtido = await _conviteService.ValidarTokenAsync(
                     Email!.Trim(),
                     TokenDigitado.Trim().ToUpper());

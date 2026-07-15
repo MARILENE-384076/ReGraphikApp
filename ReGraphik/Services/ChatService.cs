@@ -112,7 +112,7 @@ namespace ReGraphik.Services
         }
 
         /// <summary>
-        /// ListarUsuariosAsync
+        /// ListarUsuariosAsync - Recupera os usuários do Firebase tratando incompatibilidades de nomenclatura do JSON de forma robusta.
         /// </summary>
         /// <returns></returns>
         public async Task<List<Usuario>> ListarUsuariosAsync()
@@ -121,30 +121,77 @@ namespace ReGraphik.Services
             {
                 var items = await _db
                     .Child(NodeUsuarios)
-                    .OnceAsync<Usuario>();
+                    .OnceAsync<object>();
 
-                return items
-                    .Select(i =>
+                var listaUsuarios = new List<Usuario>();
+
+                foreach (var item in items)
+                {
+                    if (item.Object == null) continue;
+
+                    string jsonBruto = item.Object.ToString() ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(jsonBruto)) continue;
+
+                    var usuario = Newtonsoft.Json.JsonConvert.DeserializeObject<Usuario>(jsonBruto);
+
+                    if (usuario != null)
                     {
-                        var u = i.Object;
-                        /// Garantir que o ID do usuário seja definido corretamente
-                        if (string.IsNullOrEmpty(u.Id))
-                            u.Id = i.Key;
-                        return u;
-                    })
-                    .Where(u => u != null)
-                    .ToList();
+                        if (string.IsNullOrEmpty(usuario.Id))
+                        {
+                            usuario.Id = item.Key;
+                        }
+                        using (var doc = JsonDocument.Parse(jsonBruto))
+                        {
+                            var root = doc.RootElement;
+
+                            if (string.IsNullOrWhiteSpace(usuario.Nome))
+                            {
+                                if (root.TryGetProperty("Nome", out var propNome))
+                                {
+                                    usuario.Nome = propNome.GetString() ?? string.Empty;
+                                }
+                                else if (root.TryGetProperty("name", out var propName))
+                                {
+                                    usuario.Nome = propName.GetString() ?? string.Empty;
+                                }
+                            }
+
+                            string? urlFotoDetectada = null;
+                            if (root.TryGetProperty("FotoPerfil", out var propFoto))
+                            {
+                                urlFotoDetectada = propFoto.GetString();
+                            }
+                            else if (root.TryGetProperty("foto_perfil", out var propFotoUnder))
+                            {
+                                urlFotoDetectada = propFotoUnder.GetString();
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(urlFotoDetectada))
+                            {
+                                usuario.FotoPerfil = urlFotoDetectada;
+                            }
+                        }
+
+                        listaUsuarios.Add(usuario);
+                    }
+                }
+
+                return listaUsuarios;
             }
-            catch { return []; }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[ChatService] Erro ao listar usuários: {ex.Message}");
+                return [];
+            }
         }
-        
+
         /// <summary>
         /// ContarNaoLidasAsync
         /// </summary>
         /// <param name="destinatarioId"></param>
         /// <param name="remetenteId"></param>
         /// <returns></returns>
-        
+
         public async Task<int> ContarNaoLidasAsync(
             string destinatarioId, string remetenteId)
         {

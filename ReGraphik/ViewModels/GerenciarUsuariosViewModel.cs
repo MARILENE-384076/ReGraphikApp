@@ -3,6 +3,7 @@ using ReGraphik.Models;
 using ReGraphik.Services;
 using ReGraphik.Views;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Windows;
@@ -25,6 +26,34 @@ namespace ReGraphik.ViewModels
         /// Define o limite máximo de usuários cadastrados no sistema
         /// </summary>
         private const int LIMITE_MAXIMO_USUARIOS = 50;
+
+        private string _nomeUsuario;
+        public string NomeUsuario
+        {
+            get => _nomeUsuario;
+            set
+            {
+                _nomeUsuario = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Usuario.Iniciais));
+            }
+        }
+
+        /// <summary>
+        /// Obtém o caminho ou URL da imagem de perfil do usuário logado diretamente do Firebase.
+        /// </summary>
+        public string? FotoPerfil
+        {
+            get
+            {
+                string? caminho = UsuarioSessaoService.Instancia.FotoCaminho;
+
+                if (string.IsNullOrWhiteSpace(caminho))
+                    return null;
+
+                return caminho.Trim();
+            }
+        }
 
         /// <summary>
         /// Lista de usuários cadastrados no sistema, exibida na interface.
@@ -49,14 +78,14 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Perfil do novo usuário a ser convidado, selecionado pelo administrador na interface.
         /// </summary>
-        private string _perfilSelecionado = "Usuário"; 
+        private string _perfilSelecionado = "Usuário";
         public string PerfilSelecionado
         {
             get => _perfilSelecionado;
             set
             {
                 _perfilSelecionado = value;
-                OnPropertyChanged(nameof(PerfilSelecionado)); 
+                OnPropertyChanged(nameof(PerfilSelecionado));
             }
         }
 
@@ -140,6 +169,12 @@ namespace ReGraphik.ViewModels
             _chatService = new ChatService();
             _emailService = new EmailService();
 
+            /// Vincular evento de sessão primeiro para não perder nenhuma atualização
+            UsuarioSessaoService.Instancia.PropertyChanged += OnUsuarioSessaoPropertyChanged;
+
+            /// Inicializar dados com segurança
+            AtualizarDadosSessao();
+
             CarregarUsuariosCommand = new RelayCommand(async _ => await CarregarUsuariosAsync());
             GerarConviteCommand = new RelayCommand(async _ => await GerarConviteAsync(), _ => !GerandoConvite);
             CopiarTokenCommand = new RelayCommand(_ => CopiarToken(), _ => TokenGeradoVisivel);
@@ -149,9 +184,38 @@ namespace ReGraphik.ViewModels
         }
 
         /// <summary>
+        /// Lê os dados atuais do serviço de sessão e força a atualização na UI.
+        /// </summary>
+        private void AtualizarDadosSessao()
+        {
+            /// Busca o nome do usuário de forma segura
+            NomeUsuario = UsuarioSessaoService.Instancia.UsuarioLogado?.Nome ?? string.Empty;
+
+            /// Força a atualização das propriedades dependentes na UI
+            OnPropertyChanged(nameof(FotoPerfil));
+            OnPropertyChanged(nameof(Usuario.Iniciais));
+        }
+
+        /// <summary>
+        /// Manipula a mudança de propriedades no serviço de sessão do usuário.
+        /// </summary>
+        private void OnUsuarioSessaoPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            /// Se qualquer propriedade relevante da sessão mudar, atualizamos tudo de forma segura
+            if (e.PropertyName == nameof(UsuarioSessaoService.FotoCaminho) ||
+                e.PropertyName == nameof(UsuarioSessaoService.UsuarioLogado))
+            {
+                /// Executa na Thread principal da UI para evitar problemas de sincronização no WPF
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AtualizarDadosSessao();
+                });
+            }
+        }
+
+        /// <summary>
         /// Carregar lista de usuários
         /// </summary>
-        /// <returns></returns>
         private async Task CarregarUsuariosAsync()
         {
             Carregando = true;
@@ -177,7 +241,6 @@ namespace ReGraphik.ViewModels
         /// <summary>
         /// Gerar convite para cadastro
         /// </summary>
-        /// <returns></returns>
         private async Task GerarConviteAsync()
         {
             LimparMensagens();
@@ -231,7 +294,6 @@ namespace ReGraphik.ViewModels
                 return;
             }
 
-
             try
             {
                 GerandoConvite = true;
@@ -283,7 +345,6 @@ namespace ReGraphik.ViewModels
             Clipboard.SetText(TokenGerado);
             Mensagem = "Token copiado para a área de transferência!";
         }
-
 
         /// <summary>
         /// Limpar formulário de convite

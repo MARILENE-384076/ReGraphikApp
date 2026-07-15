@@ -258,7 +258,7 @@
                         <!-- Círculo de Foto -->
                         <Grid Width="140" Height="140" HorizontalAlignment="Center" Margin="0,8,0,16">
                             <Border CornerRadius="70" Background="{DynamicResource AzulMedioColor}" Visibility="{Binding SemFoto, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <TextBlock Text="{Binding InicialNome}" FontSize="36" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Iniciais}" FontSize="36" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <Border CornerRadius="70" ClipToBounds="True">
                                 <Border.Background>

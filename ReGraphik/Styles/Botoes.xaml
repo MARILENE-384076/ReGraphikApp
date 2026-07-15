@@ -1,9 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
+
     <!-- Estilos de Botões -->
 
-    <Style x:Key="BtnPrimaryStyle" TargetType="Button">
+    <!-- Estilo para o botão primário -->
+    <Style x:Key="BtnPrimary" TargetType="Button">
         <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -13,15 +14,15 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                    <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#1340a0"/>
+                            <Setter TargetName="bd" Property="Background" Value="#0d2a56"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource CinzaClaroColor}"/>
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource CinzaClaroColor}"/>
                             <Setter Property="Foreground" Value="{DynamicResource TextoCinzaColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -30,6 +31,7 @@
         </Setter>
     </Style>
 
+    <!-- Estilo para o botão secundário -->
     <Style x:Key="BtnSecondaryStyle" TargetType="Button">
         <Setter Property="Background" Value="White"/>
         <Setter Property="Foreground" Value="{DynamicResource AzulMedioColor}"/>
@@ -41,7 +43,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="bd" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="6" Padding="{TemplateBinding Padding}">
@@ -49,7 +51,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#EFF6FF"/>
+                            <Setter TargetName="bd" Property="Background" Value="#EFF6FF"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -57,6 +59,7 @@
         </Setter>
     </Style>
 
+    <!-- Estilo para o botão primário (BtnPrimario) -->
     <Style x:Key="BtnPrimario" TargetType="Button">
         <Setter Property="Height" Value="44"/>
         <Setter Property="Background" Value="{DynamicResource AzulMedioColor}"/>
@@ -73,7 +76,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource AzulMedioColor}"/>
+                            <Setter TargetName="bd" Property="Background" Value="#0d2a56"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -81,6 +84,7 @@
         </Setter>
     </Style>
 
+    <!-- Estilo para os botões do menu lateral -->
     <Style x:Key="NavBtn" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="#BFDBFE"/>
@@ -110,16 +114,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    
     </Style>
 
+    <!-- Estilo para o botão ativo do menu lateral -->
     <Style x:Key="NavBtnAtivo" TargetType="Button" BasedOn="{StaticResource NavBtn}">
         <Setter Property="Background" Value="#022654"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="bd" Background="{TemplateBinding Background}"
                         CornerRadius="8" 
                         Padding="{TemplateBinding Padding}">
                         <ContentPresenter VerticalAlignment="Center"
@@ -127,7 +131,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#0A366F"/>
+                            <Setter TargetName="bd" Property="Background" Value="#0A366F"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -136,6 +140,7 @@
         </Setter>
     </Style>
 
+    <!-- Estilo para o botão de sair -->
     <Style x:Key="NavBtnSair" TargetType="Button" BasedOn="{StaticResource NavBtn}">
         <Setter Property="Foreground" Value="#87CEFA"/>
         <Setter Property="Template">
@@ -157,18 +162,18 @@
         </Setter>
     </Style>
 
+    <!-- Estilo para os botões do menu lateral -->
     <Style x:Key="MeusBotoesMenuLateral" TargetType="Button">
         <Setter Property="Background" Value="#215ec0"/>
         <Setter Property="Foreground" Value="White"/>
-
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=DataContext.BtnAtivo, RelativeSource={RelativeSource AncestorType=Window}}">
                 <Setter Property="Background" Value="#0b2a5c" />
             </DataTrigger>
-
         </Style.Triggers>
     </Style>
 
+    <!-- Estilo para ToolTip dos botões -->
     <Style x:Key="BtnTooltip" TargetType="ToolTip">
         <Setter Property="Background" Value="White"/>
         <Setter Property="Foreground" Value="{DynamicResource AzulMedioColor}"/>
@@ -187,32 +192,32 @@
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.15" Color="Black"/>
                         </Border.Effect>
-
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
+    <!-- Estilo para o botão de foto -->
     <Style x:Key="BtnFoto" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                    <Border x:Name="bd" Background="{TemplateBinding Background}" CornerRadius="20">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="{DynamicResource CinzaClaroColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource CinzaClaroColor}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
+    <!-- Estilo para o botão de fechar (X) -->
     <Style x:Key="CloseXButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="#95A5A6"/>
@@ -236,6 +241,7 @@
         </Setter>
     </Style>
 
+    <!-- Estilo para botões redondos -->
     <Style x:Key="RoundedButtonStyle" TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
@@ -252,7 +258,7 @@
         </Setter>
     </Style>
 
-    <!-- Estilo inline opcional para garantir o visual perfeito do botão "Ok, entendi" redondo igual ao da imagem -->
+    <!-- Estilo inline para botão moderno redondo -->
     <Style x:Key="ModernRoundedButton" TargetType="Button">
         <Setter Property="Background" Value="#1B4EB8"/>
         <Setter Property="Foreground" Value="White"/>
@@ -263,22 +269,22 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" 
+                    <Border x:Name="bd" Background="{TemplateBinding Background}" 
                     CornerRadius="16" 
                     Padding="24,10,24,10">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="Background" Value="#153E92"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#153E92"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <!-- Estilo inline opcional para o botão de fechar (X) -->
+    <!-- Estilo inline para o botão de fechar moderno (X) -->
     <Style x:Key="ModernCloseButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="#9CA3AF"/>
@@ -287,19 +293,20 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}">
+                    <Border x:Name="bd" Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="#4B5563"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="#4B5563"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
+    <!-- Estilo para botões de alternância circulares -->
     <Style x:Key="ToggleCircleButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="White"/>
         <Setter Property="BorderThickness" Value="0"/>

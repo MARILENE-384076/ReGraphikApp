@@ -9,9 +9,23 @@ namespace ReGraphik.Models
         [JsonProperty("id")]
         public string Id { get; set; }
 
-        [JsonPropertyName("name")]
-        [JsonProperty("name")]
-        public string Nome { get; set; }
+        private string _nome;
+
+        /// Se no Firebase estiver salvo como "nome" (minúsculo):
+        [JsonPropertyName("nome")]
+        [JsonProperty("nome")]
+        public string Nome
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_nome))
+                {
+                    return !string.IsNullOrWhiteSpace(Login) ? Login : "Sem Nome";
+                }
+                return _nome;
+            }
+            set => _nome = value;
+        }
 
         [JsonPropertyName("cpf")]
         [JsonProperty("cpf")]
@@ -53,12 +67,14 @@ namespace ReGraphik.Models
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(Nome)) return "?";
-                var partes = Nome.Trim().Split(' ',
-                    StringSplitOptions.RemoveEmptyEntries);
-                if (partes.Length == 1)
-                    return partes[0][0].ToString().ToUpper();
-                return $"{partes[0][0]}{partes[^1][0]}".ToUpper();
+                /// Usa a propriedade Nome (que agora já tem o fallback do Login)
+                string nomeParaUsar = Nome;
+
+                if (string.IsNullOrWhiteSpace(nomeParaUsar)) return "?";
+
+                var partes = nomeParaUsar.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (partes.Length == 1) return partes[0][0].ToString().ToUpper();
+                return (partes[0][0].ToString() + partes[^1][0].ToString()).ToUpper();
             }
         }
     }
