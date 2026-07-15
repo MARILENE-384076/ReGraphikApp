@@ -64,15 +64,23 @@ namespace ReGraphik.ViewModels
         /// <returns></returns>
         private async Task RecuperarSenhaAsync()
         {
+            /// Valida se o e-mail foi informado
             if (string.IsNullOrWhiteSpace(Email))
             {
-                MessageBox.Show("Informe o e-mail corporativo.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Aviso", "Informe o e-mail corporativo.", MensagemWindow.TipoMensagem.Aviso);
+                });
                 return;
             }
 
+            /// Valida se o e-mail possui um formato básico válido
             if (!Email.Contains('@') || !Email.Contains('.'))
             {
-                MessageBox.Show("Informe um e-mail válido.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MensagemWindow.Exibir("Aviso", "Informe um e-mail válido.", MensagemWindow.TipoMensagem.Aviso);
+                });
                 return;
             }
 
