@@ -488,7 +488,7 @@
 
                             <!-- Área de Seleção de Arquivo -->
                             <StackPanel Grid.Row="0" Margin="0,0,0,24">
-                                <TextBlock Text="Foto ou Vídeo do Material (opcional)" Style="{StaticResource FieldLabelStyle}"/>
+                                <TextBlock Text="Foto do Material (opcional)" Style="{StaticResource FieldLabelStyle}"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
