@@ -19,12 +19,6 @@
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
-
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 

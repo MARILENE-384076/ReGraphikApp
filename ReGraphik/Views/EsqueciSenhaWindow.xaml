@@ -14,15 +14,6 @@
         SizeToContent="Height"
         ShowInTaskbar="False">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
 
     <Border Background="#F8FAFC" CornerRadius="16" Margin="12">
         <Border.Effect>

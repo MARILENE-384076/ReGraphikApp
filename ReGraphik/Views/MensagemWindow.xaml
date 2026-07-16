@@ -10,16 +10,6 @@
         Background="Transparent"
         AllowsTransparency="True">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <Grid Margin="16">
         <Border Background="White" CornerRadius="16" Padding="24,20,24,24">
             <Border.Effect>

@@ -18,11 +18,6 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <converters:NaoLidasVisibilidadeConverter x:Key="NaoLidasVisConv"/>
             <converters:BadgeNotificacaoConverter x:Key="BadgeConv"/>
             <converters:BoolToVisibilityConverter x:Key="BoolVis"/>
