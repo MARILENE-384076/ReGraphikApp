@@ -390,19 +390,77 @@
                                             <TextBlock Text="Informe o e-mail vinculado ao convite que você recebeu do Administrador." FontSize="13" Foreground="{DynamicResource CinzaColor}" TextWrapping="Wrap"/>
                                         </StackPanel>
 
-                                        <TextBlock Text="E-mail" Style="{StaticResource LabelStyle}"/>
+                                        <TextBlock Style="{StaticResource LabelStyle}">
+                                            <Run Text="E-mail"/>
+                                            <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                        </TextBlock>
                                         <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"
                                                  Style="{StaticResource InputStyle}" 
                                                  Margin="0,0,0,4"/>
-                                        <TextBlock Style="{StaticResource LabelStyle}"
-                                                   Text="{Binding MensaEmail}"
-                                                   Margin="0,0,0,16" Foreground="DarkRed"/>
 
-                                        <TextBlock Text="{Binding MensagemErroGeral}"
-                                                   Foreground="DarkRed" 
-                                                   FontSize="13"
-                                                   TextWrapping="Wrap" 
-                                                   Margin="0,0,0,16"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,16">
+                                            <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                        Width="14" 
+                                                                        Height="14" 
+                                                                        Margin="0,0,6,0" 
+                                                                        Foreground="DarkRed"
+                                                                        VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensaEmail}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensaEmail}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
+
+                                            <TextBlock x:Name="TxtMensaEmail" 
+                                                       Style="{StaticResource LabelStyle}" 
+                                                       Text="{Binding MensaEmail}" 
+                                                       Foreground="DarkRed" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="0"/>
+                                        </StackPanel>
+
+                                        <!-- Mensagem email -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
+                                            <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                        Width="16" 
+                                                                        Height="16" 
+                                                                        Margin="0,0,8,0" 
+                                                                        Foreground="DarkRed"
+                                                                        VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensagemErroGeral1}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensagemErroGeral1}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
+
+                                            <TextBlock x:Name="TxtMensagemErroGeral1" 
+                                                       Text="{Binding MensagemErroGeral}" 
+                                                       Foreground="DarkRed" 
+                                                       FontSize="13" 
+                                                       FontWeight="SemiBold" 
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center" 
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+
 
                                         <Button Content="VERIFICAR E-MAIL"
                                                 Command="{Binding SolicitarAcessoCommand}"
@@ -520,10 +578,14 @@
                                                      Padding="35,0,10,0" Height="40" 
                                                      VerticalContentAlignment="Center"/>
                                             <iconPacks:PackIconMaterial Kind="Email" Width="16" Height="16" Margin="12,0,0,0" 
-                                    Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                                                        Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" 
+                                                                        VerticalAlignment="Center" IsHitTestVisible="False"/>
                                         </Grid>
 
-                                        <TextBlock Text="Nome Completo" Style="{StaticResource LabelStyle}"/>
+                                        <TextBlock Style="{StaticResource LabelStyle}">
+                                            <Run Text="Nome Completo"/>
+                                            <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                        </TextBlock>
                                         <Grid Margin="0,0,0,4">
                                             <TextBox Text="{Binding Nome, UpdateSourceTrigger=PropertyChanged}"
                                                      Style="{StaticResource InputStyle}" 
@@ -531,9 +593,40 @@
                                                      Height="40" 
                                                      VerticalContentAlignment="Center"/>
                                             <iconPacks:PackIconMaterial Kind="Account" Width="16" Height="16" Margin="12,0,0,0" 
-                                    Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                                                        Foreground="{DynamicResource TextoCinzaColor}" 
+                                                                        HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                         </Grid>
-                                        <TextBlock Text="{Binding MensaNome}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,0,0,10"/>
+
+                                        <!-- Mensagem nome -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,16">
+                                            <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                        Width="14" 
+                                                                        Height="14" 
+                                                                        Margin="0,0,6,0" 
+                                                                        Foreground="DarkRed"
+                                                                        VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensaNome}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensaNome}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
+
+                                            <TextBlock x:Name="TxtMensaNome" 
+                                                       Style="{StaticResource LabelStyle}" 
+                                                       Text="{Binding MensaNome}" 
+                                                       Foreground="DarkRed" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="0"/>
+                                        </StackPanel>
 
                                         <Grid Margin="0,0,0,4">
                                             <Grid.ColumnDefinitions>
@@ -543,7 +636,10 @@
                                             </Grid.ColumnDefinitions>
 
                                             <StackPanel Grid.Column="0">
-                                                <TextBlock Text="CPF" Style="{StaticResource LabelStyle}"/>
+                                                <TextBlock Style="{StaticResource LabelStyle}">
+                                                    <Run Text="CPF"/>
+                                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                                </TextBlock>
                                                 <Grid>
                                                     <TextBox Text="{Binding CPF, UpdateSourceTrigger=PropertyChanged}"
                                                              Style="{StaticResource InputStyle}" 
@@ -553,11 +649,44 @@
                                                     <iconPacks:PackIconMaterial Kind="CardAccountDetails" Width="16" Height="16" Margin="12,0,0,0" 
                                             Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                                 </Grid>
-                                                <TextBlock Text="{Binding MensaCpf}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,4,0,0"/>
+
+                                                <!-- Mensagem cpf -->
+                                                <StackPanel Orientation="Horizontal" Margin="0,5,0,16">
+                                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                                Width="14" 
+                                                                                Height="14" 
+                                                                                Margin="0,0,6,0" 
+                                                                                Foreground="DarkRed"
+                                                                                VerticalAlignment="Center">
+                                                        <iconPacks:PackIconMaterial.Style>
+                                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtMensaCpf}" Value="">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtMensaCpf}" Value="{x:Null}">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </iconPacks:PackIconMaterial.Style>
+                                                    </iconPacks:PackIconMaterial>
+
+                                                    <TextBlock x:Name="TxtMensaCpf" 
+                                                               Style="{StaticResource LabelStyle}" 
+                                                               Text="{Binding MensaCpf}" 
+                                                               Foreground="DarkRed" 
+                                                               VerticalAlignment="Center"
+                                                               Margin="0"/>
+                                                </StackPanel>
                                             </StackPanel>
 
                                             <StackPanel Grid.Column="2">
-                                                <TextBlock Text="Login" Style="{StaticResource LabelStyle}"/>
+                                                <TextBlock Style="{StaticResource LabelStyle}">
+                                                    <Run Text="Login"/>
+                                                    <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                                </TextBlock>
                                                 <Grid>
                                                     <TextBox Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
                                                              Style="{StaticResource InputStyle}"
@@ -566,11 +695,44 @@
                                                     <iconPacks:PackIconMaterial Kind="AccountKey" Width="16" Height="16" Margin="12,0,0,0" 
                                             Foreground="{DynamicResource TextoCinzaColor}" HorizontalAlignment="Left" VerticalAlignment="Center" IsHitTestVisible="False"/>
                                                 </Grid>
-                                                <TextBlock Text="{Binding MensaLogin}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,4,0,0"/>
+
+                                                <!-- Mensagem login -->
+                                                <StackPanel Orientation="Horizontal" Margin="0,5,0,16">
+                                                    <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                                Width="14" 
+                                                                                Height="14" 
+                                                                                Margin="0,0,6,0" 
+                                                                                Foreground="DarkRed"
+                                                                                VerticalAlignment="Center">
+                                                        <iconPacks:PackIconMaterial.Style>
+                                                            <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtMensaLogin1}" Value="">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=TxtMensaLogin1}" Value="{x:Null}">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </iconPacks:PackIconMaterial.Style>
+                                                    </iconPacks:PackIconMaterial>
+
+                                                    <TextBlock x:Name="TxtMensaLogin1" 
+                                                               Style="{StaticResource LabelStyle}" 
+                                                               Text="{Binding MensaLogin}" 
+                                                               Foreground="DarkRed" 
+                                                               VerticalAlignment="Center"
+                                                               Margin="0"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </Grid>
 
-                                        <TextBlock Text="Senha" Style="{StaticResource LabelStyle}" Margin="0,6,0,0"/>
+                                        <TextBlock Style="{StaticResource LabelStyle}" Margin="0,6,0,0">
+                                            <Run Text="Senha"/>
+                                            <Run Text="*" Foreground="Red" FontWeight="Bold"/>
+                                        </TextBlock>
                                         <Grid x:Name="GridCamposSenhaCadastro" Height="40" Margin="0,0,0,4">
                                             <PasswordBox x:Name="TxtSenhaCadastro"
                                                          Style="{StaticResource PasswordStyle}"
@@ -594,9 +756,70 @@
                                                 <iconPacks:PackIconMaterial x:Name="IconeOlhoCadastro" Kind="Eye" Foreground="{DynamicResource CinzaColor}" Width="16" Height="16"/>
                                             </Button>
                                         </Grid>
-                                        <TextBlock Text="{Binding MensaSenha}" Style="{StaticResource LabelStyle}" Foreground="DarkRed" Margin="0,0,0,16"/>
+                                        
+                                        <!-- Mensagem senha -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                                            <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                         Width="14" 
+                                                                         Height="14" 
+                                                                         Margin="0,0,6,0" 
+                                                                         Foreground="DarkRed"
+                                                                         VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensaSenha1}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensaSenha1}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
 
-                                        <TextBlock Text="{Binding MensagemErroGeral}" Foreground="DarkRed" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                            <TextBlock x:Name="TxtMensaSenha1" 
+                                                        Style="{StaticResource LabelStyle}" 
+                                                        Text="{Binding MensaSenha}" 
+                                                        Foreground="DarkRed" 
+                                                        VerticalAlignment="Center"
+                                                        Margin="0"/>
+                                        </StackPanel>
+
+                                        <!-- Mensagem geral -->
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
+                                            <iconPacks:PackIconMaterial Kind="AlertCircleOutline" 
+                                                                         Width="16" 
+                                                                         Height="16" 
+                                                                         Margin="0,0,8,0" 
+                                                                         Foreground="DarkRed"
+                                                                         VerticalAlignment="Center">
+                                                <iconPacks:PackIconMaterial.Style>
+                                                    <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensagemErroGeral2}" Value="">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Text, ElementName=TxtMensagemErroGeral2}" Value="{x:Null}">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </iconPacks:PackIconMaterial.Style>
+                                            </iconPacks:PackIconMaterial>
+
+                                            <TextBlock x:Name="TxtMensagemErroGeral2" 
+                                                        Text="{Binding MensagemErroGeral}" 
+                                                        Foreground="DarkRed" 
+                                                        FontSize="13" 
+                                                        FontWeight="SemiBold" 
+                                                        VerticalAlignment="Center"
+                                                        TextAlignment="Center" 
+                                                        TextWrapping="Wrap"/>
+                                        </StackPanel>
 
                                         <Button Content="CRIAR CONTA"
                                                 IsDefault="True" 
