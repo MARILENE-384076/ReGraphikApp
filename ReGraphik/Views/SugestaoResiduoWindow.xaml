@@ -13,16 +13,6 @@
         ShowInTaskbar="False" 
         WindowStartupLocation="CenterOwner">
 
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <Border Background="#F8FAFC" CornerRadius="16" Margin="12">
         <Border.Effect>
             <DropShadowEffect BlurRadius="20" ShadowDepth="3" Opacity="0.15" Color="#0F172A"/>

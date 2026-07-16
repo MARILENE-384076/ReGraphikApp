@@ -24,92 +24,11 @@
         <converters:DataHoraMensagemConverter    x:Key="DataHoraConv"/>
         <converters:BadgeNotificacaoConverter    x:Key="BadgeConv"/>
         <BooleanToVisibilityConverter            x:Key="BoolVis"/>
-
-        
-        <Style x:Key="ItemConversaStyle" TargetType="Button">
-            <Setter Property="Background"                Value="Transparent"/>
-            <Setter Property="BorderThickness"           Value="0"/>
-            <Setter Property="Cursor"                    Value="Hand"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Padding"                   Value="12,10"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="8"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#F1F5F9"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        
-        <Style x:Key="BtnEnviarStyle" TargetType="Button">
-            <Setter Property="Background"      Value="{DynamicResource AzulMedioColor}"/>
-            <Setter Property="Foreground"      Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Width"           Value="40"/>
-            <Setter Property="Height"          Value="40"/>
-            <Setter Property="Cursor"          Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="20">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#1340a0"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        
-        <Style x:Key="BtnIconeStyle" TargetType="Button">
-            <Setter Property="Background"      Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor"          Value="Hand"/>
-            <Setter Property="Padding"         Value="6"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#E2E8F0"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        
-        <Style x:Key="GripStyle" TargetType="ResizeGrip">
-            <Setter Property="Width"      Value="14"/>
-            <Setter Property="Height"     Value="14"/>
-            <Setter Property="Foreground" Value="{DynamicResource CinzaClaroColor}"/>
-            <Setter Property="Cursor"     Value="SizeNWSE"/>
-        </Style>
     </Window.Resources>
 
 
     <Grid>
-        
+
         <ResizeGrip Style="{StaticResource GripStyle}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
@@ -127,9 +46,9 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    
+
                     <RowDefinition Height="*"/>
-                    
+
                 </Grid.RowDefinitions>
 
 
@@ -154,7 +73,7 @@
                             <iconPacks:PackIconMaterial Kind="ArrowLeft" Width="16" Height="16" Foreground="White"/>
                         </Button>
 
-                        
+
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Foreground="White" FontWeight="SemiBold" FontSize="15">
                                 <TextBlock.Style>
@@ -182,7 +101,7 @@
                             <iconPacks:PackIconMaterial Kind="PencilPlusOutline" Width="16" Height="16" Foreground="White"/>
                         </Button>
 
-                       
+
                         <Button Grid.Column="3"
                                 Style="{StaticResource BtnIconeStyle}"
                                 ToolTip="Fechar"
@@ -192,10 +111,10 @@
                     </Grid>
                 </Border>
 
-                
+
                 <Grid Grid.Row="1">
 
-                    
+
                     <Grid>
                         <Grid.Style>
                             <Style TargetType="Grid">
@@ -211,7 +130,7 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8,4">
                             <StackPanel>
 
-                                
+
                                 <StackPanel HorizontalAlignment="Center" Margin="0,60,0,0">
                                     <StackPanel.Style>
                                         <Style TargetType="StackPanel">
@@ -235,17 +154,17 @@
                                                HorizontalAlignment="Center"/>
                                 </StackPanel>
 
-                               
+
                                 <TextBlock Text="Carregando..."
                                            Foreground="{DynamicResource TextoCinzaColor}" FontSize="13"
                                            HorizontalAlignment="Center" Margin="0,40,0,0"
                                            Visibility="{Binding Carregando, Converter={StaticResource BoolVis}}"/>
 
-                               
+
                                 <ItemsControl ItemsSource="{Binding Conversas}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            
+
                                             <Button Style="{StaticResource ItemConversaStyle}"
                                                     Command="{Binding DataContext.SelecionarConversaCommand,
                                                               RelativeSource={RelativeSource AncestorType=Window}}"
@@ -279,7 +198,7 @@
                                                                    TextTrimming="CharacterEllipsis"/>
                                                     </StackPanel>
 
-                                                    
+
                                                     <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                                         <TextBlock Text="{Binding HorarioFormatado}"
                                                                    FontSize="11" Foreground="{DynamicResource TextoCinzaColor}"
@@ -303,7 +222,7 @@
                         </ScrollViewer>
                     </Grid>
 
-                    
+
                     <Grid>
                         <Grid.Style>
                             <Style TargetType="Grid">
@@ -317,12 +236,12 @@
                         </Grid.Style>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            
+
                             <RowDefinition Height="Auto"/>
-                            
+
                         </Grid.RowDefinitions>
 
-                        
+
                         <ScrollViewer Grid.Row="0"
                                       VerticalScrollBarVisibility="Auto"
                                       x:Name="ScrollMensagens"
@@ -330,13 +249,13 @@
                             <ItemsControl ItemsSource="{Binding Mensagens}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
- 
+
                                         <StackPanel HorizontalAlignment="{Binding EhMinhaMensagem, Converter={StaticResource AlinhamentoConv}}"
                                                     Margin="0,3"
                                                     MaxWidth="{Binding ActualWidth,
                                                                RelativeSource={RelativeSource AncestorType=ScrollViewer},
                                                                Converter={StaticResource AlinhamentoConv}}">
-                                            
+
                                             <TextBlock Text="{Binding RemetenteNome}"
                                                        FontSize="11" Foreground="{DynamicResource CinzaColor}"
                                                        Margin="4,0,0,2">
@@ -352,7 +271,7 @@
                                                 </TextBlock.Style>
                                             </TextBlock>
 
-                                            
+
                                             <Border Background="{Binding EhMinhaMensagem, Converter={StaticResource CorFundoConv}}"
                                                     CornerRadius="12" Padding="10,8">
                                                 <Border.Effect>
@@ -364,7 +283,7 @@
                                                            TextWrapping="Wrap"/>
                                             </Border>
 
-                                            
+
                                             <TextBlock Text="{Binding DataHora, Converter={StaticResource DataHoraConv}}"
                                                        FontSize="10" Foreground="{DynamicResource TextoCinzaColor}"
                                                        HorizontalAlignment="{Binding EhMinhaMensagem, Converter={StaticResource AlinhamentoConv}}"
@@ -375,7 +294,7 @@
                             </ItemsControl>
                         </ScrollViewer>
 
-                        
+
                         <Border Grid.Row="1"
                                 BorderBrush="#E2E8F0"
                                 BorderThickness="0,1,0,0"
@@ -445,7 +364,7 @@
                         </Border>
                     </Grid>
 
-                    
+
                     <Border CornerRadius="0,0,12,12">
                         <Border.Style>
                             <Style TargetType="Border">
@@ -471,7 +390,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                
+
                                 <Border Grid.Row="0"
                                         BorderBrush="#E2E8F0" BorderThickness="0,0,0,1"
                                         Padding="14,10">
@@ -487,7 +406,7 @@
                                     </Grid>
                                 </Border>
 
-                                
+
                                 <ScrollViewer Grid.Row="1"
                                               VerticalScrollBarVisibility="Auto"
                                               Padding="8,4">
@@ -538,11 +457,11 @@
                     </Border>
 
                 </Grid>
-                
+
             </Grid>
-            
+
         </Border>
-        
+
     </Grid>
-    
+
 </Window>

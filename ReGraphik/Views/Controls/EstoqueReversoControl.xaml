@@ -12,11 +12,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Styles/Textos.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Inputs.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Styles/Botoes.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>

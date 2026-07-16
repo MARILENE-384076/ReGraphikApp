@@ -3,6 +3,7 @@
     
     <!-- Estilos de Textos -->
 
+    <!-- Estilo de Rótulo -->
     <Style x:Key="FieldLabelStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -10,6 +11,7 @@
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
 
+    <!-- Estilo de Rótulo para Filtros -->
     <Style x:Key="FilterLabelStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{DynamicResource CinzaColor}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -17,6 +19,7 @@
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
 
+    <!-- Estilo de Input -->
     <Style x:Key="InputStyle" TargetType="TextBox">
         <Setter Property="Height" Value="42"/>
         <Setter Property="Background" Value="#F1F5F9"/>
@@ -28,6 +31,7 @@
         <Setter Property="Foreground" Value="{DynamicResource TextoPadraoColor}"/>
     </Style>
 
+    <!-- Estilo de Rótulo -->
     <Style x:Key="LabelStyle" TargetType="TextBlock">
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
@@ -35,7 +39,8 @@
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
 
-    <Style TargetType="TextBox">
+    <!-- Estilo de TextBox -->
+    <Style x:Key="TextBoxStyle" TargetType="TextBox">
         <Setter Property="Height" Value="38"/>
         <Setter Property="BorderBrush" Value="#82A0C2"/>
         <Setter Property="BorderThickness" Value="1"/>
